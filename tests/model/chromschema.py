@@ -1,5 +1,5 @@
 # Auto generated from chromo.yaml by pythongen.py version: 0.9.0
-# Generation date: 2021-07-08 18:27
+# Generation date: 2021-07-09 12:32
 # Schema: ChromoSchema
 #
 # id: https://w3id.org/biodatamodels/chromoschema
@@ -33,13 +33,13 @@ dataclasses._init_fn = dataclasses_init_fn_with_kwargs
 
 # Namespaces
 BFO = CurieNamespace('BFO', 'http://purl.obolibrary.org/obo/BFO_')
+CHR = CurieNamespace('CHR', 'http://purl.obolibrary.org/obo/CHR_')
 GO = CurieNamespace('GO', 'http://purl.obolibrary.org/obo/GO_')
 NCBITAXON = CurieNamespace('NCBITaxon', 'http://purl.obolibrary.org/obo/NCBITaxon_')
 OIO = CurieNamespace('OIO', 'http://www.geneontology.org/formats/oboInOwl#')
 RO = CurieNamespace('RO', 'http://purl.obolibrary.org/obo/RO_')
 SO = CurieNamespace('SO', 'http://purl.obolibrary.org/obo/SO_')
 BIOLINK = CurieNamespace('biolink', 'https://w3id.org/biolink/vocab/')
-CHR = CurieNamespace('chr', 'http://purl.obolibrary.org/obo/CHR_')
 CHROMOSCHEMA = CurieNamespace('chromoschema', 'https://w3id.org/biodatamodels/chromoschema/')
 DCTERMS = CurieNamespace('dcterms', 'http://purl.org/dc/terms/')
 EDAM = CurieNamespace('edam', 'http://edamontology.org/')
@@ -57,9 +57,9 @@ DEFAULT_ = CHROMOSCHEMA
 
 
 # Types
-class TaxonIdentifier(String):
-    type_class_uri = XSD.string
-    type_class_curie = "xsd:string"
+class TaxonIdentifier(Uriorcurie):
+    type_class_uri = XSD.anyURI
+    type_class_curie = "xsd:anyURI"
     type_name = "TaxonIdentifier"
     type_model_uri = CHROMOSCHEMA.TaxonIdentifier
 

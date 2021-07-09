@@ -25,6 +25,7 @@ prefixes:
   ensembl: http://identifiers.org/ensembl/
   OIO: http://www.geneontology.org/formats/oboInOwl#
   skos: http://www.w3.org/2004/02/skos/core#
+  dcterms: http://purl.org/dc/terms/
 
 default_prefix: chromoschema
 default_curi_maps:
@@ -57,6 +58,7 @@ classes:
       - |-
         OWL Notes: when translated to OWL, instances of this class will be treated as
         OWL classes, with the superclass determined by the type field
+      - OWL>> Class
     slots:
       - id
       - band_descriptor
@@ -169,6 +171,8 @@ slots:
   type:
     range: EntityType
     slot_uri: rdf:type
+    comments:
+      - OWL>> SubClassOf
   somal_type:
     range: AutosomeVsSexChromosome
     description: indicates whether this is a sex-chromosome or not
@@ -294,7 +298,7 @@ enums:
 
 types:
   TaxonIdentifier:
-    typeof: string
+    typeof: uriorcurie
   BandDescriptor:
     typeof: string
     description: >-

@@ -6,11 +6,13 @@ import logging
 from rdflib import URIRef
 
 from hbreader import hbread
-from linkml_runtime.linkml_model.meta import ClassDefinition, SchemaDefinition, SlotDefinition
+from linkml_runtime.linkml_model.meta import ClassDefinition, SchemaDefinition, SlotDefinition, Definition
 from linkml_runtime.utils.formatutils import underscore, camelcase
+from linkml_runtime.linkml_model.types import Uri, Uriorcurie
 
 from funowl import OntologyDocument, Ontology, IRI, ObjectSomeValuesFrom,\
-    ObjectUnionOf, SubClassOf,\
+    Literal,\
+    ObjectUnionOf, SubClassOf, ClassAssertion,\
     Class, Individual,\
     AnnotationAssertion, ObjectPropertyAssertion,\
     Prefix, AnonymousIndividual
@@ -26,11 +28,28 @@ from linkml_runtime.utils.yamlutils import YAMLRoot
 
 INTERPRETATION = str
 
-
-
 class OWLDumper(Dumper):
+    """
+    Translate LinkML instances to OWL
 
-    def dumps(self, element: YAMLRoot, schema: SchemaDefinition, iri=None):
+    This differs from rdf_dumper in that each edge in the linkml instance graph
+    may have a more complex OWL interpretation; for example:
+
+     - lists may be treat as unions, rather than conjunctions of triples
+     - linkml instances may be OWL classes
+        - edges from these instances may be treated as axiom types such as SubClassOf R some Y
+
+    Note that currently the OWL interpretation is "smuggled" into a model by way of special-syntax
+    comments. In future we will either have a formal mapping file or extend the mapping syntax
+
+    For context, see:
+    https://github.com/linkml/linkml/issues/267
+    """
+
+    def dumps(self, element: YAMLRoot, schema: SchemaDefinition, iri=None) -> str:
+        """
+        Dump a linkml instance tree as a function syntax OWL ontology string
+        """
         o = Ontology(schema.id)
         self.ontology = o
         self.schema = schema
@@ -39,24 +58,41 @@ class OWLDumper(Dumper):
         self.transform(element, schema)
         return str(doc)
 
-    def transform(self, element: YAMLRoot, schema: SchemaDefinition, is_element_an_object=True) -> Any:
+    def transform(self, element: YAMLRoot, schema: SchemaDefinition, is_element_an_object=True,
+                  is_element_an_owl_class=False) -> Any:
+        """
+        Recursively transform a LinkML element
+
+        Each field is introspected, and translated to an OWL axiom.
+        The field value is recursively transformed
+        """
         if element is None:
-            logging.error('NONE')
             return None
+        try:
+            meaning = element.meaning
+            return self._get_IRI_str(meaning)
+        except:
+            None
         if not self._instance_of_linkml_class(element):
-            #print(f'Atomic: {element}')
             # TODO: better way of detecting atoms
             if is_element_an_object:
                 # foreign key
                 return self._get_IRI_str(element)
+            elif isinstance(element, Uriorcurie):
+                return self._get_IRI_str(element)
+            elif isinstance(element, Uri):
+                return URIRef(element)
             else:
                 # literal
-                return element
+                return Literal(element)
         o = self.ontology
         python_type = type(element)
         #print(f'E={element }PT={python_type}')
         linkml_class_name = python_type.class_name
         c = schema.classes[linkml_class_name]
+        cls_interps = self._get_interpretations(c)
+        if Class.__name__ in cls_interps:
+            is_element_an_owl_class = True
         subj = None
         for k,v in vars(element).items():
             slot: SlotDefinition
@@ -92,7 +128,10 @@ class OWLDumper(Dumper):
                 tr_vals = [self.transform(v, schema, is_element_an_object=is_object_ref)]
 
             #print(f'Vals={tr_vals}')
-            axiomType = SubClassOf
+            if is_element_an_owl_class:
+                axiomType = SubClassOf
+            else:
+                axiomType = ClassAssertion
             parents = []
             for tr_val in tr_vals:
                 if tr_val is None:
@@ -104,7 +143,8 @@ class OWLDumper(Dumper):
                 if ObjectSomeValuesFrom.__name__ in interps:
                     parent = ObjectSomeValuesFrom(slot_uri, tr_val)
                     axiomType = SubClassOf
-                    #o.subClassOf(subj, parent)
+                elif SubClassOf.__name__ in interps:
+                    axiomType = SubClassOf
                 else:
                     axiomType = AnnotationAssertion
                 parents.append(parent)
@@ -115,6 +155,8 @@ class OWLDumper(Dumper):
             for parent in parents:
                 if axiomType == SubClassOf:
                     axiom = SubClassOf(subj, parent)
+                elif axiomType == ClassAssertion:
+                    axiom = ClassAssertion(parent, subj)
                 elif axiomType == ObjectPropertyAssertion:
                     axiom = ObjectPropertyAssertion(slot_uri, subj, parent)
                 elif axiomType == AnnotationAssertion:
@@ -141,10 +183,10 @@ class OWLDumper(Dumper):
                 return s
         logging.error(f'Did not find {field} in {cls.name} slots =  {cls.slots}')
 
-    def _get_interpretations(self, slot: SlotDefinition) -> Set[INTERPRETATION]:
+    def _get_interpretations(self, x: Definition) -> Set[INTERPRETATION]:
         interps = set()
         OWL_MARKER = 'OWL>>'
-        for c in slot.comments:
+        for c in x.comments:
             if c.startswith(OWL_MARKER):
                 n = c.replace(OWL_MARKER, '').strip()
                 interps.add(n)
