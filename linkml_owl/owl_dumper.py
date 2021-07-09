@@ -119,14 +119,13 @@ class OWLDumper(Dumper):
             is_disjunction = 'UnionOf' in interps
             is_object_ref = slot.range in self.schema.classes
 
-            # TODO: abstract this
             if isinstance(v, list):
-                tr_vals = [self.transform(x, schema, is_element_an_object=is_object_ref) for x in v]
+                input_vals = v
             elif isinstance(v, dict):
-                tr_vals = [self.transform(x, schema, is_element_an_object=is_object_ref) for x in v.values()]
+                input_vals = v.values()
             else:
-                tr_vals = [self.transform(v, schema, is_element_an_object=is_object_ref)]
-
+                input_vals = [v]
+            tr_vals = [self.transform(x, schema, is_element_an_object=is_object_ref) for x in input_vals]
             #print(f'Vals={tr_vals}')
             if is_element_an_owl_class:
                 axiomType = SubClassOf
