@@ -68,14 +68,17 @@ class OWLDumper(Dumper):
         for k, v in vars(element).items():
             slot: SlotDefinition
             slot = self._lookup_slot(c, k)
+            actual_slot = self._get_actual_slot(slot)
             if slot is None:
                 logging.error(f'No slot for {k}')
                 continue
-            if slot.identifier:
+            if slot.identifier or actual_slot.identifier:
                 continue
-            slot_uri = self._get_IRI_str(slot.slot_uri)
-            print(f'in {subj} {k} = {v} (URI={slot.slot_uri}) // slot = {slot.name}')
+            slot_uri = self._get_IRI_str(actual_slot.slot_uri)
+            print(f'in {subj} {k} = {v} (URI={actual_slot.slot_uri}) // slot = {slot.name}')
             interps = self._get_interpretations(slot)
+            if len(interps) == 0:
+                interps = self._get_interpretations(actual_slot)
             #print(f'Interps = {interps}')
             is_disjunction = 'UnionOf' in interps
             is_object_ref = slot.range in self.schema.classes
@@ -119,8 +122,6 @@ class OWLDumper(Dumper):
                 else:
                     raise Exception(f'Unknown: {axiomType}')
                 o.axioms.append(axiom)
-
-
         return subj
 
     def _instance_of_linkml_class(self, v) -> bool:
@@ -161,7 +162,17 @@ class OWLDumper(Dumper):
                 logging.error(f'Undeclared: {pfx} -- just using {id}')
         return id
 
-
-
-
-
+    def _get_actual_slot(self, slot: SlotDefinition) -> SlotDefinition:
+        """
+        See
+        https://github.com/linkml/linkml/issues/270
+        for context
+        """
+        alias = slot.alias
+        if alias in self.schema.slots:
+            actual_slot = self.schema.slots[alias]
+        else:
+            actual_slot = slot
+        if actual_slot.name != slot.name:
+            logging.warning(f'Using actual slot uri: {actual_slot.name} >> {slot.name}')
+        return actual_slot
