@@ -1,0 +1,18 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+linkml = ">=1.0.1"
+linkml-runtime = "*"
+linkml-model = "*"
+funowl = "*"
+
+[dev-packages]
+tox = "*"
+
+[pipenv]
+allow_prereleases = true
+
+

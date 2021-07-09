@@ -1,0 +1,311 @@
+id: https://w3id.org/biodatamodels/chromoschema
+name: ChromoSchema
+description: |-
+  Schema for representing Chromosomes and Chromosomal Regions.
+
+  Objects created using this schema can be directly worked with in YAML/Python,
+  Additionally they can be translated to OWL
+imports:
+  - linkml:types
+prefixes:
+  linkml: https://w3id.org/linkml/
+  biolink: https://w3id.org/biolink/vocab/
+  chromoschema: https://w3id.org/biodatamodels/chromoschema/
+  gff: https://w3id.org/biodatamodels/gff/
+  faldo: http://biohackathon.org/resource/faldo#
+  CHR: http://purl.obolibrary.org/obo/CHR_
+  SO: http://purl.obolibrary.org/obo/SO_
+  GO: http://purl.obolibrary.org/obo/GO_
+  BFO: http://purl.obolibrary.org/obo/BFO_
+  RO: http://purl.obolibrary.org/obo/RO_
+  NCBITaxon: http://purl.obolibrary.org/obo/NCBITaxon_
+  edam: http://edamontology.org/
+  refseq: http://identifiers.org/refseq/
+  insdc: http://identifiers.org/insdc/
+  ensembl: http://identifiers.org/ensembl/
+  OIO: http://www.geneontology.org/formats/oboInOwl#
+  skos: http://www.w3.org/2004/02/skos/core#
+
+default_prefix: chromoschema
+default_curi_maps:
+  - semweb_context
+
+classes:
+  ChromosomePartCollection:
+    attributes:
+      name:
+        required: false
+      has:
+        range: ChromosomePart
+        multivalued: true
+        inlined: true
+        slot_uri: dcterms:hasPart
+      genomes:
+        range: Genome
+        multivalued: true
+        inlined: true
+        slot_uri: dcterms:hasPart
+      taxons:
+        range: OrganismTaxon
+        multivalued: true
+        inlined: true
+        slot_uri: dcterms:hasPart
+  ChromosomePart:
+    description: |-
+      A Chromosome or a part of a chromosome (includes whole chromosomes, arms, and bands)
+    comments:
+      - |-
+        OWL Notes: when translated to OWL, instances of this class will be treated as
+        OWL classes, with the superclass determined by the type field
+    slots:
+      - id
+      - band_descriptor
+      - chromosome_name
+      - build
+      - name
+      - type
+      - somal_type
+      - sex_chromosome_type
+      - cell_location
+      - taxon
+      - start
+      - end
+      - children
+      - parent
+      - exact_mappings
+      - exact_synonyms
+      - broad_synonyms
+    slot_usage:
+      id:
+        pattern: '^CHR:\\S+$'
+  Genome:
+    description: |-
+      Represents a sequenced genome, one per species.
+      Each genome can be associated with one or more builds
+    slots:
+      - id
+      - name
+      - taxon
+      - build
+      - previous_builds
+    slot_usage:
+      id:
+        description: E.g. mm, hg
+        pattern: '^\\w+$'
+      name:
+        description: E.g. Homo sapiens
+        required: true
+      build:
+        description: the current genome build for this genome
+  GenomeBuild:
+    description: |-
+      Represents a specific build of a sequenced genome
+    close_mappings:
+      - edam:operation_0525
+    slots:
+      - id
+      - name
+    slot_usage:
+      id:
+        description: E.g. mm10
+  OrganismTaxon:
+    description: >-
+      Represents a species, e.g. Homo sapiens
+    class_uri: biolink:OrganismTaxon
+    slots:
+      - id
+      - name
+      - common_name
+
+slots:
+  id:
+    identifier: true
+    pattern: '^CHR:\\S+$'
+    required: true
+    description: >-
+      A unique identifier
+    comments:
+      - will be of form CHR:....
+  band_descriptor:
+    range: BandDescriptor
+    description: >-
+      A string representing a chromosome band, e.g. p31.1. This is local to the chromosome,
+      so the chromosome is not included in the descriptor
+    comments:
+      - for a chromosome, this is the empty string
+      - for a chromosome, arm this is a single leter, e.g. p or q
+      - >-
+        for common species, the usual structure is the band name followed by dot delimited
+        numbers, e.g. p31.1. However, different species have different systems
+  chromosome_name:
+    range: ChromosomeNameType
+    description: >-
+      E.g. chr1, chrM. Some species like C elegans may use roman numerals
+  build:
+    description: >-
+      A descriptor for the genome and build number.
+      E.g hg38
+    range: GenomeBuild
+    slot_uri: biolink:genome_build
+    exact_mappings:
+      - gff:genome_build
+      - edam:data_2340
+  previous_builds:
+    description: >-
+      List of previous non-current builds
+    range: GenomeBuild
+    multivalued: true
+  name:
+    range: LabelType
+    slot_uri: rdfs:label
+    description: >-
+      Unique human-readable label for the entity
+    string_serialization: "{chromosome_name}{band_descriptor}({taxon.name})"
+  common_name:
+    range: LabelType
+    description: >-
+      E.g. human, mouse
+    slot_uri: OIO:hasExactSynonym
+  type:
+    range: EntityType
+    slot_uri: rdf:type
+  somal_type:
+    range: AutosomeVsSexChromosome
+    description: indicates whether this is a sex-chromosome or not
+  sex_chromosome_type:
+    range: SexChromosomeType
+    description: >-
+      Only populated for sex chromosomes. Indicates the chromosome type.
+      This is X or Y in mammals, W or Z in avians
+  cell_location:
+    range: LocationType
+    slot_uri: BFO:0000050
+    description: >-
+      which organelle the chromosome is associated with. For eukaryotes this is mitochondrion
+      or nucleus. For prokaryotes the distinction does not make sense
+    comments:
+      - OWL>> ObjectSomeValuesFrom
+  taxon:
+    description: >-
+      The taxon to which the chromosome part belongs. Always NCBITaxon.
+    range: TaxonIdentifier
+    required: false
+    slot_uri: RO:0002162
+    comments:
+      - OWL>> ObjectSomeValuesFrom
+  start:
+    description: >-
+      Start location of the chromosomal part.
+      Note we also include this for whole chromosomes - start will be zero
+    range: integer
+    slot_uri: gff:start
+  end:
+    description: >-
+      Start location of the chromosomal part.
+      Note we also include this for whole chromosomes - end will be rightmost point
+    range: integer
+    slot_uri: gff:end
+  strand:
+    range: StrandType
+    slot_uri: gff:strand
+    exact_mappings:
+      - biolink:strand
+    required: true
+  children:
+    description: >-
+      Direct parts of this chromosome. zero to many.
+    range: ChromosomePart
+    multivalued: true
+    slot_uri: BFO:0000051
+  parent:
+    description: >-
+      Direct chromosomal part which this is a part of. The partonomy forms a tree so this is
+      always zero or one.
+      Different species have different rules but typically the partonomy will be something like
+      1p31.1 -> 1p31 -> 1p3 -> 1p -> 1
+    range: ChromosomePart
+    slot_uri: BFO:0000050
+    comments:
+      - OWL>> ObjectSomeValuesFrom
+  exact_synonyms:
+    multivalued: true
+    slot_uri: OIO:hasExactSynonym
+  broad_synonyms:
+    multivalued: true
+    slot_uri: OIO:hasBroadSynonym
+  exact_mappings:
+    description: >-
+      For a whole chromosome, this may be an assembled sequence in a database such as genbank or ensembl
+    multivalued: true
+    range: uriorcurie
+    slot_uri: skos:exactMatch
+  download_url:
+    range: uri
+
+enums:
+  EntityType:
+    description: >-
+      SO or GO type
+    todos:
+      - decide SO vs GO
+    permissible_values:
+      chromosome:
+        meaning: GO:0005694
+        see_also:
+          - SO:0000340
+      chromosome_part:
+        meaning: GO:0098687
+        see_also:
+          - SO:0000830
+  AutosomeVsSexChromosome:
+    description: >-
+      sex or autosome
+    permissible_values:
+      sex_chromosome:
+        meaning: GO:0000803
+      autosome:
+        meaning: GO:0030849
+  SexChromosomeType:
+    description: >-
+      what type of sex chromosome
+    permissible_values:
+      X:
+        meaning: GO:0000805
+      Y:
+        meaning: GO:0000806
+      W:
+        meaning: GO:0000804
+      Z:
+        meaning: GO:0000807
+  LocationType:
+    description: >-
+      where in the cell
+    permissible_values:
+      nucleus:
+        meaning: GO:0005634
+      mitochondrion:
+        meaning: GO:0005739
+  ChromatinType:
+    permissible_values:
+      heterochromatin:
+        meaning: GO:0000792
+      euchromatin:
+        meaning: GO:0000791
+
+types:
+  TaxonIdentifier:
+    typeof: string
+  BandDescriptor:
+    typeof: string
+    description: >-
+      e.g. p, p1, p1.1, ...
+  ChromosomeNameType:
+    typeof: string
+    description: E.g. chr1
+  StrandType:
+    typeof: integer
+    description: 0, 1, or -1
+  LabelType:
+    typeof: string
+    description: >-
+      A string that provides a human-readable name for an entity

@@ -1,0 +1,73 @@
+name: test hg38
+has:
+  CHR:9606-chr1p36.33:
+    id: CHR:9606-chr1p36.33
+    band_descriptor: p36.33
+    chromosome_name: chr1
+    build: hg38
+    type: chromosome_part
+    name: 1p36.33 (Human)
+    taxon: NCBITaxon:9606
+    start: 0
+    end: 2300000
+    parent: CHR:9606-chr1p36.3
+  CHR:9606-chr1p36.3:
+    id: CHR:9606-chr1p36.3
+    band_descriptor: p36.3
+    chromosome_name: chr1
+    build: hg38
+    name: 1p36.3 (Human)
+    type: chromosome_part
+    taxon: NCBITaxon:9606
+    start: 0
+    end: 7100000
+    children:
+    - CHR:9606-chr1p36.33
+    - CHR:9606-chr1p36.32
+    - CHR:9606-chr1p36.31
+    parent: CHR:9606-chr1p36
+taxons:
+  NCBITaxon:10090:
+    id: NCBITaxon:10090
+    name: Mus musculus
+  NCBITaxon:9606:
+    id: NCBITaxon:9606
+    name: Homo sapiens
+  NCBITaxon:7227:
+    id: NCBITaxon:7227
+    name: Drosophila melanogaster
+  NCBITaxon:7955:
+    id: NCBITaxon:7955
+    name: Danio rerio
+  NCBITaxon:10116:
+    id: NCBITaxon:10116
+    name: Rattus norvegicus
+  NCBITaxon:6239:
+    id: NCBITaxon:6239
+    name: Caenorhabditis elegans
+genomes:
+  mm:
+    id: mm
+    name: Mouse
+    taxon: NCBITaxon:10090
+  hg:
+    id: hg
+    name: Human
+    taxon: NCBITaxon:9606
+    build: hg38
+  dm:
+    id: dm
+    name: Drosophila melanogaster
+    taxon: NCBITaxon:7227
+  danRer:
+    id: danRer
+    name: Danio rerio
+    taxon: NCBITaxon:7955
+  rn:
+    id: rn
+    name: Rat
+    taxon: NCBITaxon:10116
+  ce:
+    id: ce
+    name: C elegans
+    taxon: NCBITaxon:6239
