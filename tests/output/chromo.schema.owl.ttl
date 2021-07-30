@@ -12,7 +12,7 @@
 
 Objects created using this schema can be directly worked with in YAML/Python,
 Additionally they can be translated to OWL""" ;
-    linkml:generation_date "2021-07-09 13:37" ;
+    linkml:generation_date "2021-07-10 00:09" ;
     linkml:metamodel_version "1.7.0" ;
     linkml:source_file "chromo.yaml" ;
     linkml:source_file_date "Fri Jul  9 12:40:47 2021" ;
@@ -22,18 +22,18 @@ Additionally they can be translated to OWL""" ;
         linkml:ClassDefinition ;
     rdfs:label "ChromosomePartCollection" ;
     rdfs:subClassOf [ a owl:Restriction ;
-            owl:allValuesFrom <https://w3id.org/biodatamodels/chromoschema/Genome> ;
-            owl:onProperty linkml:genomes ],
-        [ a owl:Restriction ;
-            owl:allValuesFrom <https://w3id.org/biodatamodels/chromoschema/OrganismTaxon> ;
-            owl:onProperty linkml:taxons ],
+            owl:allValuesFrom <https://w3id.org/biodatamodels/chromoschema/ChromosomePart> ;
+            owl:onProperty linkml:has ],
         [ a owl:Restriction ;
             owl:maxQualifiedCardinality 1 ;
             owl:onClass linkml:String ;
             owl:onProperty <https://w3id.org/biodatamodels/chromoschema/name> ],
         [ a owl:Restriction ;
-            owl:allValuesFrom <https://w3id.org/biodatamodels/chromoschema/ChromosomePart> ;
-            owl:onProperty linkml:has ] .
+            owl:allValuesFrom <https://w3id.org/biodatamodels/chromoschema/Genome> ;
+            owl:onProperty linkml:genomes ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom <https://w3id.org/biodatamodels/chromoschema/OrganismTaxon> ;
+            owl:onProperty linkml:taxons ] .
 
 <https://w3id.org/biodatamodels/chromoschema/download_url> a owl:ObjectProperty,
         linkml:SlotDefinition ;
@@ -378,16 +378,16 @@ linkml:Uriorcurie a owl:Class,
             owl:onClass <https://w3id.org/biodatamodels/chromoschema/TaxonIdentifier> ;
             owl:onProperty <https://w3id.org/biodatamodels/chromoschema/taxon> ],
         [ a owl:Restriction ;
+            owl:allValuesFrom <https://w3id.org/biodatamodels/chromoschema/GenomeBuild> ;
+            owl:onProperty <https://w3id.org/biodatamodels/chromoschema/previous_builds> ],
+        [ a owl:Restriction ;
             owl:onClass <https://w3id.org/biodatamodels/chromoschema/LabelType> ;
             owl:onProperty <https://w3id.org/biodatamodels/chromoschema/name> ;
             owl:qualifiedCardinality 1 ],
         [ a owl:Restriction ;
             owl:onClass linkml:String ;
             owl:onProperty <https://w3id.org/biodatamodels/chromoschema/id> ;
-            owl:qualifiedCardinality 1 ],
-        [ a owl:Restriction ;
-            owl:allValuesFrom <https://w3id.org/biodatamodels/chromoschema/GenomeBuild> ;
-            owl:onProperty <https://w3id.org/biodatamodels/chromoschema/previous_builds> ] ;
+            owl:qualifiedCardinality 1 ] ;
     skos:definition """Represents a sequenced genome, one per species.
 Each genome can be associated with one or more builds""" .
 
@@ -414,25 +414,36 @@ linkml:Integer a owl:Class,
         linkml:ClassDefinition ;
     rdfs:label "ChromosomePart" ;
     rdfs:subClassOf [ a owl:Restriction ;
-            owl:maxQualifiedCardinality 1 ;
-            owl:onClass <https://w3id.org/biodatamodels/chromoschema/TaxonIdentifier> ;
-            owl:onProperty <https://w3id.org/biodatamodels/chromoschema/taxon> ],
-        [ a owl:Restriction ;
-            owl:maxQualifiedCardinality 1 ;
-            owl:onClass <https://w3id.org/biodatamodels/chromoschema/ChromosomePart> ;
-            owl:onProperty <https://w3id.org/biodatamodels/chromoschema/parent> ],
+            owl:allValuesFrom linkml:Uriorcurie ;
+            owl:onProperty <https://w3id.org/biodatamodels/chromoschema/exact_mappings> ],
         [ a owl:Restriction ;
             owl:maxQualifiedCardinality 1 ;
             owl:onClass <http://UNKNOWN.org/EntityType> ;
             owl:onProperty <https://w3id.org/biodatamodels/chromoschema/type> ],
         [ a owl:Restriction ;
             owl:maxQualifiedCardinality 1 ;
-            owl:onClass <https://w3id.org/biodatamodels/chromoschema/LabelType> ;
-            owl:onProperty <https://w3id.org/biodatamodels/chromoschema/name> ],
+            owl:onClass linkml:Integer ;
+            owl:onProperty <https://w3id.org/biodatamodels/chromoschema/end> ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onClass <https://w3id.org/biodatamodels/chromoschema/TaxonIdentifier> ;
+            owl:onProperty <https://w3id.org/biodatamodels/chromoschema/taxon> ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onClass <https://w3id.org/biodatamodels/chromoschema/BandDescriptor> ;
+            owl:onProperty <https://w3id.org/biodatamodels/chromoschema/band_descriptor> ],
         [ a owl:Restriction ;
             owl:maxQualifiedCardinality 1 ;
             owl:onClass <http://UNKNOWN.org/AutosomeVsSexChromosome> ;
             owl:onProperty <https://w3id.org/biodatamodels/chromoschema/somal_type> ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onClass <https://w3id.org/biodatamodels/chromoschema/GenomeBuild> ;
+            owl:onProperty <https://w3id.org/biodatamodels/chromoschema/build> ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onClass linkml:Integer ;
+            owl:onProperty <https://w3id.org/biodatamodels/chromoschema/start> ],
         [ a owl:Restriction ;
             owl:maxQualifiedCardinality 1 ;
             owl:onClass <http://UNKNOWN.org/LocationType> ;
@@ -441,9 +452,20 @@ linkml:Integer a owl:Class,
             owl:allValuesFrom linkml:String ;
             owl:onProperty <https://w3id.org/biodatamodels/chromoschema/exact_synonyms> ],
         [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onClass <https://w3id.org/biodatamodels/chromoschema/ChromosomePart> ;
+            owl:onProperty <https://w3id.org/biodatamodels/chromoschema/parent> ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom <https://w3id.org/biodatamodels/chromoschema/ChromosomePart> ;
+            owl:onProperty <https://w3id.org/biodatamodels/chromoschema/children> ],
+        [ a owl:Restriction ;
             owl:onClass linkml:String ;
             owl:onProperty <https://w3id.org/biodatamodels/chromoschema/id> ;
             owl:qualifiedCardinality 1 ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onClass <https://w3id.org/biodatamodels/chromoschema/LabelType> ;
+            owl:onProperty <https://w3id.org/biodatamodels/chromoschema/name> ],
         [ a owl:Restriction ;
             owl:maxQualifiedCardinality 1 ;
             owl:onClass <http://UNKNOWN.org/SexChromosomeType> ;
@@ -453,30 +475,8 @@ linkml:Integer a owl:Class,
             owl:onClass <https://w3id.org/biodatamodels/chromoschema/ChromosomeNameType> ;
             owl:onProperty <https://w3id.org/biodatamodels/chromoschema/chromosome_name> ],
         [ a owl:Restriction ;
-            owl:allValuesFrom linkml:Uriorcurie ;
-            owl:onProperty <https://w3id.org/biodatamodels/chromoschema/exact_mappings> ],
-        [ a owl:Restriction ;
-            owl:maxQualifiedCardinality 1 ;
-            owl:onClass <https://w3id.org/biodatamodels/chromoschema/GenomeBuild> ;
-            owl:onProperty <https://w3id.org/biodatamodels/chromoschema/build> ],
-        [ a owl:Restriction ;
-            owl:maxQualifiedCardinality 1 ;
-            owl:onClass linkml:Integer ;
-            owl:onProperty <https://w3id.org/biodatamodels/chromoschema/end> ],
-        [ a owl:Restriction ;
-            owl:maxQualifiedCardinality 1 ;
-            owl:onClass <https://w3id.org/biodatamodels/chromoschema/BandDescriptor> ;
-            owl:onProperty <https://w3id.org/biodatamodels/chromoschema/band_descriptor> ],
-        [ a owl:Restriction ;
             owl:allValuesFrom linkml:String ;
-            owl:onProperty <https://w3id.org/biodatamodels/chromoschema/broad_synonyms> ],
-        [ a owl:Restriction ;
-            owl:maxQualifiedCardinality 1 ;
-            owl:onClass linkml:Integer ;
-            owl:onProperty <https://w3id.org/biodatamodels/chromoschema/start> ],
-        [ a owl:Restriction ;
-            owl:allValuesFrom <https://w3id.org/biodatamodels/chromoschema/ChromosomePart> ;
-            owl:onProperty <https://w3id.org/biodatamodels/chromoschema/children> ] ;
+            owl:onProperty <https://w3id.org/biodatamodels/chromoschema/broad_synonyms> ] ;
     skos:definition "A Chromosome or a part of a chromosome (includes whole chromosomes, arms, and bands)" ;
     skos:note """OWL Notes: when translated to OWL, instances of this class will be treated as
 OWL classes, with the superclass determined by the type field""",
@@ -486,13 +486,13 @@ OWL classes, with the superclass determined by the type field""",
         linkml:ClassDefinition ;
     rdfs:label "GenomeBuild" ;
     rdfs:subClassOf [ a owl:Restriction ;
-            owl:onClass linkml:String ;
-            owl:onProperty <https://w3id.org/biodatamodels/chromoschema/id> ;
-            owl:qualifiedCardinality 1 ],
-        [ a owl:Restriction ;
             owl:maxQualifiedCardinality 1 ;
             owl:onClass <https://w3id.org/biodatamodels/chromoschema/LabelType> ;
-            owl:onProperty <https://w3id.org/biodatamodels/chromoschema/name> ] ;
+            owl:onProperty <https://w3id.org/biodatamodels/chromoschema/name> ],
+        [ a owl:Restriction ;
+            owl:onClass linkml:String ;
+            owl:onProperty <https://w3id.org/biodatamodels/chromoschema/id> ;
+            owl:qualifiedCardinality 1 ] ;
     skos:closeMatch <http://edamontology.org/operation_0525> ;
     skos:definition "Represents a specific build of a sequenced genome" .
 

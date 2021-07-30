@@ -2,6 +2,7 @@ import json
 from typing import Optional, List, Set, Any
 from dataclasses import dataclass
 import logging
+import click
 
 from rdflib import URIRef
 
@@ -46,7 +47,7 @@ class OWLDumper(Dumper):
     https://github.com/linkml/linkml/issues/267
     """
 
-    def dumps(self, element: YAMLRoot, schema: SchemaDefinition, iri=None) -> str:
+    def to_ontology_document(self, element: YAMLRoot, schema: SchemaDefinition, iri=None) -> str:
         """
         Dump a linkml instance tree as a function syntax OWL ontology string
         """
@@ -56,6 +57,13 @@ class OWLDumper(Dumper):
         #o.annotation(RDFS.label, name)
         doc = OntologyDocument(iri, o)
         self.transform(element, schema)
+        return doc
+
+    def dumps(self, element: YAMLRoot, schema: SchemaDefinition, iri=None) -> str:
+        """
+        Dump a linkml instance tree as a function syntax OWL ontology string
+        """
+        doc = to_ontology_document(element, schema, iri=iri)
         return str(doc)
 
     def transform(self, element: YAMLRoot, schema: SchemaDefinition, is_element_an_object=True,
@@ -217,3 +225,22 @@ class OWLDumper(Dumper):
         if actual_slot.name != slot.name:
             logging.warning(f'Using actual slot uri: {actual_slot.name} >> {slot.name}')
         return actual_slot
+
+@click.option('-s', '--schema-file', required=True, help="""
+Path to LinkML schema
+""")
+@click.command()
+def cli(inputfile: str, schema_file: str, raw: bool, **args):
+    """
+    Dump LinkML instance data as OWL
+    """
+    schema = YAMLGenerator(schema_file).schema
+    element = yaml_loader.load(inputfile)
+    dumper = OWLDumper()
+    ont = dumper.dumps(collection, schema)
+    with open(OWL_OUT, 'w') as stream:
+        stream.write(str(ont))
+
+
+if __name__ == '__main__':
+    cli()
