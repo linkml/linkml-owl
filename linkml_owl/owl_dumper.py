@@ -1,8 +1,10 @@
 import json
-from typing import Optional, List, Set, Any
-from dataclasses import dataclass
+from collections import defaultdict
+from typing import Optional, List, Set, Any, Union, Dict, Tuple
+from dataclasses import dataclass, field
 import logging
 import click
+from linkml_runtime import SchemaView
 
 from rdflib import URIRef
 
@@ -11,12 +13,12 @@ from linkml_runtime.linkml_model.meta import ClassDefinition, SchemaDefinition, 
 from linkml_runtime.utils.formatutils import underscore, camelcase
 from linkml_runtime.linkml_model.types import Uri, Uriorcurie
 
-from funowl import OntologyDocument, Ontology, IRI, ObjectSomeValuesFrom,\
-    Literal,\
-    ObjectUnionOf, SubClassOf, ClassAssertion,\
-    Class, Individual,\
-    AnnotationAssertion, ObjectPropertyAssertion,\
-    Prefix, AnonymousIndividual
+from funowl import OntologyDocument, Ontology, IRI, ObjectSomeValuesFrom, \
+    Literal, \
+    ObjectUnionOf, SubClassOf, ClassAssertion, \
+    Class, Individual, \
+    AnnotationAssertion, ObjectPropertyAssertion, \
+    Prefix, AnonymousIndividual, ObjectAllValuesFrom, EquivalentClasses, ObjectIntersectionOf, ClassExpression
 from pyld.jsonld import expand
 from rdflib import Graph, BNode
 from rdflib.namespace import RDF, RDFS, OWL
@@ -28,6 +30,26 @@ from linkml_runtime.utils.context_utils import CONTEXTS_PARAM_TYPE, CONTEXT_TYPE
 from linkml_runtime.utils.yamlutils import YAMLRoot
 
 INTERPRETATION = str
+AXIOM_TYPE_NAME = str
+OPERAND = str  ## e.g IntersectionOf, UnionOf
+
+LEVEL = int
+OP_KEY = Tuple[LEVEL, OPERAND, AXIOM_TYPE_NAME]
+
+
+@dataclass
+class EntityAxiomIndex:
+    operand_list_index: Dict[OP_KEY, List[ClassExpression]] = field(default_factory=lambda: defaultdict(list))
+
+    def add_operand(self, key: OP_KEY, op: ClassExpression):
+        if key not in self.operand_list_index:
+            self.operand_list_index[key] = []
+        self.operand_list_index[key].append(op)
+
+    def add_operands(self, key: OP_KEY, ops: List[ClassExpression]):
+        for op in ops:
+            self.add_operand(key, op)
+
 
 class OWLDumper(Dumper):
     """
@@ -47,16 +69,21 @@ class OWLDumper(Dumper):
     https://github.com/linkml/linkml/issues/267
     """
 
-    def to_ontology_document(self, element: YAMLRoot, schema: SchemaDefinition, iri=None) -> str:
+    def to_ontology_document(self, element: Union[YAMLRoot, List[YAMLRoot]], schema: SchemaDefinition, iri=None) -> str:
         """
         Dump a linkml instance tree as a function syntax OWL ontology string
         """
         o = Ontology(schema.id)
         self.ontology = o
         self.schema = schema
+        self.schemaview = SchemaView(schema)
         #o.annotation(RDFS.label, name)
         doc = OntologyDocument(iri, o)
-        self.transform(element, schema)
+        if isinstance(element, list):
+            for e1 in element:
+                self.transform(e1, schema)
+        else:
+            self.transform(element, schema)
         return doc
 
     def dumps(self, element: YAMLRoot, schema: SchemaDefinition, iri=None) -> str:
@@ -102,9 +129,14 @@ class OWLDumper(Dumper):
         if Class.__name__ in cls_interps:
             is_element_an_owl_class = True
         subj = None
-        for k,v in vars(element).items():
+        conjunction_groups = []
+        disjunction_groups = []
+        eai = EntityAxiomIndex()
+        for k, v in vars(element).items():
             slot: SlotDefinition
             slot = self._lookup_slot(c, k)
+            if slot is None:
+                raise ValueError(f'Lookup slot in {c.name} failed for {k}')
             if slot.identifier:
                 subj = URIRef(self._get_IRI_str(v))
         if subj is None:
@@ -121,10 +153,12 @@ class OWLDumper(Dumper):
             slot_uri = self._get_IRI_str(actual_slot.slot_uri)
             print(f'in {subj} {k} = {v} (URI={actual_slot.slot_uri}) // slot = {slot.name}')
             interps = self._get_interpretations(slot)
+            print(f'INTERPS={interps}')
             if len(interps) == 0:
                 interps = self._get_interpretations(actual_slot)
-            #print(f'Interps = {interps}')
             is_disjunction = 'UnionOf' in interps
+            is_conjunction = 'IntersectionOf' in interps
+            is_equiv = 'EquivalentTo' in interps  ## TODO: used?
             is_object_ref = slot.range in self.schema.classes
 
             if isinstance(v, list):
@@ -134,13 +168,18 @@ class OWLDumper(Dumper):
             else:
                 input_vals = [v]
             tr_vals = [self.transform(x, schema, is_element_an_object=is_object_ref) for x in input_vals]
-            #print(f'Vals={tr_vals}')
+            print(f'TR Vals={tr_vals}')
             if is_element_an_owl_class:
-                axiomType = SubClassOf
+                # TODO: is this used?
+                if is_equiv:
+                    axiomType = EquivalentClasses
+                else:
+                    axiomType = SubClassOf
             else:
-                axiomType = ClassAssertion
+                axiomType = None
             parents = []
             for tr_val in tr_vals:
+                print(f'  TR_VAL = {tr_val}')
                 if tr_val is None:
                     continue
                 if slot.range in self.schema.classes:
@@ -150,18 +189,47 @@ class OWLDumper(Dumper):
                 if ObjectSomeValuesFrom.__name__ in interps:
                     parent = ObjectSomeValuesFrom(slot_uri, tr_val)
                     axiomType = SubClassOf
+                elif ObjectAllValuesFrom.__name__ in interps:
+                    parent = ObjectAllValuesFrom(slot_uri, tr_val)
+                    axiomType = SubClassOf
                 elif SubClassOf.__name__ in interps:
                     axiomType = SubClassOf
+                elif EquivalentClasses.__name__ in interps:
+                    axiomType = EquivalentClasses
                 else:
                     axiomType = AnnotationAssertion
                 parents.append(parent)
+            print(f'AXIOM TYPE = {axiomType}')
+            # TODO: delay conj/disj
             if is_disjunction:
                 # translate the filler list to a single entry that is a disjunction
-                disj = ObjectUnionOf(parents)
-                parents = [disj]
+                disj = ObjectUnionOf(*parents)
+                #parents = [disj]
+                if len(disjunction_groups) == 0:
+                    disjunction_groups = [[]]
+                disjunction_groups[0] += parents
+                level = 0
+                eai.add_operands((level, axiomType.__name__, ObjectUnionOf.__name__), parents)
+                parents = []
+            if is_conjunction:
+                # translate the filler list to a single entry that is a conjunction
+                conj = ObjectIntersectionOf(*parents)
+                #parents = [conj]
+                if len(conjunction_groups) == 0:
+                    conjunction_groups = [[]]
+                conjunction_groups[0] += parents
+                level = 0
+                eai.add_operands((level, axiomType.__name__, ObjectIntersectionOf.__name__), parents)
+                parents = []
             for parent in parents:
                 if axiomType == SubClassOf:
-                    axiom = SubClassOf(subj, parent)
+                    print(f'type(subj) = {type(subj)} // {subj}')
+                    if isinstance(subj, AnonymousIndividual):
+                        axiom = None
+                    else:
+                        axiom = SubClassOf(subj, parent)
+                elif axiomType == EquivalentClasses:
+                    axiom = EquivalentClasses(subj, parent)
                 elif axiomType == ClassAssertion:
                     axiom = ClassAssertion(parent, subj)
                 elif axiomType == ObjectPropertyAssertion:
@@ -170,7 +238,30 @@ class OWLDumper(Dumper):
                     axiom = AnnotationAssertion(slot_uri, subj, parent)
                 else:
                     raise Exception(f'Unknown: {axiomType}')
-                o.axioms.append(axiom)
+                if axiom is not None:
+                    o.axioms.append(axiom)
+        #for operands in conjunction_groups:
+        #    o.axioms.append(EquivalentClasses(subj, *operands))
+        #for operands in disjunction_groups:
+        #    o.axioms.append(ObjectUnionOf(subj, *operands))
+        for op_key, operands in eai.operand_list_index.items():
+            _, interp, operator = op_key
+            print(f'EAI {subj}: {interp} => {operator} over {operands}')
+            if operator == ObjectUnionOf.__name__:
+                expr = ObjectUnionOf(*operands)
+            elif operator == ObjectIntersectionOf.__name__:
+                expr = ObjectIntersectionOf(*operands)
+            else:
+                raise ValueError(f'Cannot handle: {operator}')
+            if interp == EquivalentClasses.__name__:
+                axiom = EquivalentClasses(subj, expr)
+            elif interp == SubClassOf.__name__:
+                axiom = SubClassOf(subj, expr)
+            else:
+                raise ValueError(f'Not handled: {interp}')
+            o.axioms.append(axiom)
+        #if isinstance(subj, AnonymousIndividual):
+        #  TODO: nesting
         return subj
 
     def _instance_of_linkml_class(self, v) -> bool:
@@ -180,15 +271,22 @@ class OWLDumper(Dumper):
         except:
             return False
 
-    def _lookup_slot(self, cls: ClassDefinition, field: str):
-        for sn in cls.slots:
-            s: SlotDefinition
-            s = self.schema.slots[sn]
+    def _lookup_slot(self, cls: ClassDefinition, field: str) -> SlotDefinition:
+        matching_slot = None
+        for s in self.schemaview.class_induced_slots(cls.name):
             if underscore(s.name) == field:
-                return s
+                matching_slot = s
+                break
             if s.alias and underscore(s.alias) == field:
-                return s
-        logging.error(f'Did not find {field} in {cls.name} slots =  {cls.slots}')
+                matching_slot = s
+                break
+        if matching_slot:
+            if not matching_slot.slot_uri:
+                uri = self.schemaview.get_uri(matching_slot)
+                matching_slot.slot_uri = uri
+            return matching_slot
+        else:
+            logging.error(f'Did not find {field} in {cls.name} slots =  {cls.slots}')
 
     def _get_interpretations(self, x: Definition) -> Set[INTERPRETATION]:
         interps = set()
@@ -197,9 +295,15 @@ class OWLDumper(Dumper):
             if c.startswith(OWL_MARKER):
                 n = c.replace(OWL_MARKER, '').strip()
                 interps.add(n)
+        if 'owl' in x.annotations:
+            interps.update([s.strip() for s in x.annotations['owl'].value.split(',')])
         return interps
 
     def _get_IRI_str(self, id: str) -> str:
+        uri = self.schemaview.expand_curie(id)
+        if uri:
+            return uri
+        # CHECK IF WE NEED LEGACY CODE BELOW; TODO
         if id.startswith('http'):
             return id
         parts = id.split(':')

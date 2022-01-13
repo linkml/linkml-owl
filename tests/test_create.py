@@ -27,7 +27,13 @@ OWLSCHEMA_OUT = os.path.join(OUTPUT_DIR, 'chromo.schema.owl.ttl')
 class TestCreate(unittest.TestCase):
     """A test case for create tests."""
 
-    def test_create(self):
+    def test_create_ontology(self):
+        """
+        Test creation of an OWL TBox
+
+        Uses monochrom schema as guiding templates, and
+        chrosomome data in yaml as source for classes
+        """
         yd = YAMLGenerator(SCHEMA_IN)
         schema = yd.schema
         with open(OWLSCHEMA_OUT, 'w') as stream:

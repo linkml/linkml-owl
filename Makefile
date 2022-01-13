@@ -1,2 +1,7 @@
+RUN = pipenv run
+
 test:
-	pipenv run python -m unittest tests/test_*.py
+	$(RUN) python -m unittest tests/test_*.py
+
+tests/model/%.py: tests/model/%.yaml
+	$(RUN) gen-python $< > $@.tmp && mv $@.tmp $@
