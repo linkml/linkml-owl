@@ -1,5 +1,7 @@
 RUN = pipenv run
 
+all: EXAMPLES.md test
+
 test:
 	$(RUN) python -m unittest tests/test_*.py
 

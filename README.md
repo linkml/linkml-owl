@@ -70,6 +70,27 @@ Although LinkML is robust and stable, LinkML-OWL is alpha software and incomplet
  * robot-templates
  * ottr
 
+For most purposes, these frameworks are also simpler and less
+overhead, they treat ontology generation as a *string templating*
+problem, and the emphasis is on the generation of axioms from
+templates over formal descriptions of the source input file.
+
+In contrast, linkml-owl leverages the linkml framework for rich
+modeling of the source data structures used to generate the ontology,
+in particular:
+
+ * Clear computable description of which columns are required, which columns are multivalued etc
+ * Ability to use arbitrarily nested JSON trees or RDF graphs as input
+ * Use of [semantic enumerations](https://linkml.io/linkml/intro/tutorial06.html)
+    - for example, a field value may be restricted to two ontology terms such as "off" or "on"
+ * Translation of source schema to other formalisms such as JSON-Schema, JSON-LD Contexts, shape languages, SQL, ...
+ * Flexible validation of source input files leveraging any combination of JSON-Schema, SHACL, or ShEx
+ * Generation of markdown documentation from source schemas
+
+An example of a domain where this kind of rich data modeling of input
+data includes generation of chemical entity ontologies from data. See
+the [chemrof](https://chemkg.github.io/chemrof/) project
+
 ## See Also
 
 * [OWL Generator](https://linkml.io/linkml/generators/owl.html) in the LinkML core generates OWL from Schemas, **not** data

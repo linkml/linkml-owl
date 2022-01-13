@@ -283,6 +283,7 @@ class TestOwlDumper(unittest.TestCase):
         py_mod = compile_python(py_str)
 
         md = "# linkml-owl Test Cases\n\n"
+        md += 'These examples are generated automatically from test_owl_dumper\n\n'
 
 
         checks = []
@@ -325,6 +326,11 @@ class TestOwlDumper(unittest.TestCase):
                   [py_mod.PartOnly('x:a', part_of='x:b')],
                   [SubClassOf(X.a, ObjectAllValuesFrom(BFO['0000050'], X.b))],
                   "As above, but with universal restrictions")
+        add_check("SubClassOf SomeValuesFrom plus label",
+                  [py_mod.Part('x:a', label='foo', part_of='x:b')],
+                  [AnnotationAssertion(RDFS.label, X.a, Literal("foo")),
+                   SubClassOf(X.a, ObjectSomeValuesFrom(BFO['0000050'], X.b))],
+                  """Demonstrates a mix of slots, some annotation, some logical""")
         #add_check("SubClassOf SomeValuesFrom, nested",
         #          [py_mod.ChildOfAnon('x:a', subclass_of=py_mod.AnonPartOf(part_of='x:b'))],
         #          [SubClassOf(X.a, ObjectSomeValuesFrom(BFO['0000050'], X.b))],

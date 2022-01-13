@@ -1,5 +1,7 @@
 # linkml-owl Test Cases
 
+These examples are generated automatically from test_owl_dumper
+
 ## Annotation using literals
 
 
@@ -319,6 +321,54 @@ Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
 
 Ontology( <https://w3id.org/linkml/owl/tests>
     SubClassOf( <http://example.org/a>     ObjectAllValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000050> <http://example.org/b> ) )
+)
+```
+
+## SubClassOf SomeValuesFrom plus label
+
+
+__Description__: _Demonstrates a mix of slots, some annotation, some logical_
+
+
+__Schema__:
+
+```yaml
+id: http//example.org/SubClassOf-SomeValuesFrom-plus-label
+classes:
+  Part:
+    is_a: NamedThing
+    attributes:
+      part_of:
+        annotations:
+          owl: ObjectSomeValuesFrom
+        slot_uri: BFO:0000050
+        multivalued: true
+        range: NamedThing
+        required: true
+      id:
+        identifier: true
+      label:
+        slot_uri: rdfs:label
+
+```
+
+
+__Input__:
+
+* Part(id='x:a', label='foo', part_of=['x:b'])
+
+__Generated axioms__:
+
+```
+Prefix( xml: = <http://www.w3.org/XML/1998/namespace> )
+Prefix( rdf: = <http://www.w3.org/1999/02/22-rdf-syntax-ns#> )
+Prefix( rdfs: = <http://www.w3.org/2000/01/rdf-schema#> )
+Prefix( xsd: = <http://www.w3.org/2001/XMLSchema#> )
+Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
+
+Ontology( <https://w3id.org/linkml/owl/tests>
+    AnnotationAssertion( rdfs:label <http://example.org/a> "foo" )
+    SubClassOf( <http://example.org/a>     ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000050> <http://example.org/b> ) )
 )
 ```
 
