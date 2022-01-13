@@ -63,6 +63,14 @@ For example, as TSV or YAML:
 
 then run this through the command line tool to generate an ontology
 
+```owl
+AnnotationAssertion(rdfs:label UBERON:1 "eye")
+AnnotationAssertion(rdfs:label UBERON:2 "head")
+AnnotationAssertion(rdfs:label UBERON:3 "organism")
+SubClassOf( UBERON:1  ObjectSomeValuesFrom( BFO:0000050 UBERON:2))
+SubClassOf( UBERON:2  ObjectSomeValuesFrom( BFO:0000050 UBERON:3))
+```
+
 See [EXAMPLES.md](EXAMPLES.md) for a complete set of examples/conformance suite
 
 ## Templates and Fstrings
