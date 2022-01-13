@@ -2,205 +2,7 @@
 
 These examples are generated automatically from test_owl_dumper
 
-## Parts collection with counts
-
-
-__Description__: _Demonstrates nesting
-                  _
-
-
-__Schema__:
-
-```yaml
-id: http//example.org/Parts-collection-with-counts
-classes:
-  CollectionOfPartsWithCounts:
-    annotations:
-      owl.template:
-        tag: owl.template
-        value: "{% for p in has_part %}\nSubClassOf( {{id}} \n            ObjectSomeValuesFrom(\
-          \ BFO:0000051 \n                                  ObjectIntersectionOf(\
-          \ {{p.unit }}\n                                            ObjectSomeValuesFrom(\
-          \ BFO:x BFO:y )\n                                                      \
-          \ ) \n                                                       \n        \
-          \                         ) \n          )\n{% endfor %}"
-    is_a: NamedThing
-    attributes:
-      has_part:
-        slot_uri: BFO:0000051
-        multivalued: true
-        inlined: true
-        inverse: part_of
-        range: PartWithCounts
-      id:
-        identifier: true
-        range: uriorcurie
-      label:
-        annotations:
-          owl: AnnotationProperty, AnnotationAssertion
-        slot_uri: rdfs:label
-
-```
-
-
-__Input__:
-
-* CollectionOfPartsWithCounts(id='x:collection', label=None, has_part=[PartWithCounts(unit='x:p1', count=None, state=None), PartWithCounts(unit='x:p2', count=None, state=None)])
-
-__Generated axioms__:
-
-```
-Prefix( xml: = <http://www.w3.org/XML/1998/namespace> )
-Prefix( rdf: = <http://www.w3.org/1999/02/22-rdf-syntax-ns#> )
-Prefix( rdfs: = <http://www.w3.org/2000/01/rdf-schema#> )
-Prefix( xsd: = <http://www.w3.org/2001/XMLSchema#> )
-Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
-
-Ontology( <https://w3id.org/linkml/owl/tests>
-    SubClassOf( x:collection     ObjectSomeValuesFrom( BFO:0000051     ObjectIntersectionOf(
-        x:p1
-            ObjectSomeValuesFrom( BFO:x BFO:y )
-    ) ) )
-    SubClassOf( x:collection     ObjectSomeValuesFrom( BFO:0000051     ObjectIntersectionOf(
-        x:p2
-            ObjectSomeValuesFrom( BFO:x BFO:y )
-    ) ) )
-)
-```
-
-## Parts collection
-
-
-__Description__: _Things that are made of an arbitrary list of parts
-                  _
-
-
-__Schema__:
-
-```yaml
-id: http//example.org/Parts-collection
-classes:
-  CollectionOfParts:
-    annotations:
-      owl.template:
-        tag: owl.template
-        value: "{% for p in has_part %}\nSubClassOf( {{id}} ObjectSomeValuesFrom(\
-          \ BFO:0000051 {{p}} ) )\n{% endfor %}\nDisjointClasses(\n   Annotation(\
-          \ rdfs:label \"all parts of {{id}} are part-disjoint\")\n  {% for p in has_part\
-          \ %}\n  ObjectSomeValuesFrom( BFO:0000050 {{p}} )\n  {% endfor %}\n)"
-    is_a: NamedThing
-    attributes:
-      has_part:
-        slot_uri: BFO:0000051
-        multivalued: true
-        inverse: part_of
-        range: NamedThing
-      id:
-        identifier: true
-        range: uriorcurie
-      label:
-        annotations:
-          owl: AnnotationProperty, AnnotationAssertion
-        slot_uri: rdfs:label
-
-```
-
-
-__Input__:
-
-* CollectionOfParts(id='x:collection', label=None, has_part=['x:p1', 'x:p2'])
-
-__Generated axioms__:
-
-```
-Prefix( xml: = <http://www.w3.org/XML/1998/namespace> )
-Prefix( rdf: = <http://www.w3.org/1999/02/22-rdf-syntax-ns#> )
-Prefix( rdfs: = <http://www.w3.org/2000/01/rdf-schema#> )
-Prefix( xsd: = <http://www.w3.org/2001/XMLSchema#> )
-Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
-
-Ontology( <https://w3id.org/linkml/owl/tests>
-    SubClassOf( x:collection     ObjectSomeValuesFrom( BFO:0000051 x:p1 ) )
-    SubClassOf( x:collection     ObjectSomeValuesFrom( BFO:0000051 x:p2 ) )
-    DisjointClasses(
-        Annotation( rdfs:label "all parts of x:collection are part-disjoint" )
-            ObjectSomeValuesFrom( BFO:0000050 x:p1 )     ObjectSomeValuesFrom( BFO:0000050 x:p2 )
-    )
-)
-```
-
-## Defined parts collection
-
-
-__Description__: _Things that are defined exhaustively by an arbitrary list of parts
-                  _
-
-
-__Schema__:
-
-```yaml
-id: http//example.org/Defined-parts-collection
-classes:
-  DefinedCollectionOfParts:
-    annotations:
-      owl.template:
-        tag: owl.template
-        value: "EquivalentClasses( {{id}} \n                   ObjectIntersectionOf(\
-          \ \n                     {% for p in has_part %}\n                     \
-          \  ObjectSomeValuesFrom( BFO:0000051 {{p}} )\n                     {% endfor\
-          \ %}                           \n                     ObjectAllValuesFrom(\
-          \ BFO:0000051\n                                          ObjectSomeValuesFrom(\
-          \ BFO:0000050\n                                            ObjectUnionOf(\
-          \ \n                                            {% for p in has_part %}\n\
-          \                                              ObjectSomeValuesFrom( BFO:0000051\
-          \ {{p}} )\n                                            {% endfor %} )\n\
-          \                                          )\n                         \
-          \               )\n                   )\n                 )"
-    is_a: NamedThing
-    attributes:
-      has_part:
-        slot_uri: BFO:0000051
-        multivalued: true
-        inverse: part_of
-        range: NamedThing
-      id:
-        identifier: true
-        range: uriorcurie
-      label:
-        annotations:
-          owl: AnnotationProperty, AnnotationAssertion
-        slot_uri: rdfs:label
-
-```
-
-
-__Input__:
-
-* DefinedCollectionOfParts(id='x:collection', label=None, has_part=['x:dp1', 'x:dp2'])
-
-__Generated axioms__:
-
-```
-Prefix( xml: = <http://www.w3.org/XML/1998/namespace> )
-Prefix( rdf: = <http://www.w3.org/1999/02/22-rdf-syntax-ns#> )
-Prefix( rdfs: = <http://www.w3.org/2000/01/rdf-schema#> )
-Prefix( xsd: = <http://www.w3.org/2001/XMLSchema#> )
-Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
-
-Ontology( <https://w3id.org/linkml/owl/tests>
-    EquivalentClasses(
-        x:collection
-            ObjectIntersectionOf(
-            ObjectSomeValuesFrom( BFO:0000051 x:dp1 )
-            ObjectSomeValuesFrom( BFO:0000051 x:dp2 )
-            ObjectAllValuesFrom( BFO:0000051     ObjectSomeValuesFrom( BFO:0000050     ObjectUnionOf(
-            ObjectSomeValuesFrom( BFO:0000051 x:dp1 )
-            ObjectSomeValuesFrom( BFO:0000051 x:dp2 )
-    ) ) )
-    )
-    )
-)
-```
+For the complete schema, see tests/input/owl_dumper_test.yaml
 
 ## Annotation using literals
 
@@ -991,7 +793,7 @@ classes:
         annotations:
           owl.template:
             tag: owl.template
-            value: '{% for p in subclass_of %}SubClassOf({{id}} {{p}}){% endfor %} '
+            value: '{% for p in subclass_of %}SubClassOf({{id}} {{p}}){% endfor %}'
         slot_uri: rdfs:subclass_of
         multivalued: true
         range: NamedThing
@@ -1029,6 +831,211 @@ Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
 
 Ontology( <https://w3id.org/linkml/owl/tests>
     SubClassOf( x:a x:b )
+)
+```
+
+## Parts collection with counts
+
+
+__Description__: _Demonstrates nesting
+                  _
+
+
+__Schema__:
+
+```yaml
+id: http//example.org/Parts-collection-with-counts
+classes:
+  CollectionOfPartsWithCounts:
+    annotations:
+      owl.template:
+        tag: owl.template
+        value: "{% for p in has_part %}\nSubClassOf( {{id}}\n            ObjectSomeValuesFrom(\
+          \ BFO:0000051\n                                  ObjectIntersectionOf( {{p.unit\
+          \ }}\n                                                        ObjectSomeValuesFrom(RO:0000053\
+          \ {{p.state.meaning}})\n                                               \
+          \         {% if p.count %}\n                                           \
+          \             DataHasValue(PATO:0001555 \"{{p.count}}\"^^xsd:integer )\n\
+          \                                                        {% endif %}\n \
+          \                                                     )\n\n            \
+          \                     )\n          )\n{% endfor %}"
+    is_a: NamedThing
+    attributes:
+      has_part:
+        slot_uri: BFO:0000051
+        multivalued: true
+        inlined: true
+        inverse: part_of
+        range: PartWithCounts
+      id:
+        identifier: true
+        range: uriorcurie
+      label:
+        annotations:
+          owl: AnnotationProperty, AnnotationAssertion
+        slot_uri: rdfs:label
+
+```
+
+
+__Input__:
+
+* CollectionOfPartsWithCounts(id='x:collection', label=None, has_part=[PartWithCounts(unit='x:p1', count=2, state=(text='ACTIVATED', meaning='http://purl.obolibrary.org/obo/PATO_0002354')), PartWithCounts(unit='x:p2', count=3, state=(text='ACTIVATED', meaning='http://purl.obolibrary.org/obo/PATO_0002354'))])
+
+__Generated axioms__:
+
+```
+Prefix( xml: = <http://www.w3.org/XML/1998/namespace> )
+Prefix( rdf: = <http://www.w3.org/1999/02/22-rdf-syntax-ns#> )
+Prefix( rdfs: = <http://www.w3.org/2000/01/rdf-schema#> )
+Prefix( xsd: = <http://www.w3.org/2001/XMLSchema#> )
+Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
+
+Ontology( <https://w3id.org/linkml/owl/tests>
+    SubClassOf( x:collection     ObjectSomeValuesFrom( BFO:0000051     ObjectIntersectionOf(
+        x:p1
+            ObjectSomeValuesFrom( RO:0000053 <http://purl.obolibrary.org/obo/PATO_0002354> )
+            DataHasValue( PATO:0001555 "2"^^xsd:integer )
+    ) ) )
+    SubClassOf( x:collection     ObjectSomeValuesFrom( BFO:0000051     ObjectIntersectionOf(
+        x:p2
+            ObjectSomeValuesFrom( RO:0000053 <http://purl.obolibrary.org/obo/PATO_0002354> )
+            DataHasValue( PATO:0001555 "3"^^xsd:integer )
+    ) ) )
+)
+```
+
+## Parts collection
+
+
+__Description__: _Things that are made of an arbitrary list of parts
+                  _
+
+
+__Schema__:
+
+```yaml
+id: http//example.org/Parts-collection
+classes:
+  CollectionOfParts:
+    annotations:
+      owl.template:
+        tag: owl.template
+        value: "{% for p in has_part %}\nSubClassOf( {{id}} ObjectSomeValuesFrom(\
+          \ BFO:0000051 {{p}} ) )\n{% endfor %}\nDisjointClasses(\n   Annotation(\
+          \ rdfs:label \"all parts of {{id}} are part-disjoint\")\n  {% for p in has_part\
+          \ %}\n  ObjectSomeValuesFrom( BFO:0000050 {{p}} )\n  {% endfor %}\n)"
+    is_a: NamedThing
+    attributes:
+      has_part:
+        slot_uri: BFO:0000051
+        multivalued: true
+        inverse: part_of
+        range: NamedThing
+      id:
+        identifier: true
+        range: uriorcurie
+      label:
+        annotations:
+          owl: AnnotationProperty, AnnotationAssertion
+        slot_uri: rdfs:label
+
+```
+
+
+__Input__:
+
+* CollectionOfParts(id='x:collection', label=None, has_part=['x:p1', 'x:p2'])
+
+__Generated axioms__:
+
+```
+Prefix( xml: = <http://www.w3.org/XML/1998/namespace> )
+Prefix( rdf: = <http://www.w3.org/1999/02/22-rdf-syntax-ns#> )
+Prefix( rdfs: = <http://www.w3.org/2000/01/rdf-schema#> )
+Prefix( xsd: = <http://www.w3.org/2001/XMLSchema#> )
+Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
+
+Ontology( <https://w3id.org/linkml/owl/tests>
+    SubClassOf( x:collection     ObjectSomeValuesFrom( BFO:0000051 x:p1 ) )
+    SubClassOf( x:collection     ObjectSomeValuesFrom( BFO:0000051 x:p2 ) )
+    DisjointClasses(
+        Annotation( rdfs:label "all parts of x:collection are part-disjoint" )
+            ObjectSomeValuesFrom( BFO:0000050 x:p1 )     ObjectSomeValuesFrom( BFO:0000050 x:p2 )
+    )
+)
+```
+
+## Defined parts collection
+
+
+__Description__: _Things that are defined exhaustively by an arbitrary list of parts
+                  _
+
+
+__Schema__:
+
+```yaml
+id: http//example.org/Defined-parts-collection
+classes:
+  DefinedCollectionOfParts:
+    annotations:
+      owl.template:
+        tag: owl.template
+        value: "EquivalentClasses( {{id}}\n                   ObjectIntersectionOf(\n\
+          \                     {% for p in has_part %}\n                       ObjectSomeValuesFrom(\
+          \ BFO:0000051 {{p}} )\n                     {% endfor %}\n             \
+          \        ObjectAllValuesFrom( BFO:0000051\n                            \
+          \              ObjectSomeValuesFrom( BFO:0000050\n                     \
+          \                       ObjectUnionOf(\n                               \
+          \             {% for p in has_part %}\n                                \
+          \              ObjectSomeValuesFrom( BFO:0000051 {{p}} )\n             \
+          \                               {% endfor %} )\n                       \
+          \                   )\n                                        )\n     \
+          \              )\n                 )"
+    is_a: NamedThing
+    attributes:
+      has_part:
+        slot_uri: BFO:0000051
+        multivalued: true
+        inverse: part_of
+        range: NamedThing
+      id:
+        identifier: true
+        range: uriorcurie
+      label:
+        annotations:
+          owl: AnnotationProperty, AnnotationAssertion
+        slot_uri: rdfs:label
+
+```
+
+
+__Input__:
+
+* DefinedCollectionOfParts(id='x:collection', label=None, has_part=['x:dp1', 'x:dp2'])
+
+__Generated axioms__:
+
+```
+Prefix( xml: = <http://www.w3.org/XML/1998/namespace> )
+Prefix( rdf: = <http://www.w3.org/1999/02/22-rdf-syntax-ns#> )
+Prefix( rdfs: = <http://www.w3.org/2000/01/rdf-schema#> )
+Prefix( xsd: = <http://www.w3.org/2001/XMLSchema#> )
+Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
+
+Ontology( <https://w3id.org/linkml/owl/tests>
+    EquivalentClasses(
+        x:collection
+            ObjectIntersectionOf(
+            ObjectSomeValuesFrom( BFO:0000051 x:dp1 )
+            ObjectSomeValuesFrom( BFO:0000051 x:dp2 )
+            ObjectAllValuesFrom( BFO:0000051     ObjectSomeValuesFrom( BFO:0000050     ObjectUnionOf(
+            ObjectSomeValuesFrom( BFO:0000051 x:dp1 )
+            ObjectSomeValuesFrom( BFO:0000051 x:dp2 )
+    ) ) )
+    )
+    )
 )
 ```
 

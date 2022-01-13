@@ -315,11 +315,11 @@ classes:
         SubClassOf( {{id}}
                     ObjectSomeValuesFrom( BFO:0000051
                                           ObjectIntersectionOf( {{p.unit }}
-                                                    ObjectSomeValuesFrom(RO:0000053 {{p.state.meaning}})
-                                                    {% if p.count %}
-                                                    DataHasValue(PATO:0001555 {{p.count}})
-                                                    {% endif %}
-                                                               )
+                                                                ObjectSomeValuesFrom(RO:0000053 {{p.state.meaning}})
+                                                                {% if p.count %}
+                                                                DataHasValue(PATO:0001555 "{{p.count}}"^^xsd:integer )
+                                                                {% endif %}
+                                                              )
 
                                          )
                   )

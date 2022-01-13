@@ -10,16 +10,17 @@ from linkml_runtime.linkml_model import SchemaDefinition
 from linkml_runtime.utils.compile_python import compile_python
 from linkml_runtime.utils.schema_as_dict import schema_as_dict
 from linkml_runtime.utils.yamlutils import YAMLRoot
-from rdflib import Graph, RDFS
+from rdflib import RDFS
 from rdflib.namespace import Namespace, SKOS
 from linkml_owl.owl_dumper import OWLDumper
 from funowl import Axiom, AnnotationAssertion, Literal, SubClassOf, ObjectSomeValuesFrom, \
-    ObjectAllValuesFrom, ObjectUnionOf, EquivalentClasses, ObjectIntersectionOf, AnnotationValue
+    ObjectAllValuesFrom, ObjectUnionOf, EquivalentClasses, ObjectIntersectionOf
 
 import os
-from tests import MODEL_DIR, INPUT_DIR, OUTPUT_DIR
 
-"""Test the module can be imported."""
+from linkml_owl.util.trim_yaml import trim_yaml
+from tests import INPUT_DIR, OUTPUT_DIR
+
 
 import unittest
 
@@ -27,365 +28,11 @@ SCHEMA_IN = os.path.join(INPUT_DIR, 'owl_dumper_test.yaml')
 OWL_OUT = os.path.join(OUTPUT_DIR, 'owl_dumper_test.owl.ofn')
 MD_OUT = os.path.join(OUTPUT_DIR, 'owl_dumper_test.md')
 
-SCHEMA = """
-id: https://w3id.org/linkml/owl/tests
-name: OwlTest
-description: |-
-  OWL Tests
-imports:
-  - linkml:types
-prefixes:
-  linkml: https://w3id.org/linkml/
-  biolink: https://w3id.org/biolink/vocab/
-  chromoschema: https://w3id.org/biodatamodels/chromoschema/
-  gff: https://w3id.org/biodatamodels/gff/
-  faldo: http://biohackathon.org/resource/faldo#
-  CHR: http://purl.obolibrary.org/obo/CHR_
-  SO: http://purl.obolibrary.org/obo/SO_
-  GO: http://purl.obolibrary.org/obo/GO_
-  BFO: http://purl.obolibrary.org/obo/BFO_
-  RO: http://purl.obolibrary.org/obo/RO_
-  PATO: http://purl.obolibrary.org/obo/PATO_
-  NCBITaxon: http://purl.obolibrary.org/obo/NCBITaxon_
-  edam: http://edamontology.org/
-  refseq: http://identifiers.org/refseq/
-  insdc: http://identifiers.org/insdc/
-  ensembl: http://identifiers.org/ensembl/
-  OIO: http://www.geneontology.org/formats/oboInOwl#
-  skos: http://www.w3.org/2004/02/skos/core#
-  dcterms: http://purl.org/dc/terms/
-  x: http://example.org/
-
-default_prefix: chromoschema
-default_curi_maps:
-  - semweb_context
-  
-enums:
-  ActivationStateEnum:
-    permissible_values:
-      ACTIVATED:
-        meaning: PATO:0002354
-      INACTIVATED:
-        meaning: PATO:0002355
-slots:
-  id:
-    identifier: true
-    range: uriorcurie
-  label:
-    slot_uri: rdfs:label
-    annotations:
-      owl: AnnotationProperty, AnnotationAssertion
-  definition:
-    slot_uri: IAO:0000115
-    annotations:
-      owl: AnnotationProperty, AnnotationAssertion
-  exactMatch:
-    slot_uri: skos:exactMatch
-    range: NamedThing
-    annotations:
-      owl: AnnotationProperty, AnnotationAssertion
-  equivalent_to:
-    slot_uri: owl:equivalentClasses
-    range: NamedThing
-    multivalued: true
-  subclass_of:
-    slot_uri: rdfs:subclass_of
-    range: NamedThing
-    multivalued: true
-  operands:
-    range: NamedThing
-    multivalued: true
-  part_of:
-    slot_uri: BFO:0000050
-    #transitive: true
-    range: NamedThing
-    multivalued: true
-  other_part_ofs:
-    slot_uri: BFO:0000050
-    range: NamedThing
-    multivalued: true
-  has_part:
-    slot_uri: BFO:0000051
-    range: NamedThing
-    multivalued: true
-    inverse: part_of
-    
-  subphenotype:
-    range: Phenotype
-  increased:
-    is_a: subphenotype
-  decreased:
-    is_a: subphenotype
-  abnormal:
-    is_a: subphenotype
-    
-classes:
-  Thing:
-  NamedThing:
-    is_a: Thing
-    slots:
-      - id
-      - label
-  Anonymous:
-    is_a: Thing
-    annotations:
-      owl: Class
-  ExactMatch:
-    is_a: NamedThing
-    slots:
-      - exactMatch
-    slot_usage:
-      exactMatch:
-        required: true
-        annotations:
-          owl: AnnotationAssertion
-  ExactMatchAsLiteral:
-    is_a: NamedThing
-    slots:
-      - exactMatch
-    slot_usage:
-      exactMatch:
-        range: string
-        required: true
-        annotations:
-          owl: AnnotationAssertion
-  Child:
-    is_a: NamedThing
-    slots:
-      - subclass_of
-    slot_usage:
-      subclass_of:
-        required: true
-        annotations:
-          owl: SubClassOf
-  ChildOfAnon:
-    is_a: NamedThing
-    slots:
-      - subclass_of
-    slot_usage:
-      subclass_of:
-        range: AnonPartOf
-        annotations:
-          owl: SubClassOf
-  DirectEquivalent:
-    is_a: NamedThing
-    slots:
-      - equivalent_to
-    slot_usage:
-      equivalent_to:
-        required: true
-        annotations:
-          owl: EquivalentClasses
-  ChildOfUnion:
-    is_a: NamedThing
-    slots:
-      - subclass_of
-    slot_usage:
-      subclass_of:
-        required: true
-        annotations:
-          owl: SubClassOf, UnionOf
-  EquivUnion:
-    is_a: NamedThing
-    slots:
-      - operands
-    slot_usage:
-      operands:
-        required: true
-        annotations:
-          owl: EquivalentClasses, UnionOf
-  EquivIntersection:
-    is_a: NamedThing
-    slots:
-      - operands
-    slot_usage:
-      operands:
-        required: true
-        annotations:
-          owl: EquivalentClasses, IntersectionOf
-  Part:
-    is_a: NamedThing
-    slots:
-      - part_of
-    slot_usage:
-      part_of:
-        required: true
-        annotations:
-          owl: ObjectSomeValuesFrom
-  PartOnly:
-    is_a: NamedThing
-    slots:
-      - part_of
-    slot_usage:
-      part_of:
-        required: true
-        annotations:
-          owl: ObjectAllValuesFrom
-  AnonPartOf:
-    is_a: Anonymous
-    slots:
-      - part_of
-    slot_usage:
-      part_of:
-        required: true
-        annotations:
-          owl: ObjectSomeValuesFrom
-    annotations:
-      owl: Class
-  EquivGenusAndPartOf:
-    is_a: NamedThing
-    slots:
-      - subclass_of
-      - part_of
-      - other_part_ofs
-    slot_usage:
-      subclass_of:
-        required: true
-        annotations:
-          owl: EquivalentClasses, IntersectionOf
-      part_of:
-        required: true
-        annotations:
-          owl: EquivalentClasses, IntersectionOf, ObjectSomeValuesFrom
-      other_part_ofs:
-        required: false
-        description: for hidden GCIs
-        annotations:
-          owl: ObjectSomeValuesFrom
-  ClassTemplateExample1:
-    is_a: NamedThing
-    slots:
-      - subclass_of
-      - part_of
-      - other_part_ofs
-    slot_usage:
-      subclass_of:
-        annotations:
-          owl.fstring: SubClassOf({id} {V})
-          
-  ClassTemplateExample2:
-    is_a: NamedThing
-    slots:
-      - subclass_of
-      - part_of
-      - other_part_ofs
-    slot_usage:
-      subclass_of:
-        annotations:
-          owl.template: |-
-            {% for p in subclass_of %}SubClassOf({{id}} {{p}}){% endfor %} 
-            
-  CollectionOfParts:
-    is_a: NamedThing
-    slots:
-      - has_part
-    annotations:
-      owl.template: |-
-        {% for p in has_part %}
-        SubClassOf( {{id}} ObjectSomeValuesFrom( BFO:0000051 {{p}} ) )
-        {% endfor %}
-        DisjointClasses(
-           Annotation( rdfs:label "all parts of {{id}} are part-disjoint")
-          {% for p in has_part %}
-          ObjectSomeValuesFrom( BFO:0000050 {{p}} )
-          {% endfor %}
-        )
-        
-  DefinedCollectionOfParts:
-    is_a: NamedThing
-    slots:
-      - has_part
-    annotations:
-      owl.template: |-
-        EquivalentClasses( {{id}} 
-                           ObjectIntersectionOf( 
-                             {% for p in has_part %}
-                               ObjectSomeValuesFrom( BFO:0000051 {{p}} )
-                             {% endfor %}                           
-                             ObjectAllValuesFrom( BFO:0000051
-                                                  ObjectSomeValuesFrom( BFO:0000050
-                                                    ObjectUnionOf( 
-                                                    {% for p in has_part %}
-                                                      ObjectSomeValuesFrom( BFO:0000051 {{p}} )
-                                                    {% endfor %} )
-                                                  )
-                                                )
-                           )
-                         )
-      
-  PartWithCounts:
-    is_a: Anonymous
-    attributes:
-      unit:
-        range: NamedThing
-        multivalued: false
-        annotations:
-          owl: SomeValuesFrom
-      count:
-        range: integer
-        minimum_value: 1
-        annotations:
-          owl: HasValue
-      state:
-        range: ActivationStateEnum
-        annotations:
-          owl: SomeValuesFrom
-      
-  CollectionOfPartsWithCounts:
-    is_a: NamedThing
-    slots:
-      - has_part
-    slot_usage:
-      has_part:
-        range: PartWithCounts
-        inlined: true
-    annotations:
-      owl.template: |-
-        {% for p in has_part %}
-        SubClassOf( {{id}} 
-                    ObjectSomeValuesFrom( BFO:0000051 
-                                          ObjectIntersectionOf( {{p.unit }}
-                                                    ObjectSomeValuesFrom(RO:0000053 {{p.state.meaning}})
-                                                    {% if p.count %}
-                                                    DataHasValue(PATO:0001555 {{p.count}})
-                                                    {% endif %}
-                                                               ) 
-                                                               
-                                         ) 
-                  )
-        {% endfor %}
-    
-    
-  Phenotype:
-    is_a: NamedThing
-    
-  SizeTriad:
-    slots:
-      - increased
-      - decreased
-      - abnormal
-    annotations:
-      owl.template: |-
-        {{increased.id}}
-    
-"""
-
-# TODO: move to schema_as_dict
-def trim_yaml(obj):
-    if isinstance(obj, dict):
-        if 'owl' in obj:
-            obj['owl'] = obj['owl']['value']
-        for k in ['from_schema', 'owner']:
-            if k in obj:
-                del obj[k]
-        for k, v in obj.items():
-            trim_yaml(v)
-    elif isinstance(obj, list):
-        for v in obj:
-            trim_yaml(v)
-
 @dataclass
 class Check:
+    """
+    A check for a particular OWL mapping construct
+    """
     title: str
     records: List[YAMLRoot] = None
     axioms: List[Axiom] = None
@@ -418,9 +65,8 @@ class Check:
 
 
 
-
 class TestOwlDumper(unittest.TestCase):
-    """A test case for create tests."""
+    """Tests full functionality of OWL dumper"""
 
     def test_owl_dumper(self):
         """
@@ -437,6 +83,7 @@ class TestOwlDumper(unittest.TestCase):
 
         md = "# linkml-owl Test Cases\n\n"
         md += 'These examples are generated automatically from test_owl_dumper\n\n'
+        md += 'For the complete schema, see tests/input/owl_dumper_test.yaml\n\n'
 
 
         checks = []
@@ -444,26 +91,7 @@ class TestOwlDumper(unittest.TestCase):
             ch = Check(*args, **kwargs)
             ch.set_schema_section(sv)
             checks.append(ch)
-        p1 = py_mod.PartWithCounts(unit='x:p1', count=2, state='ACTIVATED')
-        p2 = py_mod.PartWithCounts(unit='x:p2', count=3, state='ACTIVATED')
-        add_check("Parts collection with counts",
-                  [py_mod.CollectionOfPartsWithCounts('x:collection',
-                                                      has_part=[p1,
-                                                                p2,
-                                                                ])],
-                  [],
-                  """Demonstrates nesting
-                  """)
-        add_check("Parts collection",
-                  [py_mod.CollectionOfParts('x:collection', has_part=['x:p1', 'x:p2'])],
-                  [],
-                  """Things that are made of an arbitrary list of parts
-                  """)
-        add_check("Defined parts collection",
-                  [py_mod.DefinedCollectionOfParts('x:collection', has_part=['x:dp1', 'x:dp2'])],
-                  [],
-                  """Things that are defined exhaustively by an arbitrary list of parts
-                  """)
+
         add_check("Annotation using literals",
                   [py_mod.NamedThing('x:a', label='foo')],
                   [AnnotationAssertion(RDFS.label, X.a, Literal("foo"))],
@@ -553,6 +181,26 @@ class TestOwlDumper(unittest.TestCase):
                   """Axiom generation per slot-value assignment.
                      (Note that currently non-identifier fields have their URIs expanded,
                       but the OWL is the same)""")
+        p1 = py_mod.PartWithCounts(unit='x:p1', count=2, state='ACTIVATED')
+        p2 = py_mod.PartWithCounts(unit='x:p2', count=3, state='ACTIVATED')
+        add_check("Parts collection with counts",
+                  [py_mod.CollectionOfPartsWithCounts('x:collection',
+                                                      has_part=[p1,
+                                                                p2,
+                                                                ])],
+                  [],
+                  """Demonstrates nesting
+                  """)
+        add_check("Parts collection",
+                  [py_mod.CollectionOfParts('x:collection', has_part=['x:p1', 'x:p2'])],
+                  [],
+                  """Things that are made of an arbitrary list of parts
+                  """)
+        add_check("Defined parts collection",
+                  [py_mod.DefinedCollectionOfParts('x:collection', has_part=['x:dp1', 'x:dp2'])],
+                  [],
+                  """Things that are defined exhaustively by an arbitrary list of parts
+                  """)
         for check in checks:
             print(f'** CHECK: {check.title}')
             md += f'## {check.title}\n\n'

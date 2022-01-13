@@ -12,7 +12,6 @@ from linkml_runtime.loaders import yaml_loader
 
 from rdflib import URIRef
 
-from hbreader import hbread
 from linkml_runtime.linkml_model.meta import ClassDefinition, SchemaDefinition, SlotDefinition, Definition
 from linkml_runtime.utils.formatutils import underscore, camelcase
 from linkml_runtime.linkml_model.types import Uri, Uriorcurie
@@ -23,14 +22,8 @@ from funowl import OntologyDocument, Ontology, IRI, ObjectSomeValuesFrom, \
     Class, Individual, \
     AnnotationAssertion, ObjectPropertyAssertion, \
     Prefix, AnonymousIndividual, ObjectAllValuesFrom, EquivalentClasses, ObjectIntersectionOf, ClassExpression, Axiom
-from pyld.jsonld import expand
-from rdflib import Graph, BNode
-from rdflib.namespace import RDF, RDFS, OWL
-from rdflib_pyld_compat import rdflib_graph_from_pyld_jsonld
 
-from linkml_runtime.dumpers.rdf_dumper import RDFDumper
 from linkml_runtime.dumpers.dumper_root import Dumper
-from linkml_runtime.utils.context_utils import CONTEXTS_PARAM_TYPE, CONTEXT_TYPE
 from linkml_runtime.utils.yamlutils import YAMLRoot
 
 INTERPRETATION = str
@@ -43,9 +36,24 @@ OP_KEY = Tuple[LEVEL, OPERAND, AXIOM_TYPE_NAME]
 
 @dataclass
 class EntityAxiomIndex:
+    """
+    For indexing axioms that involve an aggregate grouping (intersection, union)
+
+    Any object can have any number of these axioms. They are grouped by:
+
+    - Operator (e.g. AND/IntersectionOf, OR/Union)
+    - AxiomType (e.g. SubClassOf, EquivalentClasses)
+    - Level (default 0), allows for example multiple equivalence axioms using intersection
+    """
     operand_list_index: Dict[OP_KEY, List[ClassExpression]] = field(default_factory=lambda: defaultdict(list))
 
     def add_operand(self, key: OP_KEY, op: ClassExpression):
+        """
+
+        :param key: combo of operator/axiomType/level
+        :param op: operand - an element of the list used to construct the operator construct
+        :return:
+        """
         if key not in self.operand_list_index:
             self.operand_list_index[key] = []
         self.operand_list_index[key].append(op)
@@ -62,8 +70,9 @@ class OWLDumper(Dumper):
     This differs from rdf_dumper in that each edge in the linkml instance graph
     may have a more complex OWL interpretation; for example:
 
-     - lists may be treat as unions, rather than conjunctions of triples
-     - linkml instances may be OWL classes
+    - lists may be treat as unions, rather than conjunctions of triples
+    - linkml instances may be OWL classes
+
         - edges from these instances may be treated as axiom types such as SubClassOf R some Y
 
     Note that currently the OWL interpretation is "smuggled" into a model by way of special-syntax
@@ -75,7 +84,7 @@ class OWLDumper(Dumper):
 
     def to_ontology_document(self, element: Union[YAMLRoot, List[YAMLRoot]], schema: Union[SchemaDefinition, str], iri=None) -> str:
         """
-        Dump a linkml instance tree as a function syntax OWL ontology string
+        Convert a linkml instance tree as a function syntax OWL ontology string
         """
         o = Ontology(schema.id)
         self.ontology = o
@@ -95,10 +104,18 @@ class OWLDumper(Dumper):
             self.transform(element, schema)
         return doc
 
-    def dumps(self, element: YAMLRoot, schema: SchemaDefinition, iri=None) -> str:
+    def dumps(self, element: YAMLRoot, schema: SchemaDefinition, schemaview: SchemaView, iri=None) -> str:
         """
         Dump a linkml instance tree as a function syntax OWL ontology string
+
+        :param element:
+        :param schema:
+        :param schemaview:
+        :param iri:
+        :return:
         """
+        if schemaview:
+            schema = schemaview.schema
         doc = self.to_ontology_document(element, schema, iri=iri)
         return str(doc)
 
@@ -109,6 +126,12 @@ class OWLDumper(Dumper):
 
         Each field is introspected, and translated to an OWL axiom.
         The field value is recursively transformed
+
+        :param element:
+        :param schema:
+        :param is_element_an_object:
+        :param is_element_an_owl_class:
+        :return:
         """
         if element is None:
             return None
@@ -131,7 +154,7 @@ class OWLDumper(Dumper):
                 return Literal(element)
         o = self.ontology
         python_type = type(element)
-        #print(f'E={element }PT={python_type}')
+        #logging.debug(f'E={element }PT={python_type}')
         linkml_class_name = python_type.class_name
         c = schema.classes[linkml_class_name]
         if 'owl.fstring' in c.annotations:
@@ -164,9 +187,9 @@ class OWLDumper(Dumper):
             if slot.identifier or actual_slot.identifier:
                 continue
             slot_uri = self._get_IRI_str(actual_slot.slot_uri)
-            print(f'in {subj} {k} = {v} (URI={actual_slot.slot_uri}) // slot = {slot.name}')
+            logging.debug(f'in {subj} {k} = {v} (URI={actual_slot.slot_uri}) // slot = {slot.name}')
             interps = self._get_interpretations(slot)
-            print(f'INTERPS={interps}')
+            logging.debug(f'INTERPS={interps}')
             if len(interps) == 0:
                 interps = self._get_interpretations(actual_slot)
             is_disjunction = 'UnionOf' in interps
@@ -182,11 +205,11 @@ class OWLDumper(Dumper):
             else:
                 input_vals = [v]
             tr_vals = [self.transform(x, schema, is_element_an_object=is_object_ref) for x in input_vals]
-            print(f'TR Vals={tr_vals}')
+            logging.debug(f'TR Vals={tr_vals}')
             parents = []
             is_class_logical_axiom = False
             for tr_val in tr_vals:
-                print(f'  TR_VAL = {tr_val}')
+                logging.debug(f'  TR_VAL = {tr_val}')
                 if tr_val is None:
                     continue
                 if 'owl.fstring' in slot.annotations and v is not None:
@@ -225,7 +248,7 @@ class OWLDumper(Dumper):
                         axiom_type = AnnotationAssertion
                     else:
                         axiom_type = None
-            print(f'AXIOM TYPE = {axiom_type}')
+            logging.debug(f'AXIOM TYPE = {axiom_type}')
             if not axiom_type:
                 continue
             if is_disjunction:
@@ -242,7 +265,7 @@ class OWLDumper(Dumper):
                 parents = []
             for parent in parents:
                 if axiom_type == SubClassOf:
-                    print(f'type(subj) = {type(subj)} // {subj}')
+                    logging.debug(f'type(subj) = {type(subj)} // {subj}')
                     if isinstance(subj, AnonymousIndividual):
                         axiom = None
                     else:
@@ -261,7 +284,7 @@ class OWLDumper(Dumper):
                     o.axioms.append(axiom)
         for op_key, operands in eai.operand_list_index.items():
             _, interp, operator = op_key
-            print(f'EAI {subj}: {interp} => {operator} over {operands}')
+            logging.debug(f'EAI {subj}: {interp} => {operator} over {operands}')
             if operator == ObjectUnionOf.__name__:
                 expr = ObjectUnionOf(*operands)
             elif operator == ObjectIntersectionOf.__name__:
@@ -343,7 +366,7 @@ class OWLDumper(Dumper):
             prefix_lines.append(f'Prefix( {prefix}: = <{url}> )')
         header = "\n".join(prefix_lines)
         owl_str = f'{header}\nOntology(\n{owl_str}\n)'
-        print(owl_str)
+        logging.debug(owl_str)
         doc = to_python(owl_str)
         from funowl.writers.FunctionalWriter import FunctionalWriter
         from rdflib import Graph
@@ -352,7 +375,7 @@ class OWLDumper(Dumper):
             g.namespace_manager.bind(p.prefixName, p.fullIRI)
         fw = FunctionalWriter(g=g)
         owl_str_roundtrip = doc.to_functional(fw)
-        #print(f'ROUNDTRIP = {owl_str_roundtrip}')
+        #logging.debug(f'ROUNDTRIP = {owl_str_roundtrip}')
         return doc
 
     def _element_to_template_dict(self, element: YAMLRoot, val: Any = None):
@@ -364,9 +387,9 @@ class OWLDumper(Dumper):
     def add_axioms_from_fstring(self, fstring: meta.Annotation, element: YAMLRoot, val: Any = None):
         d = self._element_to_template_dict(element, val)
         owl_str = fstring.value.format(**d)
-        print(f'FSTRING = {owl_str}')
+        logging.debug(f'FSTRING = {owl_str}')
         axioms = self.parse_axioms_string(owl_str).ontology.axioms
-        print(f'AXIOMS >> = {axioms}')
+        logging.debug(f'AXIOMS >> = {axioms}')
         self.ontology.axioms += axioms
 
     def add_axioms_from_template(self, template_ann: meta.Annotation, element: YAMLRoot, val: Any = None):

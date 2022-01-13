@@ -31,6 +31,9 @@ class TestGen(unittest.TestCase):
         """
         Test creation of an OWL TBox
 
+        Note that this test is largely redundant with test_owl_dumper, but the
+        intent here is to provide a more unified example
+
         Uses monochrom schema as guiding templates, and
         chrosomome data in yaml as source for classes
         """

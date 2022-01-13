@@ -1,3 +1,4 @@
 .eggs/
 .idea/
 tests/output/
+linkml_owl.egg-info/
