@@ -7,6 +7,9 @@ language for authoring schemas to structure data. The perspective of
 linkml-owl is that elements of an OWL ontology (in particular,
 classes) are data elements that should conform to a schema
 
+* [EXAMPLES.md](EXAMPLES.md)
+* [SPECIFICATION.md](SPECIFICATION.md)
+
 ## Usage
 
 ```bash

@@ -1,47 +1,4 @@
-# linkml-owl
-
-This is an ALPHA version of a linkml runtime transformer for OWL
-
-The purpose is to translate LinkML **data instances** into OWL (TBox or ABox).
-
-For conversion of LinkML **schema** use `gen-owl` which is distributed part of the linkml core
-
-In future the code in this repo *may* be folded into the linkml-runtime dumper framework
-
-## Usage
-
-```bash
-linkml-dump-owl -s my_schema.yaml my_data.{yaml,json,tsv,rdf} -o my_ontology.owl.ttl 
-```
-
-## How it works
-
-Currently this relies on comments in the schema to specify OWL interpretations
-
-```yaml
-  parent:
-    description: >-
-      Direct chromosomal part which this is a part of. The partonomy forms a tree so this is
-      always zero or one.
-      Different species have different rules but typically the partonomy will be something like
-      1p31.1 -> 1p31 -> 1p3 -> 1p -> 1
-    range: ChromosomePart
-    slot_uri: BFO:0000050
-    comments:
-      - OWL>> ObjectSomeValuesFrom
-```
-
-This is a temporary situation
-
-## Relationship to OWL template languages
-
-For practical purposes, to convert from TSV to OWL you should for now use a dedicated environment:
-
- * dosdp-tools
- * robot-templates
- * ottr
-
-## Formalism
+# Formalism (EARLY DRAFT)
 
 A LinkML **model** `M` consists of:
 
