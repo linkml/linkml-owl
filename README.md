@@ -61,6 +61,29 @@ then run this through the command line tool to generate an ontology
 
 See [EXAMPLES.md](EXAMPLES.md) for a complete set of examples/conformance suite
 
+## Vocabulary
+
+Use the following keywords to annotate your schema elements:
+
+ * Slots
+    - Axiom type designators
+        - SubClassOf
+        - EquivalentClasses
+        - AnnotationAssertion
+        - ...
+    - Expression modifier designators
+        - ObjectSomeValuesFrom
+        - ObjectAllValuesFrom
+        - ...
+    - Collection type designators
+        - ObjectIntersectionOf
+        - ObjectUnionOf
+        - ...
+ * Classes
+    - Class
+    - Individual
+    - ...
+    
 
 ## Relationship to OWL template languages
 

@@ -5,6 +5,7 @@ from dataclasses import dataclass, field
 import logging
 import click
 from linkml_runtime import SchemaView
+from linkml_runtime.loaders import yaml_loader
 
 from rdflib import URIRef
 
@@ -69,14 +70,19 @@ class OWLDumper(Dumper):
     https://github.com/linkml/linkml/issues/267
     """
 
-    def to_ontology_document(self, element: Union[YAMLRoot, List[YAMLRoot]], schema: SchemaDefinition, iri=None) -> str:
+    def to_ontology_document(self, element: Union[YAMLRoot, List[YAMLRoot]], schema: Union[SchemaDefinition, str], iri=None) -> str:
         """
         Dump a linkml instance tree as a function syntax OWL ontology string
         """
         o = Ontology(schema.id)
         self.ontology = o
-        self.schema = schema
-        self.schemaview = SchemaView(schema)
+        if isinstance(schema, SchemaDefinition):
+            self.schema = schema
+            self.schemaview = SchemaView(schema)
+        else:
+            self.schemaview = SchemaView(schema)
+            self.schema = self.schemaview.schema
+            schema = self.schema
         #o.annotation(RDFS.label, name)
         doc = OntologyDocument(iri, o)
         if isinstance(element, list):
@@ -90,7 +96,7 @@ class OWLDumper(Dumper):
         """
         Dump a linkml instance tree as a function syntax OWL ontology string
         """
-        doc = to_ontology_document(element, schema, iri=iri)
+        doc = self.to_ontology_document(element, schema, iri=iri)
         return str(doc)
 
     def transform(self, element: YAMLRoot, schema: SchemaDefinition, is_element_an_object=True,
@@ -129,8 +135,6 @@ class OWLDumper(Dumper):
         if Class.__name__ in cls_interps:
             is_element_an_owl_class = True
         subj = None
-        conjunction_groups = []
-        disjunction_groups = []
         eai = EntityAxiomIndex()
         for k, v in vars(element).items():
             slot: SlotDefinition
@@ -158,9 +162,9 @@ class OWLDumper(Dumper):
                 interps = self._get_interpretations(actual_slot)
             is_disjunction = 'UnionOf' in interps
             is_conjunction = 'IntersectionOf' in interps
-            is_equiv = 'EquivalentTo' in interps  ## TODO: used?
             is_object_ref = slot.range in self.schema.classes
 
+            # normalize input_vals to a list, then transform
             if isinstance(v, list):
                 input_vals = v
             elif isinstance(v, dict):
@@ -169,16 +173,7 @@ class OWLDumper(Dumper):
                 input_vals = [v]
             tr_vals = [self.transform(x, schema, is_element_an_object=is_object_ref) for x in input_vals]
             print(f'TR Vals={tr_vals}')
-            if is_element_an_owl_class:
-                # TODO: is this used?
-                if is_equiv:
-                    axiomType = EquivalentClasses
-                else:
-                    axiomType = SubClassOf
-            else:
-                axiomType = None
             parents = []
-            axiomType = SubClassOf
             is_class_logical_axiom = False
             for tr_val in tr_vals:
                 print(f'  TR_VAL = {tr_val}')
@@ -188,76 +183,60 @@ class OWLDumper(Dumper):
                     if isinstance(tr_val, str):
                         tr_val = self._get_IRI_str(tr_val)
                 parent = tr_val
+                # transform parents if an expression type is specified
                 if ObjectSomeValuesFrom.__name__ in interps:
                     parent = ObjectSomeValuesFrom(slot_uri, tr_val)
                     is_class_logical_axiom = True
-                    #axiomType = SubClassOf
                 elif ObjectAllValuesFrom.__name__ in interps:
                     parent = ObjectAllValuesFrom(slot_uri, tr_val)
                     is_class_logical_axiom = True
-                    #axiomType = SubClassOf
                 elif SubClassOf.__name__ in interps:
-                    axiomType = SubClassOf
+                    is_class_logical_axiom = True
                 elif EquivalentClasses.__name__ in interps:
-                    axiomType = EquivalentClasses
-                else:
-                    axiomType = AnnotationAssertion
+                    is_class_logical_axiom = True
                 parents.append(parent)
-            axiomType = None
+            axiom_type = None
             if SubClassOf.__name__ in interps:
-                axiomType = SubClassOf
+                axiom_type = SubClassOf
             elif EquivalentClasses.__name__ in interps:
-                axiomType = EquivalentClasses
-            if axiomType is None:
+                axiom_type = EquivalentClasses
+            if axiom_type is None:
                 if is_class_logical_axiom:
-                    axiomType = SubClassOf
+                    axiom_type = SubClassOf
                 else:
-                    axiomType = AnnotationAssertion
-            print(f'AXIOM TYPE = {axiomType}')
-            # TODO: delay conj/disj
+                    axiom_type = AnnotationAssertion
+            print(f'AXIOM TYPE = {axiom_type}')
             if is_disjunction:
                 # translate the filler list to a single entry that is a disjunction
-                disj = ObjectUnionOf(*parents)
-                #parents = [disj]
-                if len(disjunction_groups) == 0:
-                    disjunction_groups = [[]]
-                disjunction_groups[0] += parents
+                # TODO: allow for different groupings; for now default to 0
                 level = 0
-                eai.add_operands((level, axiomType.__name__, ObjectUnionOf.__name__), parents)
+                eai.add_operands((level, axiom_type.__name__, ObjectUnionOf.__name__), parents)
                 parents = []
             if is_conjunction:
                 # translate the filler list to a single entry that is a conjunction
-                conj = ObjectIntersectionOf(*parents)
-                #parents = [conj]
-                if len(conjunction_groups) == 0:
-                    conjunction_groups = [[]]
-                conjunction_groups[0] += parents
+                # TODO: allow for different groupings; for now default to 0
                 level = 0
-                eai.add_operands((level, axiomType.__name__, ObjectIntersectionOf.__name__), parents)
+                eai.add_operands((level, axiom_type.__name__, ObjectIntersectionOf.__name__), parents)
                 parents = []
             for parent in parents:
-                if axiomType == SubClassOf:
+                if axiom_type == SubClassOf:
                     print(f'type(subj) = {type(subj)} // {subj}')
                     if isinstance(subj, AnonymousIndividual):
                         axiom = None
                     else:
                         axiom = SubClassOf(subj, parent)
-                elif axiomType == EquivalentClasses:
+                elif axiom_type == EquivalentClasses:
                     axiom = EquivalentClasses(subj, parent)
-                elif axiomType == ClassAssertion:
+                elif axiom_type == ClassAssertion:
                     axiom = ClassAssertion(parent, subj)
-                elif axiomType == ObjectPropertyAssertion:
+                elif axiom_type == ObjectPropertyAssertion:
                     axiom = ObjectPropertyAssertion(slot_uri, subj, parent)
-                elif axiomType == AnnotationAssertion:
+                elif axiom_type == AnnotationAssertion:
                     axiom = AnnotationAssertion(slot_uri, subj, parent)
                 else:
-                    raise Exception(f'Unknown: {axiomType}')
+                    raise Exception(f'Unknown: {axiom_type}')
                 if axiom is not None:
                     o.axioms.append(axiom)
-        #for operands in conjunction_groups:
-        #    o.axioms.append(EquivalentClasses(subj, *operands))
-        #for operands in disjunction_groups:
-        #    o.axioms.append(ObjectUnionOf(subj, *operands))
         for op_key, operands in eai.operand_list_index.items():
             _, interp, operator = op_key
             print(f'EAI {subj}: {interp} => {operator} over {operands}')
@@ -280,9 +259,9 @@ class OWLDumper(Dumper):
 
     def _instance_of_linkml_class(self, v) -> bool:
         try:
-            type(v).class_name
-            return True
-        except:
+            if type(v).class_name:
+                return True
+        except Exception:
             return False
 
     def _lookup_slot(self, cls: ClassDefinition, field: str) -> SlotDefinition:
@@ -306,6 +285,7 @@ class OWLDumper(Dumper):
         interps = set()
         OWL_MARKER = 'OWL>>'
         for c in x.comments:
+            # TODO: deprecated comment-based way of doing this
             if c.startswith(OWL_MARKER):
                 n = c.replace(OWL_MARKER, '').strip()
                 interps.add(n)
@@ -317,17 +297,6 @@ class OWLDumper(Dumper):
         uri = self.schemaview.expand_curie(id)
         if uri:
             return uri
-        # CHECK IF WE NEED LEGACY CODE BELOW; TODO
-        if id.startswith('http'):
-            return id
-        parts = id.split(':')
-        if len(parts) == 2:
-            [pfx, local] = parts
-            if pfx in self.schema.prefixes:
-                return f'{self.schema.prefixes[pfx].prefix_reference}{local}'
-            else:
-                logging.error(f'Undeclared: {pfx} -- just using {id}')
-        return id
 
     def _get_actual_slot(self, slot: SlotDefinition) -> SlotDefinition:
         """
@@ -344,20 +313,21 @@ class OWLDumper(Dumper):
             logging.warning(f'Using actual slot uri: {actual_slot.name} >> {slot.name}')
         return actual_slot
 
-@click.option('-s', '--schema-file', required=True, help="""
-Path to LinkML schema
-""")
 @click.command()
-def cli(inputfile: str, schema_file: str, raw: bool, **args):
+@click.option('-s', '--schema-file', required=True,
+              help="Path to LinkML schema")
+@click.option('-o', '--output', required=True,
+              help="Path to OWL functional syntax output")
+@click.argument('inputfile')
+def cli(inputfile: str, schema_file: str, output, **args):
     """
     Dump LinkML instance data as OWL
     """
-    schema = YAMLGenerator(schema_file).schema
     element = yaml_loader.load(inputfile)
     dumper = OWLDumper()
-    ont = dumper.dumps(collection, schema)
-    with open(OWL_OUT, 'w') as stream:
-        stream.write(str(ont))
+    doc = dumper.dumps(element, schema_file)
+    with open(output, 'w') as stream:
+        stream.write(str(doc))
 
 
 if __name__ == '__main__':

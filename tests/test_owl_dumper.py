@@ -91,6 +91,10 @@ slots:
     slot_uri: BFO:0000050
     range: NamedThing
     multivalued: true
+  other_part_ofs:
+    slot_uri: BFO:0000050
+    range: NamedThing
+    multivalued: true
     
 classes:
   Thing:
@@ -206,6 +210,7 @@ classes:
     slots:
       - subclass_of
       - part_of
+      - other_part_ofs
     slot_usage:
       subclass_of:
         required: true
@@ -215,6 +220,11 @@ classes:
         required: true
         annotations:
           owl: EquivalentClasses, IntersectionOf, ObjectSomeValuesFrom
+      other_part_ofs:
+        required: false
+        description: for hidden GCIs
+        annotations:
+          owl: ObjectSomeValuesFrom
     
 """
 
@@ -358,6 +368,16 @@ class TestOwlDumper(unittest.TestCase):
                                                                ObjectSomeValuesFrom(BFO['0000050'],X.b),
                                                                ObjectSomeValuesFrom(BFO['0000050'],X.c)))],
                   """All slot value interpretations are collected into a single IntersectionOf""")
+        add_check("Hidden GCI",
+                  [py_mod.EquivGenusAndPartOf('x:a',
+                                              subclass_of=['X:genus'],
+                                              part_of=['x:b'],
+                                              other_part_ofs=['x:c'])],
+                  [EquivalentClasses(X.a, ObjectIntersectionOf(X.genus,
+                                                               ObjectSomeValuesFrom(BFO['0000050'],X.b))),
+                   SubClassOf(X.a, ObjectSomeValuesFrom(BFO['0000050'], X.c))],
+                  """Demonstrates a case where some slots contribute to a logical definition (equiv axiom),
+                     and other contribute to additional axioms (so called hidden GCIs)""")
         for check in checks:
             print(f'** CHECK: {check.title}')
             md += f'## {check.title}\n\n'
