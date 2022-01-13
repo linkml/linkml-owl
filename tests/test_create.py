@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from rdflib import Graph
-from model.chromschema import *
+from tests.model.chromschema import *
 from linkml_owl.owl_dumper import OWLDumper
 from linkml.generators.yamlgen import YAMLGenerator
 from linkml.generators.owlgen import OwlSchemaGenerator

@@ -1,0 +1,2068 @@
+name: mondo
+id: https://example.org/mondo/
+default_curi_maps:
+- semweb_context
+- obo_context
+default_prefix: https://example.org/mondo/
+types:
+  string:
+    base: str
+    uri: xsd:string
+slots:
+  name:
+    slot_uri: rdfs:label
+  definition:
+    slot_uri: IAO:0000115
+  subclass_of:
+    slot_uri: rdfs:subclass_of
+    range: OntologyClass
+  equivalentTo:
+    close_mappings:
+    - owl:equivalentClass
+    description: String serialization of RHS expression in equivalence axiom
+  location:
+    range: OwlThingClass
+  disease:
+    range: DiseaseClass
+  stimulus:
+    range: MaterialEntityClass
+  agent:
+    range: OrganismClass
+  gene:
+    range: GeneClass
+  mode_of_inheritance:
+    range: ModeOfInheritanceClass
+  structure:
+    range: OwlThingClass
+  process:
+    range: OwlThingClass
+  feature:
+    range: InfectiousDiseaseClass
+  infectious_disease:
+    range: InfectiousDiseaseClass
+  vector:
+    range: OrganismClass
+  parent:
+    range: DiseaseClass
+  cause:
+    range: InfectiousDiseaseClass
+  neoplasm:
+    range: NeoplasmClass
+  substance:
+    range: OwlThingClass
+  exposure:
+    range: ExposureEventClass
+classes:
+  OntologyClass:
+    aliases:
+    - OWL Class
+    description: Instance of OWL Class
+    mixin: true
+    slots:
+    - name
+    - definition
+    - equivalentTo
+    class_uri: owl:Class
+  OntologyClassTemplate:
+    aliases:
+    - design pattern
+    - template
+    description: Instances of OWL classes that conform to a template
+    mixin: true
+    mixins:
+    - OntologyClass
+  OntologyClassSubset:
+    description: Mixin for instances of OWL Classes that are used as range references
+    mixin: true
+    mixins:
+    - OntologyClass
+  OwlThingClass:
+    description: Any subclass of owl_thing (owl_thing)
+    mixins:
+    - OntologyClassSubset
+    slot_usage:
+      subclass_of:
+        has_member:
+          equals_string: owl_thing
+  LocationTopTemplate:
+    aliases:
+    - location_top template
+    description: TBD.
+    mixins:
+    - OntologyClassTemplate
+    slots:
+    - location
+    slot_usage:
+      location:
+        range: OwlThingClass
+      name:
+        string_serialization: '{location}s disease'
+      definition:
+        string_serialization: A disease involving the {location}s.
+      equivalentTo:
+        string_serialization: '''disease'' and ''disease has location'' some {location}s'
+  DiseaseClass:
+    description: Any subclass of disease (disease)
+    mixins:
+    - OntologyClassSubset
+    slot_usage:
+      subclass_of:
+        has_member:
+          equals_string: disease
+  MaterialEntityClass:
+    description: Any subclass of BFO:0000040 ('material entity')
+    mixins:
+    - OntologyClassSubset
+    slot_usage:
+      subclass_of:
+        has_member:
+          equals_string: BFO:0000040
+  EnvironmentalStimulusTemplate:
+    aliases:
+    - environmental_stimulus template
+    description: 'A disease that is caused by exposure to an environmental stimulus,
+      like the sun or pesticides.  Examples: [carbon monoxide-induced parkinsonism](http://purl.obolibrary.org/obo/MONDO_0017639),
+      [cocaine intoxication](http://purl.obolibrary.org/obo/MONDO_0019544)'
+    mixins:
+    - OntologyClassTemplate
+    slots:
+    - disease
+    - stimulus
+    slot_usage:
+      disease:
+        range: DiseaseClass
+      stimulus:
+        range: MaterialEntityClass
+      name:
+        string_serialization: '{disease}s from {stimulus}s'
+      definition:
+        string_serialization: A {disease}s that is caused by exposure to {stimulus}s.
+      equivalentTo:
+        string_serialization: '{disease}s and ''realized in response to stimulus''
+          some {stimulus}s'
+  AnatomicalStructureClass:
+    description: Any subclass of UBERON:0000061 ('anatomical structure')
+    mixins:
+    - OntologyClassSubset
+    slot_usage:
+      subclass_of:
+        has_member:
+          equals_string: UBERON:0000061
+  SpecificInfectiousDiseaseByLocationTemplate:
+    aliases:
+    - specific_infectious_disease_by_location template
+    description: '
+
+      TODO'
+    mixins:
+    - OntologyClassTemplate
+    slots:
+    - disease
+    - location
+    slot_usage:
+      disease:
+        range: DiseaseClass
+      location:
+        range: AnatomicalStructureClass
+      name:
+        string_serialization: '{location}s {disease}s'
+      definition:
+        string_serialization: An {disease}s involving a pathogenic inflammatory response
+          in the {location}s.
+      equivalentTo:
+        string_serialization: '{disease}s and ''disease has inflammation site'' some
+          {location}s'
+  AutoimmuneInflammationTemplate:
+    aliases:
+    - autoimmune_inflammation template
+    description: 'An instance of an autoimmune disease that is described by inflammation
+      in a specific anatomical entity.
+
+      Example: [autoimmune thyroid disease](http://purl.obolibrary.org/obo/MONDO_0005623)'
+    mixins:
+    - OntologyClassTemplate
+    slots:
+    - location
+    slot_usage:
+      location:
+        range: AnatomicalStructureClass
+      name:
+        string_serialization: autoimmune {location}s inflammation
+      definition:
+        string_serialization: An autoimmune inflammatory disease involving a pathogenic
+          inflammatory response in the {location}s.
+      equivalentTo:
+        string_serialization: '''autoimmune disease'' and ''disease has inflammation
+          site'' some {location}s'
+  AcquiredTemplate:
+    aliases:
+    - acquired template
+    description: Pattern for extending a etiology-generic disease class to an acquired
+      form.  Here acquired means that basis for the disease is acquired during the
+      individuals lifetime. It need not exclude genetic etiology, but it excludes
+      inherited.
+    mixins:
+    - OntologyClassTemplate
+    slots:
+    - disease
+    slot_usage:
+      disease:
+        range: DiseaseClass
+      name:
+        string_serialization: acquired {disease}s
+      definition:
+        string_serialization: An instance of {disease}s that is acquired during the
+          lifetime of the individual.
+      equivalentTo:
+        string_serialization: '{disease}s and ''has modifier'' some ''acquired'''
+  CarcinomaInSituTemplate:
+    aliases:
+    - carcinoma_in_situ template
+    description: 'This is a Design pattern for classes representing in situ carcinomas
+      based on their location.
+
+      Examples: [breast carcinoma in situ](http://purl.obolibrary.org/obo/MONDO_0004658),
+      [liver carcinoma in situ](http://purl.obolibrary.org/obo/MONDO_0004715)'
+    mixins:
+    - OntologyClassTemplate
+    slots:
+    - location
+    slot_usage:
+      location:
+        range: OwlThingClass
+      name:
+        string_serialization: '{location}s carcinoma in situ'
+      definition:
+        string_serialization: A carcinoma in situ involving a {location}s.
+      equivalentTo:
+        string_serialization: '''carcinoma in situ'' and ''disease has location''
+          some {location}s'
+  AllergicFormOfDiseaseTemplate:
+    aliases:
+    - allergic_form_of_disease template
+    description: '
+
+      An etiological pattern that extends an etiology-generic disease to an allergic
+      form (i.e. caused by pathological type I hypersensitivity reaction). The [allergy.yaml](https://github.com/monarch-initiative/mondo/blob/master/src/patterns/dosdp-patterns/allergy.yaml)
+      pattern is to refine an existing disease by trigger.
+
+      Examples: [allergic respiratory disease](http://purl.obolibrary.org/obo/MONDO_0000771),
+      [atopic eczema](http://purl.obolibrary.org/obo/MONDO_0004980), [allergic otitis
+      media](http://purl.obolibrary.org/obo/MONDO_0021202)'
+    mixins:
+    - OntologyClassTemplate
+    slots:
+    - disease
+    slot_usage:
+      disease:
+        range: DiseaseClass
+      name:
+        string_serialization: allergic {disease}s
+      definition:
+        string_serialization: A {disease}s with a basis in a pathological type I hypersensitivity
+          reaction.
+      equivalentTo:
+        string_serialization: '{disease}s and ''disease has basis in disruption of''
+          some ''type I hypersensitivity'''
+  AcuteTemplate:
+    aliases:
+    - acute template
+    description: 'This pattern is applied to diseases that are described as having
+      an acute onset, i.e. the sudden appearance of disease manifestations over a
+      short period of time.
+
+      Examples: [acute bronchiolitis](http://purl.obolibrary.org/obo/MONDO_0020680),
+      [acute liver failure](http://purl.obolibrary.org/obo/MONDO_0019542)'
+    mixins:
+    - OntologyClassTemplate
+    slots:
+    - disease
+    slot_usage:
+      disease:
+        range: DiseaseClass
+      name:
+        string_serialization: acute {disease}s
+      definition:
+        string_serialization: Acute form of {disease}s.
+      equivalentTo:
+        string_serialization: '{disease}s and ''has modifier'' some ''acute'''
+  NuclearSubtypeTemplate:
+    aliases:
+    - nuclear_subtype template
+    description: A disease that is classified as a nuclear subtype, due to a defect
+      in a nuclear gene, such as MONDO:0009640 'mitochondrial complex I deficiency,
+      nuclear type'.
+    mixins:
+    - OntologyClassTemplate
+    slots:
+    - disease
+    slot_usage:
+      disease:
+        range: DiseaseClass
+      name:
+        string_serialization: '{disease}s, nuclear type'
+      definition:
+        string_serialization: A {disease}s that has a defect in a nuclear gene.
+      equivalentTo:
+        string_serialization: '{disease}s and ''disease has basis in dysfunction of''
+          some ''nuclear_gene'''
+  InfantileTemplate:
+    aliases:
+    - infantile template
+    description: 'An instance of a disease that has an onset of signs or symptoms
+      of disease within the first 12 months of life (infantile onset).
+
+      Examples: [infant botulism](http://purl.obolibrary.org/obo/MONDO_0015804), [infantile
+      glycine encephalopathy](http://purl.obolibrary.org/obo/MONDO_0017354)'
+    mixins:
+    - OntologyClassTemplate
+    slots:
+    - disease
+    slot_usage:
+      disease:
+        range: DiseaseClass
+      name:
+        string_serialization: infantile {disease}s
+      definition:
+        string_serialization: A {disease}s that occurs between 28 days to one year
+          of life..
+      equivalentTo:
+        string_serialization: '{disease}s and ''has modifier'' some ''infantile'''
+  XLinkedTemplate:
+    aliases:
+    - x_linked template
+    description: TBD.
+    mixins:
+    - OntologyClassTemplate
+    slots:
+    - disease
+    slot_usage:
+      disease:
+        range: DiseaseClass
+      name:
+        string_serialization: X-linked {disease}s
+      definition:
+        string_serialization: X-linked form of {disease}s.
+      equivalentTo:
+        string_serialization: '{disease}s and ''has modifier'' some ''x_linked_inheritance'''
+  IdiopathicTemplate:
+    aliases:
+    - idiopathic template
+    description: 'This pattern is applied to diseases that are described as being
+      idiopathic, i.e. having an uncertain or unknown cause.
+
+      Examples: [idiopathic aplastic anemia](http://purl.obolibrary.org/obo/MONDO_0012197),
+      [idiopathic avascular necrosis](http://purl.obolibrary.org/obo/MONDO_0018380)'
+    mixins:
+    - OntologyClassTemplate
+    slots:
+    - disease
+    slot_usage:
+      disease:
+        range: DiseaseClass
+      name:
+        string_serialization: idiopathic {disease}s
+      definition:
+        string_serialization: Idiopathic form of {disease}s.
+      equivalentTo:
+        string_serialization: '{disease}s and ''has modifier'' some ''idiopathic'''
+  ChronicTemplate:
+    aliases:
+    - chronic template
+    description: 'This pattern is applied to diseases that are described as having
+      an chronic duration, i.e. a disease having a slow progressive course of indefinite
+      duration.
+
+      Examples: [chronic bronchitis](http://purl.obolibrary.org/obo/MONDO_0005607),
+      [chronic hepatitis B virus infection](http://purl.obolibrary.org/obo/MONDO_0005366)'
+    mixins:
+    - OntologyClassTemplate
+    slots:
+    - disease
+    slot_usage:
+      disease:
+        range: DiseaseClass
+      name:
+        string_serialization: chronic {disease}s
+      definition:
+        string_serialization: Chronic form of {disease}s.
+      equivalentTo:
+        string_serialization: '{disease}s and ''has modifier'' some ''chronic'''
+  MelanomaDiseaseHasLocationXTemplate:
+    aliases:
+    - melanoma disease has location X template
+    description: ' Melanomas are malignant, usually aggressive tumor composed of atypical,
+      neoplastic melanocytes. This is a design pattern for classes representing melanomas
+      based on their location. This may be the site of origin, but it can also represent
+      a secondary site for metastatized cancer. We use the generic ''disease has location''
+      relation, which generalized over primary and secondary sites.
+
+      Examples: [cutaneous melanoma](http://purl.obolibrary.org/obo/MONDO_0005012),
+      [malignant breast melanoma](http://purl.obolibrary.org/obo/MONDO_0002975), [malignant
+      melanoma of the mucosa](http://purl.obolibrary.org/obo/MONDO_0015694) (22 total)'
+    mixins:
+    - OntologyClassTemplate
+    slots:
+    - location
+    slot_usage:
+      location:
+        range: OwlThingClass
+      name:
+        string_serialization: '{location}s melanoma'
+      definition:
+        string_serialization: A melanoma that involves the {location}s.
+      equivalentTo:
+        string_serialization: '''melanoma'' and (''disease has location'' some {location}s)'
+  SpecificInflammatoryDiseaseBySiteTemplate:
+    aliases:
+    - specific_inflammatory_disease_by_site template
+    description: '
+
+      as for inflammatory_disease_by_site, but refining a specific disease'
+    mixins:
+    - OntologyClassTemplate
+    slots:
+    - disease
+    - agent
+    slot_usage:
+      disease:
+        range: DiseaseClass
+      agent:
+        range: OrganismClass
+      name:
+        string_serialization: '{agent}s {disease}s'
+      definition:
+        string_serialization: An {disease}s caused by infection with {agent}s.
+      equivalentTo:
+        string_serialization: '{disease}s and ''realized in response to stimulus''
+          some {agent}s'
+  SmallCellCarcinomaDiseaseHasLocationXTemplate:
+    aliases:
+    - small cell carcinoma disease has location X template
+    description: 'This is auto-generated. Add your description here
+
+      Examples: [cervical small cell carcinoma](http://purl.obolibrary.org/obo/MONDO_0006142),
+      [pancreatic small cell neuroendocrine carcinoma](http://purl.obolibrary.org/obo/MONDO_0006348),
+      [ureter small cell carcinoma](http://purl.obolibrary.org/obo/MONDO_0006482)
+      (16 total)'
+    mixins:
+    - OntologyClassTemplate
+    slots:
+    - location
+    slot_usage:
+      location:
+        range: OwlThingClass
+      name:
+        string_serialization: '{location}s small cell carcinoma'
+      definition:
+        string_serialization: An aggressive, high-grade and poorly differentiated
+          carcinoma with neuroendocrine differentiation that arises from the {location}s.
+          It is characterized by the presence of malignant small cells.
+      equivalentTo:
+        string_serialization: '''small cell carcinoma'' and (''disease has location''
+          some {location}s)'
+  RareTemplate:
+    aliases:
+    - rare template
+    description: TBD.
+    mixins:
+    - OntologyClassTemplate
+    slots:
+    - disease
+    slot_usage:
+      disease:
+        range: DiseaseClass
+      name:
+        string_serialization: rare {disease}s
+      definition:
+        string_serialization: Any of the forms of {disease}s that have a rare incidence.
+      equivalentTo:
+        string_serialization: '{disease}s and ''has modifier'' some ''rare'''
+  GeneticTemplate:
+    aliases:
+    - genetic template
+    description: TBD.
+    mixins:
+    - OntologyClassTemplate
+    slots:
+    - disease
+    slot_usage:
+      disease:
+        range: DiseaseClass
+      name:
+        string_serialization: genetic {disease}s
+      definition:
+        string_serialization: An instance of {disease}s that is caused by a genetic
+          modification in an individual.
+      equivalentTo:
+        string_serialization: '{disease}s and ''has modifier'' some ''genetic'''
+  OrganismClass:
+    description: Any subclass of NCBITaxon:1 ('organism')
+    mixins:
+    - OntologyClassSubset
+    slot_usage:
+      subclass_of:
+        has_member:
+          equals_string: NCBITaxon:1
+  GeneClass:
+    description: Any subclass of SO:0000704 ('gene')
+    mixins:
+    - OntologyClassSubset
+    slot_usage:
+      subclass_of:
+        has_member:
+          equals_string: SO:0000704
+  ModeOfInheritanceClass:
+    description: Any subclass of HP:0000005 ('mode of inheritance')
+    mixins:
+    - OntologyClassSubset
+    slot_usage:
+      subclass_of:
+        has_member:
+          equals_string: HP:0000005
+  DiseaseSeriesByGeneAndInheritanceTemplate:
+    aliases:
+    - disease_series_by_gene_and_inheritance template
+    description: "This pattern is for diseases that are caused by a single mutation\
+      \ in a single gene, that have gene-based names, and are inherited by a specific\
+      \ mechanism, succh as autosomal dominant and autosomal recessive. \nExamples:\
+      \ [Growth hormone insensitivity syndrome with immune dysregulation](https://omim.org/phenotypicSeries/PS245590),\
+      \ Growth hormone insensitivity with immune dysregulation 1, autosomal recessive\
+      \ and Growth hormone insensitivity with immune dysregulation 2, autosomal dominant"
+    mixins:
+    - OntologyClassTemplate
+    slots:
+    - disease
+    - gene
+    - mode_of_inheritance
+    slot_usage:
+      disease:
+        range: DiseaseClass
+      gene:
+        range: GeneClass
+      mode_of_inheritance:
+        range: ModeOfInheritanceClass
+      name:
+        string_serialization: '{disease}s caused by mutation in {gene}s, {mode_of_inheritance}s'
+      definition:
+        string_serialization: Any {disease}s in which the cause of the disease is
+          a mutation in the {gene}s gene, and has {mode_of_inheritance}s.
+      equivalentTo:
+        string_serialization: '{disease}s and ''disease has basis in dysfunction of''
+          some {gene}s and ''has modifier'' some {mode_of_inheritance}s'
+  DiseaseByDysfunctionalStructureTemplate:
+    aliases:
+    - disease_by_dysfunctional_structure template
+    description: '
+
+      Diseases classified by a perturbation in an anatomical structure (such as a
+      subcellular component, or an organ)'
+    mixins:
+    - OntologyClassTemplate
+    slots:
+    - structure
+    slot_usage:
+      structure:
+        range: AnatomicalStructureClass
+      name:
+        string_serialization: '{structure}s disease'
+      definition:
+        string_serialization: Any disease in which the causes of the disease is a
+          perturbation of the {structure}s leading to its dysfunction.
+      equivalentTo:
+        string_serialization: '''disease'' and ''disease has basis in dysfunction
+          of'' some {structure}s'
+  NeoplasmTemplate:
+    aliases:
+    - neoplasm template
+    description: TBD.
+    mixins:
+    - OntologyClassTemplate
+    slots:
+    - structure
+    slot_usage:
+      structure:
+        range: OwlThingClass
+      name:
+        string_serialization: '{structure}s neoplasm'
+      definition:
+        string_serialization: A neoplasm involving a {structure}s.
+      equivalentTo:
+        string_serialization: '''neoplasm'' and ''disease arises from structure''
+          some {structure}s'
+  IsolatedTemplate:
+    aliases:
+    - isolated template
+    description: 'Some diseases exist in both isolated and syndromic forms. For example,
+      aniridia ([MONDO_0019172 aniridia](http://purl.obolibrary.org/obo/MONDO_0019172),
+      [MONDO_0020148''syndromic aniridia''](http://purl.obolibrary.org/obo/MONDO_0020148)
+      and [MONDO_0007119 ''isolated aniridia''](http://purl.obolibrary.org/obo/MONDO_0007119).
+      Use this pattern to define the isolated form of a disease when a term exists
+      for the isolated/syndromic-neutral version. In general, this pattern should
+      be used in parallel with syndromic. E.g. if you make a term ''syndromic disease,
+      you should also have ''isolated disease'' [see pattern here(https://github.com/monarch-initiative/mondo/blob/master/src/patterns/dosdp-patterns/syndromic.yaml).  Note
+      that the isolated and syndromic forms will be inferred to be disjoint due to
+      the GCI pattern.
+
+      Examples: [''isolated aniridia''](http://purl.obolibrary.org/obo/MONDO_0007119),
+      [''isolated dystonia''](http://purl.obolibrary.org/obo/MONDO_0015494), [''isolated
+      focal palmoplantar keratoderma''](http://purl.obolibrary.org/obo/MONDO_0017673)'
+    mixins:
+    - OntologyClassTemplate
+    slots:
+    - disease
+    slot_usage:
+      disease:
+        range: DiseaseClass
+      name:
+        string_serialization: isolated {disease}s
+      definition:
+        string_serialization: A {disease}s that is not part of a larger syndrome.
+      equivalentTo:
+        string_serialization: '{disease}s and ''has modifier'' some ''isolated'''
+  ChemicalClass:
+    description: Any subclass of CHEBI:24431 ('chemical')
+    mixins:
+    - OntologyClassSubset
+    slot_usage:
+      subclass_of:
+        has_member:
+          equals_string: CHEBI:24431
+  DependenceOnSubstanceTemplate:
+    aliases:
+    - dependence_on_substance template
+    description: 'Dependence on a substance that specifies the environmental stimulus
+      such as alcohol, cocaine, etc. Example: [dependence on cocaine](http://purl.obolibrary.org/obo/MONDO_0005186).'
+    mixins:
+    - OntologyClassTemplate
+    slots:
+    - stimulus
+    slot_usage:
+      stimulus:
+        range: ChemicalClass
+      name:
+        string_serialization: dependence on {stimulus}s
+      definition:
+        string_serialization: A substance dependence on {stimulus}s.
+      equivalentTo:
+        string_serialization: '''substance dependence'' and ''realized in response
+          to stimulus'' some {stimulus}s'
+  CongenitalTemplate:
+    aliases:
+    - congenital template
+    description: 'An instance of a disease in which the disease is present at birth,
+      regardless of cause.
+
+      Examples: [congenital agammaglobulinemia](http://purl.obolibrary.org/obo/MONDO_0001902),
+      [congenital nystagmus](http://purl.obolibrary.org/obo/MONDO_0005712)'
+    mixins:
+    - OntologyClassTemplate
+    slots:
+    - disease
+    slot_usage:
+      disease:
+        range: DiseaseClass
+      name:
+        string_serialization: congenital {disease}s
+      definition:
+        string_serialization: An instance of {disease}s that is present from birth.
+      equivalentTo:
+        string_serialization: '{disease}s and ''has modifier'' some ''congenital'''
+  ChildhoodTemplate:
+    aliases:
+    - childhood template
+    description: 'An instance of a disease that has an onset of signs or symptoms
+      of disease between the age of 1 to 5 years (childhood onset).
+
+      Examples: [childhood astrocytic tumor](http://purl.obolibrary.org/obo/MONDO_0002505),
+      [childhood malignant melanoma](http://purl.obolibrary.org/obo/MONDO_0042494)'
+    mixins:
+    - OntologyClassTemplate
+    slots:
+    - disease
+    slot_usage:
+      disease:
+        range: DiseaseClass
+      name:
+        string_serialization: childhood {disease}s
+      definition:
+        string_serialization: A {disease}s that occurs during childhood.
+      equivalentTo:
+        string_serialization: '{disease}s and ''has modifier'' some ''childhood'''
+  AdultTemplate:
+    aliases:
+    - adult template
+    description: 'An instance of a disease that has an onset of signs or symptoms
+      of disease between the age of 16 years or later (adult onset).
+
+      Examples: [adult brain stem neoplasm](http://purl.obolibrary.org/obo/MONDO_0024797),
+      [adult-onset myasthenia gravis](http://purl.obolibrary.org/obo/MONDO_0018324)'
+    mixins:
+    - OntologyClassTemplate
+    slots:
+    - disease
+    slot_usage:
+      disease:
+        range: DiseaseClass
+      name:
+        string_serialization: adult {disease}s
+      definition:
+        string_serialization: A {disease}s that occurs in an adult.
+      equivalentTo:
+        string_serialization: '{disease}s and ''has modifier'' some ''adult'''
+  AnatomicalEntityOrCellClass:
+    description: Any subclass of 'anatomical entity' or 'cell' ('anatomical entity'
+      or 'cell')
+    mixins:
+    - OntologyClassSubset
+    slot_usage:
+      subclass_of:
+        has_member:
+          equals_string: '''anatomical entity'' or ''cell'''
+  LocationTemplate:
+    aliases:
+    - location template
+    description: 'A disease that is located in a specific anatomical site.
+
+      Examples: [''abdominal cystic lymphangioma''](http://purl.obolibrary.org/obo/MONDO_0021726),
+      [''articular cartilage disease''](http://purl.obolibrary.org/obo/MONDO_0003816),
+      [''urethral disease''](http://purl.obolibrary.org/obo/MONDO_0004184)'
+    mixins:
+    - OntologyClassTemplate
+    slots:
+    - disease
+    - location
+    slot_usage:
+      disease:
+        range: DiseaseClass
+      location:
+        range: AnatomicalEntityOrCellClass
+      name:
+        string_serialization: '{disease}s of {location}s'
+      definition:
+        string_serialization: A {disease}s that involves the {location}s.
+      equivalentTo:
+        string_serialization: '{disease}s and ''disease has location'' some {location}s'
+  DiseaseOrDisorderClass:
+    description: Any subclass of MONDO:0000001 ('disease or disorder')
+    mixins:
+    - OntologyClassSubset
+    slot_usage:
+      subclass_of:
+        has_member:
+          equals_string: MONDO:0000001
+  InheritedSusceptibilityTemplate:
+    aliases:
+    - inherited_susceptibility template
+    description: 'This pattern should be used for children of MONDO_0020573''inherited
+      disease susceptibility'', including OMIM phenotypic series (OMIMPS) for which
+      the subclasses are susceptibilities. Note, this pattern should not have an asserted
+      causative gene as logical axiom (and no single causative gene in text definition),
+      in those cases, the susceptibility_by_gene pattern should be used instead. The
+      children should have asserted causative genes in the text definitions and in
+      the logical axioms. This pattern is a superclass of the susceptibility_by_gene
+      pattern.
+
+      Examples: [''microvascular complications of diabetes, susceptibility''](http://purl.obolibrary.org/obo/MONDO_0000065),
+      [''epilepsy, idiopathic generalized''](http://purl.obolibrary.org/obo/MONDO_0005579),
+      [''aspergillosis, susceptibility to''](http://purl.obolibrary.org/obo/MONDO_0013562).'
+    mixins:
+    - OntologyClassTemplate
+    slots:
+    - disease
+    slot_usage:
+      disease:
+        range: DiseaseOrDisorderClass
+      name:
+        string_serialization: '{disease}s susceptibility'
+      definition:
+        string_serialization: An inherited susceptibility or predisposition to developing
+          {disease}s.
+      equivalentTo:
+        string_serialization: ('inherited disease susceptibility' and ('predisposes
+          towards' some {disease}s))
+  AdenocarcinomaDiseaseHasLocationXTemplate:
+    aliases:
+    - adenocarcinoma disease has location X template
+    description: 'Adenocarcinoma is a common cancer characterized by the presence
+      of malignant glandular cells. This is a design pattern for classes representing
+      adenocarcinomas based on their location. This may be the site of origin, but
+      it can also represent a secondary site for metastatized cancer. We use the generic
+      disease has location relation, which generalized over primary and secondary
+      sites.
+
+      Examples: [adenocarcinoma of cervix uteri](http://purl.obolibrary.org/obo/MONDO_0016275),
+      [pituitary adenocarcinoma (disease)](http://purl.obolibrary.org/obo/MONDO_0017582)'
+    mixins:
+    - OntologyClassTemplate
+    slots:
+    - location
+    slot_usage:
+      location:
+        range: OwlThingClass
+      name:
+        string_serialization: '{location}s adenocarcinoma'
+      definition:
+        string_serialization: A carcinoma that arises from glandular epithelial cells
+          of the {location}s
+      equivalentTo:
+        string_serialization: '''adenocarcinoma'' and (''disease has location'' some
+          {location}s)'
+  LipomaDiseaseHasLocationXTemplate:
+    aliases:
+    - lipoma disease has location X template
+    description: 'A benign, usually painless, well-circumscribed lipomatous tumor
+      composed of adipose tissue that is located in a specific anatomical location.
+
+      Examples: [skin lipoma](http://purl.obolibrary.org/obo/MONDO_0000964), [colorectal
+      lipoma](http://purl.obolibrary.org/obo/MONDO_0003885), [tendon sheath lipoma](http://purl.obolibrary.org/obo/MONDO_0004076)
+      (28 total)'
+    mixins:
+    - OntologyClassTemplate
+    slots:
+    - location
+    slot_usage:
+      location:
+        range: OwlThingClass
+      name:
+        string_serialization: '{location}s lipoma'
+      definition:
+        string_serialization: A benign adipose tissue neoplasm of the {location}s.
+      equivalentTo:
+        string_serialization: '''lipoma'' and (''disease has location'' some {location}s)'
+  AnatomicalEntityClass:
+    description: Any subclass of UBERON:0001062 ('anatomical entity')
+    mixins:
+    - OntologyClassSubset
+    slot_usage:
+      subclass_of:
+        has_member:
+          equals_string: UBERON:0001062
+  MeningiomaDiseaseHasLocationXTemplate:
+    aliases:
+    - meningioma disease has location X template
+    description: 'A meningioma is a slow growing tumor attached to the dura mater.
+      This is a design pattern for classes representing meningiomas based on their
+      location. This may be the site of origin, but it can also represent a secondary
+      site for metastatized cancer. We use the generic ''disease has location'' relation,
+      which generalized over primary and secondary sites.
+
+      Examples: [skin meningioma](http://purl.obolibrary.org/obo/MONDO_0004429), [brain
+      meningioma](http://purl.obolibrary.org/obo/MONDO_0000642), [choroid plexus meningioma](http://purl.obolibrary.org/obo/MONDO_0003053)
+      (26 total)'
+    mixins:
+    - OntologyClassTemplate
+    slots:
+    - location
+    slot_usage:
+      location:
+        range: AnatomicalEntityClass
+      name:
+        string_serialization: '{location}s meningioma'
+      definition:
+        string_serialization: A meningioma that affects the {location}s.
+      equivalentTo:
+        string_serialization: '''meningioma'' and (''disease has location'' some {location}s)'
+  DiseaseOrDisorderDiseaseCausedByDisruptionOfXTemplate:
+    aliases:
+    - disease or disorder disease caused by disruption of X template
+    description: 'A disease that disrupts a process, like immune system function,
+      or early development.
+
+      Examples: [type III hypersensitivity disease](http://purl.obolibrary.org/obo/MONDO_0007004),
+      [type IV hypersensitivity disease](http://purl.obolibrary.org/obo/MONDO_0002459),
+      [neural tube closure defect](http://purl.obolibrary.org/obo/MONDO_0017059) (55
+      total)'
+    mixins:
+    - OntologyClassTemplate
+    slots:
+    - process
+    slot_usage:
+      process:
+        range: OwlThingClass
+      name:
+        string_serialization: '{process}s disease'
+      definition:
+        string_serialization: A disease that has its basis in the disruption of {process}s.
+      equivalentTo:
+        string_serialization: '''disease or disorder'' and (''disease caused by disruption
+          of'' some {process}s)'
+  InfectiousDiseaseClass:
+    description: Any subclass of MONDO:0005550 ('infectious disease')
+    mixins:
+    - OntologyClassSubset
+    slot_usage:
+      subclass_of:
+        has_member:
+          equals_string: MONDO:0005550
+  PostinfectiousDiseaseTemplate:
+    aliases:
+    - postinfectious_disease template
+    description: 'A design pattern for conditions such as post-herpetic neuralgia
+      or postinfectious encephalitis, where the disease is secondary to the initial
+      infection.
+
+      TODO: write better guidelines on what constitutes a secondary disease vs primary.
+      * We do not use this pattern for AIDS-HIV for example, instead representing
+      this is using SubClassOf. * We draw a distinction between infectious and postinfectious
+      encepahlitis. * we do not use this pattern for chickenpox, but we do for shingles '
+    mixins:
+    - OntologyClassTemplate
+    slots:
+    - disease
+    - feature
+    slot_usage:
+      disease:
+        range: OrganismClass
+      feature:
+        range: InfectiousDiseaseClass
+      name:
+        string_serialization: postinfectious {disease}s arising from {feature}s
+      definition:
+        string_serialization: A post-infectious form of {disease}s that arises as
+          a result on an initial {feature}s.
+      equivalentTo:
+        string_serialization: '{disease}s and ''disease arises from feature'' some
+          {feature}s'
+  ProcessClass:
+    description: Any subclass of BFO:0000015 ('process')
+    mixins:
+    - OntologyClassSubset
+    slot_usage:
+      subclass_of:
+        has_member:
+          equals_string: BFO:0000015
+  BasisInDisruptionOfProcessTemplate:
+    aliases:
+    - basis_in_disruption_of_process template
+    description: '
+
+      A pattern for generic groupings of diseases based around the molecular basis
+      for the disease in terms of a GO molecular function or cellular process.
+
+      For example: DNA repair or RAS signaling'
+    mixins:
+    - OntologyClassTemplate
+    slots:
+    - process
+    slot_usage:
+      process:
+        range: ProcessClass
+      name:
+        string_serialization: '{process}s disease'
+      definition:
+        string_serialization: A disease that has its basis in the disruption of {process}s.
+      equivalentTo:
+        string_serialization: '''disease'' and ''disease has basis in disruption of''
+          some {process}s'
+  DiseaseSeriesByGeneTemplate:
+    aliases:
+    - disease_series_by_gene template
+    description: 'This pattern is for diseases that are caused by a single mutation
+      in a single gene, that have gene-based names, such as new disease terms that
+      are requested by ClinGen, like MED12-related intellectual disability syndrome.  Examples:
+      [MED12-related intellectual disability syndrome](http://purl.obolibrary.org/obo/MONDO_0100000),
+      [TTN-related myopathy](http://purl.obolibrary.org/obo/MONDO_0100175), [MYPN-related
+      myopathy](http://purl.obolibrary.org/obo/MONDO_0015023)'
+    mixins:
+    - OntologyClassTemplate
+    slots:
+    - disease
+    - gene
+    slot_usage:
+      disease:
+        range: DiseaseClass
+      gene:
+        range: GeneClass
+      name:
+        string_serialization: '{disease}s caused by mutation in {gene}s'
+      definition:
+        string_serialization: Any {disease}s in which the cause of the disease is
+          a mutation in the {gene}s gene.
+      equivalentTo:
+        string_serialization: '{disease}s and ''disease has basis in dysfunction of''
+          some {gene}s'
+  LeiomyomaDiseaseHasLocationXTemplate:
+    aliases:
+    - leiomyoma disease has location X template
+    description: 'A leiomyoma (a well-circumscribed benign smooth muscle neoplasm
+      characterized by the presence of spindle cells with cigar-shaped nuclei, interlacing
+      fascicles, and a whorled pattern) that is located in a specific anatomical entity.
+
+      Examples: [leiomyoma cutis](http://purl.obolibrary.org/obo/MONDO_0003291), [ureter
+      leiomyoma](http://purl.obolibrary.org/obo/MONDO_0001399), [urethra leiomyoma](http://purl.obolibrary.org/obo/MONDO_0002222)
+      (30 total)'
+    mixins:
+    - OntologyClassTemplate
+    slots:
+    - location
+    slot_usage:
+      location:
+        range: AnatomicalEntityClass
+      name:
+        string_serialization: '{location}s leiomyoma'
+      definition:
+        string_serialization: A benign smooth muscle neoplasm arising from the {location}s.
+          It is characterized by the presence of spindle cells with cigar-shaped nuclei,
+          interlacing fascicles, and a whorled pattern.
+      equivalentTo:
+        string_serialization: '''leiomyoma'' and (''disease has location'' some {location}s)'
+  RhabdomyosarcomaDiseaseHasLocationXTemplate:
+    aliases:
+    - rhabdomyosarcoma disease has location X template
+    description: 'This is auto-generated. Add your description here
+
+      Examples: [rhabdomyosarcoma of the cervix uteri](http://purl.obolibrary.org/obo/MONDO_0016282),
+      [breast rhabdomyosarcoma](http://purl.obolibrary.org/obo/MONDO_0002859), [testis
+      rhabdomyosarcoma](http://purl.obolibrary.org/obo/MONDO_0002860) (15 total)'
+    mixins:
+    - OntologyClassTemplate
+    slots:
+    - location
+    slot_usage:
+      location:
+        range: OwlThingClass
+      name:
+        string_serialization: '{location}s rhabdomyosarcoma'
+      definition:
+        string_serialization: A malignant mesenchymal tumor with skeletal muscle differentiation
+          affecting the {location}s.
+      equivalentTo:
+        string_serialization: '''rhabdomyosarcoma'' and (''disease has location''
+          some {location}s)'
+  VectorBorneDiseaseTemplate:
+    aliases:
+    - vectorBorneDisease template
+    description: 'An infectious disease where a pathogen is carried and transmitted
+      by another organism that acts as disease vector. Examples: MONDO_0020601 ''mosquito-borne
+      viral encephalitis'', MONDO_0017572 ''tick-borne encephalitis'''
+    mixins:
+    - OntologyClassTemplate
+    slots:
+    - infectious_disease
+    - vector
+    slot_usage:
+      infectious_disease:
+        range: InfectiousDiseaseClass
+      vector:
+        range: OrganismClass
+      name:
+        string_serialization: '{infectious_disease}s transmitted by {vector}s'
+      definition:
+        string_serialization: '{vector}s-borne {infectious_disease}s.'
+      equivalentTo:
+        string_serialization: ({infectious_disease}s and ('transmitted by' some {vector}s))
+  InflammatoryDiseaseBySiteTemplate:
+    aliases:
+    - inflammatory_disease_by_site template
+    description: '
+
+      Inflammatory diseases can be classified by the location in which the pathological
+      inflammatory process occurs.
+
+      For inflammatory diseases caused by infection, this may be the site of infection.
+
+      Examples: [''Achilles bursitis''](http://purl.obolibrary.org/obo/MONDO_0001594),
+      [blepharitis](http://purl.obolibrary.org/obo/MONDO_0004785), [epiglottitis](http://purl.obolibrary.org/obo/MONDO_0005753)'
+    mixins:
+    - OntologyClassTemplate
+    slots:
+    - location
+    slot_usage:
+      location:
+        range: AnatomicalStructureClass
+      name:
+        string_serialization: inflammation of {location}s
+      definition:
+        string_serialization: An inflammatory disease involving a pathogenic inflammatory
+          response in the {location}s.
+      equivalentTo:
+        string_serialization: '''disease'' and ''disease has inflammation site'' some
+          {location}s'
+  YLinkedTemplate:
+    aliases:
+    - y_linked template
+    description: TBD.
+    mixins:
+    - OntologyClassTemplate
+    slots:
+    - disease
+    slot_usage:
+      disease:
+        range: DiseaseClass
+      name:
+        string_serialization: Y-linked {disease}s
+      definition:
+        string_serialization: Y-linked form of {disease}s.
+      equivalentTo:
+        string_serialization: '{disease}s and ''has modifier'' some ''y_linked_inheritance'''
+  NeoendocrineNeoplasmTemplate:
+    aliases:
+    - neoendocrine_neoplasm template
+    description: '
+
+      Note that tumor is typically a synonym for neoplasm, although this can be context
+      dependent. For neuroendocrine tumors (NETs), NCIT uses the nomenclature ''tumor''
+      to indicate ''well differentiated, low or intermediate grade tumor''. This can
+      also be called carcinoid, see [https://www.cancer.org/cancer/gastrointestinal-carcinoid-tumor/about/what-is-gastrointestinal-carcinoid.html](https://www.cancer.org/cancer/gastrointestinal-carcinoid-tumor/about/what-is-gastrointestinal-carcinoid.html).
+      We attempt to spell this out in our labels.
+
+      Examples: [breast neuroendocrine neoplasm](http://purl.obolibrary.org/obo/MONDO_0002485),
+      [digestive system neuroendocrine neoplasm](http://purl.obolibrary.org/obo/MONDO_0024503),
+      [ovarian neuroendocrine neoplasm](http://purl.obolibrary.org/obo/MONDO_0002481)'
+    mixins:
+    - OntologyClassTemplate
+    slots:
+    - location
+    slot_usage:
+      location:
+        range: OwlThingClass
+      name:
+        string_serialization: '{location}s neuroendocrine neoplasm'
+      definition:
+        string_serialization: A neuroendocrine neoplasm involving a {location}s.
+      equivalentTo:
+        string_serialization: '''neuroendocrine neoplasm'' and ''disease has location''
+          some {location}s'
+  OMIMPhenotypicSeriesTemplate:
+    aliases:
+    - OMIM_phenotypic_series template
+    description: 'This pattern is meant to be used for OMIM phenotypic series (OMIMPS),
+      which are represented as grouping classes in Mondo. Note:  - every instance
+      of this metaclass should be equivalent to (via annotated xref) to something
+      in OMIMPS namespace - it will never have an asserted causative gene as logical
+      axiom (and no single causative gene in text def) - it must never be equivalent
+      to an OMIM:nnnnnn (often redundant with the above rule) - it must have an acronym
+      synonym, e.g. HPE - it must have two or more subclasses (direct or indirect)
+      that are equivalent to OMIMs - the subclasses should (not must) have a logical
+      def that uses the PS as a genus (see http://purl.obolibrary.org/obo/mondo/patterns/disease_series_by_gene.yaml)
+      - the OMIM subclasses must have acronym synonyms that are the parent syn + number,
+      e.g. HPE1, HPE2 - the primary label for the children should also be parent +
+      {"type"} + number - the first member will usually have the same number local
+      ID as the PS - the first member in OMIM usually has documentation that is pertinent
+      to the parent PS - the members may(?) generally share high semantic similarity
+      - All OMIMPS disease should have a has modifier some inherited restricted, see
+      http://purl.obolibrary.org/obo/mondo/sparql/omimps-should-be-inherited-violation.sparql
+
+      Examples: [holoprosencephaly](http://purl.obolibrary.org/obo/MONDO_0016296)
+      [OMIMPS:236100](https://omim.org/phenotypicSeries/PS236100), ''3-M syndrome''(http://purl.obolibrary.org/obo/MONDO_0007477)
+      [OMIMPS:236100](https://omim.org/phenotypicSeries/PS273750). '
+    mixins:
+    - OntologyClassTemplate
+    slots:
+    - disease
+    slot_usage:
+      disease:
+        range: DiseaseClass
+      name:
+        string_serialization: '{disease}s'
+  LeiomyosarcomaDiseaseHasLocationXTemplate:
+    aliases:
+    - leiomyosarcoma disease has location X template
+    description: 'An uncommon, aggressive malignant smooth muscle neoplasm, usually
+      occurring in post-menopausal women that is characterized by a proliferation
+      of neoplastic spindle cells that is located in a specific anatomical location.
+
+      Examples: [leiomyosarcoma of the cervix uteri](http://purl.obolibrary.org/obo/MONDO_0016283),
+      [cutaneous leiomyosarcoma (disease)](http://purl.obolibrary.org/obo/MONDO_0003362),
+      [breast leiomyosarcoma](http://purl.obolibrary.org/obo/MONDO_0003371) (29 total)'
+    mixins:
+    - OntologyClassTemplate
+    slots:
+    - location
+    slot_usage:
+      location:
+        range: OwlThingClass
+      name:
+        string_serialization: '{location}s leiomyosarcoma'
+      definition:
+        string_serialization: An aggressive malignant smooth muscle neoplasm, arising
+          from the {location}s. It is characterized by a proliferation of neoplastic
+          spindle cells.
+      equivalentTo:
+        string_serialization: '''leiomyosarcoma'' and (''disease has location'' some
+          {location}s)'
+  CancerTemplate:
+    aliases:
+    - cancer template
+    description: '
+
+      Cancers are malignant neoplasms arising from a variety of different cell types.
+
+      This is a design pattern for classes representing cancers based on their location.
+      This may be the site of origin, but it can also represent a secondary site for
+      metastatized cancer.
+
+      We use the generic ''disease has location'' relation, which generalized over
+      primary and secondary sites.'
+    mixins:
+    - OntologyClassTemplate
+    slots:
+    - location
+    slot_usage:
+      location:
+        range: OwlThingClass
+      name:
+        string_serialization: '{location}s cancer'
+      definition:
+        string_serialization: A cancer involving a {location}s.
+      equivalentTo:
+        string_serialization: '''cancer'' and ''disease has location'' some {location}s'
+  NeoendocrineNeoplasmGrade1Template:
+    aliases:
+    - neoendocrine_neoplasm_grade1 template
+    description: 'We follow NCIT in making carcinoid tumor a synonym for neuroendocrine
+      neoplasm G1 (G1 NET).
+
+      Examples: [carcinoid tumor (disease)](http://purl.obolibrary.org/obo/MONDO_0005369)'
+    mixins:
+    - OntologyClassTemplate
+    slots:
+    - location
+    slot_usage:
+      location:
+        range: OwlThingClass
+      name:
+        string_serialization: '{location}s neuroendocrine neoplasm G1'
+      definition:
+        string_serialization: A well differentiated, low grade tumor with neuroendocrine
+          differentiation that arises from the {location}s.
+      equivalentTo:
+        string_serialization: '''neuroendocrine neoplasm'' and ''disease has location''
+          some {location}s and ''has modifier'' some ''grade 1'''
+  InbornErrorsOfMetabolismDiseaseCausedByDisruptionOfXTemplate:
+    aliases:
+    - inborn errors of metabolism disease caused by disruption of X template
+    description: "This pattern is used for inborn errors of metabolism that cause\
+      \ disruption of a specific biological process, such as enzyme activity or ion\
+      \ transport. \nExamples: ['5-oxoprolinase deficiency (disease)'](http://purl.obolibrary.org/obo/MONDO_0009825),\
+      \ [inborn disorder of methionine cycle and sulfur amino acid metabolism](http://purl.obolibrary.org/obo/MONDO_0019222),\
+      \ [inborn aminoacylase deficiency](http://purl.obolibrary.org/obo/MONDO_0017686)\
+      \ (51 total)"
+    mixins:
+    - OntologyClassTemplate
+    slots:
+    - process
+    slot_usage:
+      process:
+        range: OwlThingClass
+      name:
+        string_serialization: inborn disorder of {process}s
+      definition:
+        string_serialization: An acquired metabolic disease that is has its basis
+          in the disruption of {process}s.
+      equivalentTo:
+        string_serialization: '''inborn errors of metabolism'' and (''disease caused
+          by disruption of'' some {process}s)'
+  BenignNeoplasmTemplate:
+    aliases:
+    - benign_neoplasm template
+    description: '
+
+      Neoplasms are benign or malignant tissue growths resulting from uncontrolled
+      cell proliferation cell types.
+
+      This is a design pattern for classes representing *benign* neoplasms based on
+      their location.
+
+      See also: benign.yaml TODO: choose one over another'
+    mixins:
+    - OntologyClassTemplate
+    slots:
+    - location
+    slot_usage:
+      location:
+        range: OwlThingClass
+      name:
+        string_serialization: benign {location}s neoplasm
+      definition:
+        string_serialization: A benign neoplasm involving a {location}s.
+      equivalentTo:
+        string_serialization: '''benign neoplasm'' and ''disease has location'' some
+          {location}s'
+  CarcinomaTemplate:
+    aliases:
+    - carcinoma template
+    description: '
+
+      Carcinomas are malignant neoplasms arising from epithelial cells.
+
+      This is a Design pattern for classes representing carcinomas based on their
+      location. This may be the site of origin, but it can also represent a secondary
+      site for metastatized cancer.
+
+      We use the generic ''disease has location'' relation, which generalized over
+      primary and secondary sites.'
+    mixins:
+    - OntologyClassTemplate
+    slots:
+    - location
+    slot_usage:
+      location:
+        range: OwlThingClass
+      name:
+        string_serialization: '{location}s carcinoma'
+      definition:
+        string_serialization: A carcinoma involving a {location}s.
+      equivalentTo:
+        string_serialization: '''carcinoma'' and ''disease has location'' some {location}s'
+  InfectiousDiseaseByAgentTemplate:
+    aliases:
+    - infectious_disease_by_agent template
+    description: 'Infectious diseases can be classified by the infectioos agent, such
+      as bacteria, coronavirus, etc, that causes the disease.
+
+      Examples: [COVID-19](http://purl.obolibrary.org/obo/MONDO_0100096), [cholera](http://purl.obolibrary.org/obo/MONDO_0015766)'
+    mixins:
+    - OntologyClassTemplate
+    slots:
+    - agent
+    slot_usage:
+      agent:
+        range: OrganismClass
+      name:
+        string_serialization: '{agent}s infectious disease'
+      definition:
+        string_serialization: A disease caused by infection with {agent}s.
+      equivalentTo:
+        string_serialization: '''infectious disease'' and ''disease has infectious
+          agent'' some {agent}s'
+  RareGeneticTemplate:
+    aliases:
+    - rare_genetic template
+    description: TBD.
+    mixins:
+    - OntologyClassTemplate
+    slots:
+    - disease
+    slot_usage:
+      disease:
+        range: DiseaseClass
+      name:
+        string_serialization: rare genetic {disease}s
+      definition:
+        string_serialization: A form of {disease}s that is both rare and genetic.
+      equivalentTo:
+        string_serialization: '{disease}s and ''has modifier'' some ''genetic'' and
+          ''has modifier'' some ''rare'''
+  XDiseaseHasBasisInDysfunctionOfXTemplate:
+    aliases:
+    - X disease has basis in dysfunction of X template
+    description: 'This is auto-generated. Add your description here
+
+      Examples: [collagenopathy type 2 alpha 1](http://purl.obolibrary.org/obo/MONDO_0022800),
+      [hemoglobinopathy](http://purl.obolibrary.org/obo/MONDO_0044348), [blood platelet
+      disease](http://purl.obolibrary.org/obo/MONDO_0002245) (2195 total)'
+    mixins:
+    - OntologyClassTemplate
+    slots:
+    - disease
+    - structure
+    slot_usage:
+      disease:
+        range: DiseaseClass
+      structure:
+        range: OwlThingClass
+      name:
+        string_serialization: '{structure}s {disease}s'
+      definition:
+        string_serialization: Any {disease}s in which the causes of the disease is
+          a perturbation of the {structure}s leading to its dysfunction.
+      equivalentTo:
+        string_serialization: '{disease}s and (''disease has basis in dysfunction
+          of'' some {structure}s)'
+  SubstanceAbuseTemplate:
+    aliases:
+    - substance_abuse template
+    description: 'A substance abuse that specifies a specific environmental stimulus
+      such as alcohol, cocaine, etc. Examples: [alcohol abuse](http://purl.obolibrary.org/obo/MONDO_0002046),
+      [cocaine abuse](http://purl.obolibrary.org/obo/MONDO_0004456)'
+    mixins:
+    - OntologyClassTemplate
+    slots:
+    - stimulus
+    slot_usage:
+      stimulus:
+        range: MaterialEntityClass
+      name:
+        string_serialization: '{stimulus}s abuse'
+      definition:
+        string_serialization: The abuse or overuse of {stimulus}s.
+      equivalentTo:
+        string_serialization: '''substance abuse'' and ''realized in response to stimulus''
+          some {stimulus}s'
+  HemangiomaDiseaseHasLocationXTemplate:
+    aliases:
+    - hemangioma disease has location X template
+    description: 'A hemangioma (a benign vascular lesion characterized by the formation
+      of capillary-sized or cavernous vascular channels) that is located in a specific
+      anatomical site.
+
+      Examples: [skin hemangioma](http://purl.obolibrary.org/obo/MONDO_0003110), [breast
+      hemangioma](http://purl.obolibrary.org/obo/MONDO_0003126), [gastric hemangioma](http://purl.obolibrary.org/obo/MONDO_0002414)
+      (20 total)'
+    mixins:
+    - OntologyClassTemplate
+    slots:
+    - location
+    slot_usage:
+      location:
+        range: AnatomicalEntityClass
+      name:
+        string_serialization: hemangioma of {location}s
+      definition:
+        string_serialization: A hemangioma that involves the {location}s.
+      equivalentTo:
+        string_serialization: '''hemangioma'' and (''disease has location'' some {location}s)'
+  ConsequenceOfInfectiousDiseaseTemplate:
+    aliases:
+    - consequence_of_infectious_disease template
+    description: 'This pattern is applied to a disease that is caused by an infectious
+      agent.
+
+      Examples: [hepatitis C induced liver cirrhosis](http://purl.obolibrary.org/obo/MONDO_0005448),
+      [rubella encephalitis](http://purl.obolibrary.org/obo/MONDO_0020648)'
+    mixins:
+    - OntologyClassTemplate
+    slots:
+    - parent
+    - cause
+    slot_usage:
+      parent:
+        range: DiseaseClass
+      cause:
+        range: InfectiousDiseaseClass
+      name:
+        string_serialization: '{cause}s {parent}s'
+      definition:
+        string_serialization: A {parent}s that arises as a consequence of {cause}s.
+      equivalentTo:
+        string_serialization: '{parent}s and ''disease arises from feature'' some
+          {cause}s'
+  InbornMetabolicTemplate:
+    aliases:
+    - inborn_metabolic template
+    description: An acquired metabolic disease that causes disruption of a process.
+    mixins:
+    - OntologyClassTemplate
+    slots:
+    - process
+    slot_usage:
+      process:
+        range: ProcessClass
+      name:
+        string_serialization: inborn {process}s disorder
+      definition:
+        string_serialization: An acquired metabolic disease that is has its basis
+          in the disruption of {process}s.
+      equivalentTo:
+        string_serialization: '''ieom'' and ''disease has basis in disruption of''
+          some {process}s'
+  MalignantTemplate:
+    aliases:
+    - malignant template
+    description: 'This is a design pattern for classes representing malignant neoplasms,
+      extending a generic neoplasm class.
+
+      Examples: [malignant carotid body paraganglioma](http://purl.obolibrary.org/obo/MONDO_0004650),
+      [malignant germ cell tumor](http://purl.obolibrary.org/obo/MONDO_0006290)'
+    mixins:
+    - OntologyClassTemplate
+    slots:
+    - neoplasm
+    slot_usage:
+      neoplasm:
+        range: OwlThingClass
+      name:
+        string_serialization: malignant {neoplasm}s
+      definition:
+        string_serialization: A malignant form of {neoplasm}s.
+      equivalentTo:
+        string_serialization: '{neoplasm}s and ''has modifier'' some ''malignant'''
+  AllergyTemplate:
+    aliases:
+    - allergy template
+    description: '
+
+      Allergy classified according to allergic trigger. This pattern is to refine
+      an existing disease by trigger, the [allergic_form_of_disease.yaml](https://github.com/monarch-initiative/mondo/blob/master/src/patterns/dosdp-patterns/allergic_form_of_disease.yaml)
+      pattern is for a generic disease.
+
+      Examples: [egg allergy](http://purl.obolibrary.org/obo/MONDO_0005741), [peach
+      allergy](http://purl.obolibrary.org/obo/MONDO_0000785), [gluten allergy](http://purl.obolibrary.org/obo/MONDO_0000606)'
+    mixins:
+    - OntologyClassTemplate
+    slots:
+    - substance
+    slot_usage:
+      substance:
+        range: OwlThingClass
+      name:
+        string_serialization: '{substance}s allergic disease'
+      definition:
+        string_serialization: A allergic disease involving a {substance}s.
+      equivalentTo:
+        string_serialization: '''allergic disease'' and ''realized in response to
+          stimulus'' some {substance}s'
+  MitochondriaalSubtypeTemplate:
+    aliases:
+    - mitochondriaal_subtype template
+    description: A disease that is classified as a mitochondrial subtype, due to a
+      defect in a mitochondrial gene, such as MONDO:0100134 'mitochondrial complex
+      I deficiency, mitochondrial type'.
+    mixins:
+    - OntologyClassTemplate
+    slots:
+    - disease
+    slot_usage:
+      disease:
+        range: DiseaseClass
+      name:
+        string_serialization: '{disease}s, mitochondrial type'
+      definition:
+        string_serialization: A {disease}s that has a defect in a mitochondrial gene.
+      equivalentTo:
+        string_serialization: '{disease}s and ''disease has basis in dysfunction of''
+          some ''mt_gene'''
+  InfectiousInflammationTemplate:
+    aliases:
+    - infectious_inflammation template
+    description: '
+
+      This combines the [infectious disease by agent pattern](https://github.com/monarch-initiative/mondo/blob/master/src/patterns/dosdp-patterns/infectious_disease_by_agent.yaml)
+      and the [inflammatory disease by site](https://github.com/monarch-initiative/mondo/blob/master/src/patterns/dosdp-patterns/inflammatory_disease_by_site.yaml)
+      pattern.
+
+      Examples: [bacterial endocarditis (disease)](http://purl.obolibrary.org/obo/MONDO_0006669),
+      [fungal gastritis](http://purl.obolibrary.org/obo/MONDO_0002843)'
+    mixins:
+    - OntologyClassTemplate
+    slots:
+    - location
+    - agent
+    slot_usage:
+      location:
+        range: AnatomicalStructureClass
+      agent:
+        range: OrganismClass
+      name:
+        string_serialization: inflammation of {location}s due to {agent}s
+      definition:
+        string_serialization: An inflammatory disease involving a pathogenic inflammatory
+          response in the {location}s caused by infection with {agent}s.
+      equivalentTo:
+        string_serialization: '''infectious disease'' and ''disease has inflammation
+          site'' some {location}s and ''realized in response to stimulus'' some {agent}s'
+  NeoplasmClass:
+    description: Any subclass of MONDO:0005070 ('neoplasm')
+    mixins:
+    - OntologyClassSubset
+    slot_usage:
+      subclass_of:
+        has_member:
+          equals_string: MONDO:0005070
+  BenignTemplate:
+    aliases:
+    - benign template
+    description: '
+
+      This is a design pattern for classes representing benign neoplasms, extending
+      a generic neoplasm class. For example, a benign adrenal gland pheochromocytoma,
+      defined as being the benign form of the more general adrenal gland pheochromocytoma.
+
+      TODO: encode alternate way of representing'
+    mixins:
+    - OntologyClassTemplate
+    slots:
+    - neoplasm
+    slot_usage:
+      neoplasm:
+        range: NeoplasmClass
+      name:
+        string_serialization: benign {neoplasm}s
+      definition:
+        string_serialization: A form of {neoplasm}s without malignant characteristics.
+      equivalentTo:
+        string_serialization: '{neoplasm}s and ''has modifier'' some ''neoplastic,
+          non-malignant'''
+  MucoepidermoidCarcinomaDiseaseHasLocationXTemplate:
+    aliases:
+    - mucoepidermoid carcinoma disease has location X template
+    description: 'Mucoepidermoid carcinomas are carcinomas morphologically characterized
+      the presence of cuboidal mucous cells, goblet-like mucous cells, squamoid cells,
+      cystic changes, and a fibrotic stromal formation.
+
+      This is a design pattern for classes representing mucoepidermoid carcinomas
+      based on their location. This may be the site of origin, but it can also represent
+      a secondary site for metastatized cancer.
+
+      We use the generic ''disease has location'' relation, which generalized over
+      primary and secondary sites.
+
+      Examples: [cutaneous mucoepidermoid carcinoma](http://purl.obolibrary.org/obo/MONDO_0003091),
+      [oral cavity mucoepidermoid carcinoma](http://purl.obolibrary.org/obo/MONDO_0044964),
+      [mucoepidermoid breast carcinoma](http://purl.obolibrary.org/obo/MONDO_0003087)
+      (18 total)'
+    mixins:
+    - OntologyClassTemplate
+    slots:
+    - location
+    slot_usage:
+      location:
+        range: AnatomicalEntityClass
+      name:
+        string_serialization: '{location}s mucoepidermoid carcinoma'
+      definition:
+        string_serialization: A mucoepidermoid carcinoma that involves the {location}s.
+      equivalentTo:
+        string_serialization: '''mucoepidermoid carcinoma'' and (''disease has location''
+          some {location}s)'
+  AutosomalDominantTemplate:
+    aliases:
+    - autosomal_dominant template
+    description: 'This pattern is applied to autosomal dominant forms of an inherited
+      disease.
+
+      Examples: [autosomal dominant cerebellar ataxia](http://purl.obolibrary.org/obo/MONDO_0020380),
+      [autosomal dominant osteopetrosis](http://purl.obolibrary.org/obo/MONDO_0020645)'
+    mixins:
+    - OntologyClassTemplate
+    slots:
+    - disease
+    slot_usage:
+      disease:
+        range: DiseaseClass
+      name:
+        string_serialization: autosomal dominant {disease}s
+      definition:
+        string_serialization: Autosomal dominant form of {disease}s.
+      equivalentTo:
+        string_serialization: '{disease}s and ''has modifier'' some ''autosomal dominant
+          inheritance'''
+  PrimaryInfectiousTemplate:
+    aliases:
+    - primary infectious template
+    description: '
+
+      Pattern for extending a disease class to a primary infectious form, a characteristic
+      of an infectious disease in which the disease affects an immunologically normal
+      host. Example: MONDO_0000308 ''primary systemic mycosis''.'
+    mixins:
+    - OntologyClassTemplate
+    slots:
+    - disease
+    slot_usage:
+      disease:
+        range: DiseaseClass
+      name:
+        string_serialization: primary {disease}s
+      definition:
+        string_serialization: A {disease}s that arises from infection in an immunologically
+          normal host.
+      equivalentTo:
+        string_serialization: '{disease}s and ''has modifier'' some ''primary infectious'''
+  LymphomaDiseaseHasLocationXTemplate:
+    aliases:
+    - lymphoma disease has location X template
+    description: 'A malignant (clonal) proliferation of B- lymphocytes or T- lymphocytes
+      which involves the lymph nodes, bone marrow and/or extranodal sites. This category
+      includes Non-Hodgkin lymphomas and Hodgkin lymphomas.
+
+      Examples: [marginal zone lymphoma](http://purl.obolibrary.org/obo/MONDO_0017604),
+      [ureteral lymphoma](http://purl.obolibrary.org/obo/MONDO_0001977), [colorectal
+      lymphoma](http://purl.obolibrary.org/obo/MONDO_0024656) (37 total)'
+    mixins:
+    - OntologyClassTemplate
+    slots:
+    - location
+    slot_usage:
+      location:
+        range: OwlThingClass
+      name:
+        string_serialization: '{location}s lymphoma'
+      definition:
+        string_serialization: A lymphoma that involves the {location}s.
+      equivalentTo:
+        string_serialization: '''lymphoma'' and (''disease has location'' some {location}s)'
+  MulticellularAnatomicalStructureClass:
+    description: Any subclass of UBERON:0010000 ('multicellular anatomical structure')
+    mixins:
+    - OntologyClassSubset
+    slot_usage:
+      subclass_of:
+        has_member:
+          equals_string: UBERON:0010000
+  AdenosquamousCarcinomaDiseaseHasLocationXTemplate:
+    aliases:
+    - adenosquamous carcinoma disease has location X template
+    description: 'An adenosquamous carcinoma is a carcinoma composed of malignant
+      glandular cells and malignant squamous cells. This is a design pattern for classes
+      representing adenosquamous carcinomas based on their location. This may be the
+      site of origin, but it can also represent a secondary site for metastatized
+      cancer. We use the generic ''disease has location'' relation, which generalized
+      over primary and secondary sites.
+
+      Examples: [adenosquamous breast carcinoma](http://purl.obolibrary.org/obo/MONDO_0003548),
+      [Bartholin gland adenosquamous carcinoma] (http://purl.obolibrary.org/obo/MONDO_0003555),
+      [gastric adenosquamous carcinoma](http://purl.obolibrary.org/obo/MONDO_0006034)'
+    mixins:
+    - OntologyClassTemplate
+    slots:
+    - location
+    slot_usage:
+      location:
+        range: MulticellularAnatomicalStructureClass
+      name:
+        string_serialization: '{location}s adenosquamous carcinoma'
+      definition:
+        string_serialization: Any carcinoma that that involves the {location}s and
+          is characterized by the presence of glandular and squamous malignant epithelial
+          components.
+      equivalentTo:
+        string_serialization: '''adenosquamous carcinoma'' and (''disease has location''
+          some {location}s)'
+  XDiseaseDisruptsXTemplate:
+    aliases:
+    - X disease disrupts X template
+    description: 'This is auto-generated. Add your description here
+
+      Examples: [disease of catalytic activity](http://purl.obolibrary.org/obo/MONDO_0044976),
+      [disease of transporter activity](http://purl.obolibrary.org/obo/MONDO_0044975),
+      [phagocytic cell dysfunction](http://purl.obolibrary.org/obo/MONDO_0024627)
+      (49 total)'
+    mixins:
+    - OntologyClassTemplate
+    slots:
+    - disease
+    - process
+    slot_usage:
+      disease:
+        range: DiseaseClass
+      process:
+        range: OwlThingClass
+      name:
+        string_serialization: '{process}s {disease}s'
+      definition:
+        string_serialization: Any {disease}s that disrupts {process}s
+      equivalentTo:
+        string_serialization: '{disease}s and (''disease disrupts'' some {process}s)'
+  PoisoningTemplate:
+    aliases:
+    - poisoning template
+    description: 'A disease that is caused by exposure to an environmental stimulus
+      that causes poisoning.  Examples: [colchicine poisoning](http://purl.obolibrary.org/obo/MONDO_0017859),
+      [cocaine intoxication](http://purl.obolibrary.org/obo/MONDO_0019544)'
+    mixins:
+    - OntologyClassTemplate
+    slots:
+    - stimulus
+    slot_usage:
+      stimulus:
+        range: MaterialEntityClass
+      name:
+        string_serialization: poisoning from {stimulus}s
+      definition:
+        string_serialization: A poisoning that is caused by exposure to {stimulus}s.
+      equivalentTo:
+        string_serialization: '''poisoning'' and ''realized in response to stimulus''
+          some {stimulus}s'
+  SusceptibilityByGeneTemplate:
+    aliases:
+    - susceptibility_by_gene template
+    description: This pattern should be used for terms in which a gene dysfunction
+      causes a predisposition or susceptibility towards developing a specific disease.
+      This pattern is a sub-pattern of [inherited_susceptibility.yaml](https://github.com/monarch-initiative/mondo/blob/master/src/patterns/dosdp-patterns/inherited_susceptibility.yaml)
+    mixins:
+    - OntologyClassTemplate
+    slots:
+    - gene
+    - disease
+    slot_usage:
+      gene:
+        range: GeneClass
+      disease:
+        range: DiseaseOrDisorderClass
+      name:
+        string_serialization: '{disease}s susceptibility, {gene}s form'
+      definition:
+        string_serialization: A susceptibility or predisposition to {disease}s in
+          which the cause of the disease is a mutation in the {gene}s gene.
+      equivalentTo:
+        string_serialization: ('inherited disease susceptibility' and ('disease has
+          basis in dysfunction of' some {gene}s) and ('predisposes towards' some {disease}s))
+  OMIMDiseaseSeriesByGeneTemplate:
+    aliases:
+    - OMIM_disease_series_by_gene template
+    description: '
+
+      This pattern is meant to be used for OMIM diseases, including children of OMIM
+      phenotypic series (OMIMPS), which are represented as grouping classes in Mondo.
+      Notes about the OMIMPS (see also OMIM_phenotypic_series.yaml):  - every instance
+      of the OMIMPS metaclass should be equivalent to (via annotated xref) to something
+      in OMIMPS namespace - the OMIMPS will never have an asserted causative gene
+      as logical axiom (and no single causative gene in text def) - the OMIMPS must
+      never be equivalent to an OMIM:nnnnnn (often redundant with the above rule)
+      - the OMIMPS must have an acronym synonym, e.g. HPE - the OMIMPS must have two
+      or more subclasses (direct or indirect) that are equivalent to OMIMs and conform
+      to this pattern - the subclasses should (not must) have a logical def that uses
+      the PS as a genus  - the OMIM subclasses must have acronym synonyms that are
+      the parent syn + number, e.g. HPE1, HPE2 - the primary label for the children
+      should also be parent + {"type"} + number - the first member will usually have
+      the same number local ID as the PS Examples: [holoprosencephaly 1](http://purl.obolibrary.org/obo/MONDO_0009349),
+      [3M syndrome 1](http://purl.obolibrary.org/obo/MONDO_0010117)'
+    mixins:
+    - OntologyClassTemplate
+    slots:
+    - disease
+    - gene
+    slot_usage:
+      disease:
+        range: DiseaseClass
+      gene:
+        range: GeneClass
+      name:
+        string_serialization: '{disease}s caused by mutation in {gene}s'
+      definition:
+        string_serialization: Any {disease}s in which the cause of the disease is
+          a mutation in the {gene}s gene.
+      equivalentTo:
+        string_serialization: '{disease}s and ''disease has basis in dysfunction of''
+          some {gene}s'
+  AutoimmuneTemplate:
+    aliases:
+    - autoimmune template
+    description: 'An instance of a disease that is brought about or caused by autoimmunity.
+
+      Examples: [autoimmune cardiomyopathy](http://purl.obolibrary.org/obo/MONDO_0030701),
+      [autoimmune pancreatitis](http://purl.obolibrary.org/obo/MONDO_0015175)'
+    mixins:
+    - OntologyClassTemplate
+    slots:
+    - disease
+    slot_usage:
+      disease:
+        range: DiseaseClass
+      name:
+        string_serialization: autoimmune {disease}s
+      definition:
+        string_serialization: An autoimmune form of {disease}s.
+      equivalentTo:
+        string_serialization: '{disease}s and ''disease arises from feature'' some
+          ''autoimmunity'''
+  AdenomaDiseaseHasLocationXTemplate:
+    aliases:
+    - adenoma disease has location X template
+    description: '
+
+      Adenomas are neoplasms arising from epithelium. This is a design pattern for
+      classes representing adenomas based on their location. This may be the site
+      of origin, but it can also represent a secondary site for metastatized cancer.
+      We use the generic `disease has location` relation, which is generalized over
+      primary and secondary sites. Examples: [pituitary gland adenoma](http://purl.obolibrary.org/obo/MONDO_0006373),
+      [breast adenoma](http://purl.obolibrary.org/obo/MONDO_0002058)'
+    mixins:
+    - OntologyClassTemplate
+    slots:
+    - location
+    slot_usage:
+      location:
+        range: OwlThingClass
+      name:
+        string_serialization: '{location}s adenoma'
+      definition:
+        string_serialization: A adenoma that involves the {location}s.
+      equivalentTo:
+        string_serialization: '''adenoma'' and (''disease has location'' some {location}s)'
+  HereditaryTemplate:
+    aliases:
+    - hereditary template
+    description: '
+
+      Pattern for extending a etiology-generic disease class to a hereditary form.  Here
+      hereditary means that etiology is largely genetic, and that the disease is passed
+      down or potentially able to be passed down via inheritance (i.e is germline).'
+    mixins:
+    - OntologyClassTemplate
+    slots:
+    - disease
+    slot_usage:
+      disease:
+        range: DiseaseClass
+      name:
+        string_serialization: hereditary {disease}s
+      definition:
+        string_serialization: An instance of {disease}s that is caused by an inherited
+          genomic modification in an individual.
+      equivalentTo:
+        string_serialization: '{disease}s and ''has modifier'' some ''hereditary'''
+  JuvenileTemplate:
+    aliases:
+    - juvenile template
+    description: 'An instance of a disease that has an onset of signs or symptoms
+      of disease between the age of 5 and 15 years (juvenile onset).
+
+      Examples: [juvenile-onset Parkinson disease](http://purl.obolibrary.org/obo/MONDO_0000828),
+      [''juvenile idiopathic scoliosis''](http://purl.obolibrary.org/obo/MONDO_0100076)'
+    mixins:
+    - OntologyClassTemplate
+    slots:
+    - disease
+    slot_usage:
+      disease:
+        range: DiseaseClass
+      name:
+        string_serialization: juvenile {disease}s
+      definition:
+        string_serialization: An instance of {disease}s that has a juvenile onset.
+      equivalentTo:
+        string_serialization: '{disease}s and ''has modifier'' some ''juvenile'''
+  SquamousCellCarcinomaDiseaseHasLocationXTemplate:
+    aliases:
+    - squamous cell carcinoma disease has location X template
+    description: 'This is auto-generated. Add your description here
+
+      Examples: [cervical squamous cell carcinoma](http://purl.obolibrary.org/obo/MONDO_0006143),
+      [skin squamous cell carcinoma](http://purl.obolibrary.org/obo/MONDO_0002529),
+      [ureter squamous cell carcinoma](http://purl.obolibrary.org/obo/MONDO_0003502)
+      (63 total)'
+    mixins:
+    - OntologyClassTemplate
+    slots:
+    - location
+    slot_usage:
+      location:
+        range: OwlThingClass
+      name:
+        string_serialization: '{location}s squamous cell carcinoma'
+      definition:
+        string_serialization: A squamous cell carcinoma that involves the {location}s.
+      equivalentTo:
+        string_serialization: '''squamous cell carcinoma'' and (''disease has location''
+          some {location}s)'
+  ExposureEventClass:
+    description: Any subclass of ExO:0000002 ('exposure event')
+    mixins:
+    - OntologyClassSubset
+    slot_usage:
+      subclass_of:
+        has_member:
+          equals_string: ExO:0000002
+  DiseaseRealizedInResponseToEnvironmentalExposureTemplate:
+    aliases:
+    - disease realized in response to environmental exposure template
+    description: 'This pattern is used for a disease, where the cause of the disease
+      is an exposure to an environmental stimulus (using ECTO exposure terms). Note
+      that this pattern does not include infectious disease or classes that would
+      include an organism, virus or viroid. Rather it includes exposures to chemicals
+      (includng drugs), or mixtures.
+
+      Examples: [chemically-induced disorder](http://purl.obolibrary.org/obo/MONDO_0029001),
+      [alcohol amnestic disorder](http://purl.obolibrary.org/obo/MONDO_0021702), [alcoholic
+      polyneuropathy](http://purl.obolibrary.org/obo/MONDO_0006645) (26 total)'
+    mixins:
+    - OntologyClassTemplate
+    slots:
+    - disease
+    - exposure
+    slot_usage:
+      disease:
+        range: DiseaseClass
+      exposure:
+        range: ExposureEventClass
+      name:
+        string_serialization: '{disease}s realized in response to {exposure}s'
+      definition:
+        string_serialization: Any {disease}s that is realized in response to a {exposure}s
+      equivalentTo:
+        string_serialization: '{disease}s and (''realized in response to'' some {exposure}s)'
+  SarcomaTemplate:
+    aliases:
+    - sarcoma template
+    description: '
+
+      Sarcomas are malignant neoplasms arising from soft tissue or bone.
+
+      This is a design pattern for classes representing sarcomas based on their location.
+      This may be the site of origin, but it can also represent a secondary site for
+      metastatized sarcma.
+
+      We use the generic ''disease has location'' relation, which generalized over
+      primary and secondary sites.'
+    mixins:
+    - OntologyClassTemplate
+    slots:
+    - location
+    slot_usage:
+      location:
+        range: OwlThingClass
+      name:
+        string_serialization: '{location}s sarcoma'
+      definition:
+        string_serialization: A sarcoma involving a {location}s.
+      equivalentTo:
+        string_serialization: '''sarcoma'' and ''disease has location'' some {location}s'
+  SyndromicTemplate:
+    aliases:
+    - syndromic template
+    description: "Some diseases exist in both isolated and syndromic forms. For example,\
+      \ aniridia ([MONDO_0019172 aniridia](http://purl.obolibrary.org/obo/MONDO_0019172),\
+      \ [MONDO_0020148'syndromic aniridia'](http://purl.obolibrary.org/obo/MONDO_0020148)\
+      \ and [MONDO_0007119 'isolated aniridia'](http://purl.obolibrary.org/obo/MONDO_0007119).\
+      \ Use this pattern to define the syndromic form of a disease when a term exists\
+      \ for the isolated/syndromic-neutral version. In general, this pattern should\
+      \ be used in parallel with isolated. E.g. if you make a term 'syndromic disease,\
+      \ you should also have 'isolated disease' [see pattern here(https://github.com/monarch-initiative/mondo/blob/master/src/patterns/dosdp-patterns/isolated.yaml).\
+      \ \nNote that the isolated and syndromic forms will be inferred to be disjoint\
+      \ due to the GCI pattern."
+    mixins:
+    - OntologyClassTemplate
+    slots:
+    - disease
+    slot_usage:
+      disease:
+        range: DiseaseOrDisorderClass
+      name:
+        string_serialization: syndromic {disease}s
+      definition:
+        string_serialization: A {disease}s that is part of a larger syndrome.
+      equivalentTo:
+        string_serialization: '{disease}s and ''has modifier'' some ''syndromic'''
+  AutosomalRecessiveTemplate:
+    aliases:
+    - autosomal_recessive template
+    description: 'This pattern is applied to autosomal recessive forms of an inherited
+      disease.
+
+      Examples: [autosomal recessive brachyolmia](http://purl.obolibrary.org/obo/MONDO_0018662),
+      [autosomal recessive sideroblastic anemia](http://purl.obolibrary.org/obo/MONDO_0016828)'
+    mixins:
+    - OntologyClassTemplate
+    slots:
+    - disease
+    slot_usage:
+      disease:
+        range: DiseaseClass
+      name:
+        string_serialization: autosomal recessive {disease}s
+      definition:
+        string_serialization: Autosomal recessive form of {disease}s.
+      equivalentTo:
+        string_serialization: '{disease}s and ''has modifier'' some ''autosomal recessive
+          inheritance'''
+  RefractoryTemplate:
+    aliases:
+    - refractory template
+    description: TBD.
+    mixins:
+    - OntologyClassTemplate
+    slots:
+    - disease
+    slot_usage:
+      disease:
+        range: DiseaseClass
+      name:
+        string_serialization: refractory {disease}s
+      definition:
+        string_serialization: A {disease}s that is difficult to treat or cure.
+      equivalentTo:
+        string_serialization: '{disease}s and ''has modifier'' some ''refractory'''
