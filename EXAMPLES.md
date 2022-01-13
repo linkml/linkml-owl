@@ -2,6 +2,206 @@
 
 These examples are generated automatically from test_owl_dumper
 
+## Parts collection with counts
+
+
+__Description__: _Demonstrates nesting
+                  _
+
+
+__Schema__:
+
+```yaml
+id: http//example.org/Parts-collection-with-counts
+classes:
+  CollectionOfPartsWithCounts:
+    annotations:
+      owl.template:
+        tag: owl.template
+        value: "{% for p in has_part %}\nSubClassOf( {{id}} \n            ObjectSomeValuesFrom(\
+          \ BFO:0000051 \n                                  ObjectIntersectionOf(\
+          \ {{p.unit }}\n                                            ObjectSomeValuesFrom(\
+          \ BFO:x BFO:y )\n                                                      \
+          \ ) \n                                                       \n        \
+          \                         ) \n          )\n{% endfor %}"
+    is_a: NamedThing
+    attributes:
+      has_part:
+        slot_uri: BFO:0000051
+        multivalued: true
+        inlined: true
+        inverse: part_of
+        range: PartWithCounts
+      id:
+        identifier: true
+        range: uriorcurie
+      label:
+        annotations:
+          owl: AnnotationProperty, AnnotationAssertion
+        slot_uri: rdfs:label
+
+```
+
+
+__Input__:
+
+* CollectionOfPartsWithCounts(id='x:collection', label=None, has_part=[PartWithCounts(unit='x:p1', count=None, state=None), PartWithCounts(unit='x:p2', count=None, state=None)])
+
+__Generated axioms__:
+
+```
+Prefix( xml: = <http://www.w3.org/XML/1998/namespace> )
+Prefix( rdf: = <http://www.w3.org/1999/02/22-rdf-syntax-ns#> )
+Prefix( rdfs: = <http://www.w3.org/2000/01/rdf-schema#> )
+Prefix( xsd: = <http://www.w3.org/2001/XMLSchema#> )
+Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
+
+Ontology( <https://w3id.org/linkml/owl/tests>
+    SubClassOf( x:collection     ObjectSomeValuesFrom( BFO:0000051     ObjectIntersectionOf(
+        x:p1
+            ObjectSomeValuesFrom( BFO:x BFO:y )
+    ) ) )
+    SubClassOf( x:collection     ObjectSomeValuesFrom( BFO:0000051     ObjectIntersectionOf(
+        x:p2
+            ObjectSomeValuesFrom( BFO:x BFO:y )
+    ) ) )
+)
+```
+
+## Parts collection
+
+
+__Description__: _Things that are made of an arbitrary list of parts
+                  _
+
+
+__Schema__:
+
+```yaml
+id: http//example.org/Parts-collection
+classes:
+  CollectionOfParts:
+    annotations:
+      owl.template:
+        tag: owl.template
+        value: "{% for p in has_part %}\nSubClassOf( {{id}} ObjectSomeValuesFrom(\
+          \ BFO:0000051 {{p}} ) )\n{% endfor %}\nDisjointClasses(\n   Annotation(\
+          \ rdfs:label \"all parts of {{id}} are part-disjoint\")\n  {% for p in has_part\
+          \ %}\n  ObjectSomeValuesFrom( BFO:0000050 {{p}} )\n  {% endfor %}\n)"
+    is_a: NamedThing
+    attributes:
+      has_part:
+        slot_uri: BFO:0000051
+        multivalued: true
+        inverse: part_of
+        range: NamedThing
+      id:
+        identifier: true
+        range: uriorcurie
+      label:
+        annotations:
+          owl: AnnotationProperty, AnnotationAssertion
+        slot_uri: rdfs:label
+
+```
+
+
+__Input__:
+
+* CollectionOfParts(id='x:collection', label=None, has_part=['x:p1', 'x:p2'])
+
+__Generated axioms__:
+
+```
+Prefix( xml: = <http://www.w3.org/XML/1998/namespace> )
+Prefix( rdf: = <http://www.w3.org/1999/02/22-rdf-syntax-ns#> )
+Prefix( rdfs: = <http://www.w3.org/2000/01/rdf-schema#> )
+Prefix( xsd: = <http://www.w3.org/2001/XMLSchema#> )
+Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
+
+Ontology( <https://w3id.org/linkml/owl/tests>
+    SubClassOf( x:collection     ObjectSomeValuesFrom( BFO:0000051 x:p1 ) )
+    SubClassOf( x:collection     ObjectSomeValuesFrom( BFO:0000051 x:p2 ) )
+    DisjointClasses(
+        Annotation( rdfs:label "all parts of x:collection are part-disjoint" )
+            ObjectSomeValuesFrom( BFO:0000050 x:p1 )     ObjectSomeValuesFrom( BFO:0000050 x:p2 )
+    )
+)
+```
+
+## Defined parts collection
+
+
+__Description__: _Things that are defined exhaustively by an arbitrary list of parts
+                  _
+
+
+__Schema__:
+
+```yaml
+id: http//example.org/Defined-parts-collection
+classes:
+  DefinedCollectionOfParts:
+    annotations:
+      owl.template:
+        tag: owl.template
+        value: "EquivalentClasses( {{id}} \n                   ObjectIntersectionOf(\
+          \ \n                     {% for p in has_part %}\n                     \
+          \  ObjectSomeValuesFrom( BFO:0000051 {{p}} )\n                     {% endfor\
+          \ %}                           \n                     ObjectAllValuesFrom(\
+          \ BFO:0000051\n                                          ObjectSomeValuesFrom(\
+          \ BFO:0000050\n                                            ObjectUnionOf(\
+          \ \n                                            {% for p in has_part %}\n\
+          \                                              ObjectSomeValuesFrom( BFO:0000051\
+          \ {{p}} )\n                                            {% endfor %} )\n\
+          \                                          )\n                         \
+          \               )\n                   )\n                 )"
+    is_a: NamedThing
+    attributes:
+      has_part:
+        slot_uri: BFO:0000051
+        multivalued: true
+        inverse: part_of
+        range: NamedThing
+      id:
+        identifier: true
+        range: uriorcurie
+      label:
+        annotations:
+          owl: AnnotationProperty, AnnotationAssertion
+        slot_uri: rdfs:label
+
+```
+
+
+__Input__:
+
+* DefinedCollectionOfParts(id='x:collection', label=None, has_part=['x:dp1', 'x:dp2'])
+
+__Generated axioms__:
+
+```
+Prefix( xml: = <http://www.w3.org/XML/1998/namespace> )
+Prefix( rdf: = <http://www.w3.org/1999/02/22-rdf-syntax-ns#> )
+Prefix( rdfs: = <http://www.w3.org/2000/01/rdf-schema#> )
+Prefix( xsd: = <http://www.w3.org/2001/XMLSchema#> )
+Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
+
+Ontology( <https://w3id.org/linkml/owl/tests>
+    EquivalentClasses(
+        x:collection
+            ObjectIntersectionOf(
+            ObjectSomeValuesFrom( BFO:0000051 x:dp1 )
+            ObjectSomeValuesFrom( BFO:0000051 x:dp2 )
+            ObjectAllValuesFrom( BFO:0000051     ObjectSomeValuesFrom( BFO:0000050     ObjectUnionOf(
+            ObjectSomeValuesFrom( BFO:0000051 x:dp1 )
+            ObjectSomeValuesFrom( BFO:0000051 x:dp2 )
+    ) ) )
+    )
+    )
+)
+```
+
 ## Annotation using literals
 
 
@@ -19,7 +219,10 @@ classes:
     attributes:
       id:
         identifier: true
+        range: uriorcurie
       label:
+        annotations:
+          owl: AnnotationProperty, AnnotationAssertion
         slot_uri: rdfs:label
 
 ```
@@ -58,12 +261,17 @@ classes:
     is_a: NamedThing
     attributes:
       exactMatch:
+        annotations:
+          owl: AnnotationAssertion
         slot_uri: skos:exactMatch
         range: NamedThing
         required: true
       id:
         identifier: true
+        range: uriorcurie
       label:
+        annotations:
+          owl: AnnotationProperty, AnnotationAssertion
         slot_uri: rdfs:label
 
 ```
@@ -102,12 +310,17 @@ classes:
     is_a: NamedThing
     attributes:
       exactMatch:
+        annotations:
+          owl: AnnotationAssertion
         slot_uri: skos:exactMatch
         range: string
         required: true
       id:
         identifier: true
+        range: uriorcurie
       label:
+        annotations:
+          owl: AnnotationProperty, AnnotationAssertion
         slot_uri: rdfs:label
 
 ```
@@ -155,7 +368,10 @@ classes:
         required: true
       id:
         identifier: true
+        range: uriorcurie
       label:
+        annotations:
+          owl: AnnotationProperty, AnnotationAssertion
         slot_uri: rdfs:label
 
 ```
@@ -202,7 +418,10 @@ classes:
         required: true
       id:
         identifier: true
+        range: uriorcurie
       label:
+        annotations:
+          owl: AnnotationProperty, AnnotationAssertion
         slot_uri: rdfs:label
 
 ```
@@ -253,7 +472,10 @@ classes:
         required: true
       id:
         identifier: true
+        range: uriorcurie
       label:
+        annotations:
+          owl: AnnotationProperty, AnnotationAssertion
         slot_uri: rdfs:label
 
 ```
@@ -300,7 +522,10 @@ classes:
         required: true
       id:
         identifier: true
+        range: uriorcurie
       label:
+        annotations:
+          owl: AnnotationProperty, AnnotationAssertion
         slot_uri: rdfs:label
 
 ```
@@ -347,7 +572,10 @@ classes:
         required: true
       id:
         identifier: true
+        range: uriorcurie
       label:
+        annotations:
+          owl: AnnotationProperty, AnnotationAssertion
         slot_uri: rdfs:label
 
 ```
@@ -396,7 +624,10 @@ classes:
         required: true
       id:
         identifier: true
+        range: uriorcurie
       label:
+        annotations:
+          owl: AnnotationProperty, AnnotationAssertion
         slot_uri: rdfs:label
 
 ```
@@ -445,7 +676,10 @@ classes:
         required: true
       id:
         identifier: true
+        range: uriorcurie
       label:
+        annotations:
+          owl: AnnotationProperty, AnnotationAssertion
         slot_uri: rdfs:label
 
 ```
@@ -498,7 +732,10 @@ classes:
         required: true
       id:
         identifier: true
+        range: uriorcurie
       label:
+        annotations:
+          owl: AnnotationProperty, AnnotationAssertion
         slot_uri: rdfs:label
 
 ```
@@ -556,9 +793,20 @@ classes:
         multivalued: true
         range: NamedThing
         required: true
+      other_part_ofs:
+        annotations:
+          owl: ObjectSomeValuesFrom
+        description: for hidden GCIs
+        slot_uri: BFO:0000050
+        multivalued: true
+        range: NamedThing
+        required: false
       id:
         identifier: true
+        range: uriorcurie
       label:
+        annotations:
+          owl: AnnotationProperty, AnnotationAssertion
         slot_uri: rdfs:label
 
 ```
@@ -566,7 +814,7 @@ classes:
 
 __Input__:
 
-* EquivGenusAndPartOf(id='x:a', label=None, subclass_of=['X:genus'], part_of=['x:b', 'x:c'])
+* EquivGenusAndPartOf(id='x:a', label=None, subclass_of=['X:genus'], part_of=['x:b', 'x:c'], other_part_ofs=[])
 
 __Generated axioms__:
 
@@ -586,6 +834,201 @@ Ontology( <https://w3id.org/linkml/owl/tests>
             ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000050> <http://example.org/c> )
     )
     )
+)
+```
+
+## Hidden GCI
+
+
+__Description__: _Demonstrates a case where some slots contribute to a logical definition (equiv axiom),
+                     and other contribute to additional axioms (so called hidden GCIs)_
+
+
+__Schema__:
+
+```yaml
+id: http//example.org/Hidden-GCI
+classes:
+  EquivGenusAndPartOf:
+    is_a: NamedThing
+    attributes:
+      subclass_of:
+        annotations:
+          owl: EquivalentClasses, IntersectionOf
+        slot_uri: rdfs:subclass_of
+        multivalued: true
+        range: NamedThing
+        required: true
+      part_of:
+        annotations:
+          owl: EquivalentClasses, IntersectionOf, ObjectSomeValuesFrom
+        slot_uri: BFO:0000050
+        multivalued: true
+        range: NamedThing
+        required: true
+      other_part_ofs:
+        annotations:
+          owl: ObjectSomeValuesFrom
+        description: for hidden GCIs
+        slot_uri: BFO:0000050
+        multivalued: true
+        range: NamedThing
+        required: false
+      id:
+        identifier: true
+        range: uriorcurie
+      label:
+        annotations:
+          owl: AnnotationProperty, AnnotationAssertion
+        slot_uri: rdfs:label
+
+```
+
+
+__Input__:
+
+* EquivGenusAndPartOf(id='x:a', label=None, subclass_of=['X:genus'], part_of=['x:b'], other_part_ofs=['x:c'])
+
+__Generated axioms__:
+
+```
+Prefix( xml: = <http://www.w3.org/XML/1998/namespace> )
+Prefix( rdf: = <http://www.w3.org/1999/02/22-rdf-syntax-ns#> )
+Prefix( rdfs: = <http://www.w3.org/2000/01/rdf-schema#> )
+Prefix( xsd: = <http://www.w3.org/2001/XMLSchema#> )
+Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
+
+Ontology( <https://w3id.org/linkml/owl/tests>
+    SubClassOf( <http://example.org/a>     ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000050> <http://example.org/c> ) )
+    EquivalentClasses(
+        <http://example.org/a>
+            ObjectIntersectionOf(
+        <http://example.org/genus>
+            ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000050> <http://example.org/b> )
+    )
+    )
+)
+```
+
+## slot-value level fstring template
+
+
+__Description__: _Axiom generation per slot-value assignment.
+                     (Note that currently non-identifier fields have their URIs expanded,
+                      but the OWL is the same)_
+
+
+__Schema__:
+
+```yaml
+id: http//example.org/slot-value-level-fstring-template
+classes:
+  ClassTemplateExample1:
+    is_a: NamedThing
+    attributes:
+      subclass_of:
+        annotations:
+          owl.fstring:
+            tag: owl.fstring
+            value: SubClassOf({id} {V})
+        slot_uri: rdfs:subclass_of
+        multivalued: true
+        range: NamedThing
+      part_of:
+        slot_uri: BFO:0000050
+        multivalued: true
+        range: NamedThing
+      other_part_ofs:
+        slot_uri: BFO:0000050
+        multivalued: true
+        range: NamedThing
+      id:
+        identifier: true
+        range: uriorcurie
+      label:
+        annotations:
+          owl: AnnotationProperty, AnnotationAssertion
+        slot_uri: rdfs:label
+
+```
+
+
+__Input__:
+
+* ClassTemplateExample1(id='x:a', label=None, subclass_of=['x:b'], part_of=[], other_part_ofs=[])
+
+__Generated axioms__:
+
+```
+Prefix( xml: = <http://www.w3.org/XML/1998/namespace> )
+Prefix( rdf: = <http://www.w3.org/1999/02/22-rdf-syntax-ns#> )
+Prefix( rdfs: = <http://www.w3.org/2000/01/rdf-schema#> )
+Prefix( xsd: = <http://www.w3.org/2001/XMLSchema#> )
+Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
+
+Ontology( <https://w3id.org/linkml/owl/tests>
+    SubClassOf( x:a <http://example.org/b> )
+)
+```
+
+## slot-value level jinja template
+
+
+__Description__: _Axiom generation per slot-value assignment.
+                     (Note that currently non-identifier fields have their URIs expanded,
+                      but the OWL is the same)_
+
+
+__Schema__:
+
+```yaml
+id: http//example.org/slot-value-level-jinja-template
+classes:
+  ClassTemplateExample2:
+    is_a: NamedThing
+    attributes:
+      subclass_of:
+        annotations:
+          owl.template:
+            tag: owl.template
+            value: '{% for p in subclass_of %}SubClassOf({{id}} {{p}}){% endfor %} '
+        slot_uri: rdfs:subclass_of
+        multivalued: true
+        range: NamedThing
+      part_of:
+        slot_uri: BFO:0000050
+        multivalued: true
+        range: NamedThing
+      other_part_ofs:
+        slot_uri: BFO:0000050
+        multivalued: true
+        range: NamedThing
+      id:
+        identifier: true
+        range: uriorcurie
+      label:
+        annotations:
+          owl: AnnotationProperty, AnnotationAssertion
+        slot_uri: rdfs:label
+
+```
+
+
+__Input__:
+
+* ClassTemplateExample2(id='x:a', label=None, subclass_of=['x:b'], part_of=[], other_part_ofs=[])
+
+__Generated axioms__:
+
+```
+Prefix( xml: = <http://www.w3.org/XML/1998/namespace> )
+Prefix( rdf: = <http://www.w3.org/1999/02/22-rdf-syntax-ns#> )
+Prefix( rdfs: = <http://www.w3.org/2000/01/rdf-schema#> )
+Prefix( xsd: = <http://www.w3.org/2001/XMLSchema#> )
+Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
+
+Ontology( <https://w3id.org/linkml/owl/tests>
+    SubClassOf( x:a x:b )
 )
 ```
 

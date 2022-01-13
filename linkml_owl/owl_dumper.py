@@ -1,10 +1,13 @@
-import json
 from collections import defaultdict
 from typing import Optional, List, Set, Any, Union, Dict, Tuple
 from dataclasses import dataclass, field
 import logging
+
 import click
+from funowl.converters.functional_converter import to_python
+from jinja2 import Template
 from linkml_runtime import SchemaView
+from linkml_runtime.linkml_model import meta
 from linkml_runtime.loaders import yaml_loader
 
 from rdflib import URIRef
@@ -19,7 +22,7 @@ from funowl import OntologyDocument, Ontology, IRI, ObjectSomeValuesFrom, \
     ObjectUnionOf, SubClassOf, ClassAssertion, \
     Class, Individual, \
     AnnotationAssertion, ObjectPropertyAssertion, \
-    Prefix, AnonymousIndividual, ObjectAllValuesFrom, EquivalentClasses, ObjectIntersectionOf, ClassExpression
+    Prefix, AnonymousIndividual, ObjectAllValuesFrom, EquivalentClasses, ObjectIntersectionOf, ClassExpression, Axiom
 from pyld.jsonld import expand
 from rdflib import Graph, BNode
 from rdflib.namespace import RDF, RDFS, OWL
@@ -118,9 +121,9 @@ class OWLDumper(Dumper):
             # TODO: better way of detecting atoms
             if is_element_an_object:
                 # foreign key
-                return self._get_IRI_str(element)
+                return URIRef(self._get_IRI_str(element))
             elif isinstance(element, Uriorcurie):
-                return self._get_IRI_str(element)
+                return URIRef(self._get_IRI_str(element))
             elif isinstance(element, Uri):
                 return URIRef(element)
             else:
@@ -131,6 +134,10 @@ class OWLDumper(Dumper):
         #print(f'E={element }PT={python_type}')
         linkml_class_name = python_type.class_name
         c = schema.classes[linkml_class_name]
+        if 'owl.fstring' in c.annotations:
+            self.add_axioms_from_fstring(c.annotations['owl.fstring'], element)
+        if 'owl.template' in c.annotations:
+            self.add_axioms_from_template(c.annotations['owl.template'], element)
         cls_interps = self._get_interpretations(c)
         if Class.__name__ in cls_interps:
             is_element_an_owl_class = True
@@ -149,6 +156,8 @@ class OWLDumper(Dumper):
             slot: SlotDefinition
             slot = self._lookup_slot(c, k)
             actual_slot = self._get_actual_slot(slot)
+            if 'owl.template' in slot.annotations and v is not None:
+                self.add_axioms_from_template(slot.annotations['owl.template'], element)
             if slot is None:
                 logging.error(f'No slot for {k}')
                 continue
@@ -162,6 +171,7 @@ class OWLDumper(Dumper):
                 interps = self._get_interpretations(actual_slot)
             is_disjunction = 'UnionOf' in interps
             is_conjunction = 'IntersectionOf' in interps
+            is_annotation = 'AnnotationProperty' in interps or 'Annotation' in interps
             is_object_ref = slot.range in self.schema.classes
 
             # normalize input_vals to a list, then transform
@@ -178,6 +188,9 @@ class OWLDumper(Dumper):
             for tr_val in tr_vals:
                 print(f'  TR_VAL = {tr_val}')
                 if tr_val is None:
+                    continue
+                if 'owl.fstring' in slot.annotations and v is not None:
+                    self.add_axioms_from_fstring(slot.annotations['owl.fstring'], element, tr_val)
                     continue
                 if slot.range in self.schema.classes:
                     if isinstance(tr_val, str):
@@ -200,12 +213,21 @@ class OWLDumper(Dumper):
                 axiom_type = SubClassOf
             elif EquivalentClasses.__name__ in interps:
                 axiom_type = EquivalentClasses
+            elif AnnotationAssertion.__name__ in interps:
+                axiom_type = AnnotationAssertion
             if axiom_type is None:
                 if is_class_logical_axiom:
+                    if is_annotation:
+                        raise ValueError(f'{slot.name} cannot be both logical and an annotation')
                     axiom_type = SubClassOf
                 else:
-                    axiom_type = AnnotationAssertion
+                    if is_annotation:
+                        axiom_type = AnnotationAssertion
+                    else:
+                        axiom_type = None
             print(f'AXIOM TYPE = {axiom_type}')
+            if not axiom_type:
+                continue
             if is_disjunction:
                 # translate the filler list to a single entry that is a disjunction
                 # TODO: allow for different groupings; for now default to 0
@@ -312,6 +334,48 @@ class OWLDumper(Dumper):
         if actual_slot.name != slot.name:
             logging.warning(f'Using actual slot uri: {actual_slot.name} >> {slot.name}')
         return actual_slot
+
+    def parse_axioms_string(self, owl_str: str, schemaview: SchemaView = None) -> OntologyDocument:
+        if schemaview is None:
+            schemaview = self.schemaview
+        prefix_lines = []
+        for prefix, url in schemaview.namespaces().items():
+            prefix_lines.append(f'Prefix( {prefix}: = <{url}> )')
+        header = "\n".join(prefix_lines)
+        owl_str = f'{header}\nOntology(\n{owl_str}\n)'
+        print(owl_str)
+        doc = to_python(owl_str)
+        from funowl.writers.FunctionalWriter import FunctionalWriter
+        from rdflib import Graph
+        g = Graph()
+        for p in doc.prefixDeclarations:
+            g.namespace_manager.bind(p.prefixName, p.fullIRI)
+        fw = FunctionalWriter(g=g)
+        owl_str_roundtrip = doc.to_functional(fw)
+        #print(f'ROUNDTRIP = {owl_str_roundtrip}')
+        return doc
+
+    def _element_to_template_dict(self, element: YAMLRoot, val: Any = None):
+        d = {'this': element, 'V': val}
+        for k, v in vars(element).items():
+            d[k] = v
+        return d
+
+    def add_axioms_from_fstring(self, fstring: meta.Annotation, element: YAMLRoot, val: Any = None):
+        d = self._element_to_template_dict(element, val)
+        owl_str = fstring.value.format(**d)
+        print(f'FSTRING = {owl_str}')
+        axioms = self.parse_axioms_string(owl_str).ontology.axioms
+        print(f'AXIOMS >> = {axioms}')
+        self.ontology.axioms += axioms
+
+    def add_axioms_from_template(self, template_ann: meta.Annotation, element: YAMLRoot, val: Any = None):
+        d = self._element_to_template_dict(element, val)
+        jt = Template(template_ann.value)
+        owl_str = jt.render(**d)
+        axioms = self.parse_axioms_string(owl_str).ontology.axioms
+        self.ontology.axioms += axioms
+
 
 @click.command()
 @click.option('-s', '--schema-file', required=True,

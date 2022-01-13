@@ -26,6 +26,7 @@ prefixes:
   OIO: http://www.geneontology.org/formats/oboInOwl#
   skos: http://www.w3.org/2004/02/skos/core#
   dcterms: http://purl.org/dc/terms/
+  X: http://example.org/
 
 default_prefix: chromoschema
 default_curi_maps:
