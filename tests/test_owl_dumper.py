@@ -107,6 +107,9 @@ classes:
     is_a: NamedThing
     slots:
       - exactMatch
+    slot_usage:
+      exactMatch:
+        required: true
   ExactMatchAsLiteral:
     is_a: NamedThing
     slots:
@@ -114,12 +117,14 @@ classes:
     slot_usage:
       exactMatch:
         range: string
+        required: true
   Child:
     is_a: NamedThing
     slots:
       - subclass_of
     slot_usage:
       subclass_of:
+        required: true
         annotations:
           owl: SubClassOf
   ChildOfAnon:
@@ -137,6 +142,7 @@ classes:
       - equivalent_to
     slot_usage:
       equivalent_to:
+        required: true
         annotations:
           owl: EquivalentClasses
   ChildOfUnion:
@@ -145,6 +151,7 @@ classes:
       - subclass_of
     slot_usage:
       subclass_of:
+        required: true
         annotations:
           owl: SubClassOf, UnionOf
   EquivUnion:
@@ -153,6 +160,7 @@ classes:
       - operands
     slot_usage:
       operands:
+        required: true
         annotations:
           owl: EquivalentClasses, UnionOf
   EquivIntersection:
@@ -161,6 +169,7 @@ classes:
       - operands
     slot_usage:
       operands:
+        required: true
         annotations:
           owl: EquivalentClasses, IntersectionOf
   Part:
@@ -169,6 +178,7 @@ classes:
       - part_of
     slot_usage:
       part_of:
+        required: true
         annotations:
           owl: ObjectSomeValuesFrom
   PartOnly:
@@ -177,6 +187,7 @@ classes:
       - part_of
     slot_usage:
       part_of:
+        required: true
         annotations:
           owl: ObjectAllValuesFrom
   AnonPartOf:
@@ -185,6 +196,7 @@ classes:
       - part_of
     slot_usage:
       part_of:
+        required: true
         annotations:
           owl: ObjectSomeValuesFrom
     annotations:
@@ -194,15 +206,15 @@ classes:
     slots:
       - subclass_of
       - part_of
-    annotations:
-      owl.equivalent: subclass_of, part_of
     slot_usage:
       subclass_of:
+        required: true
         annotations:
           owl: EquivalentClasses, IntersectionOf
       part_of:
+        required: true
         annotations:
-          owl: ObjectSomeValuesFrom
+          owl: EquivalentClasses, IntersectionOf, ObjectSomeValuesFrom
     
 """
 
@@ -244,6 +256,7 @@ class Check:
                 c.attributes[s.name] = s
             schema.classes[c.name] = c
             c.slots = []
+            c.slot_usage = {}
         obj = schema_as_dict(schema)
         trim_yaml(obj)
         del obj['name']
@@ -280,55 +293,65 @@ class TestOwlDumper(unittest.TestCase):
         add_check("Annotation using literals",
                   [py_mod.NamedThing('x:a', label='foo')],
                   [AnnotationAssertion(RDFS.label, X.a, Literal("foo"))],
-                  "literal annotation")
+                  """Default is to use an annotation assertion,
+                  and if the range is a string then this is literal""")
         add_check("Annotation using IRIs",
                   [py_mod.ExactMatch('x:a', exactMatch='x:b')],
                   [AnnotationAssertion(SKOS.exactMatch, X.a, X.b)],
-                  "IRI annotation")
+                  "As above, but if the range is an instance of a LinkML class then use a literal")
         add_check("Annotation using forced literals",
                   [py_mod.ExactMatchAsLiteral('x:a', exactMatch='x:b')],
                   [AnnotationAssertion(SKOS.exactMatch, X.a, Literal("x:b"))],
-                  "forced literal annotation")
+                  "We can force a literal by imposing a range")
         add_check("Basic SubClassOf between named classes",
                   [py_mod.Child('x:a', subclass_of='x:b')],
-                  [SubClassOf(X.a, X.b)])
+                  [SubClassOf(X.a, X.b)],
+                  """Adding SubClassOf annotation to the linkml class forces a SubClass axiom
+                  """)
         add_check("basic direct equivalence between named classes",
                   [py_mod.DirectEquivalent('x:a', equivalent_to='x:b')],
                   [EquivalentClasses(X.a, X.b)],
-                  "pairwise equivalence between named classes")
+                  "Adding EquivalentTo annotation to the linkml class forces a SubClass axiom")
         #add_check("n-ary equivalence between named classes",
         #           [py_mod.DirectEquivalent('x:a', equivalent_to=['x:b', 'x:c'])],
         #          [EquivalentClasses(X.a, X.b, X.c)],
         #          "n-ary equivalence between named classes")
         add_check("SubClassOf SomeValuesFrom",
                   [py_mod.Part('x:a', part_of='x:b')],
-                  [SubClassOf(X.a, ObjectSomeValuesFrom(BFO['0000050'], X.b))])
+                  [SubClassOf(X.a, ObjectSomeValuesFrom(BFO['0000050'], X.b))],
+                  """A SubClassOf annotation makes the annotation type be subclass,
+                  a SomeValuesFrom annotation makes the slot interpreted as an existential""")
         add_check("SubClassOf AllValuesFrom",
                   [py_mod.PartOnly('x:a', part_of='x:b')],
-                  [SubClassOf(X.a, ObjectAllValuesFrom(BFO['0000050'], X.b))])
+                  [SubClassOf(X.a, ObjectAllValuesFrom(BFO['0000050'], X.b))],
+                  "As above, but with universal restrictions")
         #add_check("SubClassOf SomeValuesFrom, nested",
         #          [py_mod.ChildOfAnon('x:a', subclass_of=py_mod.AnonPartOf(part_of='x:b'))],
         #          [SubClassOf(X.a, ObjectSomeValuesFrom(BFO['0000050'], X.b))],
         #          "create a subClassOf-partOf-some using a nested structure")
+        # NOTE: assumes order-preserving
         add_check("SubClassOf Union",
                   [py_mod.ChildOfUnion('x:a', subclass_of=['x:b', 'x:c'])],
                   [SubClassOf(X.a, ObjectUnionOf(X.b, X.c))],
-                  "SubClassOf a Union -- assumes order-preserving")
+                  """The slot is interpreted as a parent class,
+                  and all slot values with a UnionOf annotation are collected to make a UnionOf expression""")
         add_check("EquivalentTo Union",
                   [py_mod.EquivUnion('x:a', operands=['x:b', 'x:c'])],
                   [EquivalentClasses(X.a, ObjectUnionOf(X.b, X.c))],
-                  "assumes order-preserving")
+                  "As above, but with equivalence")
         add_check("EquivalentTo IntersectionOf",
                   [py_mod.EquivIntersection('x:a', operands=['x:b', 'x:c'])],
                   [EquivalentClasses(X.a, ObjectIntersectionOf(X.b, X.c))],
-                  "assumes order-preserving")
-        #add_check("EquivalentTo Genus and SomeValuesFrom",
-        #          [py_mod.EquivGenusAndPartOf('x:a',
-        #                                      subclass_of=['X:genus'],
-        #                                      part_of=['x:b', 'x:c'])],
-        #          #[EquivalentClasses(X.a, ObjectIntersectionOf(X.b, X.c))],
-        #          [],
-        #          "genus-differentia")
+                  """The slot is interpreted as a parent class,
+                  and all slot values with a IntersectionOf annotation are collected to make a IntersectionOf expression""")
+        add_check("EquivalentTo Genus and SomeValuesFrom",
+                  [py_mod.EquivGenusAndPartOf('x:a',
+                                              subclass_of=['X:genus'],
+                                              part_of=['x:b', 'x:c'])],
+                  [EquivalentClasses(X.a, ObjectIntersectionOf(X.genus,
+                                                               ObjectSomeValuesFrom(BFO['0000050'],X.b),
+                                                               ObjectSomeValuesFrom(BFO['0000050'],X.c)))],
+                  """All slot value interpretations are collected into a single IntersectionOf""")
         for check in checks:
             print(f'** CHECK: {check.title}')
             md += f'## {check.title}\n\n'
@@ -340,10 +363,11 @@ class TestOwlDumper(unittest.TestCase):
                 md += f'* {record}\n'
             doc = dumper.to_ontology_document(check.records, schema)
             md += '\n__Generated axioms__:\n\n'
+            md += f'```\n{str(doc)}\n```\n\n'
             for axiom in doc.ontology.axioms:
                 print(f'GENERATED: {axiom}')
                 #md += f'* {to_python(axiom)}\n'
-            md += str(doc)
+
             for axiom in check.axioms:
                 print(f'TESTING FOR: {axiom}')
                 assert axiom in doc.ontology.axioms

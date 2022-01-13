@@ -178,6 +178,8 @@ class OWLDumper(Dumper):
             else:
                 axiomType = None
             parents = []
+            axiomType = SubClassOf
+            is_class_logical_axiom = False
             for tr_val in tr_vals:
                 print(f'  TR_VAL = {tr_val}')
                 if tr_val is None:
@@ -188,10 +190,12 @@ class OWLDumper(Dumper):
                 parent = tr_val
                 if ObjectSomeValuesFrom.__name__ in interps:
                     parent = ObjectSomeValuesFrom(slot_uri, tr_val)
-                    axiomType = SubClassOf
+                    is_class_logical_axiom = True
+                    #axiomType = SubClassOf
                 elif ObjectAllValuesFrom.__name__ in interps:
                     parent = ObjectAllValuesFrom(slot_uri, tr_val)
-                    axiomType = SubClassOf
+                    is_class_logical_axiom = True
+                    #axiomType = SubClassOf
                 elif SubClassOf.__name__ in interps:
                     axiomType = SubClassOf
                 elif EquivalentClasses.__name__ in interps:
@@ -199,6 +203,16 @@ class OWLDumper(Dumper):
                 else:
                     axiomType = AnnotationAssertion
                 parents.append(parent)
+            axiomType = None
+            if SubClassOf.__name__ in interps:
+                axiomType = SubClassOf
+            elif EquivalentClasses.__name__ in interps:
+                axiomType = EquivalentClasses
+            if axiomType is None:
+                if is_class_logical_axiom:
+                    axiomType = SubClassOf
+                else:
+                    axiomType = AnnotationAssertion
             print(f'AXIOM TYPE = {axiomType}')
             # TODO: delay conj/disj
             if is_disjunction:
