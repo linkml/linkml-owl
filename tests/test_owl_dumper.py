@@ -1,9 +1,13 @@
 # -*- coding: utf-8 -*-
+import os
+import yaml
+import pytest
+import unittest
+
 from copy import deepcopy
 from dataclasses import dataclass
 from typing import List, Optional
 
-import yaml
 from linkml.generators.pythongen import PythonGenerator
 from linkml_runtime import SchemaView
 from linkml_runtime.linkml_model import SchemaDefinition
@@ -16,13 +20,10 @@ from linkml_owl.owl_dumper import OWLDumper
 from funowl import Axiom, AnnotationAssertion, Literal, SubClassOf, ObjectSomeValuesFrom, \
     ObjectAllValuesFrom, ObjectUnionOf, EquivalentClasses, ObjectIntersectionOf
 
-import os
 
 from linkml_owl.util.trim_yaml import trim_yaml
 from tests import INPUT_DIR, OUTPUT_DIR
 
-
-import unittest
 
 SCHEMA_IN = os.path.join(INPUT_DIR, 'owl_dumper_test.yaml')
 OWL_OUT = os.path.join(OUTPUT_DIR, 'owl_dumper_test.owl.ofn')
@@ -39,6 +40,7 @@ class Check:
     description: Optional[str] = None
     schema_section: str = None
 
+    @pytest.mark.skip
     def set_schema_section(self, sv: SchemaView):
         """
         Used primarily for generating documentation
@@ -68,6 +70,7 @@ class Check:
 class TestOwlDumper(unittest.TestCase):
     """Tests full functionality of OWL dumper"""
 
+    @pytest.mark.skip
     def test_owl_dumper(self):
         """
         Test OWLDumper
