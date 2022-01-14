@@ -10,6 +10,7 @@ from typing import List, Optional
 
 from linkml.generators.pythongen import PythonGenerator
 from linkml_runtime import SchemaView
+from linkml_runtime.dumpers import yaml_dumper
 from linkml_runtime.linkml_model import SchemaDefinition
 from linkml_runtime.utils.compile_python import compile_python
 from linkml_runtime.utils.schema_as_dict import schema_as_dict
@@ -210,9 +211,12 @@ class TestOwlDumper(unittest.TestCase):
             md += f'\n__Description__: _{check.description}_\n\n'
             md += f'\n__Schema__:\n\n```yaml\n{check.schema_section}\n```\n\n'
 
-            md += '\n__Input__:\n\n'
+            md += '\n__Input__:\n\n```yaml\n'
             for record in check.records:
-                md += f'* {record}\n'
+                yaml_str = yaml_dumper.dumps(record)
+                #md += f'* {record}\n'
+                md += f'-\n{yaml_str}'
+            md += '```\n'
             doc = dumper.to_ontology_document(check.records, schema)
             md += '\n__Generated axioms__:\n\n'
             md += f'```\n{str(doc)}\n```\n\n'

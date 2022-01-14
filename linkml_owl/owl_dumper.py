@@ -6,9 +6,12 @@ import logging
 import click
 from funowl.converters.functional_converter import to_python
 from jinja2 import Template
+from linkml.generators.pythongen import PythonGenerator
+from linkml.utils import datautils
 from linkml_runtime import SchemaView
 from linkml_runtime.linkml_model import meta
 from linkml_runtime.loaders import yaml_loader
+from linkml_runtime.utils.compile_python import compile_python
 
 from rdflib import URIRef
 
@@ -25,6 +28,8 @@ from funowl import OntologyDocument, Ontology, IRI, ObjectSomeValuesFrom, \
 
 from linkml_runtime.dumpers.dumper_root import Dumper
 from linkml_runtime.utils.yamlutils import YAMLRoot
+
+from linkml_owl.util.loader_wrapper import load_structured_file
 
 INTERPRETATION = str
 AXIOM_TYPE_NAME = str
@@ -104,7 +109,7 @@ class OWLDumper(Dumper):
             self.transform(element, schema)
         return doc
 
-    def dumps(self, element: YAMLRoot, schema: SchemaDefinition, schemaview: SchemaView, iri=None) -> str:
+    def dumps(self, element: YAMLRoot, schema: SchemaDefinition = None, schemaview: SchemaView = None, iri=None) -> str:
         """
         Dump a linkml instance tree as a function syntax OWL ontology string
 
@@ -401,18 +406,32 @@ class OWLDumper(Dumper):
 
 
 @click.command()
-@click.option('-s', '--schema-file', required=True,
+@click.option('-s', '--schema', required=True,
               help="Path to LinkML schema")
+@click.option("--target-class", "-C",
+              help="name of class in datamodel that the root node instantiates")
+@click.option("--module", "-m",
+              help="Path to python datamodel module")
+@click.option("--format", "-f",
+              help="Input format (will be inferred from file suffix if not specified)")
 @click.option('-o', '--output', required=True,
               help="Path to OWL functional syntax output")
 @click.argument('inputfile')
-def cli(inputfile: str, schema_file: str, output, **args):
+def cli(inputfile: str, schema: str, target_class, module, output, format, **args):
     """
     Dump LinkML instance data as OWL
     """
-    element = yaml_loader.load(inputfile)
+    if module is None:
+        if schema is None:
+            raise Exception('must pass one of module OR schema')
+        else:
+            python_module = PythonGenerator(schema).compile_module()
+    else:
+        python_module = compile_python(module)
+    sv = SchemaView(schema)
+    element = load_structured_file(inputfile, target_class=target_class, python_module=python_module, schemaview=sv, fmt=format)
     dumper = OWLDumper()
-    doc = dumper.dumps(element, schema_file)
+    doc = dumper.dumps(element, schemaview=sv)
     with open(output, 'w') as stream:
         stream.write(str(doc))
 

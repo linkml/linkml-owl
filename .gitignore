@@ -2,3 +2,4 @@
 .idea/
 tests/output/
 linkml_owl.egg-info/
+__pycache__
