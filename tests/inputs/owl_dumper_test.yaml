@@ -106,6 +106,7 @@ classes:
     slots:
       - id
       - label
+      - definition
   Anonymous:
     is_a: Thing
     annotations:

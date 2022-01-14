@@ -1,0 +1,433 @@
+@prefix BFO: <http://purl.obolibrary.org/obo/BFO_> .
+@prefix GO: <http://purl.obolibrary.org/obo/GO_> .
+@prefix IAO: <http://purl.obolibrary.org/obo/IAO_> .
+@prefix OIO: <http://www.geneontology.org/formats/oboInOwl#> .
+@prefix RO: <http://purl.obolibrary.org/obo/RO_> .
+@prefix biolink: <https://w3id.org/biolink/vocab/> .
+@prefix chromoschema: <https://w3id.org/biodatamodels/chromoschema/> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix edam: <http://edamontology.org/> .
+@prefix gff: <https://w3id.org/biodatamodels/gff/> .
+@prefix linkml: <https://w3id.org/linkml/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<https://w3id.org/biodatamodels/chromoschema> a owl:Ontology ;
+    rdfs:label "ChromoSchema" ;
+    IAO:0000700 chromoschema:ChromosomePart,
+        chromoschema:ChromosomePartCollection,
+        chromoschema:Genome,
+        chromoschema:GenomeBuild,
+        chromoschema:OrganismTaxon ;
+    dcterms:license "https://creativecommons.org/publicdomain/zero/1.0/" ;
+    skos:definition """Schema for representing Chromosomes and Chromosomal Regions.
+
+Objects created using this schema can be directly worked with in YAML/Python,
+Additionally they can be translated to OWL""" ;
+    linkml:generation_date "2022-01-14T15:52:31" ;
+    linkml:metamodel_version "1.7.0" ;
+    linkml:source_file "chromo.yaml" ;
+    linkml:source_file_date "2022-01-12T21:11:50" ;
+    linkml:source_file_size 8532 .
+
+chromoschema:download_url a owl:ObjectProperty,
+        linkml:SlotDefinition ;
+    rdfs:label "download_url" ;
+    rdfs:range linkml:Uri .
+
+linkml:SubsetDefinition a owl:Class ;
+    rdfs:label "subset_definition" ;
+    skos:definition "the name and description of a subset" .
+
+linkml:topValue a owl:DatatypeProperty ;
+    rdfs:label "value" .
+
+chromoschema:ChromosomePartCollection a owl:Class,
+        linkml:ClassDefinition ;
+    rdfs:label "ChromosomePartCollection" ;
+    rdfs:subClassOf [ a owl:Restriction ;
+            owl:allValuesFrom chromoschema:OrganismTaxon ;
+            owl:onProperty dcterms:hasPart ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom chromoschema:ChromosomePart ;
+            owl:onProperty dcterms:hasPart ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom chromoschema:Genome ;
+            owl:onProperty dcterms:hasPart ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onClass linkml:String ;
+            owl:onProperty chromoschema:name ] .
+
+chromoschema:StrandType a owl:Class,
+        linkml:TypeDefinition ;
+    rdfs:label "StrandType" ;
+    rdfs:subClassOf linkml:Integer ;
+    skos:definition "0, 1, or -1" .
+
+chromoschema:band_descriptor a owl:ObjectProperty,
+        linkml:SlotDefinition ;
+    rdfs:label "band_descriptor" ;
+    rdfs:range chromoschema:BandDescriptor ;
+    skos:definition "A string representing a chromosome band, e.g. p31.1. This is local to the chromosome, so the chromosome is not included in the descriptor" ;
+    skos:note "for a chromosome, arm this is a single leter, e.g. p or q",
+        "for a chromosome, this is the empty string",
+        "for common species, the usual structure is the band name followed by dot delimited numbers, e.g. p31.1. However, different species have different systems" .
+
+chromoschema:chromosome_name a owl:ObjectProperty,
+        linkml:SlotDefinition ;
+    rdfs:label "chromosome_name" ;
+    rdfs:range chromoschema:ChromosomeNameType ;
+    skos:definition "E.g. chr1, chrM. Some species like C elegans may use roman numerals" .
+
+chromoschema:previous_builds a owl:ObjectProperty,
+        linkml:SlotDefinition ;
+    rdfs:label "previous_builds" ;
+    rdfs:range chromoschema:GenomeBuild ;
+    skos:definition "List of previous non-current builds" .
+
+chromoschema:sex_chromosome_type a owl:ObjectProperty,
+        linkml:SlotDefinition ;
+    rdfs:label "sex_chromosome_type" ;
+    rdfs:range chromoschema:SexChromosomeType ;
+    skos:definition "Only populated for sex chromosomes. Indicates the chromosome type. This is X or Y in mammals, W or Z in avians" .
+
+chromoschema:somal_type a owl:ObjectProperty,
+        linkml:SlotDefinition ;
+    rdfs:label "somal_type" ;
+    rdfs:range chromoschema:AutosomeVsSexChromosome ;
+    skos:definition "indicates whether this is a sex-chromosome or not" .
+
+gff:strand a owl:ObjectProperty,
+        linkml:SlotDefinition ;
+    rdfs:label "strand" ;
+    rdfs:range chromoschema:StrandType ;
+    skos:exactMatch gff:strand,
+        biolink:strand .
+
+BFO:0000050 a owl:ObjectProperty,
+        linkml:SlotDefinition .
+
+BFO:0000051 a owl:ObjectProperty,
+        linkml:SlotDefinition ;
+    rdfs:label "children" ;
+    rdfs:range chromoschema:ChromosomePart ;
+    skos:definition "Direct parts of this chromosome. zero to many." ;
+    skos:exactMatch BFO:0000051 .
+
+GO:0000791 a owl:Class,
+        chromoschema:ChromatinType ;
+    rdfs:label "euchromatin" .
+
+GO:0000792 a owl:Class,
+        chromoschema:ChromatinType ;
+    rdfs:label "heterochromatin" .
+
+GO:0000803 a owl:Class,
+        chromoschema:AutosomeVsSexChromosome ;
+    rdfs:label "sex_chromosome" .
+
+GO:0000804 a owl:Class,
+        chromoschema:SexChromosomeType ;
+    rdfs:label "W" .
+
+GO:0000805 a owl:Class,
+        chromoschema:SexChromosomeType ;
+    rdfs:label "X" .
+
+GO:0000806 a owl:Class,
+        chromoschema:SexChromosomeType ;
+    rdfs:label "Y" .
+
+GO:0000807 a owl:Class,
+        chromoschema:SexChromosomeType ;
+    rdfs:label "Z" .
+
+GO:0005634 a owl:Class,
+        chromoschema:LocationType ;
+    rdfs:label "nucleus" .
+
+GO:0005694 a owl:Class,
+        chromoschema:EntityType ;
+    rdfs:label "chromosome" ;
+    rdfs:seeAlso "SO:0000340" .
+
+GO:0005739 a owl:Class,
+        chromoschema:LocationType ;
+    rdfs:label "mitochondrion" .
+
+GO:0030849 a owl:Class,
+        chromoschema:AutosomeVsSexChromosome ;
+    rdfs:label "autosome" .
+
+GO:0098687 a owl:Class,
+        chromoschema:EntityType ;
+    rdfs:label "chromosome_part" ;
+    rdfs:seeAlso "SO:0000830" .
+
+OIO:hasBroadSynonym a owl:ObjectProperty,
+        linkml:SlotDefinition ;
+    rdfs:label "broad_synonyms" ;
+    rdfs:range linkml:String ;
+    skos:exactMatch OIO:hasBroadSynonym .
+
+OIO:hasExactSynonym a owl:ObjectProperty,
+        linkml:SlotDefinition .
+
+rdf:type a owl:ObjectProperty,
+        linkml:SlotDefinition ;
+    rdfs:label "type" ;
+    rdfs:range chromoschema:EntityType ;
+    skos:exactMatch rdf:type ;
+    skos:note "OWL>> SubClassOf" .
+
+skos:exactMatch a owl:ObjectProperty,
+        linkml:SlotDefinition ;
+    rdfs:label "exact_mappings" ;
+    rdfs:range linkml:Uriorcurie ;
+    skos:definition "For a whole chromosome, this may be an assembled sequence in a database such as genbank or ensembl" ;
+    skos:exactMatch skos:exactMatch .
+
+chromoschema:BandDescriptor a owl:Class,
+        linkml:TypeDefinition ;
+    rdfs:label "BandDescriptor" ;
+    rdfs:subClassOf linkml:String ;
+    skos:definition "e.g. p, p1, p1.1, ..." .
+
+chromoschema:ChromatinType a owl:Class,
+        linkml:EnumDefinition ;
+    rdfs:label "ChromatinType" ;
+    owl:unionOf ( GO:0000792 GO:0000791 ) ;
+    linkml:permissible_values GO:0000791,
+        GO:0000792 .
+
+chromoschema:ChromosomeNameType a owl:Class,
+        linkml:TypeDefinition ;
+    rdfs:label "ChromosomeNameType" ;
+    rdfs:subClassOf linkml:String ;
+    skos:definition "E.g. chr1" .
+
+chromoschema:Genome a owl:Class,
+        linkml:ClassDefinition ;
+    rdfs:label "Genome" ;
+    rdfs:subClassOf [ a owl:Restriction ;
+            owl:onClass chromoschema:LabelType ;
+            owl:onProperty rdfs:label ;
+            owl:qualifiedCardinality 1 ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom chromoschema:GenomeBuild ;
+            owl:onProperty chromoschema:previous_builds ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onClass chromoschema:TaxonIdentifier ;
+            owl:onProperty RO:0002162 ],
+        [ a owl:Restriction ;
+            owl:onClass linkml:String ;
+            owl:onProperty chromoschema:id ;
+            owl:qualifiedCardinality 1 ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onClass chromoschema:GenomeBuild ;
+            owl:onProperty biolink:genome_build ] ;
+    skos:definition """Represents a sequenced genome, one per species.
+Each genome can be associated with one or more builds""" .
+
+chromoschema:OrganismTaxon a owl:Class,
+        linkml:ClassDefinition ;
+    rdfs:label "OrganismTaxon" ;
+    rdfs:subClassOf [ a owl:Restriction ;
+            owl:onClass linkml:String ;
+            owl:onProperty chromoschema:id ;
+            owl:qualifiedCardinality 1 ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onClass chromoschema:LabelType ;
+            owl:onProperty OIO:hasExactSynonym ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onClass chromoschema:LabelType ;
+            owl:onProperty rdfs:label ] ;
+    skos:definition "Represents a species, e.g. Homo sapiens" ;
+    skos:exactMatch biolink:OrganismTaxon .
+
+gff:end a owl:ObjectProperty,
+        linkml:SlotDefinition ;
+    rdfs:label "end" ;
+    rdfs:range linkml:Integer ;
+    skos:definition "Start location of the chromosomal part. Note we also include this for whole chromosomes - end will be rightmost point" ;
+    skos:exactMatch gff:end .
+
+gff:start a owl:ObjectProperty,
+        linkml:SlotDefinition ;
+    rdfs:label "start" ;
+    rdfs:range linkml:Integer ;
+    skos:definition "Start location of the chromosomal part. Note we also include this for whole chromosomes - start will be zero" ;
+    skos:exactMatch gff:start .
+
+biolink:genome_build a owl:ObjectProperty,
+        linkml:SlotDefinition .
+
+RO:0002162 a owl:ObjectProperty,
+        linkml:SlotDefinition ;
+    rdfs:label "taxon" ;
+    rdfs:range chromoschema:TaxonIdentifier ;
+    skos:definition "The taxon to which the chromosome part belongs. Always NCBITaxon." ;
+    skos:exactMatch RO:0002162 ;
+    skos:note "OWL>> ObjectSomeValuesFrom" .
+
+dcterms:hasPart a owl:ObjectProperty,
+        linkml:SlotDefinition .
+
+chromoschema:LocationType a owl:Class,
+        linkml:EnumDefinition ;
+    rdfs:label "LocationType" ;
+    owl:unionOf ( GO:0005634 GO:0005739 ) ;
+    skos:definition "where in the cell" ;
+    linkml:permissible_values GO:0005634,
+        GO:0005739 .
+
+chromoschema:TaxonIdentifier a owl:Class,
+        linkml:TypeDefinition ;
+    rdfs:label "TaxonIdentifier" ;
+    rdfs:subClassOf linkml:Uriorcurie .
+
+rdfs:label a owl:ObjectProperty,
+        linkml:SlotDefinition .
+
+chromoschema:AutosomeVsSexChromosome a owl:Class,
+        linkml:EnumDefinition ;
+    rdfs:label "AutosomeVsSexChromosome" ;
+    owl:unionOf ( GO:0000803 GO:0030849 ) ;
+    skos:definition "sex or autosome" ;
+    linkml:permissible_values GO:0000803,
+        GO:0030849 .
+
+chromoschema:EntityType a owl:Class,
+        linkml:EnumDefinition ;
+    rdfs:label "EntityType" ;
+    owl:unionOf ( GO:0005694 GO:0098687 ) ;
+    skos:definition "SO or GO type" ;
+    linkml:permissible_values GO:0005694,
+        GO:0098687 .
+
+chromoschema:id a owl:ObjectProperty,
+        linkml:SlotDefinition .
+
+chromoschema:ChromosomePart a owl:Class,
+        linkml:ClassDefinition ;
+    rdfs:label "ChromosomePart" ;
+    rdfs:subClassOf [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onClass chromoschema:LabelType ;
+            owl:onProperty rdfs:label ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onClass chromoschema:TaxonIdentifier ;
+            owl:onProperty RO:0002162 ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onClass linkml:Integer ;
+            owl:onProperty gff:start ],
+        [ a owl:Restriction ;
+            owl:onClass linkml:String ;
+            owl:onProperty chromoschema:id ;
+            owl:qualifiedCardinality 1 ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom linkml:Uriorcurie ;
+            owl:onProperty skos:exactMatch ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom chromoschema:ChromosomePart ;
+            owl:onProperty BFO:0000051 ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onClass chromoschema:BandDescriptor ;
+            owl:onProperty chromoschema:band_descriptor ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onClass chromoschema:SexChromosomeType ;
+            owl:onProperty chromoschema:sex_chromosome_type ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onClass chromoschema:AutosomeVsSexChromosome ;
+            owl:onProperty chromoschema:somal_type ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onClass chromoschema:ChromosomePart ;
+            owl:onProperty BFO:0000050 ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onClass chromoschema:EntityType ;
+            owl:onProperty rdf:type ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom linkml:String ;
+            owl:onProperty OIO:hasBroadSynonym ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onClass chromoschema:ChromosomeNameType ;
+            owl:onProperty chromoschema:chromosome_name ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onClass chromoschema:GenomeBuild ;
+            owl:onProperty biolink:genome_build ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onClass chromoschema:LocationType ;
+            owl:onProperty BFO:0000050 ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom linkml:String ;
+            owl:onProperty OIO:hasExactSynonym ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onClass linkml:Integer ;
+            owl:onProperty gff:end ] ;
+    skos:definition "A Chromosome or a part of a chromosome (includes whole chromosomes, arms, and bands)" ;
+    skos:note """OWL Notes: when translated to OWL, instances of this class will be treated as
+OWL classes, with the superclass determined by the type field""",
+        "OWL>> Class" .
+
+chromoschema:GenomeBuild a owl:Class,
+        linkml:ClassDefinition ;
+    rdfs:label "GenomeBuild" ;
+    rdfs:subClassOf [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onClass chromoschema:LabelType ;
+            owl:onProperty rdfs:label ],
+        [ a owl:Restriction ;
+            owl:onClass linkml:String ;
+            owl:onProperty chromoschema:id ;
+            owl:qualifiedCardinality 1 ] ;
+    skos:closeMatch edam:operation_0525 ;
+    skos:definition "Represents a specific build of a sequenced genome" .
+
+chromoschema:LabelType a owl:Class,
+        linkml:TypeDefinition ;
+    rdfs:label "LabelType" ;
+    rdfs:subClassOf linkml:String ;
+    skos:definition "A string that provides a human-readable name for an entity" .
+
+linkml:ClassDefinition a owl:Class ;
+    rdfs:label "class_definition" ;
+    skos:definition "the definition of a class or interface" .
+
+linkml:TypeDefinition a owl:Class ;
+    rdfs:label "type_definition" ;
+    skos:definition "A data type definition." .
+
+chromoschema:SexChromosomeType a owl:Class,
+        linkml:EnumDefinition ;
+    rdfs:label "SexChromosomeType" ;
+    owl:unionOf ( GO:0000805 GO:0000806 GO:0000804 GO:0000807 ) ;
+    skos:definition "what type of sex chromosome" ;
+    linkml:permissible_values GO:0000804,
+        GO:0000805,
+        GO:0000806,
+        GO:0000807 .
+
+linkml:SlotDefinition a owl:Class ;
+    rdfs:label "slot_definition" ;
+    skos:definition "the definition of a property or a slot" .
+
+
