@@ -63,7 +63,7 @@ jobs:
       #              run test suite   
       #----------------------------------------------
       - name: Run tests
-        run: poetry run pytest --cov-report=term --cov-report=html:htmlcov --cov=linkml_owl/
+        run: poetry run python -m unittest discover -p 'test_*.py'
     
       #----------------------------------------------
       #           upload coverage results
