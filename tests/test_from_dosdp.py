@@ -1,4 +1,9 @@
 # -*- coding: utf-8 -*-
+import os
+import json
+import pytest
+import unittest
+
 from linkml_runtime.utils.schemaview import SchemaView
 from rdflib import Graph
 
@@ -7,7 +12,6 @@ from tests.model.mondo_dps import *
 from linkml_owl.owl_dumper import OWLDumper
 from linkml.generators.yamlgen import YAMLGenerator
 from linkml.generators.owlgen import OwlSchemaGenerator
-import json
 from funowl.converters.functional_converter import to_python
 from funowl import OntologyDocument
 
@@ -15,12 +19,10 @@ from funowl import OntologyDocument
 from linkml_runtime.dumpers import json_dumper, yaml_dumper, rdf_dumper
 from linkml_runtime.loaders import csv_loader
 
-import os
 from tests import MODEL_DIR, INPUT_DIR, OUTPUT_DIR
 
 """Test the module can be imported."""
 
-import unittest
 
 SCHEMA_IN = os.path.join(MODEL_DIR, 'mondo_dps.yaml')
 DATA_IN = os.path.join(INPUT_DIR, 'vectorBorneDisease.tsv')
@@ -30,6 +32,7 @@ OWLSCHEMA_OUT = os.path.join(OUTPUT_DIR, 'mondo_dps.owl.ttl')
 class TestFromDosdp(unittest.TestCase):
     """A test case for create tests."""
 
+    @pytest.mark.skip
     def test_as_owl(self):
         """
         Test creation of OWL metamodel
@@ -39,6 +42,7 @@ class TestFromDosdp(unittest.TestCase):
         with open(OWLSCHEMA_OUT, 'w') as stream:
             stream.write(OwlSchemaGenerator(SCHEMA_IN).serialize())
 
+    @pytest.mark.skip
     def test_from_dosdp(self):
         """
         Test creation of an OWL TBox from Mondo DOSDP templates, converted to LinkML
