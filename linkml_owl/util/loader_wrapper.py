@@ -11,6 +11,7 @@ from jsonasobj2 import as_dict
 from linkml.utils import datautils
 from linkml.utils.datautils import infer_index_slot
 from linkml_runtime import SchemaView
+from linkml_runtime.linkml_model import SchemaDefinition
 from linkml_runtime.loaders import json_loader, yaml_loader, csv_loader, rdf_loader, rdflib_loader
 
 from linkml_runtime.utils.yamlutils import YAMLRoot, DupCheckYamlLoader
