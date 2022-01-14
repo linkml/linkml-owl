@@ -49,19 +49,22 @@ Then provide OWL classes as LinkML data instances using any of the standard ways
 
 For example, as TSV or YAML:
 
-```
-'UBERON:1':
+```yaml
+- id: UBERON:1
   label: eye
   part_of: ['UBERON:2']
-'UBERON:2':
+- id: UBERON:2
   label: head
   part_of: ['UBERON:3']
-'UBERON:3':
+- id: UBERON:3
   label: organism
-  part_of: []
 ```
 
 then run this through the command line tool to generate an ontology
+
+```bash
+linkml-data2owl -C AnatomicalEntityClass -s my_schema.yaml my_data.yaml -o my_ont.ofn
+```
 
 ```owl
 AnnotationAssertion(rdfs:label UBERON:1 "eye")
