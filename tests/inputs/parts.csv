@@ -1,0 +1,5 @@
+@type,id,label,subclass_of,part_of,other_part_ofs
+EquivGenusAndPartOf,x:Finger,finger,x:Digit,x:Hand,
+EquivGenusAndPartOf,x:LeftFinger,left finger,x:Digit|x:Left,x:Hand,
+EquivGenusAndPartOf,x:LeftFinger2,left finger,x:Digit,x:Hand|x:LeftSide,
+EquivGenusAndPartOf,x:FingerSkeleton,finger_skeleton,x:Subskeleton,x:Finger,x:HandSkeleton

@@ -27,10 +27,10 @@
 
 Objects created using this schema can be directly worked with in YAML/Python,
 Additionally they can be translated to OWL""" ;
-    linkml:generation_date "2022-01-14T14:19:48" ;
+    linkml:generation_date "2022-01-14T15:52:31" ;
     linkml:metamodel_version "1.7.0" ;
     linkml:source_file "chromo.yaml" ;
-    linkml:source_file_date "2022-01-14T13:35:02" ;
+    linkml:source_file_date "2022-01-12T21:11:50" ;
     linkml:source_file_size 8532 .
 
 chromoschema:download_url a owl:ObjectProperty,
@@ -218,9 +218,8 @@ chromoschema:Genome a owl:Class,
             owl:onProperty rdfs:label ;
             owl:qualifiedCardinality 1 ],
         [ a owl:Restriction ;
-            owl:maxQualifiedCardinality 1 ;
-            owl:onClass chromoschema:GenomeBuild ;
-            owl:onProperty biolink:genome_build ],
+            owl:allValuesFrom chromoschema:GenomeBuild ;
+            owl:onProperty chromoschema:previous_builds ],
         [ a owl:Restriction ;
             owl:maxQualifiedCardinality 1 ;
             owl:onClass chromoschema:TaxonIdentifier ;
@@ -230,8 +229,9 @@ chromoschema:Genome a owl:Class,
             owl:onProperty chromoschema:id ;
             owl:qualifiedCardinality 1 ],
         [ a owl:Restriction ;
-            owl:allValuesFrom chromoschema:GenomeBuild ;
-            owl:onProperty chromoschema:previous_builds ] ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onClass chromoschema:GenomeBuild ;
+            owl:onProperty biolink:genome_build ] ;
     skos:definition """Represents a sequenced genome, one per species.
 Each genome can be associated with one or more builds""" .
 
@@ -320,31 +320,50 @@ chromoschema:ChromosomePart a owl:Class,
         linkml:ClassDefinition ;
     rdfs:label "ChromosomePart" ;
     rdfs:subClassOf [ a owl:Restriction ;
-            owl:allValuesFrom linkml:String ;
-            owl:onProperty OIO:hasBroadSynonym ],
+            owl:maxQualifiedCardinality 1 ;
+            owl:onClass chromoschema:LabelType ;
+            owl:onProperty rdfs:label ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onClass chromoschema:TaxonIdentifier ;
+            owl:onProperty RO:0002162 ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onClass linkml:Integer ;
+            owl:onProperty gff:start ],
+        [ a owl:Restriction ;
+            owl:onClass linkml:String ;
+            owl:onProperty chromoschema:id ;
+            owl:qualifiedCardinality 1 ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom linkml:Uriorcurie ;
+            owl:onProperty skos:exactMatch ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom chromoschema:ChromosomePart ;
+            owl:onProperty BFO:0000051 ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onClass chromoschema:BandDescriptor ;
+            owl:onProperty chromoschema:band_descriptor ],
+        [ a owl:Restriction ;
+            owl:maxQualifiedCardinality 1 ;
+            owl:onClass chromoschema:SexChromosomeType ;
+            owl:onProperty chromoschema:sex_chromosome_type ],
         [ a owl:Restriction ;
             owl:maxQualifiedCardinality 1 ;
             owl:onClass chromoschema:AutosomeVsSexChromosome ;
             owl:onProperty chromoschema:somal_type ],
         [ a owl:Restriction ;
             owl:maxQualifiedCardinality 1 ;
-            owl:onClass linkml:Integer ;
-            owl:onProperty gff:end ],
-        [ a owl:Restriction ;
-            owl:maxQualifiedCardinality 1 ;
             owl:onClass chromoschema:ChromosomePart ;
             owl:onProperty BFO:0000050 ],
-        [ a owl:Restriction ;
-            owl:onClass linkml:String ;
-            owl:onProperty chromoschema:id ;
-            owl:qualifiedCardinality 1 ],
         [ a owl:Restriction ;
             owl:maxQualifiedCardinality 1 ;
             owl:onClass chromoschema:EntityType ;
             owl:onProperty rdf:type ],
         [ a owl:Restriction ;
             owl:allValuesFrom linkml:String ;
-            owl:onProperty OIO:hasExactSynonym ],
+            owl:onProperty OIO:hasBroadSynonym ],
         [ a owl:Restriction ;
             owl:maxQualifiedCardinality 1 ;
             owl:onClass chromoschema:ChromosomeNameType ;
@@ -355,34 +374,15 @@ chromoschema:ChromosomePart a owl:Class,
             owl:onProperty biolink:genome_build ],
         [ a owl:Restriction ;
             owl:maxQualifiedCardinality 1 ;
-            owl:onClass linkml:Integer ;
-            owl:onProperty gff:start ],
-        [ a owl:Restriction ;
-            owl:maxQualifiedCardinality 1 ;
-            owl:onClass chromoschema:TaxonIdentifier ;
-            owl:onProperty RO:0002162 ],
-        [ a owl:Restriction ;
-            owl:maxQualifiedCardinality 1 ;
             owl:onClass chromoschema:LocationType ;
             owl:onProperty BFO:0000050 ],
         [ a owl:Restriction ;
-            owl:allValuesFrom chromoschema:ChromosomePart ;
-            owl:onProperty BFO:0000051 ],
+            owl:allValuesFrom linkml:String ;
+            owl:onProperty OIO:hasExactSynonym ],
         [ a owl:Restriction ;
             owl:maxQualifiedCardinality 1 ;
-            owl:onClass chromoschema:BandDescriptor ;
-            owl:onProperty chromoschema:band_descriptor ],
-        [ a owl:Restriction ;
-            owl:maxQualifiedCardinality 1 ;
-            owl:onClass chromoschema:LabelType ;
-            owl:onProperty rdfs:label ],
-        [ a owl:Restriction ;
-            owl:allValuesFrom linkml:Uriorcurie ;
-            owl:onProperty skos:exactMatch ],
-        [ a owl:Restriction ;
-            owl:maxQualifiedCardinality 1 ;
-            owl:onClass chromoschema:SexChromosomeType ;
-            owl:onProperty chromoschema:sex_chromosome_type ] ;
+            owl:onClass linkml:Integer ;
+            owl:onProperty gff:end ] ;
     skos:definition "A Chromosome or a part of a chromosome (includes whole chromosomes, arms, and bands)" ;
     skos:note """OWL Notes: when translated to OWL, instances of this class will be treated as
 OWL classes, with the superclass determined by the type field""",

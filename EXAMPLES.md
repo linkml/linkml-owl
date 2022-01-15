@@ -26,13 +26,22 @@ classes:
         annotations:
           owl: AnnotationProperty, AnnotationAssertion
         slot_uri: rdfs:label
+      definition:
+        annotations:
+          owl: AnnotationProperty, AnnotationAssertion
+        slot_uri: IAO:0000115
 
 ```
 
 
 __Input__:
 
-* NamedThing(id='x:a', label='foo')
+```yaml
+-
+  id: x:a
+  label: foo
+  
+```
 
 __Generated axioms__:
 
@@ -75,13 +84,22 @@ classes:
         annotations:
           owl: AnnotationProperty, AnnotationAssertion
         slot_uri: rdfs:label
+      definition:
+        annotations:
+          owl: AnnotationProperty, AnnotationAssertion
+        slot_uri: IAO:0000115
 
 ```
 
 
 __Input__:
 
-* ExactMatch(id='x:a', label=None, exactMatch='x:b')
+```yaml
+-
+  id: x:a
+  exactMatch: x:b
+  
+```
 
 __Generated axioms__:
 
@@ -124,13 +142,22 @@ classes:
         annotations:
           owl: AnnotationProperty, AnnotationAssertion
         slot_uri: rdfs:label
+      definition:
+        annotations:
+          owl: AnnotationProperty, AnnotationAssertion
+        slot_uri: IAO:0000115
 
 ```
 
 
 __Input__:
 
-* ExactMatchAsLiteral(id='x:a', label=None, exactMatch='x:b')
+```yaml
+-
+  id: x:a
+  exactMatch: x:b
+  
+```
 
 __Generated axioms__:
 
@@ -175,13 +202,23 @@ classes:
         annotations:
           owl: AnnotationProperty, AnnotationAssertion
         slot_uri: rdfs:label
+      definition:
+        annotations:
+          owl: AnnotationProperty, AnnotationAssertion
+        slot_uri: IAO:0000115
 
 ```
 
 
 __Input__:
 
-* Child(id='x:a', label=None, subclass_of=['x:b'])
+```yaml
+-
+  id: x:a
+  subclass_of:
+  - x:b
+  
+```
 
 __Generated axioms__:
 
@@ -225,13 +262,23 @@ classes:
         annotations:
           owl: AnnotationProperty, AnnotationAssertion
         slot_uri: rdfs:label
+      definition:
+        annotations:
+          owl: AnnotationProperty, AnnotationAssertion
+        slot_uri: IAO:0000115
 
 ```
 
 
 __Input__:
 
-* DirectEquivalent(id='x:a', label=None, equivalent_to=['x:b'])
+```yaml
+-
+  id: x:a
+  equivalent_to:
+  - x:b
+  
+```
 
 __Generated axioms__:
 
@@ -279,13 +326,23 @@ classes:
         annotations:
           owl: AnnotationProperty, AnnotationAssertion
         slot_uri: rdfs:label
+      definition:
+        annotations:
+          owl: AnnotationProperty, AnnotationAssertion
+        slot_uri: IAO:0000115
 
 ```
 
 
 __Input__:
 
-* Part(id='x:a', label=None, part_of=['x:b'])
+```yaml
+-
+  id: x:a
+  part_of:
+  - x:b
+  
+```
 
 __Generated axioms__:
 
@@ -329,13 +386,23 @@ classes:
         annotations:
           owl: AnnotationProperty, AnnotationAssertion
         slot_uri: rdfs:label
+      definition:
+        annotations:
+          owl: AnnotationProperty, AnnotationAssertion
+        slot_uri: IAO:0000115
 
 ```
 
 
 __Input__:
 
-* PartOnly(id='x:a', label=None, part_of=['x:b'])
+```yaml
+-
+  id: x:a
+  part_of:
+  - x:b
+  
+```
 
 __Generated axioms__:
 
@@ -379,13 +446,24 @@ classes:
         annotations:
           owl: AnnotationProperty, AnnotationAssertion
         slot_uri: rdfs:label
+      definition:
+        annotations:
+          owl: AnnotationProperty, AnnotationAssertion
+        slot_uri: IAO:0000115
 
 ```
 
 
 __Input__:
 
-* Part(id='x:a', label='foo', part_of=['x:b'])
+```yaml
+-
+  id: x:a
+  label: foo
+  part_of:
+  - x:b
+  
+```
 
 __Generated axioms__:
 
@@ -431,13 +509,24 @@ classes:
         annotations:
           owl: AnnotationProperty, AnnotationAssertion
         slot_uri: rdfs:label
+      definition:
+        annotations:
+          owl: AnnotationProperty, AnnotationAssertion
+        slot_uri: IAO:0000115
 
 ```
 
 
 __Input__:
 
-* ChildOfUnion(id='x:a', label=None, subclass_of=['x:b', 'x:c'])
+```yaml
+-
+  id: x:a
+  subclass_of:
+  - x:b
+  - x:c
+  
+```
 
 __Generated axioms__:
 
@@ -483,13 +572,24 @@ classes:
         annotations:
           owl: AnnotationProperty, AnnotationAssertion
         slot_uri: rdfs:label
+      definition:
+        annotations:
+          owl: AnnotationProperty, AnnotationAssertion
+        slot_uri: IAO:0000115
 
 ```
 
 
 __Input__:
 
-* EquivUnion(id='x:a', label=None, operands=['x:b', 'x:c'])
+```yaml
+-
+  id: x:a
+  operands:
+  - x:b
+  - x:c
+  
+```
 
 __Generated axioms__:
 
@@ -539,13 +639,24 @@ classes:
         annotations:
           owl: AnnotationProperty, AnnotationAssertion
         slot_uri: rdfs:label
+      definition:
+        annotations:
+          owl: AnnotationProperty, AnnotationAssertion
+        slot_uri: IAO:0000115
 
 ```
 
 
 __Input__:
 
-* EquivIntersection(id='x:a', label=None, operands=['x:b', 'x:c'])
+```yaml
+-
+  id: x:a
+  operands:
+  - x:b
+  - x:c
+  
+```
 
 __Generated axioms__:
 
@@ -610,13 +721,26 @@ classes:
         annotations:
           owl: AnnotationProperty, AnnotationAssertion
         slot_uri: rdfs:label
+      definition:
+        annotations:
+          owl: AnnotationProperty, AnnotationAssertion
+        slot_uri: IAO:0000115
 
 ```
 
 
 __Input__:
 
-* EquivGenusAndPartOf(id='x:a', label=None, subclass_of=['X:genus'], part_of=['x:b', 'x:c'], other_part_ofs=[])
+```yaml
+-
+  id: x:a
+  subclass_of:
+  - X:genus
+  part_of:
+  - x:b
+  - x:c
+  
+```
 
 __Generated axioms__:
 
@@ -683,13 +807,27 @@ classes:
         annotations:
           owl: AnnotationProperty, AnnotationAssertion
         slot_uri: rdfs:label
+      definition:
+        annotations:
+          owl: AnnotationProperty, AnnotationAssertion
+        slot_uri: IAO:0000115
 
 ```
 
 
 __Input__:
 
-* EquivGenusAndPartOf(id='x:a', label=None, subclass_of=['X:genus'], part_of=['x:b'], other_part_ofs=['x:c'])
+```yaml
+-
+  id: x:a
+  subclass_of:
+  - X:genus
+  part_of:
+  - x:b
+  other_part_ofs:
+  - x:c
+  
+```
 
 __Generated axioms__:
 
@@ -751,13 +889,23 @@ classes:
         annotations:
           owl: AnnotationProperty, AnnotationAssertion
         slot_uri: rdfs:label
+      definition:
+        annotations:
+          owl: AnnotationProperty, AnnotationAssertion
+        slot_uri: IAO:0000115
 
 ```
 
 
 __Input__:
 
-* ClassTemplateExample1(id='x:a', label=None, subclass_of=['x:b'], part_of=[], other_part_ofs=[])
+```yaml
+-
+  id: x:a
+  subclass_of:
+  - x:b
+  
+```
 
 __Generated axioms__:
 
@@ -812,13 +960,23 @@ classes:
         annotations:
           owl: AnnotationProperty, AnnotationAssertion
         slot_uri: rdfs:label
+      definition:
+        annotations:
+          owl: AnnotationProperty, AnnotationAssertion
+        slot_uri: IAO:0000115
 
 ```
 
 
 __Input__:
 
-* ClassTemplateExample2(id='x:a', label=None, subclass_of=['x:b'], part_of=[], other_part_ofs=[])
+```yaml
+-
+  id: x:a
+  subclass_of:
+  - x:b
+  
+```
 
 __Generated axioms__:
 
@@ -874,13 +1032,28 @@ classes:
         annotations:
           owl: AnnotationProperty, AnnotationAssertion
         slot_uri: rdfs:label
+      definition:
+        annotations:
+          owl: AnnotationProperty, AnnotationAssertion
+        slot_uri: IAO:0000115
 
 ```
 
 
 __Input__:
 
-* CollectionOfPartsWithCounts(id='x:collection', label=None, has_part=[PartWithCounts(unit='x:p1', count=2, state=(text='ACTIVATED', meaning='http://purl.obolibrary.org/obo/PATO_0002354')), PartWithCounts(unit='x:p2', count=3, state=(text='ACTIVATED', meaning='http://purl.obolibrary.org/obo/PATO_0002354'))])
+```yaml
+-
+  id: x:collection
+  has_part:
+  - unit: x:p1
+    count: 2
+    state: ACTIVATED
+  - unit: x:p2
+    count: 3
+    state: ACTIVATED
+  
+```
 
 __Generated axioms__:
 
@@ -939,13 +1112,24 @@ classes:
         annotations:
           owl: AnnotationProperty, AnnotationAssertion
         slot_uri: rdfs:label
+      definition:
+        annotations:
+          owl: AnnotationProperty, AnnotationAssertion
+        slot_uri: IAO:0000115
 
 ```
 
 
 __Input__:
 
-* CollectionOfParts(id='x:collection', label=None, has_part=['x:p1', 'x:p2'])
+```yaml
+-
+  id: x:collection
+  has_part:
+  - x:p1
+  - x:p2
+  
+```
 
 __Generated axioms__:
 
@@ -1007,13 +1191,24 @@ classes:
         annotations:
           owl: AnnotationProperty, AnnotationAssertion
         slot_uri: rdfs:label
+      definition:
+        annotations:
+          owl: AnnotationProperty, AnnotationAssertion
+        slot_uri: IAO:0000115
 
 ```
 
 
 __Input__:
 
-* DefinedCollectionOfParts(id='x:collection', label=None, has_part=['x:dp1', 'x:dp2'])
+```yaml
+-
+  id: x:collection
+  has_part:
+  - x:dp1
+  - x:dp2
+  
+```
 
 __Generated axioms__:
 

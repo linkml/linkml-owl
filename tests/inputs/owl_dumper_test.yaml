@@ -89,13 +89,24 @@ slots:
   abnormal:
     is_a: subphenotype
 
+  #records:
+  #  multivalued: true
+  #  range: NamedThing
+  #  inlined: true
+
 classes:
+  #Container:
+  #  tree_root: true
+  #  slots:
+  #    - records
+
   Thing:
   NamedThing:
     is_a: Thing
     slots:
       - id
       - label
+      - definition
   Anonymous:
     is_a: Thing
     annotations:

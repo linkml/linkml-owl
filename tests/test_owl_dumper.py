@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import logging
 import os
 import yaml
 import pytest
@@ -41,7 +42,6 @@ class Check:
     description: Optional[str] = None
     schema_section: str = None
 
-    @pytest.mark.skip
     def set_schema_section(self, sv: SchemaView):
         """
         Used primarily for generating documentation
@@ -71,7 +71,6 @@ class Check:
 class TestOwlDumper(unittest.TestCase):
     """Tests full functionality of OWL dumper"""
 
-    @pytest.mark.skip
     def test_owl_dumper(self):
         """
         Test OWLDumper
@@ -213,15 +212,16 @@ class TestOwlDumper(unittest.TestCase):
 
             md += '\n__Input__:\n\n```yaml\n'
             for record in check.records:
+                md += f'-\n'
                 yaml_str = yaml_dumper.dumps(record)
-                #md += f'* {record}\n'
-                md += f'-\n{yaml_str}'
+                for line in yaml_str.split('\n'):
+                    md += f'  {line}\n'
             md += '```\n'
             doc = dumper.to_ontology_document(check.records, schema)
             md += '\n__Generated axioms__:\n\n'
             md += f'```\n{str(doc)}\n```\n\n'
             for axiom in doc.ontology.axioms:
-                print(f'GENERATED: {axiom}')
+                logging.info(f'GENERATED: {axiom}')
                 #md += f'* {to_python(axiom)}\n'
 
             ontology_str_trimmed = str(doc).replace('\n', '')

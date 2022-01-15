@@ -420,6 +420,24 @@ class OWLDumper(Dumper):
 def cli(inputfile: str, schema: str, target_class, module, output, format, **args):
     """
     Dump LinkML instance data as OWL
+
+    Examples:
+
+    Convert a CSV to OWL
+
+        linkml-data2owl -s tests/inputs/owl_dumper_test.yaml tests/inputs/parts.csv -o parts.ofn
+
+        Note in this example, there must be a class type designator column `@type` in the CSV
+
+    Convert a CSV to OWL, homogeneous classes:
+
+        linkml-data2owl -C EquivGenusAndPartOf -s tests/inputs/owl_dumper_test.yaml \
+            tests/inputs/parts_implicit_type.csv -o parts.ofn
+
+    Convert YAML or JSON to OWL:
+
+        linkml-data2owl -s tests/inputs/owl_dumper_test.yaml tests/inputs/owl_dumper_test_data.yaml -o ont.ofn
+
     """
     if module is None:
         if schema is None:

@@ -16,6 +16,8 @@ classes) are data elements that should conform to a schema
 linkml-data2owl -s my_schema.yaml my_data.{yaml,json,tsv,rdf} -o my_ontology.owl.ttl 
 ```
 
+Input file can be yaml, json, csv, or any rdf serialization.
+
 ## Basics
 
 First specify your schema
@@ -49,19 +51,24 @@ Then provide OWL classes as LinkML data instances using any of the standard ways
 
 For example, as TSV or YAML:
 
-```
-'UBERON:1':
+```yaml
+- id: UBERON:1
   label: eye
   part_of: ['UBERON:2']
-'UBERON:2':
+- id: UBERON:2
   label: head
   part_of: ['UBERON:3']
-'UBERON:3':
+- id: UBERON:3
   label: organism
-  part_of: []
 ```
 
 then run this through the command line tool to generate an ontology
+
+```bash
+linkml-data2owl -C AnatomicalEntityClass -s my_schema.yaml my_data.yaml -o my_ont.ofn
+```
+
+(note: the `-C` option is mandatory unless the data has a `@type` designator)
 
 ```owl
 AnnotationAssertion(rdfs:label UBERON:1 "eye")
@@ -211,7 +218,18 @@ in particular:
 
 An example of a domain where this kind of rich data modeling of input
 data includes generation of chemical entity ontologies from data. See
-the [chemrof](https://chemkg.github.io/chemrof/) project
+the [chemrof](https://chemkg.github.io/chemrof/) project.
+
+The overall philosophy of linkml-owl is composability of distinct parts. It is a relatively lightweight library that
+is only concerned with mapping or templating from a source dataset to OWL. It delegates other aspects to other libraries,
+in particular the following are seen as separate concerns:
+
+- Validation of input
+- Organizing templates hierarchically
+- Template reuse, including reusing the same slots, and an import mechanism
+- Generation of documentation  
+- Automatic filling in of default values
+- Lexical manipulation, including pre-populating labels, synomyms, and text definitions
 
 ## See Also
 
