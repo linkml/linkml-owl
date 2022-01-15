@@ -1,6 +1,8 @@
+import csv
 import json
 import logging
 from copy import copy
+from dataclasses import dataclass
 from io import StringIO
 
 from typing import Union, TextIO, Type, Optional, List, Dict
@@ -11,14 +13,54 @@ from jsonasobj2 import as_dict
 from linkml.utils import datautils
 from linkml.utils.datautils import infer_index_slot
 from linkml_runtime import SchemaView
+from linkml_runtime.linkml_model import SchemaDefinition
 from linkml_runtime.loaders import json_loader, yaml_loader, csv_loader, rdf_loader, rdflib_loader
 
 from linkml_runtime.utils.yamlutils import YAMLRoot, DupCheckYamlLoader
 
+@dataclass
+class Container:
+    objects: List = None
 
-def load_structured_file(source: Union[str, dict, TextIO], target_class: Union[str, Type[YAMLRoot]], fmt: str = None,
+
+def load_from_csv(source: str, delimiter=None) -> List[Dict]:
+    if not delimiter and isinstance(source, str):
+        with open(source) as tmpstream:
+            line = tmpstream.readline()
+            if '\t' in line:
+                delimiter = '\t'
+            elif ',' in line:
+                logging.warning(f'Using implicit delimiter: {delimiter}')
+                delimiter = ','
+            else:
+                raise ValueError(f'Cannot infer delimited - please pass explicitly')
+    if isinstance(source, str):
+        instream = open(source)
+    else:
+        instream = source
+    r = csv.DictReader(instream, delimiter=delimiter, quoting=csv.QUOTE_NONE, escapechar="\\")
+    def opt_split(s:str) -> Union[List, str]:
+        if s != "":
+            if '|' in s:
+                return s.split('|')
+            else:
+                return s
+        else:
+            return None
+    objs = []
+    for row in r:
+        if row:
+            obj = {k: opt_split(v) for k, v in row.items() if v != ""}
+            objs.append(obj)
+    return objs
+
+
+def load_structured_file(source: Union[str, dict, TextIO], target_class: Union[str, Type[YAMLRoot]] = None, fmt: str = None,
+                         index_slot: str = None,
                          python_module = None,
-                         schema: SchemaDefinition = None,
+                         normalize_csvs = False,
+                         delimiter = None,
+                         schema: Union[str, SchemaDefinition] = None,
                          schemaview: SchemaView = None) -> Union[YAMLRoot, List[YAMLRoot]]:
     """
     Wraps multiple runtime loaders, loading from a variety of source types, yielding a LinkML object or objects
@@ -36,6 +78,7 @@ def load_structured_file(source: Union[str, dict, TextIO], target_class: Union[s
     :param target_class: class to be instantiated, either name or the python class
     :param fmt: Any of yaml, json, csv, ttl. inferred if None and source is a file path
     :param python_module: python module for datamodel classes
+    :param schema:
     :param schemaview: required if the input is CSV or RDF
     :return: Either a single LinkML object OR a list of them
     """
@@ -47,6 +90,7 @@ def load_structured_file(source: Union[str, dict, TextIO], target_class: Union[s
                 raise ValueError(f'schemaview OR schema should be specified')
         else:
             schemaview = SchemaView(schema)
+            schema = schemaview.schema
     if target_class is None:
         target_class = datautils.infer_root_class(schemaview)
     if target_class and isinstance(target_class, str):
@@ -54,12 +98,17 @@ def load_structured_file(source: Union[str, dict, TextIO], target_class: Union[s
     if isinstance(source, str):
         fmt = datautils._get_format(source, fmt)
     if datautils._is_xsv(fmt):
-        if index_slot is None:
-            index_slot = infer_index_slot(sv, target_class)
-            if index_slot is None:
-                raise Exception('--index-slot is required for CSV input')
         loader = csv_loader
-        out_obj = csv_loader.load(source, index_slot=index_slot, schema=schema)
+        if normalize_csvs:
+            if index_slot is None:
+                index_slot = infer_index_slot(schemaview, target_class)
+                if index_slot is None:
+                    raise Exception('--index-slot is required for CSV input')
+            out_obj = csv_loader.load(source, index_slot=index_slot, schema=schema)
+        else:
+            obj = load_from_csv(source, delimiter=delimiter)
+            logging.debug(f'INST {target_class} <= {obj}')
+            out_obj = [instantiate_object(x, target_class, python_module=python_module) for x in obj]
     elif datautils._is_rdf_format(fmt):
         loader = rdflib_loader
         out_obj = rdflib_loader.load(source, schemaview=schemaview, fmt=fmt)
