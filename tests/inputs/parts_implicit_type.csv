@@ -1,0 +1,5 @@
+id,label,subclass_of,part_of,other_part_ofs
+x:Finger,finger,x:Digit,x:Hand,
+x:LeftFinger,left finger,x:Digit|x:Left,x:Hand,
+x:LeftFinger2,left finger,x:Digit,x:Hand|x:LeftSide,
+x:FingerSkeleton,finger_skeleton,x:Subskeleton,x:Finger,x:HandSkeleton

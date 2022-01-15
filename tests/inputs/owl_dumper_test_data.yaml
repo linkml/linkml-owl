@@ -1,0 +1,9 @@
+- "@type": NamedThing
+  id: x:1
+  label: foo
+- "@type": NamedThing
+  id: x:2
+  label: bar
+- "@type": Part
+  id: x:2
+  part_of: x:3
