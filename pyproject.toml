@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "linkml_owl"
-version = "0.1.0"
+version = "0.0.0"
 description = "OWL mappings for Linked Open Data Modeling Language"
 authors = ["Chris Mungall <cjmungall@lbl.gov>"]
 
