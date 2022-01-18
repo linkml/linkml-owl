@@ -15,7 +15,8 @@ from linkml_runtime.utils.compile_python import compile_python
 
 from rdflib import URIRef
 
-from linkml_runtime.linkml_model.meta import ClassDefinition, SchemaDefinition, SlotDefinition, Definition
+from linkml_runtime.linkml_model.meta import ClassDefinition, SchemaDefinition, SlotDefinition, Definition, \
+    ClassDefinitionName
 from linkml_runtime.utils.formatutils import underscore, camelcase
 from linkml_runtime.linkml_model.types import Uri, Uriorcurie
 
@@ -24,7 +25,10 @@ from funowl import OntologyDocument, Ontology, IRI, ObjectSomeValuesFrom, \
     ObjectUnionOf, SubClassOf, ClassAssertion, \
     Class, Individual, \
     AnnotationAssertion, ObjectPropertyAssertion, \
-    Prefix, AnonymousIndividual, ObjectAllValuesFrom, EquivalentClasses, ObjectIntersectionOf, ClassExpression, Axiom
+    Prefix, AnonymousIndividual, ObjectAllValuesFrom, EquivalentClasses, ObjectIntersectionOf, ClassExpression, Axiom, \
+    ObjectProperty, Declaration, ObjectInverseOf, InverseObjectProperties, ObjectPropertyDomain, ObjectPropertyRange, \
+    SubObjectPropertyOf, TransitiveObjectProperty, SymmetricObjectProperty, AsymmetricObjectProperty, \
+    ReflexiveObjectProperty, IrreflexiveObjectProperty
 
 from linkml_runtime.dumpers.dumper_root import Dumper
 from linkml_runtime.utils.yamlutils import YAMLRoot
@@ -107,6 +111,8 @@ class OWLDumper(Dumper):
                 self.transform(e1, schema)
         else:
             self.transform(element, schema)
+        for pfx in schema.prefixes.values():
+            doc.prefixDeclarations.append(Prefix(pfx.prefix_prefix, pfx.prefix_reference))
         return doc
 
     def dumps(self, element: YAMLRoot, schema: SchemaDefinition = None, schemaview: SchemaView = None, iri=None) -> str:
@@ -162,11 +168,16 @@ class OWLDumper(Dumper):
         #logging.debug(f'E={element }PT={python_type}')
         linkml_class_name = python_type.class_name
         c = schema.classes[linkml_class_name]
-        if 'owl.fstring' in c.annotations:
-            self.add_axioms_from_fstring(c.annotations['owl.fstring'], element)
-        if 'owl.template' in c.annotations:
-            self.add_axioms_from_template(c.annotations['owl.template'], element)
-        cls_interps = self._get_interpretations(c)
+        #if 'owl.fstring' in c.annotations:
+        #    self.add_axioms_from_fstring(c.annotations['owl.fstring'], element)
+        for fstr in self._get_inferred_class_annotations(c, 'owl.fstring'):
+            self.add_axioms_from_fstring(fstr, element)
+        for tmpl_str in self._get_inferred_class_annotations(c, 'owl.template'):
+            self.add_axioms_from_template(tmpl_str, element)
+        #if 'owl.template' in c.annotations:
+        #    self.add_axioms_from_template(c.annotations['owl.template'], element)
+        cls_interps = self._get_class_interpretations(c)
+        #cls_interps = self._get_interpretations(c)
         if Class.__name__ in cls_interps:
             is_element_an_owl_class = True
         subj = None
@@ -180,23 +191,33 @@ class OWLDumper(Dumper):
                 subj = URIRef(self._get_IRI_str(v))
         if subj is None:
             subj = AnonymousIndividual()
+        if ObjectProperty.__name__ in cls_interps:
+            decl = Declaration(ObjectProperty(subj))
+            o.axioms.append(decl)
         for k, v in vars(element).items():
             slot: SlotDefinition
             slot = self._lookup_slot(c, k)
             actual_slot = self._get_actual_slot(slot)
-            if 'owl.template' in slot.annotations and v is not None:
-                self.add_axioms_from_template(slot.annotations['owl.template'], element)
+            owl_templates = self._get_inferred_slot_annotations(slot, 'owl.template', linkml_class_name)
+            owl_fstrings = self._get_inferred_slot_annotations(slot, 'owl.fstring', linkml_class_name)
+            boolean_form_of = self._get_inferred_slot_annotations(slot, 'boolean_form_of', linkml_class_name)
+            for tmpl in owl_templates:
+                self.add_axioms_from_template(tmpl, element)
+            #if 'owl.template' in slot.annotations and v is not None:
+            #    self.add_axioms_from_template(slot.annotations['owl.template'], element)
             if slot is None:
                 logging.error(f'No slot for {k}')
                 continue
-            if slot.identifier or actual_slot.identifier:
+            if slot.identifier:
                 continue
             slot_uri = self._get_IRI_str(actual_slot.slot_uri)
+            #slot_uri = slot.slot_uri
             logging.debug(f'in {subj} {k} = {v} (URI={actual_slot.slot_uri}) // slot = {slot.name}')
-            interps = self._get_interpretations(slot)
+            #interps = self._get_interpretations(slot)
+            interps = self._get_slot_interpretations(slot, linkml_class_name)
             logging.debug(f'INTERPS={interps}')
-            if len(interps) == 0:
-                interps = self._get_interpretations(actual_slot)
+            #if len(interps) == 0:
+            #    interps = self._get_interpretations(actual_slot)
             is_disjunction = 'UnionOf' in interps
             is_conjunction = 'IntersectionOf' in interps
             is_annotation = 'AnnotationProperty' in interps or 'Annotation' in interps
@@ -217,13 +238,32 @@ class OWLDumper(Dumper):
                 logging.debug(f'  TR_VAL = {tr_val}')
                 if tr_val is None:
                     continue
-                if 'owl.fstring' in slot.annotations and v is not None:
-                    self.add_axioms_from_fstring(slot.annotations['owl.fstring'], element, tr_val)
+                if owl_fstrings:
+                    for owl_fstring in owl_fstrings:
+                        self.add_axioms_from_fstring(owl_fstring, element, tr_val)
                     continue
+                #if 'owl.fstring' in slot.annotations and v is not None:
+                #    self.add_axioms_from_fstring(slot.annotations['owl.fstring'], element, tr_val)
+                #    continue
                 if slot.range in self.schema.classes:
                     if isinstance(tr_val, str):
                         tr_val = self._get_IRI_str(tr_val)
                 parent = tr_val
+                if boolean_form_of:
+                    if parent and parent == Literal(True):
+                        for owl_uri in boolean_form_of:
+                            if owl_uri == 'owl:TransitiveProperty':
+                                o.axioms.append(TransitiveObjectProperty(subj))
+                            elif owl_uri == 'owl:SymmetricProperty':
+                                o.axioms.append(SymmetricObjectProperty(subj))
+                            elif owl_uri == 'owl:AsymmetricProperty':
+                                o.axioms.append(AsymmetricObjectProperty(subj))
+                            elif owl_uri == 'owl:ReflexiveProperty':
+                                o.axioms.append(ReflexiveObjectProperty(subj))
+                            elif owl_uri == 'owl:IrreflexiveProperty':
+                                o.axioms.append(IrreflexiveObjectProperty(subj))
+                            else:
+                                raise ValueError(f'Cannot interpret {owl_uri}')
                 # transform parents if an expression type is specified
                 if ObjectSomeValuesFrom.__name__ in interps:
                     parent = ObjectSomeValuesFrom(slot_uri, tr_val)
@@ -237,10 +277,19 @@ class OWLDumper(Dumper):
                     is_class_logical_axiom = True
                 parents.append(parent)
             axiom_type = None
+            # TODO: make this more generic / less repetitive
             if SubClassOf.__name__ in interps:
                 axiom_type = SubClassOf
+            elif SubObjectPropertyOf.__name__ in interps:
+                axiom_type = SubObjectPropertyOf
             elif EquivalentClasses.__name__ in interps:
                 axiom_type = EquivalentClasses
+            elif InverseObjectProperties.__name__ in interps:
+                axiom_type = InverseObjectProperties
+            elif ObjectPropertyDomain.__name__ in interps:
+                axiom_type = ObjectPropertyDomain
+            elif ObjectPropertyRange.__name__ in interps:
+                axiom_type = ObjectPropertyRange
             elif AnnotationAssertion.__name__ in interps:
                 axiom_type = AnnotationAssertion
             if axiom_type is None:
@@ -269,18 +318,27 @@ class OWLDumper(Dumper):
                 eai.add_operands((level, axiom_type.__name__, ObjectIntersectionOf.__name__), parents)
                 parents = []
             for parent in parents:
+                # TODO: make this more generic
                 if axiom_type == SubClassOf:
                     logging.debug(f'type(subj) = {type(subj)} // {subj}')
                     if isinstance(subj, AnonymousIndividual):
                         axiom = None
                     else:
                         axiom = SubClassOf(subj, parent)
+                elif axiom_type == SubObjectPropertyOf:
+                    axiom = SubObjectPropertyOf(subj, parent)
                 elif axiom_type == EquivalentClasses:
                     axiom = EquivalentClasses(subj, parent)
                 elif axiom_type == ClassAssertion:
                     axiom = ClassAssertion(parent, subj)
                 elif axiom_type == ObjectPropertyAssertion:
                     axiom = ObjectPropertyAssertion(slot_uri, subj, parent)
+                elif axiom_type == InverseObjectProperties:
+                    axiom = InverseObjectProperties(subj, parent)
+                elif axiom_type == ObjectPropertyDomain:
+                    axiom = ObjectPropertyDomain(subj, parent)
+                elif axiom_type == ObjectPropertyRange:
+                    axiom = ObjectPropertyRange(subj, parent)
                 elif axiom_type == AnnotationAssertion:
                     axiom = AnnotationAssertion(slot_uri, subj, parent)
                 else:
@@ -331,16 +389,115 @@ class OWLDumper(Dumper):
         else:
             logging.error(f'Did not find {field} in {cls.name} slots =  {cls.slots}')
 
+    def _get_inferred_slot_annotations(self, slot: SlotDefinition, ann_key: str,
+                                       class_name: ClassDefinitionName) -> List[str]:
+        vals = set()
+        anc_slots = [slot]
+        sv = self.schemaview
+        for anc_c in sv.class_ancestors(class_name, reflexive=True):
+            induced_slot = sv.induced_slot(slot.name, anc_c)
+            anc_slots.append(induced_slot)
+        for a in sv.slot_ancestors(slot.name, reflexive=True):
+            anc_slots.append(sv.get_slot(a))
+        for s in anc_slots:
+            if ann_key == 'owl':
+                # inject inferred annotations
+                slot_uri = s.slot_uri
+                if slot_uri == 'owl:inverseOf':
+                    vals.add(InverseObjectProperties.__name__)
+                if slot_uri == 'rdfs:domain':
+                    vals.add(ObjectPropertyDomain.__name__)
+                if slot_uri == 'rdfs:range':
+                    vals.add(ObjectPropertyRange.__name__)
+            if ann_key in s.annotations:
+                if ann_key == 'owl':
+                    vals.update([v.strip() for v in s.annotations[ann_key].value.split(',')])
+                else:
+                    vals.add(s.annotations[ann_key].value)
+        return list(vals)
+
+    def _get_inferred_class_annotations(self, cls: ClassDefinition, ann_key: str) -> List[str]:
+        vals = set()
+        anc_classes = [cls]
+        sv = self.schemaview
+        for anc_c in sv.class_ancestors(cls.name, reflexive=True):
+            anc_classes.append(sv.get_class(anc_c))
+        for s in anc_classes:
+            if ann_key in s.annotations:
+                if ann_key == 'owl':
+                    vals.update([v.strip() for v in s.annotations[ann_key].value.split(',')])
+                else:
+                    vals.add(s.annotations[ann_key].value)
+        return list(vals)
+
+    def _get_class_interpretations(self, cls: ClassDefinition) -> Set[INTERPRETATION]:
+        return set(self._get_inferred_class_annotations(cls, 'owl'))
+
+    def _get_slot_interpretations(self, slot: SlotDefinition, class_name: ClassDefinitionName) -> Set[INTERPRETATION]:
+        return set(self._get_inferred_slot_annotations(slot, 'owl', class_name))
+
     def _get_interpretations(self, x: Definition) -> Set[INTERPRETATION]:
+
+        if isinstance(x, SlotDefinition):
+            anc_names = self.schemaview.slot_ancestors(x.name, reflexive=False)
+            ancs = [self.schemaview.get_slot(a) for a in anc_names] + [x]
+        elif isinstance(x, ClassDefinition):
+            anc_names = self.schemaview.class_ancestors(x.name, reflexive=False)
+            ancs = [self.schemaview.get_class(a) for a in anc_names] + [x]
+        else:
+            raise ValueError(f'Not supported: {type(x)}')
         interps = set()
-        OWL_MARKER = 'OWL>>'
-        for c in x.comments:
-            # TODO: deprecated comment-based way of doing this
-            if c.startswith(OWL_MARKER):
-                n = c.replace(OWL_MARKER, '').strip()
-                interps.add(n)
-        if 'owl' in x.annotations:
-            interps.update([s.strip() for s in x.annotations['owl'].value.split(',')])
+        #OWL_MARKER = 'OWL>>'
+        for x in ancs:
+            #for c in x.comments:
+            #    logging.warning('Use of OWL>> is deprecated - replace with an annotation')
+            #    # TODO: deprecated comment-based way of doing this
+            #    if c.startswith(OWL_MARKER) and False:
+            #        n = c.replace(OWL_MARKER, '').strip()
+            #        interps.add(n)
+            if 'owl' in x.annotations:
+                interps.update([s.strip() for s in x.annotations['owl'].value.split(',')])
+            # TODO: make this more declarative/generic; use a mapping of URIs => OWL types
+            if isinstance(x, SlotDefinition):
+                slot_uri = x.slot_uri
+                if slot_uri == 'owl:inverseOf':
+                    interps.add(InverseObjectProperties.__name__)
+                if slot_uri == 'rdfs:domain':
+                    interps.add(ObjectPropertyDomain.__name__)
+                if slot_uri == 'rdfs:range':
+                    interps.add(ObjectPropertyRange.__name__)
+        return interps
+
+
+    def OLD_get_interpretations(self, x: Definition) -> Set[INTERPRETATION]:
+        if isinstance(x, SlotDefinition):
+            anc_names = self.schemaview.slot_ancestors(x.name, reflexive=False)
+            ancs = [self.schemaview.get_slot(a) for a in anc_names] + [x]
+        elif isinstance(x, ClassDefinition):
+            anc_names = self.schemaview.class_ancestors(x.name, reflexive=False)
+            ancs = [self.schemaview.get_class(a) for a in anc_names] + [x]
+        else:
+            raise ValueError(f'Not supported: {type(x)}')
+        interps = set()
+        #OWL_MARKER = 'OWL>>'
+        for x in ancs:
+            #for c in x.comments:
+            #    logging.warning('Use of OWL>> is deprecated - replace with an annotation')
+            #    # TODO: deprecated comment-based way of doing this
+            #    if c.startswith(OWL_MARKER) and False:
+            #        n = c.replace(OWL_MARKER, '').strip()
+            #        interps.add(n)
+            if 'owl' in x.annotations:
+                interps.update([s.strip() for s in x.annotations['owl'].value.split(',')])
+            # TODO: make this more declarative/generic; use a mapping of URIs => OWL types
+            if isinstance(x, SlotDefinition):
+                slot_uri = x.slot_uri
+                if slot_uri == 'owl:inverseOf':
+                    interps.add(InverseObjectProperties.__name__)
+                if slot_uri == 'rdfs:domain':
+                    interps.add(ObjectPropertyDomain.__name__)
+                if slot_uri == 'rdfs:range':
+                    interps.add(ObjectPropertyRange.__name__)
         return interps
 
     def _get_IRI_str(self, id: str) -> str:
@@ -348,6 +505,7 @@ class OWLDumper(Dumper):
         if uri:
             return uri
 
+    # TODO: deprecate this
     def _get_actual_slot(self, slot: SlotDefinition) -> SlotDefinition:
         """
         See
@@ -372,7 +530,11 @@ class OWLDumper(Dumper):
         header = "\n".join(prefix_lines)
         owl_str = f'{header}\nOntology(\n{owl_str}\n)'
         logging.debug(owl_str)
-        doc = to_python(owl_str)
+        try:
+            doc = to_python(owl_str)
+        except Exception as e:
+            logging.error(f'Error parsing generated OWL: {owl_str}')
+            raise e
         from funowl.writers.FunctionalWriter import FunctionalWriter
         from rdflib import Graph
         g = Graph()
@@ -389,17 +551,24 @@ class OWLDumper(Dumper):
             d[k] = v
         return d
 
-    def add_axioms_from_fstring(self, fstring: meta.Annotation, element: YAMLRoot, val: Any = None):
+    def add_axioms_from_fstring(self, fstring: Union[str, meta.Annotation], element: YAMLRoot, val: Any = None):
+        if isinstance(fstring, meta.Annotation):
+            fstring = fstring.value
         d = self._element_to_template_dict(element, val)
-        owl_str = fstring.value.format(**d)
+        owl_str = fstring.format(**d)
         logging.debug(f'FSTRING = {owl_str}')
         axioms = self.parse_axioms_string(owl_str).ontology.axioms
         logging.debug(f'AXIOMS >> = {axioms}')
         self.ontology.axioms += axioms
 
-    def add_axioms_from_template(self, template_ann: meta.Annotation, element: YAMLRoot, val: Any = None):
+    def add_axioms_from_template(self, template_ann: Union[str, meta.Annotation], element: YAMLRoot, val: Any = None):
+        # TODO: simplify, change arg to str
         d = self._element_to_template_dict(element, val)
-        jt = Template(template_ann.value)
+        if isinstance(template_ann, str):
+            tstr = template_ann
+        else:
+            tstr = template_ann.value
+        jt = Template(tstr)
         owl_str = jt.render(**d)
         axioms = self.parse_axioms_string(owl_str).ontology.axioms
         self.ontology.axioms += axioms

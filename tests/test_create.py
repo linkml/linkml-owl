@@ -28,7 +28,6 @@ OWLSCHEMA_OUT = os.path.join(OUTPUT_DIR, 'chromo.schema.owl.ttl')
 class TestCreate(unittest.TestCase):
     """A test case for create tests."""
 
-    @pytest.mark.skip
     def test_create_ontology(self):
         """
         Test creation of an OWL TBox

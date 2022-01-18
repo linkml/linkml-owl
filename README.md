@@ -1,6 +1,6 @@
 # linkml-owl
 
-This is an ALPHA version of a tool for translating LinkML instance data to OWL (TBoxes and ABoxes)
+This is an ALPHA version of a tool for translating LinkML instance data to OWL Ontologies (TBoxes and ABoxes)
 
 [LinkML](https://linkml/io/linkml) is a general purpose data modeling
 language for authoring schemas to structure data. The perspective of

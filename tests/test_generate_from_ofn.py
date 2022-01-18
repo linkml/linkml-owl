@@ -29,7 +29,6 @@ OWLSCHEMA_OUT = os.path.join(OUTPUT_DIR, 'chromo.schema.owl.ttl')
 
 class TestGen(unittest.TestCase):
 
-    @pytest.mark.skip
     def test_gen(self):
         """
         Test creation of an OWL TBox
