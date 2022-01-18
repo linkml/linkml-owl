@@ -1,0 +1,28 @@
+- id: RO:0002202
+  conforms_to: TransitiveForm
+  label: develops from
+  definition: >-
+    x develops from y if and only if either
+    (a) x directly develops from y or
+    (b) there exists some z such that x directly develops from z and z develops from y
+  subproperty_of: RO:0002258  ## developmentally preceeded by
+  inverse_of:
+    id: RO:0002203
+    label: develops into
+  domain: BFO:0000004
+  range: BFO:0000004
+  transitive: true
+- id: RO:0002447
+  conforms_to: ObjectPropertyDefinedByInteractionProcess
+  label: phosphorylates
+  subproperty_of: RO:0002436
+  #inverse_of:
+  #  id: TODO
+  #  label: phosphorylated by
+  subject_to_process_property: RO:0002215  ## capable of
+  object_to_process_property: RO:0002400   ## has direct input
+  uses_rolified_property:
+    id: RO:0002481
+    label: is kinase activity
+    rolification_of: GO:0016301
+

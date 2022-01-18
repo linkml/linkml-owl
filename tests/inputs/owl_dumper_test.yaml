@@ -6,27 +6,15 @@ imports:
   - linkml:types
 prefixes:
   linkml: https://w3id.org/linkml/
-  biolink: https://w3id.org/biolink/vocab/
-  chromoschema: https://w3id.org/biodatamodels/chromoschema/
-  gff: https://w3id.org/biodatamodels/gff/
-  faldo: http://biohackathon.org/resource/faldo#
-  CHR: http://purl.obolibrary.org/obo/CHR_
-  SO: http://purl.obolibrary.org/obo/SO_
-  GO: http://purl.obolibrary.org/obo/GO_
+  test: https://w3id.org/linkml/owl/tests/
   BFO: http://purl.obolibrary.org/obo/BFO_
   RO: http://purl.obolibrary.org/obo/RO_
   PATO: http://purl.obolibrary.org/obo/PATO_
-  NCBITaxon: http://purl.obolibrary.org/obo/NCBITaxon_
-  edam: http://edamontology.org/
-  refseq: http://identifiers.org/refseq/
-  insdc: http://identifiers.org/insdc/
-  ensembl: http://identifiers.org/ensembl/
-  OIO: http://www.geneontology.org/formats/oboInOwl#
   skos: http://www.w3.org/2004/02/skos/core#
   dcterms: http://purl.org/dc/terms/
   x: http://example.org/
 
-default_prefix: chromoschema
+default_prefix: test
 default_curi_maps:
   - semweb_context
 
