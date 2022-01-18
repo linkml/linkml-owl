@@ -32,7 +32,6 @@ OWLSCHEMA_OUT = os.path.join(OUTPUT_DIR, 'mondo_dps.owl.ttl')
 class TestFromDosdp(unittest.TestCase):
     """A test case for create tests."""
 
-    @pytest.mark.skip
     def test_as_owl(self):
         """
         Test creation of OWL metamodel
@@ -42,7 +41,6 @@ class TestFromDosdp(unittest.TestCase):
         with open(OWLSCHEMA_OUT, 'w') as stream:
             stream.write(OwlSchemaGenerator(SCHEMA_IN).serialize())
 
-    @pytest.mark.skip
     def test_from_dosdp(self):
         """
         Test creation of an OWL TBox from Mondo DOSDP templates, converted to LinkML

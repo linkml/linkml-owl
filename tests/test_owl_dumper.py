@@ -71,6 +71,13 @@ class Check:
 class TestOwlDumper(unittest.TestCase):
     """Tests full functionality of OWL dumper"""
 
+    def test_get_interpretations(self):
+        dumper = OWLDumper()
+        sv = SchemaView(SCHEMA_IN)
+        schema = sv.schema
+        #dumper._get_inferred_slot_annotations()
+
+
     def test_owl_dumper(self):
         """
         Test OWLDumper
@@ -174,13 +181,15 @@ class TestOwlDumper(unittest.TestCase):
                      and other contribute to additional axioms (so called hidden GCIs)""")
         add_check("slot-value level fstring template",
                   [py_mod.ClassTemplateExample1('x:a', subclass_of='x:b')],
-                  ["SubClassOf( x:a <http://example.org/b> )"],
+                  #[SubClassOf(X.a, X.b)],
+                  ["SubClassOf( x:a x:b )"],
                   """Axiom generation per slot-value assignment.
                      (Note that currently non-identifier fields have their URIs expanded,
                       but the OWL is the same)""")
         add_check("slot-value level jinja template",
                   [py_mod.ClassTemplateExample2('x:a', subclass_of='x:b')],
                   ["SubClassOf( x:a x:b )"],
+                  #[SubClassOf(X.a, X.b)],
                   """Axiom generation per slot-value assignment.
                      (Note that currently non-identifier fields have their URIs expanded,
                       but the OWL is the same)""")
@@ -228,6 +237,9 @@ class TestOwlDumper(unittest.TestCase):
             for axiom in check.axioms:
                 print(f'TESTING FOR: {axiom}')
                 if not isinstance(axiom, str):
+                    if axiom not in doc.ontology.axioms:
+                        logging.error(f'COULD NOT FIND: {axiom}')
+                        logging.error(f'LOOKING IN: *****\b{doc.ontology}')
                     assert axiom in doc.ontology.axioms
                 else:
                     print(f'  LOOKING IN: {ontology_str_trimmed}')

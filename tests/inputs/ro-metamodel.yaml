@@ -1,0 +1,372 @@
+id: http://purl.obolibrary.org/obo/ro/ro-metamodel.yaml
+name: RO-Metamodel
+description: |-
+  Metamodel for RO
+imports:
+  - linkml:types
+prefixes:
+  linkml: https://w3id.org/linkml/
+  rometa: http://purl.obolibrary.org/obo/ro/ro-metamodel/
+  biolink: https://w3id.org/biolink/vocab/
+  SO: http://purl.obolibrary.org/obo/SO_
+  GO: http://purl.obolibrary.org/obo/GO_
+  BFO: http://purl.obolibrary.org/obo/BFO_
+  IAO: http://purl.obolibrary.org/obo/IAO_
+  RO: http://purl.obolibrary.org/obo/RO_
+  PATO: http://purl.obolibrary.org/obo/PATO_
+  NCBITaxon: http://purl.obolibrary.org/obo/NCBITaxon_
+  edam: http://edamontology.org/
+  OIO: http://www.geneontology.org/formats/oboInOwl#
+  skos: http://www.w3.org/2004/02/skos/core#
+  dcterms: http://purl.org/dc/terms/
+
+default_prefix: rometa
+default_curi_maps:
+  - semweb_context
+
+enums:
+  ActivationStateEnum:
+    permissible_values:
+      ACTIVATED:
+        meaning: PATO:0002354
+      INACTIVATED:
+        meaning: PATO:0002355
+
+types:
+  label type:
+    typeof: string
+    description: >-
+      A string that provides a human-readable name for an entity
+
+  narrative text:
+    typeof: string
+    description: >-
+      A string that provides a human-readable description of something
+
+slots:
+
+  ## Annotations
+
+  id:
+    identifier: true
+    range: uriorcurie
+  label:
+    slot_uri: rdfs:label
+    annotations:
+      owl: AnnotationProperty, AnnotationAssertion
+    range: label type
+    exact_mappings:
+      - skos:prefLabel
+  definition:
+    slot_uri: IAO:0000115
+    annotations:
+      owl: AnnotationProperty, AnnotationAssertion
+    range: narrative text
+    exact_mappings:
+      - skos:definition
+  exact_match:
+    slot_uri: skos:exactMatch
+    range: NamedThing
+    multivalued: true
+    annotations:
+      owl: AnnotationProperty, AnnotationAssertion
+  comment:
+    slot_uri: rdfs:comment
+    multivalued: false
+    comments:
+      - in obo format, a term cannot have more than one comment
+  in_subset:
+    slot_uri: oio:inSubset
+    multivalued: true
+    range: Subset
+    description: >-
+      Maps an ontology element to a subset it belongs to
+
+  conforms_to:
+    slot_uri: dcterms:conformsTo
+    multivalued: false
+    designates_type: true
+    range: uriorcurie
+    annotations:
+      owl.fstring: |-
+        AnnotationAssertion( dcterms:conformsTo {id} rometa:{V} )
+
+
+  ## Logic
+
+  equivalent_to:
+    slot_uri: owl:equivalentClasses
+    range: NamedThing
+    multivalued: true
+  is_child_of:
+    abstract: true
+  subclass_of:
+    is_a: is_child_of
+    slot_uri: rdfs:subClassOf
+    range: NamedThing
+    multivalued: true
+  subproperty_of:
+    is_a: is_child_of
+    slot_uri: rdfs:subPropertyOf
+    range: Property
+    multivalued: true
+  genus:
+    is_a: is_child_of
+    multivalued: false
+  domain:
+    slot_uri: rdfs:domain
+    multivalued: false
+    range: Class
+  range:
+    slot_uri: rdfs:range
+    multivalued: false
+    range: Class
+  operands:
+    range: NamedThing
+    multivalued: true
+  part_of:
+    slot_uri: BFO:0000050
+    #transitive: true
+    range: NamedThing
+    multivalued: true
+  other_part_ofs:
+    slot_uri: BFO:0000050
+    range: NamedThing
+    multivalued: true
+  has_part:
+    slot_uri: BFO:0000051
+    range: NamedThing
+    multivalued: true
+    inverse: part_of
+  inverse_of:
+    slot_uri: owl:inverseOf
+    inlined: true
+    range: ObjectProperty
+  has_transitive_form:
+    slot_uri: owl:inverseOf
+    inlined: true
+    range: ObjectProperty
+  has_reflexive_transitive_form:
+    slot_uri: owl:inverseOf
+    inlined: true
+    range: ObjectProperty
+
+  relational_logical_characteristic:
+    abstract: true
+    range: boolean
+    description: A boolean logical characteristic of a property
+
+  symmetric:
+    is_a: relational_logical_characteristic
+    description: If s is symmetric, and i.s=v, then v.s=i
+    close_mappings:
+      - owl:SymmetricProperty
+    annotations:
+      boolean_form_of: owl:SymmetricProperty
+
+  asymmetric:
+    is_a: relational_logical_characteristic
+    description: If s is antisymmetric, and i.s=v where i is different from v, v.s cannot have value i
+    comments:
+      - asymmetry is the combination of antisymmetry and irreflexivity
+    close_mappings:
+      - owl:AsymmetricProperty
+    annotations:
+      boolean_form_of: owl:AsymmetricProperty
+
+  reflexive:
+    is_a: relational_logical_characteristic
+    description: If s is reflexive, then i.s=i for all instances i
+    comments:
+      - it is rare for a property to be reflexive, this characteristic is added for completeness, consider instead locally_reflexive
+    close_mappings:
+      - owl:ReflexiveProperty
+    annotations:
+      boolean_form_of: owl:ReflexiveProperty
+
+  irreflexive:
+    is_a: relational_logical_characteristic
+    description: If s is irreflexive, then there exists no i such i.s=i
+    close_mappings:
+      - owl:IrreflexiveProperty
+    annotations:
+      boolean_form_of: owl:IrreflexiveProperty
+
+  locally_reflexive:
+    is_a: relational_logical_characteristic
+    description: If s is locally_reflexive, then i.s=i for all instances i where s if a class slot for the type of i
+
+  transitive:
+    is_a: relational_logical_characteristic
+    description: If s is transitive, and i.s=z, and s.s=j, then i.s=j
+    close_mappings:
+      - owl:TransitiveProperty
+    annotations:
+      boolean_form_of: owl:TransitiveProperty
+
+classes:
+
+  NamedThing:
+    slots:
+      - id
+      - label
+      - definition
+      - in_subset
+      - exact_match
+      - conforms_to
+  Class:
+    is_a: NamedThing
+  Subset:
+    is_a: AnnotationProperty
+    class_uri: oio:Subset
+  Property:
+    is_a: NamedThing
+    abstract: true
+    class_uri: rdfs:Property
+    slots:
+      - subproperty_of
+      - domain
+      - range
+      - genus
+    slot_usage:
+      genus:
+        range: Property
+  AnnotationProperty:
+    is_a: Property
+    class_uri: owl:AnnotationProperty
+    slot_usage:
+      genus:
+        range: AnnotationProperty
+      subproperty_of:
+        range: AnnotationProperty
+  ObjectProperty:
+    is_a: Property
+    class_uri: owl:ObjectProperty
+    slots:
+      - inverse_of
+      - symmetric
+      - transitive
+      - reflexive
+      - locally_reflexive
+      - has_transitive_form
+    slot_usage:
+      genus:
+        range: ObjectProperty
+      subproperty_of:
+        range: ObjectProperty
+        annotations:
+          owl: SubObjectPropertyOf
+    rules:
+      - preconditions:
+          slot_conditions:
+            inverse_of:
+              range: ObjectProperty
+        postconditions:
+          slot_conditions:
+            symmetric:
+              equals_expression: false
+        description: inverses should not be declared for symmetric properties
+    annotations:
+      owl: ObjectProperty
+      owl.template: |-
+        {% if inverse_of and not inverse_of.definition %}
+        AnnotationAssertion( IAO:00000115 {{inverse_of.id}} "Inverse of {{id}} {{label}}")
+        {% endif %}
+  GroupingObjectProperty:
+    is_a: ObjectProperty
+    description: An ObjectProperty that has is used for grouping purposes and should not be instantiated
+  HelperObjectProperty:
+    is_a: ObjectProperty
+    description: An ObjectProperty that has is used for OWL axiomatization purposes and should not be used
+  RolifiedObjectProperty:
+    is_a: ObjectProperty
+    description: An ObjectProperty that has is used in OWL rolification
+    attributes:
+      rolification_of:
+        range: Class
+    see_also:
+      - https://stackoverflow.com/questions/16989042/owl-2-rolification
+    annotations:
+      owl.template: |-
+        SubClassOf( {{rolification_of}} ObjectHasSelf( {{id}} ) )
+  DefinedObjectProperty:
+    abstract: true
+    is_a: ObjectProperty
+    description: An ObjectProperty that has logical conditions determining membership
+    comments:
+      - although properties cannot be defined in OWL, weaker ABox rules can be made in SWRL, and tricks like rolification can be used to preserve some inferences
+    slots:
+      - genus
+  DefinedObjectPropertyByDomain:
+    is_a: DefinedObjectProperty
+    description: An ObjectProperty that is defined by a parent property and a domain
+    comments:
+      - hidden GCI analogs not supported (i.e. adding a more specific domain that is used for classification)
+    todos:
+      - rolification
+    annotations:
+      swrl: |-
+        {{genus}}(?s, ?o), {{domain}}(?s) -> {{id}}(?s, ?o)
+  DefinedObjectPropertyByRange:
+    is_a: DefinedObjectProperty
+    description: An ObjectProperty that is defined by a parent property and a range
+    comments:
+      - hidden GCI analogs not supported (i.e. adding a more specific domain that is used for classification)
+    todos:
+      - rolification
+    annotations:
+      swrl: |-
+        {{genus}}(?s, ?o), {{range}}(?o) -> {{id}}(?s, ?o)
+  DefinedObjectPropertyByDomainAndRange:
+    is_a: DefinedObjectProperty
+    description: An ObjectProperty that is defined by a parent property and a domain and a range
+    comments:
+      - hidden GCI analogs not supported (i.e. adding a more specific domain that is used for classification)
+    todos:
+      - SWRL rule
+      - rolification
+  DefinedObjectPropertyByChain:
+    is_a: DefinedObjectProperty
+    description: An ObjectProperty that is defined by a chain of relations
+    examples:
+      - value: characteristic of part of
+  TransitiveForm:
+    is_a: DefinedObjectProperty
+    description: An ObjectProperty that is defined as the transitive form of another relation
+    examples:
+      - value: ancestor of
+        description: ancestor of is the transitive form of parent of
+    rules:
+      postconditions:
+        slot_conditions:
+          transitive:
+            equals_expression: true
+  ObjectPropertyDefinedByInteractionProcess:
+    is_a: DefinedObjectProperty
+    description: |-
+      An object property that is a shortcut for a chain of relations with an intervening process
+    examples:
+      - value: phosphorylates
+        description: a phosphorylates b iff a is the active participant in a phosphorylation event where b is the target of that process
+    attributes:
+      subject_to_process_property:
+        range: ObjectProperty
+      object_to_process_property:
+        range: ObjectProperty
+      uses_rolified_property:
+        range: RolifiedObjectProperty
+        inlined: true
+    see_also:
+      - https://oborel.github.io/obo-relations/interaction-relations/
+      - http://ontologydesignpatterns.org/wiki/Submissions:N-Ary_Relation_Pattern_%28OWL_2%29
+    annotations:
+      owl.template: |-
+        SubObjectPropertyOf(
+           ObjectPropertyChain({{subject_to_process_property}}
+                               {{uses_rolified_property.id}}
+                               {{object_to_process_property}})
+           {{id}})
+
+      
+      
+    

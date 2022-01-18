@@ -51,9 +51,18 @@ Prefix( rdf: = <http://www.w3.org/1999/02/22-rdf-syntax-ns#> )
 Prefix( rdfs: = <http://www.w3.org/2000/01/rdf-schema#> )
 Prefix( xsd: = <http://www.w3.org/2001/XMLSchema#> )
 Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
+Prefix( linkml: = <https://w3id.org/linkml/> )
+Prefix( test: = <https://w3id.org/linkml/owl/tests/> )
+Prefix( BFO: = <http://purl.obolibrary.org/obo/BFO_> )
+Prefix( RO: = <http://purl.obolibrary.org/obo/RO_> )
+Prefix( PATO: = <http://purl.obolibrary.org/obo/PATO_> )
+Prefix( OIO: = <http://www.geneontology.org/formats/oboInOwl#> )
+Prefix( skos: = <http://www.w3.org/2004/02/skos/core#> )
+Prefix( dcterms: = <http://purl.org/dc/terms/> )
+Prefix( x: = <http://example.org/> )
 
 Ontology( <https://w3id.org/linkml/owl/tests>
-    AnnotationAssertion( rdfs:label <http://example.org/a> "foo" )
+    AnnotationAssertion( rdfs:label x:a "foo" )
 )
 ```
 
@@ -109,9 +118,18 @@ Prefix( rdf: = <http://www.w3.org/1999/02/22-rdf-syntax-ns#> )
 Prefix( rdfs: = <http://www.w3.org/2000/01/rdf-schema#> )
 Prefix( xsd: = <http://www.w3.org/2001/XMLSchema#> )
 Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
+Prefix( linkml: = <https://w3id.org/linkml/> )
+Prefix( test: = <https://w3id.org/linkml/owl/tests/> )
+Prefix( BFO: = <http://purl.obolibrary.org/obo/BFO_> )
+Prefix( RO: = <http://purl.obolibrary.org/obo/RO_> )
+Prefix( PATO: = <http://purl.obolibrary.org/obo/PATO_> )
+Prefix( OIO: = <http://www.geneontology.org/formats/oboInOwl#> )
+Prefix( skos: = <http://www.w3.org/2004/02/skos/core#> )
+Prefix( dcterms: = <http://purl.org/dc/terms/> )
+Prefix( x: = <http://example.org/> )
 
 Ontology( <https://w3id.org/linkml/owl/tests>
-    AnnotationAssertion( <http://www.w3.org/2004/02/skos/core#exactMatch> <http://example.org/a> <http://example.org/b> )
+    AnnotationAssertion( skos:exactMatch x:a x:b )
 )
 ```
 
@@ -167,9 +185,18 @@ Prefix( rdf: = <http://www.w3.org/1999/02/22-rdf-syntax-ns#> )
 Prefix( rdfs: = <http://www.w3.org/2000/01/rdf-schema#> )
 Prefix( xsd: = <http://www.w3.org/2001/XMLSchema#> )
 Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
+Prefix( linkml: = <https://w3id.org/linkml/> )
+Prefix( test: = <https://w3id.org/linkml/owl/tests/> )
+Prefix( BFO: = <http://purl.obolibrary.org/obo/BFO_> )
+Prefix( RO: = <http://purl.obolibrary.org/obo/RO_> )
+Prefix( PATO: = <http://purl.obolibrary.org/obo/PATO_> )
+Prefix( OIO: = <http://www.geneontology.org/formats/oboInOwl#> )
+Prefix( skos: = <http://www.w3.org/2004/02/skos/core#> )
+Prefix( dcterms: = <http://purl.org/dc/terms/> )
+Prefix( x: = <http://example.org/> )
 
 Ontology( <https://w3id.org/linkml/owl/tests>
-    AnnotationAssertion( <http://www.w3.org/2004/02/skos/core#exactMatch> <http://example.org/a> "x:b" )
+    AnnotationAssertion( skos:exactMatch x:a "x:b" )
 )
 ```
 
@@ -228,9 +255,18 @@ Prefix( rdf: = <http://www.w3.org/1999/02/22-rdf-syntax-ns#> )
 Prefix( rdfs: = <http://www.w3.org/2000/01/rdf-schema#> )
 Prefix( xsd: = <http://www.w3.org/2001/XMLSchema#> )
 Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
+Prefix( linkml: = <https://w3id.org/linkml/> )
+Prefix( test: = <https://w3id.org/linkml/owl/tests/> )
+Prefix( BFO: = <http://purl.obolibrary.org/obo/BFO_> )
+Prefix( RO: = <http://purl.obolibrary.org/obo/RO_> )
+Prefix( PATO: = <http://purl.obolibrary.org/obo/PATO_> )
+Prefix( OIO: = <http://www.geneontology.org/formats/oboInOwl#> )
+Prefix( skos: = <http://www.w3.org/2004/02/skos/core#> )
+Prefix( dcterms: = <http://purl.org/dc/terms/> )
+Prefix( x: = <http://example.org/> )
 
 Ontology( <https://w3id.org/linkml/owl/tests>
-    SubClassOf( <http://example.org/a> <http://example.org/b> )
+    SubClassOf( x:a x:b )
 )
 ```
 
@@ -288,11 +324,20 @@ Prefix( rdf: = <http://www.w3.org/1999/02/22-rdf-syntax-ns#> )
 Prefix( rdfs: = <http://www.w3.org/2000/01/rdf-schema#> )
 Prefix( xsd: = <http://www.w3.org/2001/XMLSchema#> )
 Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
+Prefix( linkml: = <https://w3id.org/linkml/> )
+Prefix( test: = <https://w3id.org/linkml/owl/tests/> )
+Prefix( BFO: = <http://purl.obolibrary.org/obo/BFO_> )
+Prefix( RO: = <http://purl.obolibrary.org/obo/RO_> )
+Prefix( PATO: = <http://purl.obolibrary.org/obo/PATO_> )
+Prefix( OIO: = <http://www.geneontology.org/formats/oboInOwl#> )
+Prefix( skos: = <http://www.w3.org/2004/02/skos/core#> )
+Prefix( dcterms: = <http://purl.org/dc/terms/> )
+Prefix( x: = <http://example.org/> )
 
 Ontology( <https://w3id.org/linkml/owl/tests>
     EquivalentClasses(
-        <http://example.org/a>
-        <http://example.org/b>
+        x:a
+        x:b
     )
 )
 ```
@@ -352,9 +397,18 @@ Prefix( rdf: = <http://www.w3.org/1999/02/22-rdf-syntax-ns#> )
 Prefix( rdfs: = <http://www.w3.org/2000/01/rdf-schema#> )
 Prefix( xsd: = <http://www.w3.org/2001/XMLSchema#> )
 Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
+Prefix( linkml: = <https://w3id.org/linkml/> )
+Prefix( test: = <https://w3id.org/linkml/owl/tests/> )
+Prefix( BFO: = <http://purl.obolibrary.org/obo/BFO_> )
+Prefix( RO: = <http://purl.obolibrary.org/obo/RO_> )
+Prefix( PATO: = <http://purl.obolibrary.org/obo/PATO_> )
+Prefix( OIO: = <http://www.geneontology.org/formats/oboInOwl#> )
+Prefix( skos: = <http://www.w3.org/2004/02/skos/core#> )
+Prefix( dcterms: = <http://purl.org/dc/terms/> )
+Prefix( x: = <http://example.org/> )
 
 Ontology( <https://w3id.org/linkml/owl/tests>
-    SubClassOf( <http://example.org/a>     ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000050> <http://example.org/b> ) )
+    SubClassOf( x:a     ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000050> x:b ) )
 )
 ```
 
@@ -412,9 +466,18 @@ Prefix( rdf: = <http://www.w3.org/1999/02/22-rdf-syntax-ns#> )
 Prefix( rdfs: = <http://www.w3.org/2000/01/rdf-schema#> )
 Prefix( xsd: = <http://www.w3.org/2001/XMLSchema#> )
 Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
+Prefix( linkml: = <https://w3id.org/linkml/> )
+Prefix( test: = <https://w3id.org/linkml/owl/tests/> )
+Prefix( BFO: = <http://purl.obolibrary.org/obo/BFO_> )
+Prefix( RO: = <http://purl.obolibrary.org/obo/RO_> )
+Prefix( PATO: = <http://purl.obolibrary.org/obo/PATO_> )
+Prefix( OIO: = <http://www.geneontology.org/formats/oboInOwl#> )
+Prefix( skos: = <http://www.w3.org/2004/02/skos/core#> )
+Prefix( dcterms: = <http://purl.org/dc/terms/> )
+Prefix( x: = <http://example.org/> )
 
 Ontology( <https://w3id.org/linkml/owl/tests>
-    SubClassOf( <http://example.org/a>     ObjectAllValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000050> <http://example.org/b> ) )
+    SubClassOf( x:a     ObjectAllValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000050> x:b ) )
 )
 ```
 
@@ -473,10 +536,19 @@ Prefix( rdf: = <http://www.w3.org/1999/02/22-rdf-syntax-ns#> )
 Prefix( rdfs: = <http://www.w3.org/2000/01/rdf-schema#> )
 Prefix( xsd: = <http://www.w3.org/2001/XMLSchema#> )
 Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
+Prefix( linkml: = <https://w3id.org/linkml/> )
+Prefix( test: = <https://w3id.org/linkml/owl/tests/> )
+Prefix( BFO: = <http://purl.obolibrary.org/obo/BFO_> )
+Prefix( RO: = <http://purl.obolibrary.org/obo/RO_> )
+Prefix( PATO: = <http://purl.obolibrary.org/obo/PATO_> )
+Prefix( OIO: = <http://www.geneontology.org/formats/oboInOwl#> )
+Prefix( skos: = <http://www.w3.org/2004/02/skos/core#> )
+Prefix( dcterms: = <http://purl.org/dc/terms/> )
+Prefix( x: = <http://example.org/> )
 
 Ontology( <https://w3id.org/linkml/owl/tests>
-    AnnotationAssertion( rdfs:label <http://example.org/a> "foo" )
-    SubClassOf( <http://example.org/a>     ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000050> <http://example.org/b> ) )
+    AnnotationAssertion( rdfs:label x:a "foo" )
+    SubClassOf( x:a     ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000050> x:b ) )
 )
 ```
 
@@ -536,11 +608,20 @@ Prefix( rdf: = <http://www.w3.org/1999/02/22-rdf-syntax-ns#> )
 Prefix( rdfs: = <http://www.w3.org/2000/01/rdf-schema#> )
 Prefix( xsd: = <http://www.w3.org/2001/XMLSchema#> )
 Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
+Prefix( linkml: = <https://w3id.org/linkml/> )
+Prefix( test: = <https://w3id.org/linkml/owl/tests/> )
+Prefix( BFO: = <http://purl.obolibrary.org/obo/BFO_> )
+Prefix( RO: = <http://purl.obolibrary.org/obo/RO_> )
+Prefix( PATO: = <http://purl.obolibrary.org/obo/PATO_> )
+Prefix( OIO: = <http://www.geneontology.org/formats/oboInOwl#> )
+Prefix( skos: = <http://www.w3.org/2004/02/skos/core#> )
+Prefix( dcterms: = <http://purl.org/dc/terms/> )
+Prefix( x: = <http://example.org/> )
 
 Ontology( <https://w3id.org/linkml/owl/tests>
-    SubClassOf( <http://example.org/a>     ObjectUnionOf(
-        <http://example.org/b>
-        <http://example.org/c>
+    SubClassOf( x:a     ObjectUnionOf(
+        x:b
+        x:c
     ) )
 )
 ```
@@ -599,13 +680,22 @@ Prefix( rdf: = <http://www.w3.org/1999/02/22-rdf-syntax-ns#> )
 Prefix( rdfs: = <http://www.w3.org/2000/01/rdf-schema#> )
 Prefix( xsd: = <http://www.w3.org/2001/XMLSchema#> )
 Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
+Prefix( linkml: = <https://w3id.org/linkml/> )
+Prefix( test: = <https://w3id.org/linkml/owl/tests/> )
+Prefix( BFO: = <http://purl.obolibrary.org/obo/BFO_> )
+Prefix( RO: = <http://purl.obolibrary.org/obo/RO_> )
+Prefix( PATO: = <http://purl.obolibrary.org/obo/PATO_> )
+Prefix( OIO: = <http://www.geneontology.org/formats/oboInOwl#> )
+Prefix( skos: = <http://www.w3.org/2004/02/skos/core#> )
+Prefix( dcterms: = <http://purl.org/dc/terms/> )
+Prefix( x: = <http://example.org/> )
 
 Ontology( <https://w3id.org/linkml/owl/tests>
     EquivalentClasses(
-        <http://example.org/a>
+        x:a
             ObjectUnionOf(
-        <http://example.org/b>
-        <http://example.org/c>
+        x:b
+        x:c
     )
     )
 )
@@ -666,13 +756,22 @@ Prefix( rdf: = <http://www.w3.org/1999/02/22-rdf-syntax-ns#> )
 Prefix( rdfs: = <http://www.w3.org/2000/01/rdf-schema#> )
 Prefix( xsd: = <http://www.w3.org/2001/XMLSchema#> )
 Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
+Prefix( linkml: = <https://w3id.org/linkml/> )
+Prefix( test: = <https://w3id.org/linkml/owl/tests/> )
+Prefix( BFO: = <http://purl.obolibrary.org/obo/BFO_> )
+Prefix( RO: = <http://purl.obolibrary.org/obo/RO_> )
+Prefix( PATO: = <http://purl.obolibrary.org/obo/PATO_> )
+Prefix( OIO: = <http://www.geneontology.org/formats/oboInOwl#> )
+Prefix( skos: = <http://www.w3.org/2004/02/skos/core#> )
+Prefix( dcterms: = <http://purl.org/dc/terms/> )
+Prefix( x: = <http://example.org/> )
 
 Ontology( <https://w3id.org/linkml/owl/tests>
     EquivalentClasses(
-        <http://example.org/a>
+        x:a
             ObjectIntersectionOf(
-        <http://example.org/b>
-        <http://example.org/c>
+        x:b
+        x:c
     )
     )
 )
@@ -750,14 +849,23 @@ Prefix( rdf: = <http://www.w3.org/1999/02/22-rdf-syntax-ns#> )
 Prefix( rdfs: = <http://www.w3.org/2000/01/rdf-schema#> )
 Prefix( xsd: = <http://www.w3.org/2001/XMLSchema#> )
 Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
+Prefix( linkml: = <https://w3id.org/linkml/> )
+Prefix( test: = <https://w3id.org/linkml/owl/tests/> )
+Prefix( BFO: = <http://purl.obolibrary.org/obo/BFO_> )
+Prefix( RO: = <http://purl.obolibrary.org/obo/RO_> )
+Prefix( PATO: = <http://purl.obolibrary.org/obo/PATO_> )
+Prefix( OIO: = <http://www.geneontology.org/formats/oboInOwl#> )
+Prefix( skos: = <http://www.w3.org/2004/02/skos/core#> )
+Prefix( dcterms: = <http://purl.org/dc/terms/> )
+Prefix( x: = <http://example.org/> )
 
 Ontology( <https://w3id.org/linkml/owl/tests>
     EquivalentClasses(
-        <http://example.org/a>
+        x:a
             ObjectIntersectionOf(
-        <http://example.org/genus>
-            ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000050> <http://example.org/b> )
-            ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000050> <http://example.org/c> )
+        x:genus
+            ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000050> x:b )
+            ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000050> x:c )
     )
     )
 )
@@ -837,14 +945,23 @@ Prefix( rdf: = <http://www.w3.org/1999/02/22-rdf-syntax-ns#> )
 Prefix( rdfs: = <http://www.w3.org/2000/01/rdf-schema#> )
 Prefix( xsd: = <http://www.w3.org/2001/XMLSchema#> )
 Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
+Prefix( linkml: = <https://w3id.org/linkml/> )
+Prefix( test: = <https://w3id.org/linkml/owl/tests/> )
+Prefix( BFO: = <http://purl.obolibrary.org/obo/BFO_> )
+Prefix( RO: = <http://purl.obolibrary.org/obo/RO_> )
+Prefix( PATO: = <http://purl.obolibrary.org/obo/PATO_> )
+Prefix( OIO: = <http://www.geneontology.org/formats/oboInOwl#> )
+Prefix( skos: = <http://www.w3.org/2004/02/skos/core#> )
+Prefix( dcterms: = <http://purl.org/dc/terms/> )
+Prefix( x: = <http://example.org/> )
 
 Ontology( <https://w3id.org/linkml/owl/tests>
-    SubClassOf( <http://example.org/a>     ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000050> <http://example.org/c> ) )
+    SubClassOf( x:a     ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000050> x:c ) )
     EquivalentClasses(
-        <http://example.org/a>
+        x:a
             ObjectIntersectionOf(
-        <http://example.org/genus>
-            ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000050> <http://example.org/b> )
+        x:genus
+            ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000050> x:b )
     )
     )
 )
@@ -915,9 +1032,18 @@ Prefix( rdf: = <http://www.w3.org/1999/02/22-rdf-syntax-ns#> )
 Prefix( rdfs: = <http://www.w3.org/2000/01/rdf-schema#> )
 Prefix( xsd: = <http://www.w3.org/2001/XMLSchema#> )
 Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
+Prefix( linkml: = <https://w3id.org/linkml/> )
+Prefix( test: = <https://w3id.org/linkml/owl/tests/> )
+Prefix( BFO: = <http://purl.obolibrary.org/obo/BFO_> )
+Prefix( RO: = <http://purl.obolibrary.org/obo/RO_> )
+Prefix( PATO: = <http://purl.obolibrary.org/obo/PATO_> )
+Prefix( OIO: = <http://www.geneontology.org/formats/oboInOwl#> )
+Prefix( skos: = <http://www.w3.org/2004/02/skos/core#> )
+Prefix( dcterms: = <http://purl.org/dc/terms/> )
+Prefix( x: = <http://example.org/> )
 
 Ontology( <https://w3id.org/linkml/owl/tests>
-    SubClassOf( x:a <http://example.org/b> )
+    SubClassOf( x:a x:b )
 )
 ```
 
@@ -986,6 +1112,15 @@ Prefix( rdf: = <http://www.w3.org/1999/02/22-rdf-syntax-ns#> )
 Prefix( rdfs: = <http://www.w3.org/2000/01/rdf-schema#> )
 Prefix( xsd: = <http://www.w3.org/2001/XMLSchema#> )
 Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
+Prefix( linkml: = <https://w3id.org/linkml/> )
+Prefix( test: = <https://w3id.org/linkml/owl/tests/> )
+Prefix( BFO: = <http://purl.obolibrary.org/obo/BFO_> )
+Prefix( RO: = <http://purl.obolibrary.org/obo/RO_> )
+Prefix( PATO: = <http://purl.obolibrary.org/obo/PATO_> )
+Prefix( OIO: = <http://www.geneontology.org/formats/oboInOwl#> )
+Prefix( skos: = <http://www.w3.org/2004/02/skos/core#> )
+Prefix( dcterms: = <http://purl.org/dc/terms/> )
+Prefix( x: = <http://example.org/> )
 
 Ontology( <https://w3id.org/linkml/owl/tests>
     SubClassOf( x:a x:b )
@@ -1063,17 +1198,26 @@ Prefix( rdf: = <http://www.w3.org/1999/02/22-rdf-syntax-ns#> )
 Prefix( rdfs: = <http://www.w3.org/2000/01/rdf-schema#> )
 Prefix( xsd: = <http://www.w3.org/2001/XMLSchema#> )
 Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
+Prefix( linkml: = <https://w3id.org/linkml/> )
+Prefix( test: = <https://w3id.org/linkml/owl/tests/> )
+Prefix( BFO: = <http://purl.obolibrary.org/obo/BFO_> )
+Prefix( RO: = <http://purl.obolibrary.org/obo/RO_> )
+Prefix( PATO: = <http://purl.obolibrary.org/obo/PATO_> )
+Prefix( OIO: = <http://www.geneontology.org/formats/oboInOwl#> )
+Prefix( skos: = <http://www.w3.org/2004/02/skos/core#> )
+Prefix( dcterms: = <http://purl.org/dc/terms/> )
+Prefix( x: = <http://example.org/> )
 
 Ontology( <https://w3id.org/linkml/owl/tests>
-    SubClassOf( x:collection     ObjectSomeValuesFrom( BFO:0000051     ObjectIntersectionOf(
+    SubClassOf( x:collection     ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000051>     ObjectIntersectionOf(
         x:p1
-            ObjectSomeValuesFrom( RO:0000053 <http://purl.obolibrary.org/obo/PATO_0002354> )
-            DataHasValue( PATO:0001555 "2"^^xsd:integer )
+            ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/RO_0000053> <http://purl.obolibrary.org/obo/PATO_0002354> )
+            DataHasValue( <http://purl.obolibrary.org/obo/PATO_0001555> "2"^^xsd:integer )
     ) ) )
-    SubClassOf( x:collection     ObjectSomeValuesFrom( BFO:0000051     ObjectIntersectionOf(
+    SubClassOf( x:collection     ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000051>     ObjectIntersectionOf(
         x:p2
-            ObjectSomeValuesFrom( RO:0000053 <http://purl.obolibrary.org/obo/PATO_0002354> )
-            DataHasValue( PATO:0001555 "3"^^xsd:integer )
+            ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/RO_0000053> <http://purl.obolibrary.org/obo/PATO_0002354> )
+            DataHasValue( <http://purl.obolibrary.org/obo/PATO_0001555> "3"^^xsd:integer )
     ) ) )
 )
 ```
@@ -1139,13 +1283,22 @@ Prefix( rdf: = <http://www.w3.org/1999/02/22-rdf-syntax-ns#> )
 Prefix( rdfs: = <http://www.w3.org/2000/01/rdf-schema#> )
 Prefix( xsd: = <http://www.w3.org/2001/XMLSchema#> )
 Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
+Prefix( linkml: = <https://w3id.org/linkml/> )
+Prefix( test: = <https://w3id.org/linkml/owl/tests/> )
+Prefix( BFO: = <http://purl.obolibrary.org/obo/BFO_> )
+Prefix( RO: = <http://purl.obolibrary.org/obo/RO_> )
+Prefix( PATO: = <http://purl.obolibrary.org/obo/PATO_> )
+Prefix( OIO: = <http://www.geneontology.org/formats/oboInOwl#> )
+Prefix( skos: = <http://www.w3.org/2004/02/skos/core#> )
+Prefix( dcterms: = <http://purl.org/dc/terms/> )
+Prefix( x: = <http://example.org/> )
 
 Ontology( <https://w3id.org/linkml/owl/tests>
-    SubClassOf( x:collection     ObjectSomeValuesFrom( BFO:0000051 x:p1 ) )
-    SubClassOf( x:collection     ObjectSomeValuesFrom( BFO:0000051 x:p2 ) )
+    SubClassOf( x:collection     ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000051> x:p1 ) )
+    SubClassOf( x:collection     ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000051> x:p2 ) )
     DisjointClasses(
         Annotation( rdfs:label "all parts of x:collection are part-disjoint" )
-            ObjectSomeValuesFrom( BFO:0000050 x:p1 )     ObjectSomeValuesFrom( BFO:0000050 x:p2 )
+            ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000050> x:p1 )     ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000050> x:p2 )
     )
 )
 ```
@@ -1218,16 +1371,25 @@ Prefix( rdf: = <http://www.w3.org/1999/02/22-rdf-syntax-ns#> )
 Prefix( rdfs: = <http://www.w3.org/2000/01/rdf-schema#> )
 Prefix( xsd: = <http://www.w3.org/2001/XMLSchema#> )
 Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
+Prefix( linkml: = <https://w3id.org/linkml/> )
+Prefix( test: = <https://w3id.org/linkml/owl/tests/> )
+Prefix( BFO: = <http://purl.obolibrary.org/obo/BFO_> )
+Prefix( RO: = <http://purl.obolibrary.org/obo/RO_> )
+Prefix( PATO: = <http://purl.obolibrary.org/obo/PATO_> )
+Prefix( OIO: = <http://www.geneontology.org/formats/oboInOwl#> )
+Prefix( skos: = <http://www.w3.org/2004/02/skos/core#> )
+Prefix( dcterms: = <http://purl.org/dc/terms/> )
+Prefix( x: = <http://example.org/> )
 
 Ontology( <https://w3id.org/linkml/owl/tests>
     EquivalentClasses(
         x:collection
             ObjectIntersectionOf(
-            ObjectSomeValuesFrom( BFO:0000051 x:dp1 )
-            ObjectSomeValuesFrom( BFO:0000051 x:dp2 )
-            ObjectAllValuesFrom( BFO:0000051     ObjectSomeValuesFrom( BFO:0000050     ObjectUnionOf(
-            ObjectSomeValuesFrom( BFO:0000051 x:dp1 )
-            ObjectSomeValuesFrom( BFO:0000051 x:dp2 )
+            ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000051> x:dp1 )
+            ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000051> x:dp2 )
+            ObjectAllValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000051>     ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000050>     ObjectUnionOf(
+            ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000051> x:dp1 )
+            ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000051> x:dp2 )
     ) ) )
     )
     )

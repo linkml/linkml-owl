@@ -97,6 +97,7 @@ def load_structured_file(source: Union[str, dict, TextIO], target_class: Union[s
         target_class = python_module.__dict__[target_class]
     if isinstance(source, str):
         fmt = datautils._get_format(source, fmt)
+    type_designator = get_type_designator(schemaview)
     if datautils._is_xsv(fmt):
         loader = csv_loader
         if normalize_csvs:
@@ -125,20 +126,22 @@ def load_structured_file(source: Union[str, dict, TextIO], target_class: Union[s
             loader = json_loader
             loader.json_clean(obj)
         if isinstance(obj, list):
-            out_obj = [instantiate_object(x, target_class, python_module=python_module) for x in obj]
+            out_obj = [instantiate_object(x, target_class, type_designator=type_designator, python_module=python_module) for x in obj]
         else:
-            out_obj = instantiate_object(obj, target_class, python_module=python_module)
+            out_obj = instantiate_object(obj, target_class, type_designator=type_designator, python_module=python_module)
     else:
         raise ValueError(f'Unknown format: {fmt}')
     logging.info(f'Loaded {type(out_obj)} using {loader}')
     return out_obj
 
-def instantiate_object(data: Dict, target_class: Type[YAMLRoot] = None, schemaview: SchemaView = None, python_module=None) -> YAMLRoot:
+def instantiate_object(data: Dict, target_class: Type[YAMLRoot] = None, schemaview: SchemaView = None,
+                       type_designator: str = '@type',
+                       python_module=None) -> YAMLRoot:
     #if not(target_class or schemaview):
     #    raise ValueError(f'Must pass AT LEAST ONE OF target_class OR schemaview')
     if not target_class:
-        if '@type' in data:
-            target_class_name = data['@type']
+        if type_designator in data:
+            target_class_name = data[type_designator]
             data = copy(data)
         else:
             raise ValueError(f'Cannot determine type for {data}')
@@ -146,6 +149,19 @@ def instantiate_object(data: Dict, target_class: Type[YAMLRoot] = None, schemavi
         if '@type' in data:
             del data['@type']
     return target_class(**as_dict(data))
+
+def get_type_designator(schemaview: SchemaView = None) -> str:
+    designators = []
+    for s in schemaview.all_slots().values():
+        if s.designates_type:
+            designators.append(s.name)
+    if len(designators) > 1:
+        logging.error(f'Multiple type designators: {designators}')
+    if designators:
+        return designators[0]
+    else:
+        return '@type'
+
 
 
 
