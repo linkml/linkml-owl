@@ -20,9 +20,9 @@
   #  id: TODO
   #  label: phosphorylated by
   subject_to_process_property: RO:0002215  ## capable of
-  object_to_process_property: RO:0002400   ## has direct input
   uses_rolified_property:
     id: RO:0002481
     label: is kinase activity
     rolification_of: GO:0016301
+  object_to_process_property: RO:0002400   ## has direct input
 
