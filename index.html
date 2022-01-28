@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="None">
+  
+  <link rel="canonical" href="https://linkml.github.io/linkml-owl/">
+  <link rel="shortcut icon" href="img/favicon.ico">
+  <title>LinkML-OWL</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700" />
+
+  <link rel="stylesheet" href="css/theme.css" />
+  <link rel="stylesheet" href="css/theme_extra.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Introduction";
+    var mkdocs_page_input_path = "index.md";
+    var mkdocs_page_url = "/linkml-owl/";
+  </script>
+  
+  <script src="js/jquery-2.1.1.min.js" defer></script>
+  <script src="js/modernizr-2.8.3.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-2SYBSJVZ23"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-2SYBSJVZ23');
+  </script>
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+        <a href="." class="icon icon-home"> LinkML-OWL</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="./search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+                <ul class="current">
+                    <li class="toctree-l1 current"><a class="reference internal current" href=".">Introduction</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#usage">Usage</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#basics">Basics</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#templates-and-fstrings">Templates and Fstrings</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#vocabulary">Vocabulary</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#relationship-to-owl-template-languages">Relationship to OWL template languages</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#see-also">See Also</a>
+    </li>
+    </ul>
+                    </li>
+                </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="examples/">Examples</a>
+                    </li>
+                </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href=".">LinkML-OWL</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".">Docs</a> &raquo;</li>
+    
+      
+    
+    <li>Introduction</li>
+    <li class="wy-breadcrumbs-aside">
+      
+        <a href="https://github.com/linkml/linkml-owl/edit/master/docs/index.md"
+          class="icon icon-github"> Edit on GitHub</a>
+      
+    </li>
+  </ul>
+  
+  <hr/>
+</div>
+
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="linkml-owl">linkml-owl</h1>
+<p>This is an ALPHA version of a tool for translating LinkML instance data to OWL (TBoxes and ABoxes)</p>
+<p><a href="https://linkml/io/linkml">LinkML</a> is a general purpose data modeling
+language for authoring schemas to structure data. The perspective of
+linkml-owl is that elements of an OWL ontology (in particular,
+classes) are data elements that should conform to a schema</p>
+<ul>
+<li><a href="EXAMPLES.md">EXAMPLES.md</a></li>
+<li><a href="SPECIFICATION.md">SPECIFICATION.md</a></li>
+</ul>
+<h2 id="usage">Usage</h2>
+<pre><code class="language-bash">linkml-data2owl -s my_schema.yaml my_data.{yaml,json,tsv,rdf} -o my_ontology.owl.ttl 
+</code></pre>
+<p>Input file can be yaml, json, csv, or any rdf serialization.</p>
+<h2 id="basics">Basics</h2>
+<p>First specify your schema</p>
+<pre><code class="language-yaml">classes:
+  Class:
+    slots:
+      - id
+      - label
+    class_uri: owl:Class
+  AnatomicalEntityClass:
+    is_a: Class
+    slots:
+      - part_of
+     slot_usage:
+       range: AnatomicalEntityClass
+
+slots:
+  label:
+    slot_uri: rdfs:label
+    annotations:
+      owl: AnnotationAssertion
+  part_of:
+    slot_uri: BFO:0000050
+    annotations:
+      owl: SubClassOf, ObjectSomeValuesFrom
+</code></pre>
+<p>Then provide OWL classes as LinkML data instances using any of the standard ways of providing data in LinkML (see <a href="https://linkml.io/linkml/data/index.html">working with data</a>)</p>
+<p>For example, as TSV or YAML:</p>
+<pre><code class="language-yaml">- id: UBERON:1
+  label: eye
+  part_of: ['UBERON:2']
+- id: UBERON:2
+  label: head
+  part_of: ['UBERON:3']
+- id: UBERON:3
+  label: organism
+</code></pre>
+<p>then run this through the command line tool to generate an ontology</p>
+<pre><code class="language-bash">linkml-data2owl -C AnatomicalEntityClass -s my_schema.yaml my_data.yaml -o my_ont.ofn
+</code></pre>
+<p>(note: the <code>-C</code> option is mandatory unless the data has a <code>@type</code> designator)</p>
+<pre><code class="language-owl">AnnotationAssertion(rdfs:label UBERON:1 &quot;eye&quot;)
+AnnotationAssertion(rdfs:label UBERON:2 &quot;head&quot;)
+AnnotationAssertion(rdfs:label UBERON:3 &quot;organism&quot;)
+SubClassOf( UBERON:1  ObjectSomeValuesFrom( BFO:0000050 UBERON:2))
+SubClassOf( UBERON:2  ObjectSomeValuesFrom( BFO:0000050 UBERON:3))
+</code></pre>
+<p>See <a href="EXAMPLES.md">EXAMPLES.md</a> for a complete set of examples/conformance suite</p>
+<h2 id="templates-and-fstrings">Templates and Fstrings</h2>
+<p>The above method of annotating slots with OWL interpretations works well for cases where there is a relatively straightforward mapping between slots and axioms.</p>
+<p>For full grained control you can use either</p>
+<ul>
+<li>fstrings, e.g. <code>SubClassOf({id} {sublass_of})</code>, for cases with no or minimal logic</li>
+<li>Jinja2 templates, for cases where control logic or advanced mappings are required</li>
+</ul>
+<p>Here is an example of a more advanced schema involving nesting where we might want to model parts with counts - examples include reaction participants with stoichiometry, or protein complexes where members may be present with different counts or activation states:</p>
+<pre><code class="language-yaml">PartWithCounts:
+    is_a: Anonymous
+    attributes:
+      unit:
+        range: NamedThing
+        multivalued: false
+        annotations:
+          owl: SomeValuesFrom
+      count:
+        range: integer
+        minimum_value: 1
+        annotations:
+          owl: HasValue
+      state:
+        range: ActivationStateEnum
+        annotations:
+          owl: SomeValuesFrom
+
+  CollectionOfPartsWithCounts:
+    is_a: NamedThing
+    slots:
+      - has_part
+    slot_usage:
+      has_part:
+        range: PartWithCounts
+        inlined: true
+    annotations:
+      owl.template: |-
+        {% for p in has_part %}
+        SubClassOf( {{id}}
+                    ObjectSomeValuesFrom( BFO:0000051
+                                          ObjectIntersectionOf( {{p.unit }}
+                                                                ObjectSomeValuesFrom(RO:0000053 {{p.state.meaning}})
+                                                                {% if p.count %}
+                                                                DataHasValue(PATO:0001555 {{p.count}})
+                                                                {% endif %}
+                                                              )
+
+                                         )
+                  )
+        {% endfor %}
+</code></pre>
+<p>Given an input file:</p>
+<pre><code class="language-yaml">id: x:collection
+has_part:
+  - unit: x:p1
+    count: 2
+    state: ACTIVATED
+  - unit: x:p2
+    count: 3
+    state: ACTIVATED
+</code></pre>
+<p>(note that we use using nesting / a normalized representation here, this is harder to represent in a spreadsheet).</p>
+<p>This will generate the following OWL:</p>
+<pre><code class="language-owl">SubClassOf( x:collection
+            ObjectSomeValuesFrom( BFO:0000051
+                                  ObjectIntersectionOf(
+                                                       x:p1
+                                                       ObjectSomeValuesFrom( RO:0000053 &lt;http://purl.obolibrary.org/obo/PATO_0002354&gt; )
+                                                       DataHasValue( PATO:0001555 &quot;2&quot;^^xsd:integer ))))
+SubClassOf( x:collection
+            ObjectSomeValuesFrom( BFO:0000051
+                                  ObjectIntersectionOf(
+                                                       x:p2
+                                                       ObjectSomeValuesFrom( RO:0000053 &lt;http://purl.obolibrary.org/obo/PATO_0002354&gt; )
+                                                       DataHasValue( PATO:0001555 &quot;3&quot;^^xsd:integer ))))
+</code></pre>
+<h2 id="vocabulary">Vocabulary</h2>
+<p>Use the following keywords to annotate your schema elements:</p>
+<ul>
+<li>Slots<ul>
+<li>Axiom type designators<ul>
+<li>SubClassOf</li>
+<li>EquivalentClasses</li>
+<li>AnnotationAssertion</li>
+<li>...</li>
+</ul>
+</li>
+<li>Expression modifier designators<ul>
+<li>ObjectSomeValuesFrom</li>
+<li>ObjectAllValuesFrom</li>
+<li>...</li>
+</ul>
+</li>
+<li>Collection type designators<ul>
+<li>ObjectIntersectionOf</li>
+<li>ObjectUnionOf</li>
+<li>...</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Classes<ul>
+<li>Class</li>
+<li>Individual</li>
+<li>...</li>
+</ul>
+</li>
+</ul>
+<h2 id="relationship-to-owl-template-languages">Relationship to OWL template languages</h2>
+<p>Although LinkML is robust and stable, LinkML-OWL is alpha software and incomplete. For now, to convert from TSV to OWL you should for now use a dedicated environment:</p>
+<ul>
+<li>dosdp-tools</li>
+<li>robot-templates</li>
+<li>ottr</li>
+</ul>
+<p>For most purposes, these frameworks are also simpler and less
+overhead, they treat ontology generation as a <em>string templating</em>
+problem, and the emphasis is on the generation of axioms from
+templates over formal descriptions of the source input file.</p>
+<p>In contrast, linkml-owl leverages the linkml framework for rich
+modeling of the source data structures used to generate the ontology,
+in particular:</p>
+<ul>
+<li>Clear computable description of which columns are required, which columns are multivalued etc</li>
+<li>Ability to use arbitrarily nested JSON trees or RDF graphs as input</li>
+<li>Use of <a href="https://linkml.io/linkml/intro/tutorial06.html">semantic enumerations</a><ul>
+<li>for example, a field value may be restricted to two ontology terms such as "off" or "on"</li>
+</ul>
+</li>
+<li>Translation of source schema to other formalisms such as JSON-Schema, JSON-LD Contexts, shape languages, SQL, ...</li>
+<li>Flexible validation of source input files leveraging any combination of JSON-Schema, SHACL, or ShEx</li>
+<li>Generation of markdown documentation from source schemas</li>
+</ul>
+<p>An example of a domain where this kind of rich data modeling of input
+data includes generation of chemical entity ontologies from data. See
+the <a href="https://chemkg.github.io/chemrof/">chemrof</a> project.</p>
+<p>The overall philosophy of linkml-owl is composability of distinct parts. It is a relatively lightweight library that
+is only concerned with mapping or templating from a source dataset to OWL. It delegates other aspects to other libraries,
+in particular the following are seen as separate concerns:</p>
+<ul>
+<li>Validation of input</li>
+<li>Organizing templates hierarchically</li>
+<li>Template reuse, including reusing the same slots, and an import mechanism</li>
+<li>Generation of documentation  </li>
+<li>Automatic filling in of default values</li>
+<li>Lexical manipulation, including pre-populating labels, synomyms, and text definitions</li>
+</ul>
+<h2 id="see-also">See Also</h2>
+<ul>
+<li><a href="https://linkml.io/linkml/generators/owl.html">OWL Generator</a> in the LinkML core generates OWL from Schemas, <strong>not</strong> data</li>
+<li>rdflib_dumper in linkml-runtime generates RDF graphs (ABoxes) from LinkML instances graphs using a standard 1:1 mapping</li>
+</ul>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="examples/" class="btn btn-neutral float-right" title="Examples">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/linkml/linkml-owl/" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
+    
+    
+      <span><a href="examples/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script>var base_url = '.';</script>
+    <script src="js/theme_extra.js" defer></script>
+    <script src="js/theme.js" defer></script>
+      <script src="search/main.js" defer></script>
+    <script defer>
+        window.onload = function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        };
+    </script>
+
+</body>
+</html>
+
+<!--
+MkDocs version : 1.2.3
+Build Date UTC : 2022-01-28 23:19:03.264609+00:00
+-->
