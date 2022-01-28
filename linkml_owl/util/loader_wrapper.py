@@ -92,7 +92,13 @@ def load_structured_file(source: Union[str, dict, TextIO], target_class: Union[s
             schemaview = SchemaView(schema)
             schema = schemaview.schema
     if target_class is None:
-        target_class = datautils.infer_root_class(schemaview)
+        # TODO: de-convolute this
+        # attempt to infer root class, but if this cannot
+        # be found then we rely on there being a type designator present
+        try:
+            target_class = datautils.infer_root_class(schemaview)
+        except:
+            pass
     if target_class and isinstance(target_class, str):
         target_class = python_module.__dict__[target_class]
     if isinstance(source, str):
