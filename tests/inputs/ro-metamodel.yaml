@@ -150,6 +150,9 @@ slots:
     slot_uri: owl:inverseOf
     inlined: true
     range: ObjectProperty
+  participant_role:
+    range: RoleClass
+    inlined: true
 
   relational_logical_characteristic:
     abstract: true
@@ -216,6 +219,8 @@ classes:
       - conforms_to
   Class:
     is_a: NamedThing
+  RoleClass:
+    is_a: Class
   Subset:
     is_a: AnnotationProperty
     class_uri: oio:Subset
@@ -341,6 +346,13 @@ classes:
         slot_conditions:
           transitive:
             equals_expression: true
+  DefinedObjectPropertyByParticipantRole:
+    is_a: DefinedObjectProperty
+    description: An ObjectProperty that is defined by the role the participant plays
+    examples:
+      - value: has input
+    slots:
+      - participant_role
   ObjectPropertyDefinedByInteractionProcess:
     is_a: DefinedObjectProperty
     description: |-
