@@ -1,5 +1,6 @@
 # Formalism (EARLY DRAFT)
 
+
 __THIS IS OUT OF DATE REGARDING THE CURRENT IMPLEMENTATION__
 
 A LinkML **model** `M` consists of:
