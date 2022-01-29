@@ -1,0 +1,17 @@
+- id: UBERON:0003844
+  conforms_to: LiningLayer
+  label: upper eyelid epithelium
+  genus: UBERON:0000483
+  part_of: UBERON:0001712 ## upper eyelid
+- id: UBERON:0001712
+  conforms_to: SkinRegion
+  label: upper eyelid
+  part_of: UBERON:0000019 ## camera-type eye
+  epithelium:
+    id: UBERON:0003844
+    label: upper eyelid epithelium
+  subcutaneous_layer:
+    id: UBERON:0009648
+    label: eyelid subcutaneous connective tissue
+
+

@@ -1,0 +1,187 @@
+id: http://purl.obolibrary.org/obo/uberon/uberon-metamodel.yaml
+name: UBERON-Metamodel
+description: |-
+  Metamodel for UBERON
+imports:
+  - linkml:types
+prefixes:
+  linkml: https://w3id.org/linkml/
+  ubmeta: http://purl.obolibrary.org/obo/uberon/uberon-metamodel/
+  biolink: https://w3id.org/biolink/vocab/
+  SO: http://purl.obolibrary.org/obo/SO_
+  GO: http://purl.obolibrary.org/obo/GO_
+  BFO: http://purl.obolibrary.org/obo/BFO_
+  IAO: http://purl.obolibrary.org/obo/IAO_
+  RO: http://purl.obolibrary.org/obo/RO_
+  PATO: http://purl.obolibrary.org/obo/PATO_
+  NCBITaxon: http://purl.obolibrary.org/obo/NCBITaxon_
+  edam: http://edamontology.org/
+  OIO: http://www.geneontology.org/formats/oboInOwl#
+  skos: http://www.w3.org/2004/02/skos/core#
+  dcterms: http://purl.org/dc/terms/
+
+default_prefix: rometa
+default_curi_maps:
+  - semweb_context
+
+enums:
+  ActivationStateEnum:
+    permissible_values:
+      ACTIVATED:
+        meaning: PATO:0002354
+      INACTIVATED:
+        meaning: PATO:0002355
+
+types:
+  label type:
+    typeof: string
+    description: >-
+      A string that provides a human-readable name for an entity
+
+  narrative text:
+    typeof: string
+    description: >-
+      A string that provides a human-readable description of something
+
+slots:
+
+  ## Annotations
+
+  id:
+    identifier: true
+    range: uriorcurie
+  label:
+    slot_uri: rdfs:label
+    annotations:
+      owl: AnnotationProperty, AnnotationAssertion
+    range: label type
+    exact_mappings:
+      - skos:prefLabel
+  definition:
+    slot_uri: IAO:0000115
+    annotations:
+      owl: AnnotationProperty, AnnotationAssertion
+    range: narrative text
+    exact_mappings:
+      - skos:definition
+  exact_match:
+    slot_uri: skos:exactMatch
+    range: NamedThing
+    multivalued: true
+    annotations:
+      owl: AnnotationProperty, AnnotationAssertion
+  comment:
+    slot_uri: rdfs:comment
+    multivalued: false
+    comments:
+      - in obo format, a term cannot have more than one comment
+  in_subset:
+    slot_uri: oio:inSubset
+    multivalued: true
+    range: Subset
+    description: >-
+      Maps an ontology element to a subset it belongs to
+
+  conforms_to:
+    slot_uri: dcterms:conformsTo
+    multivalued: false
+    designates_type: true
+    range: uriorcurie
+    annotations:
+      owl.fstring: |-
+        AnnotationAssertion( dcterms:conformsTo {id} rometa:{V} )
+
+
+  ## Logic
+
+  equivalent_to:
+    slot_uri: owl:equivalentClasses
+    range: NamedThing
+    multivalued: true
+  subclass_of:
+    slot_uri: rdfs:subClassOf
+    range: NamedThing
+    multivalued: true
+  genus:
+    is_a: subclass_of
+    multivalued: false
+  part_of:
+    slot_uri: BFO:0000050
+    #transitive: true
+    range: NamedThing
+    multivalued: true
+  other_part_ofs:
+    slot_uri: BFO:0000050
+    range: NamedThing
+    multivalued: true
+  has_part:
+    slot_uri: BFO:0000051
+    range: NamedThing
+    multivalued: true
+    inverse: part_of
+
+  subcategory:
+    slot_uri: sparqlfun:subcategory
+    range: class node
+  supplies:
+    slot_uri: RO:0002178
+    range: anatomical entity
+  drains:
+    slot_uri: RO:0002179
+    range: anatomical entity
+  branching_part_of:
+    slot_uri: RO:0002380
+    range: anatomical entity
+
+enums:
+  BloodVesselSubcategory:
+    permissible_values:
+      artery:
+        meaning: UBERON:0001637
+      vein:
+        meaning: UBERON:0001638
+
+classes:
+
+  NamedThing:
+    slots:
+      - id
+      - label
+      - in_subset
+      - exact_match
+      - conforms_to
+      -
+  ClassAspect:
+    mixin: true
+    is_a: NamedThing
+    slots:
+      - definition
+
+  Subset:
+    class_uri: oio:Subset
+
+  AnatomicalEntity:
+    is_a: NamedThing
+    class_uri: UBERON:0001062
+    mixins:
+      - ClassAspect
+    slots:
+      - part_of
+      - has_part
+
+  BloodVessel:
+    class_uri: UBERON:0001981
+    is_a: AnatomicalEntity
+    slots:
+      - subcategory
+      - supplies
+      - drains
+      - branching_part_of
+    slot_usage:
+      subcategory:
+        range: BloodVesselSubcategory
+
+
+      
+      
+    
