@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  <link rel="canonical" href="https://linkml.github.io/linkml-owl/specification/">
+  <link rel="shortcut icon" href="../img/favicon.ico">
+  <title>Specification - LinkML-OWL</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700" />
+
+  <link rel="stylesheet" href="../css/theme.css" />
+  <link rel="stylesheet" href="../css/theme_extra.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Specification";
+    var mkdocs_page_input_path = "specification.md";
+    var mkdocs_page_url = "/linkml-owl/specification/";
+  </script>
+  
+  <script src="../js/jquery-2.1.1.min.js" defer></script>
+  <script src="../js/modernizr-2.8.3.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-2SYBSJVZ23"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-2SYBSJVZ23');
+  </script>
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+        <a href=".." class="icon icon-home"> LinkML-OWL</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="..">Introduction</a>
+                    </li>
+                </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../usage/">Usage</a>
+                    </li>
+                </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../basics/">Basics</a>
+                    </li>
+                </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../templates/">Templates</a>
+                    </li>
+                </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../mappings/">Mappings</a>
+                    </li>
+                </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../examples/">Examples</a>
+                    </li>
+                </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../comparison/">Comparison with other frameworks</a>
+                    </li>
+                </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../further-reading/">Further reading</a>
+                    </li>
+                </ul>
+                <ul class="current">
+                    <li class="toctree-l1 current"><a class="reference internal current" href="./">Specification</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#mapping-elements">Mapping elements</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#table-1-translation-of-elements-to-owl-entities">Table 1: Translation of elements to OWL entities</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#generation-of-owl-axioms">Generation of OWL axioms</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#generation-of-owl-declarations">Generation of OWL declarations</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#mapping-slot-values-trisv">Mapping slot values: Tr(i,s,V)</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#table-2-single-valued-or-conjunctive-lists">Table 2: single-valued or conjunctive lists</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#multi-valued-or-disjunctive-lists">multi-valued or disjunctive lists</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#pre-processing">pre-processing</a>
+    </li>
+        </ul>
+    </li>
+    </ul>
+                    </li>
+                </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="..">LinkML-OWL</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="..">Docs</a> &raquo;</li>
+    
+      
+    
+    <li>Specification</li>
+    <li class="wy-breadcrumbs-aside">
+      
+        <a href="https://github.com/linkml/linkml-owl/edit/master/docs/specification.md"
+          class="icon icon-github"> Edit on GitHub</a>
+      
+    </li>
+  </ul>
+  
+  <hr/>
+</div>
+
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="formalism-early-draft">Formalism (EARLY DRAFT)</h1>
+<p><strong>THIS IS OUT OF DATE REGARDING THE CURRENT IMPLEMENTATION</strong></p>
+<p>A LinkML <strong>model</strong> <code>M</code> consists of:</p>
+<ul>
+<li>slots <code>MS = {s1, ...}</code></li>
+<li>classes <code>MC = {c1,...}</code></li>
+<li>enums <code>MEn = {En1, ...}</code></li>
+<li>types <code>MT = {t1, ...}</code></li>
+<li>subsets <code>MSu = {su1, ..}</code></li>
+</ul>
+<p>Each slot <code>s ∈ MS</code> and each class <code>c ∈ MC</code> has an <em>interpretation</em> Δ:</p>
+<ul>
+<li><code>Δ(s) ∈ P( {SubClassOf, ClassAssertion, SomeValuesFrom, AllValuesFrom, AnnotationAssertion, ObjectPropertyAssertion, AnnotationPropertyAssertion, UnionOf, DataOneOf, ObjectOneOf } )</code></li>
+<li><code>Δ(c) ∈ P( {Class, Individual, ObjectProperty, DataProperty, AnnotationAssertion} )</code></li>
+</ul>
+<p>(here <code>P</code> denotes the powerset, i.e. Δ maps to class or slot to a set of valid terms)</p>
+<p>The interpretation dictates how elements that instantiate the model are translated to OWL-DL</p>
+<p>Informative note:</p>
+<ul>
+<li>any class <code>c ∈ MC</code> where <code>Class ∈ Δ(c)</code> is considered a <em>metaclass</em></li>
+<li>any class <code>c ∈ MC</code> where <code>*Property ∈ Δ(c)</code> is considered a <em>metaproperty</em></li>
+<li>in the linkml metamodel, the class <code>ClassDefinition</code> is a metaclass</li>
+</ul>
+<p>A LinkML <strong>element</strong> <code>e ∈ E</code> is either:</p>
+<ol>
+<li>An instance of a class in <code>MC</code></li>
+<li>A <em>reference</em> to an instance of a class in <code>MC</code></li>
+<li>A <em>literal</em> taken from the universe of literals <code>L</code></li>
+<li>A <em>permissible value</em> from the set of permissible values of a member of <code>MEn</code></li>
+</ol>
+<p>Note that the distinction between 1 and 2 only holds for tree representations such as YAML and JSON serializations.</p>
+<p>Each <code>e</code> has a set of slot-value assignments <code>A(e)</code>,
+where each assignment is a pair <code>s, V</code></p>
+<ul>
+<li><code>s</code> is a slot in <code>MS</code></li>
+<li>
+<p><code>V</code> is a list of elements <code>v1, ..., vn</code> each of which can be:</p>
+<ul>
+<li>if <code>s.range ∈ MT</code>: <code>v_i</code> must be a <code>Literal</code></li>
+<li>if <code>s.range ∈ MC</code>: <code>v_i</code> must be either:<ul>
+<li>another element in <code>I</code> OR</li>
+<li>a reference to an element in <code>I</code></li>
+<li>(this distinction only holds for yaml/json tree representations)</li>
+</ul>
+</li>
+<li>if <code>s.range ∈ MEn</code>: <code>v_i</code> must be a member of the permissible value in <code>ME</code></li>
+</ul>
+</li>
+<li>
+<p><code>A(i) ⊆ { (s,V) ∈  MS x I ∪ Ref(I) ∪ ME ∪ L }</code></p>
+</li>
+</ul>
+<p>Any slot marked as <code>identifier</code> is not considered among the list of slots.</p>
+<ul>
+<li>The identifier slot for a class <code>c</code> is marked <code>c.id</code></li>
+<li>The identifier value for an element <code>e</code> is marked <code>e.id</code></li>
+</ul>
+<p>Only elements that instantiate classes in <code>MC</code> can have identifiers.
+Not all instantiating elements have identifiers - instantiating elements without <em>anonymous</em></p>
+<p>Any linkml element can be translated using the rules below. The translation is recursive, i.e. mapping an element that
+has slot-value associations will invoke mappings on the values of these associations.</p>
+<p>If the linkml element graph is a tree, then invoking mapping on the root will map the whole graph</p>
+<h2 id="mapping-elements">Mapping elements</h2>
+<p>The function <code>Tr(e)</code> will translate an element <code>e</code> to an OWL <em>entity</em>, and as
+a side-effect will generate OWL <em>axioms</em></p>
+<h3 id="table-1-translation-of-elements-to-owl-entities">Table 1: Translation of elements to OWL entities</h3>
+<table>
+<thead>
+<tr>
+<th>condition</th>
+<th>returns</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>e.type ∈ MC</code> and <code>hasId(e)</code></td>
+<td><code>IRI(e.id)</code></td>
+</tr>
+<tr>
+<td><code>e.type ∈ MC</code> and <code>noId(e)</code></td>
+<td><code>BlankNode()</code></td>
+</tr>
+<tr>
+<td><code>e.type ∈ Ref(MC)</code></td>
+<td><code>IRI(e)</code></td>
+</tr>
+<tr>
+<td><code>e.type ∈ MEn</code></td>
+<td><code>IRI(e.meaning)</code></td>
+</tr>
+<tr>
+<td><code>e.type ∈ T</code></td>
+<td><code>Literal(e)</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="generation-of-owl-axioms">Generation of OWL axioms</h3>
+<p>Invoking <code>Tr(e)</code> will additionally generate further OWL axioms:</p>
+<ul>
+<li>for all <code>(s,V) in A(e)</code>, a mapping <code>Tr(e,s,V)</code> is applied</li>
+</ul>
+<p>See <em>mapping slot values</em> below.</p>
+<h3 id="generation-of-owl-declarations">Generation of OWL declarations</h3>
+<p>TODO</p>
+<table>
+<thead>
+<tr>
+<th>Function</th>
+<th><code>Δ(e.type)</code></th>
+<th>generates</th>
+<th>cond</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>C(i)</code></td>
+<td>*</td>
+<td><code>Class(IRI(i.id))</code></td>
+<td><code>i.id</code> exists</td>
+</tr>
+<tr>
+<td><code>OP(i)</code></td>
+<td>*</td>
+<td><code>ObjectProperty(IRI(i.id))</code></td>
+<td><code>i.id</code> exists</td>
+</tr>
+<tr>
+<td><code>DP(i)</code></td>
+<td>*</td>
+<td><code>DataProperty(IRI(i.id))</code></td>
+<td><code>i.id</code> exists</td>
+</tr>
+<tr>
+<td><code>AP(i)</code></td>
+<td>*</td>
+<td><code>AnnotationProperty(IRI(i.id))</code></td>
+<td><code>i.id</code> exists</td>
+</tr>
+<tr>
+<td><code>*|*|</code>BlankNode(i)<code>|</code>i.id` not exists</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h2 id="mapping-slot-values-trisv">Mapping slot values: Tr(i,s,V)</h2>
+<p>interpretation of an element <code>i</code> with slot <code>s</code> with values <code>V=v1..vn</code></p>
+<h3 id="table-2-single-valued-or-conjunctive-lists">Table 2: single-valued or conjunctive lists</h3>
+<p>If <code>s</code> is not <code>multivalued</code> OR <code>{UnionOf, DataOneOf, ObjectOneOf} ∩ Δ(s) = {}</code>
+<strong>then</strong> the following table generates an axiom for all <code>v ∈ V</code></p>
+<table>
+<thead>
+<tr>
+<th><code>Δ(e.type)</code></th>
+<th><code>Δ(s)</code></th>
+<th>expression</th>
+<th>cond</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>*</td>
+<td><code>SubClassOf</code> ∈ Δ</td>
+<td><code>C(e) ⊑ C(v)</code></td>
+<td></td>
+</tr>
+<tr>
+<td>*</td>
+<td><code>SubObjectPropertyOf</code> ∈ Δ</td>
+<td><code>OP(e) ⊑ OP(v)</code></td>
+<td></td>
+</tr>
+<tr>
+<td>*</td>
+<td><code>ClassAssertion</code> ∈ Δ</td>
+<td><code>I(e) : C(v)</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>Class</code></td>
+<td><code>SomeValuesFrom</code> ∈ Δ</td>
+<td><code>C(e) ⊑ ∃ OP(s) C(v)</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>Class</code></td>
+<td><code>AllValuesFrom</code> ∈ Δ</td>
+<td><code>C(e) ⊑ ∀ OP(s) C(v)</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>Individual</code></td>
+<td><code>SomeValuesFrom</code> ∈ Δ</td>
+<td><code>I(e) : ∃ OP(s) C(v)</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>Individual</code></td>
+<td><code>AllValuesFrom</code> ∈ Δ</td>
+<td><code>I(e) : ∀ OP(s) C(v)</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>*</code></td>
+<td><code>AnnotationAssertion ∈ Δ</code> OR <code>Δ = {}</code></td>
+<td><code>Ann(P(s) IRI(e) Tr(v))</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>*</code></td>
+<td><code>ObjectPropertyAssertion ∈ Δ</code></td>
+<td><code>OPA(OP(s) IRI(e) Tr(v))</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>*</code></td>
+<td><code>DataPropertyAssertion ∈ Δ</code></td>
+<td><code>DPA(DP(s) IRI(e) Tr(v))</code></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>See <a href="https://en.wikipedia.org/wiki/Description_logic">DL article</a> on Wikipedia for explanation of symbols</p>
+<h3 id="multi-valued-or-disjunctive-lists">multi-valued or disjunctive lists</h3>
+<p>If <code>s</code> is <code>multivalued</code> AND <code>{UnionOf, DataOneOf, ObjectOneOf} ∩ Δ(s) ≠ {}</code>
+<strong>then</strong> apply the following steps, and <em>then</em> apply table 2 rules</p>
+<table>
+<thead>
+<tr>
+<th><code>Δ(s)</code></th>
+<th><code>Tr(V)</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>UnionOf</code> ∈ Δ</td>
+<td><code>UnionOf(C(v1), ..., C(vn))</code></td>
+</tr>
+<tr>
+<td><code>ObjectOneOf</code> ∈ Δ</td>
+<td><code>ObjectOneOf(I(v1), ..., I(vn))</code></td>
+</tr>
+<tr>
+<td><code>DataOneOf</code> ∈ Δ</td>
+<td><code>DataOneOf(D(v1), ..., D(vn))</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="pre-processing">pre-processing</h3>
+<p>For uncommitted slots that have a slot iri with a pre-existing interpretation, these are used: </p>
+<ul>
+<li>If <code>s.iri = rdf:type</code>, and <code>Δ(s) = {}</code> then set <code>Δ(s) = {ClassAssertion}</code></li>
+<li>If <code>s.iri = rdfs:subClassOf</code>, and <code>Δ(s) = {}</code> then set <code>Δ(s) = {SubClassOf}</code></li>
+<li>etc TODO</li>
+</ul>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="../further-reading/" class="btn btn-neutral" title="Further reading"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/linkml/linkml-owl/" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
+    
+      <span><a href="../further-reading/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+  </span>
+</div>
+    <script>var base_url = '..';</script>
+    <script src="../js/theme_extra.js" defer></script>
+    <script src="../js/theme.js" defer></script>
+      <script src="../search/main.js" defer></script>
+    <script defer>
+        window.onload = function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        };
+    </script>
+
+</body>
+</html>
