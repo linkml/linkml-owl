@@ -1,0 +1,17 @@
+site_name: "LinkML-OWL"
+theme:
+  name: readthedocs
+  analytics:
+    gtag: G-2SYBSJVZ23
+nav:
+  - Introduction: index.md
+  - Usage: usage.md
+  - Basics: basics.md
+  - Templates: templates.md
+  - Mappings: mappings.md
+  - Examples: examples.md
+  - Comparison with other frameworks: comparison.md
+  - Further reading: further-reading.md
+  - Specification: specification.md
+site_url: https://linkml.github.io/linkml-owl/
+repo_url: https://github.com/linkml/linkml-owl/
