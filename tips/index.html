@@ -7,9 +7,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   
-  <link rel="canonical" href="https://linkml.github.io/linkml-owl/usage/">
+  <link rel="canonical" href="https://linkml.github.io/linkml-owl/tips/">
   <link rel="shortcut icon" href="../img/favicon.ico">
-  <title>Usage - LinkML-OWL</title>
+  <title>Tips - LinkML-OWL</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700" />
 
   <link rel="stylesheet" href="../css/theme.css" />
@@ -18,9 +18,9 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "Usage";
-    var mkdocs_page_input_path = "usage.md";
-    var mkdocs_page_url = "/linkml-owl/usage/";
+    var mkdocs_page_name = "Tips";
+    var mkdocs_page_input_path = "tips.md";
+    var mkdocs_page_url = "/linkml-owl/tips/";
   </script>
   
   <script src="../js/jquery-2.1.1.min.js" defer></script>
@@ -58,14 +58,8 @@
                     <li class="toctree-l1"><a class="reference internal" href="..">Introduction</a>
                     </li>
                 </ul>
-                <ul class="current">
-                    <li class="toctree-l1 current"><a class="reference internal current" href="./">Usage</a>
-    <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#installation">Installation</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#usage">Usage</a>
-    </li>
-    </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../usage/">Usage</a>
                     </li>
                 </ul>
                 <ul>
@@ -84,8 +78,18 @@
                     <li class="toctree-l1"><a class="reference internal" href="../examples/">Examples</a>
                     </li>
                 </ul>
-                <ul>
-                    <li class="toctree-l1"><a class="reference internal" href="../tips/">Tips</a>
+                <ul class="current">
+                    <li class="toctree-l1 current"><a class="reference internal current" href="./">Tips</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#ide-support-for-ontology-authoring">IDE support for ontology authoring</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#provide-rich-documentation">Provide rich documentation</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#validating-data">Validating data</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#auto-filling-in-data">Auto-filling in data</a>
+    </li>
+    </ul>
                     </li>
                 </ul>
                 <ul>
@@ -121,10 +125,10 @@
     
       
     
-    <li>Usage</li>
+    <li>Tips</li>
     <li class="wy-breadcrumbs-aside">
       
-        <a href="https://github.com/linkml/linkml-owl/edit/master/docs/usage.md"
+        <a href="https://github.com/linkml/linkml-owl/edit/master/docs/tips.md"
           class="icon icon-github"> Edit on GitHub</a>
       
     </li>
@@ -136,22 +140,51 @@
           <div role="main">
             <div class="section">
               
-                <h1 id="installation-and-usage">Installation and Usage</h1>
-<h2 id="installation">Installation</h2>
-<pre><code class="language-bash">pip install linkml-owl
-</code></pre>
-<h2 id="usage">Usage</h2>
-<p>Minimally you need to specify two inputs:</p>
+                <h1 id="assorted-tips-and-best-practices">Assorted tips and best practices</h1>
+<h2 id="ide-support-for-ontology-authoring">IDE support for ontology authoring</h2>
+<p>If you are entering data in either YAML or JSON (YAML is recommended),
+then you can get IDE support (e.g. autocomplete on tag names)</p>
 <ul>
-<li>A <a href="https://linkml.io/linkml/schemas">linkml schema</a>, with <em>annotations</em> describing mappings from data to OWL</li>
-<li>A datafile in YAML, JSON, RDF, or TSV conformant with the schema</li>
+<li>Convert your schema to jsonschema using <code>gen-schema</code></li>
+<li>Load this into your IDE</li>
+<li>When editing your yaml data file, set the schema</li>
 </ul>
-<p>To convert:</p>
-<pre><code class="language-bash">linkml-data2owl -s my_schema.yaml my_data.{yaml,json,tsv,rdf} -o my_ontology.owl.ttl 
-</code></pre>
-<p>For all options, see:</p>
-<pre><code class="language-bash">linkml-data2owl --help
-</code></pre>
+<p>For info on how to do this with PyCharm see <a href="https://docs.google.com/presentation/d/10fVBY5m89wKd8qyIvDwNHvCRnJnQx1YCXmyiVIbyNYI/edit#slide=id.p">these slides</a></p>
+<h2 id="provide-rich-documentation">Provide rich documentation</h2>
+<p>LinkML provides a rich metamodel for providing metadata about your design pattern elements.
+You can provide provenance (e.g who authored it), status information,
+editor-level docs, end-user level docs, etc</p>
+<p>See</p>
+<ul>
+<li><a href="https://linkml.io/linkml/schemas/metadata.html">schema element metadata</a></li>
+</ul>
+<p>Minimally, we recommend providing at least <code>description</code> fields for all slots and all classes</p>
+<h2 id="validating-data">Validating data</h2>
+<p>We recommend validating:</p>
+<ul>
+<li><em>input</em> data, using linkml data validation</li>
+<li><em>output</em> owl ontologies, using robot</li>
+<li>internal consistency of the <em>schema</em> (pattern templates)</li>
+</ul>
+<p>If source data is managed in github, set up github actions to validate</p>
+<p>See <a href="https://linkml.io/linkml/data/validating-data.html">validating data</a> in the main linkml guide</p>
+<p>We recommend you constrain things as strictly as possible</p>
+<ul>
+<li>For example, use enums for smaller value sets</li>
+<li>Classes in your schema can be declared disjoint (<em>note this is distinct from disjointness axioms for generated classes</em>)</li>
+<li>Declare ranges for all slots</li>
+<li>Use <code>pattern</code> to constraint string values</li>
+</ul>
+<h2 id="auto-filling-in-data">Auto-filling in data</h2>
+<p>The linkml-owl framework does not provide extensive mechanisms for auto-filling data. Here auto-filling means:</p>
+<ul>
+<li>assigning default values</li>
+<li>assigning string fields based on format strings</li>
+</ul>
+<p>These are considered <em>separate concerns</em> from mapping to OWL, and can be done upstream of linkml-owl,
+including in the linkml framework itself.</p>
+<p>However, if you are using the jinja template generation route, you
+can also do a lot of auto-filling using jinja template logic</p>
               
             </div>
           </div>
@@ -159,10 +192,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../basics/" class="btn btn-neutral float-right" title="Basics">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../comparison/" class="btn btn-neutral float-right" title="Comparison with other frameworks">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
-        <a href=".." class="btn btn-neutral" title="Introduction"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../examples/" class="btn btn-neutral" title="Examples"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -192,10 +225,10 @@
         </span>
     
     
-      <span><a href=".." style="color: #fcfcfc">&laquo; Previous</a></span>
+      <span><a href="../examples/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
-      <span><a href="../basics/" style="color: #fcfcfc">Next &raquo;</a></span>
+      <span><a href="../comparison/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>

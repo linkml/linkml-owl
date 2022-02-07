@@ -2,47 +2,52 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://linkml.github.io/linkml-owl/</loc>
-         <lastmod>2022-01-29</lastmod>
+         <lastmod>2022-02-07</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://linkml.github.io/linkml-owl/basics/</loc>
-         <lastmod>2022-01-29</lastmod>
+         <lastmod>2022-02-07</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://linkml.github.io/linkml-owl/comparison/</loc>
-         <lastmod>2022-01-29</lastmod>
+         <lastmod>2022-02-07</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://linkml.github.io/linkml-owl/examples/</loc>
-         <lastmod>2022-01-29</lastmod>
+         <lastmod>2022-02-07</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://linkml.github.io/linkml-owl/further-reading/</loc>
-         <lastmod>2022-01-29</lastmod>
+         <lastmod>2022-02-07</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://linkml.github.io/linkml-owl/mappings/</loc>
-         <lastmod>2022-01-29</lastmod>
+         <lastmod>2022-02-07</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://linkml.github.io/linkml-owl/specification/</loc>
-         <lastmod>2022-01-29</lastmod>
+         <lastmod>2022-02-07</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://linkml.github.io/linkml-owl/templates/</loc>
-         <lastmod>2022-01-29</lastmod>
+         <lastmod>2022-02-07</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://linkml.github.io/linkml-owl/tips/</loc>
+         <lastmod>2022-02-07</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://linkml.github.io/linkml-owl/usage/</loc>
-         <lastmod>2022-01-29</lastmod>
+         <lastmod>2022-02-07</lastmod>
          <changefreq>daily</changefreq>
     </url>
 </urlset>
