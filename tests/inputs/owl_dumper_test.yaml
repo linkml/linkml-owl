@@ -8,6 +8,7 @@ prefixes:
   linkml: https://w3id.org/linkml/
   test: https://w3id.org/linkml/owl/tests/
   BFO: http://purl.obolibrary.org/obo/BFO_
+  IAO: http://purl.obolibrary.org/obo/IAO_
   RO: http://purl.obolibrary.org/obo/RO_
   PATO: http://purl.obolibrary.org/obo/PATO_
   skos: http://www.w3.org/2004/02/skos/core#
@@ -37,6 +38,18 @@ slots:
     slot_uri: IAO:0000115
     annotations:
       owl: AnnotationProperty, AnnotationAssertion
+  source:
+    slot_uri: dcterms:source
+    multivalued: true
+  definition_source:
+    slot_uri: dcterms:source
+    multivalued: true
+  logical_definition_source:
+    slot_uri: dcterms:source
+    multivalued: true
+  axiom_source:
+    slot_uri: dcterms:source
+    multivalued: true
   exactMatch:
     slot_uri: skos:exactMatch
     range: NamedThing
@@ -118,6 +131,24 @@ classes:
         required: true
         annotations:
           owl: AnnotationAssertion
+  DefinitionWithAxiomAnnotation:
+    is_a: NamedThing
+    slots:
+      - definition_source
+    slot_usage:
+      definition:
+        annotations:
+          owl.axiom_annotation.slots: definition_source
+  DefinitionWithIRIAxiomAnnotation:
+    is_a: NamedThing
+    slots:
+      - definition_source
+    slot_usage:
+      definition_source:
+        range: NamedThing
+      definition:
+        annotations:
+          owl.axiom_annotation.slots: definition_source
   Child:
     is_a: NamedThing
     slots:
@@ -172,6 +203,17 @@ classes:
         required: true
         annotations:
           owl: EquivalentClasses, IntersectionOf
+  EquivIntersectionWithAxiomAnnotation:
+    is_a: NamedThing
+    slots:
+      - operands
+      - logical_definition_source
+    slot_usage:
+      operands:
+        required: true
+        annotations:
+          owl: EquivalentClasses, IntersectionOf
+          owl.axiom_annotation.slots: logical_definition_source
   Part:
     is_a: NamedThing
     slots:
@@ -221,6 +263,35 @@ classes:
         description: for hidden GCIs
         annotations:
           owl: ObjectSomeValuesFrom
+  EquivGenusAndPartOfWithAxiomAnnotation:
+    is_a: NamedThing
+    slots:
+      - subclass_of
+      - part_of
+      - other_part_ofs
+      - definition_source
+      - logical_definition_source
+      - axiom_source
+    slot_usage:
+      definition:
+        annotations:
+          owl.axiom_annotation.slots: definition_source
+      subclass_of:
+        required: true
+        annotations:
+          owl: EquivalentClasses, IntersectionOf
+          owl.axiom_annotation.slots: logical_definition_source
+      part_of:
+        required: true
+        annotations:
+          owl: EquivalentClasses, IntersectionOf, ObjectSomeValuesFrom
+          owl.axiom_annotation.slots: logical_definition_source
+      other_part_ofs:
+        required: false
+        description: for hidden GCIs
+        annotations:
+          owl: ObjectSomeValuesFrom
+          owl.axiom_annotation.slots: axiom_source
   ClassTemplateExample1:
     is_a: NamedThing
     slots:

@@ -28,7 +28,7 @@ from funowl import OntologyDocument, Ontology, IRI, ObjectSomeValuesFrom, \
     Prefix, AnonymousIndividual, ObjectAllValuesFrom, EquivalentClasses, ObjectIntersectionOf, ClassExpression, Axiom, \
     ObjectProperty, Declaration, ObjectInverseOf, InverseObjectProperties, ObjectPropertyDomain, ObjectPropertyRange, \
     SubObjectPropertyOf, TransitiveObjectProperty, SymmetricObjectProperty, AsymmetricObjectProperty, \
-    ReflexiveObjectProperty, IrreflexiveObjectProperty
+    ReflexiveObjectProperty, IrreflexiveObjectProperty, Annotation, ObjectMinCardinality
 
 from linkml_runtime.dumpers.dumper_root import Dumper
 from linkml_runtime.utils.yamlutils import YAMLRoot
@@ -46,18 +46,31 @@ OP_KEY = Tuple[LEVEL, OPERAND, AXIOM_TYPE_NAME]
 @dataclass
 class EntityAxiomIndex:
     """
-    For indexing axioms that involve an aggregate grouping (intersection, union)
+    An index of axioms (plus annotations), indexed by entity, plus aggregate grouping criteria (intersection, union)
 
-    Any object can have any number of these axioms. They are grouped by:
+    Motivation: any entity (such as a class) might have an arbitrary number of equivalence, disjointness, etc axioms
+    associated with it; e.g.
+
+    >>> A = B or C
+    >>> A = D and E
+    >>> A SubClassOf F or G
+    >>>       ...
+
+    This index allows these axioms to be incrementally constructed
+
+    The index is via a tripartite key (OP_KEY) with elements:
 
     - Operator (e.g. AND/IntersectionOf, OR/Union)
     - AxiomType (e.g. SubClassOf, EquivalentClasses)
     - Level (default 0), allows for example multiple equivalence axioms using intersection
     """
     operand_list_index: Dict[OP_KEY, List[ClassExpression]] = field(default_factory=lambda: defaultdict(list))
+    annotation_list_index: Dict[OP_KEY, List[Annotation]] = field(default_factory=lambda: defaultdict(list))
+    annotations: List[Annotation] = field(default_factory=lambda: [])
 
-    def add_operand(self, key: OP_KEY, op: ClassExpression):
+    def add_operand(self, key: OP_KEY, op: ClassExpression, anns: List[Annotation] = None):
         """
+        Adds to part of an index
 
         :param key: combo of operator/axiomType/level
         :param op: operand - an element of the list used to construct the operator construct
@@ -66,10 +79,26 @@ class EntityAxiomIndex:
         if key not in self.operand_list_index:
             self.operand_list_index[key] = []
         self.operand_list_index[key].append(op)
+        if anns:
+            if key not in self.annotation_list_index:
+                self.annotation_list_index[key] = []
+            ann_ix = self.annotation_list_index[key]
+            for ann in anns:
+                if ann not in ann_ix:
+                    ann_ix.append(ann)
 
-    def add_operands(self, key: OP_KEY, ops: List[ClassExpression]):
+
+    def add_operands(self, key: OP_KEY, ops: List[ClassExpression], anns: List[Annotation] = None):
+        """
+        Adds to part of an index
+
+        :param key:
+        :param ops:
+        :param anns:
+        :return:
+        """
         for op in ops:
-            self.add_operand(key, op)
+            self.add_operand(key, op, anns)
 
 
 class OWLDumper(Dumper):
@@ -91,9 +120,14 @@ class OWLDumper(Dumper):
     https://github.com/linkml/linkml/issues/267
     """
 
-    def to_ontology_document(self, element: Union[YAMLRoot, List[YAMLRoot]], schema: Union[SchemaDefinition, str], iri=None) -> str:
+    def to_ontology_document(self, element: Union[YAMLRoot, List[YAMLRoot]], schema: Union[SchemaDefinition, str], iri=None) -> OntologyDocument:
         """
-        Convert a linkml instance tree as a function syntax OWL ontology string
+        Recursively convert a linkml instance tree to an OWL Ontology Document
+
+        :param element: element to convert
+        :param schema:
+        :param iri:
+        :return:
         """
         o = Ontology(schema.id)
         self.ontology = o
@@ -104,7 +138,6 @@ class OWLDumper(Dumper):
             self.schemaview = SchemaView(schema)
             self.schema = self.schemaview.schema
             schema = self.schema
-        #o.annotation(RDFS.label, name)
         doc = OntologyDocument(iri, o)
         if isinstance(element, list):
             for e1 in element:
@@ -117,7 +150,7 @@ class OWLDumper(Dumper):
 
     def dumps(self, element: YAMLRoot, schema: SchemaDefinition = None, schemaview: SchemaView = None, iri=None) -> str:
         """
-        Dump a linkml instance tree as a function syntax OWL ontology string
+        Dump a linkml instance tree to a function syntax OWL ontology string
 
         :param element:
         :param schema:
@@ -142,15 +175,16 @@ class OWLDumper(Dumper):
         :param schema:
         :param is_element_an_object:
         :param is_element_an_owl_class:
-        :return:
+        :return: IRI or node of transformation of element
         """
         if element is None:
             return None
         try:
+            # translate Enum
             meaning = element.meaning
             return self._get_IRI_str(meaning)
-        except:
-            None
+        except AttributeError:
+            pass
         if not self._instance_of_linkml_class(element):
             # TODO: better way of detecting atoms
             if is_element_an_object:
@@ -165,23 +199,18 @@ class OWLDumper(Dumper):
                 return Literal(element)
         o = self.ontology
         python_type = type(element)
-        #logging.debug(f'E={element }PT={python_type}')
         linkml_class_name = python_type.class_name
         c = schema.classes[linkml_class_name]
-        #if 'owl.fstring' in c.annotations:
-        #    self.add_axioms_from_fstring(c.annotations['owl.fstring'], element)
         for fstr in self._get_inferred_class_annotations(c, 'owl.fstring'):
             self.add_axioms_from_fstring(fstr, element)
         for tmpl_str in self._get_inferred_class_annotations(c, 'owl.template'):
             self.add_axioms_from_template(tmpl_str, element)
-        #if 'owl.template' in c.annotations:
-        #    self.add_axioms_from_template(c.annotations['owl.template'], element)
         cls_interps = self._get_class_interpretations(c)
-        #cls_interps = self._get_interpretations(c)
         if Class.__name__ in cls_interps:
             is_element_an_owl_class = True
         subj = None
         eai = EntityAxiomIndex()
+        # set subj = IRI for element
         for k, v in vars(element).items():
             slot: SlotDefinition
             slot = self._lookup_slot(c, k)
@@ -192,38 +221,53 @@ class OWLDumper(Dumper):
         if subj is None:
             subj = AnonymousIndividual()
         if ObjectProperty.__name__ in cls_interps:
+            # TODO: make this generic for all declarations
             decl = Declaration(ObjectProperty(subj))
             o.axioms.append(decl)
+        # iterate through all slot-value assignments for element;
+        # generate axioms or add axioms to EntityAxiomIndex for each
         for k, v in vars(element).items():
             slot: SlotDefinition
+            # TODO: unify slot/actual_slot
             slot = self._lookup_slot(c, k)
             actual_slot = self._get_actual_slot(slot)
+            # lookup OWL settings on each slot
             owl_templates = self._get_inferred_slot_annotations(slot, 'owl.template', linkml_class_name)
             owl_fstrings = self._get_inferred_slot_annotations(slot, 'owl.fstring', linkml_class_name)
             boolean_form_of = self._get_inferred_slot_annotations(slot, 'boolean_form_of', linkml_class_name)
+            axiom_annotation_slots = self._get_inferred_slot_annotations(slot, 'owl.axiom_annotation.slots', linkml_class_name)
+            axiom_annotations: List[Annotation] = []
+            if axiom_annotation_slots:
+                # Axiom annotation
+                for ann_slot_name in axiom_annotation_slots:
+                    ann_slot = self._lookup_slot(c, ann_slot_name)
+                    ann_vals = getattr(element, ann_slot_name)
+                    if ann_vals:
+                        if not isinstance(ann_vals, list):
+                            ann_vals = [ann_vals]
+                        for ann_val in ann_vals:
+                            ann_val = self.transform(ann_val, schema, is_element_an_object=ann_slot.range in self.schema.classes)
+                            ann_slot_iri = self._get_IRI_str(ann_slot.slot_uri)
+                            axiom_annotations.append(Annotation(ann_slot_iri, ann_val))
             for tmpl in owl_templates:
                 self.add_axioms_from_template(tmpl, element)
-            #if 'owl.template' in slot.annotations and v is not None:
-            #    self.add_axioms_from_template(slot.annotations['owl.template'], element)
             if slot is None:
                 logging.error(f'No slot for {k}')
                 continue
             if slot.identifier:
+                # the role of the identifier slot is to determine the IRI for the element;
+                # it generates no axioms of its own
                 continue
             slot_uri = self._get_IRI_str(actual_slot.slot_uri)
-            #slot_uri = slot.slot_uri
             logging.debug(f'in {subj} {k} = {v} (URI={actual_slot.slot_uri}) // slot = {slot.name}')
-            #interps = self._get_interpretations(slot)
             interps = self._get_slot_interpretations(slot, linkml_class_name)
             logging.debug(f'INTERPS={interps}')
-            #if len(interps) == 0:
-            #    interps = self._get_interpretations(actual_slot)
+            # TODO: make this more generic
             is_disjunction = 'UnionOf' in interps
             is_conjunction = 'IntersectionOf' in interps
             is_annotation = 'AnnotationProperty' in interps or 'Annotation' in interps
             is_object_ref = slot.range in self.schema.classes
-
-            # normalize input_vals to a list, then transform
+            # normalize input_vals to a list, then recursively transform
             if isinstance(v, list):
                 input_vals = v
             elif isinstance(v, dict):
@@ -232,7 +276,7 @@ class OWLDumper(Dumper):
                 input_vals = [v]
             tr_vals = [self.transform(x, schema, is_element_an_object=is_object_ref) for x in input_vals]
             logging.debug(f'TR Vals={tr_vals}')
-            parents = []
+            parents = []  ## expressions that are the referents of the axioms to be generated
             is_class_logical_axiom = False
             for tr_val in tr_vals:
                 logging.debug(f'  TR_VAL = {tr_val}')
@@ -242,14 +286,12 @@ class OWLDumper(Dumper):
                     for owl_fstring in owl_fstrings:
                         self.add_axioms_from_fstring(owl_fstring, element, tr_val)
                     continue
-                #if 'owl.fstring' in slot.annotations and v is not None:
-                #    self.add_axioms_from_fstring(slot.annotations['owl.fstring'], element, tr_val)
-                #    continue
                 if slot.range in self.schema.classes:
                     if isinstance(tr_val, str):
                         tr_val = self._get_IRI_str(tr_val)
                 parent = tr_val
                 if boolean_form_of:
+                    # owl.boolean_form_of allows mapping between boolean slots and an owl object type
                     if parent and parent == Literal(True):
                         for owl_uri in boolean_form_of:
                             if owl_uri == 'owl:TransitiveProperty':
@@ -271,6 +313,8 @@ class OWLDumper(Dumper):
                 elif ObjectAllValuesFrom.__name__ in interps:
                     parent = ObjectAllValuesFrom(slot_uri, tr_val)
                     is_class_logical_axiom = True
+                elif ObjectMinCardinality.__name__ in interps:
+                    raise NotImplementedError(f'TODO: QCRs')
                 elif SubClassOf.__name__ in interps:
                     is_class_logical_axiom = True
                 elif EquivalentClasses.__name__ in interps:
@@ -293,6 +337,7 @@ class OWLDumper(Dumper):
             elif AnnotationAssertion.__name__ in interps:
                 axiom_type = AnnotationAssertion
             if axiom_type is None:
+                # default: SubClassOf R some V for logical; otherwise annotation
                 if is_class_logical_axiom:
                     if is_annotation:
                         raise ValueError(f'{slot.name} cannot be both logical and an annotation')
@@ -304,18 +349,21 @@ class OWLDumper(Dumper):
                         axiom_type = None
             logging.debug(f'AXIOM TYPE = {axiom_type}')
             if not axiom_type:
+                logging.debug(f'No axiom type; skipping {k} for {subj}')
                 continue
             if is_disjunction:
                 # translate the filler list to a single entry that is a disjunction
                 # TODO: allow for different groupings; for now default to 0
                 level = 0
-                eai.add_operands((level, axiom_type.__name__, ObjectUnionOf.__name__), parents)
+                eai.add_operands((level, axiom_type.__name__, ObjectUnionOf.__name__), parents, axiom_annotations)
+                #eai.annotations += axiom_annotations
                 parents = []
             if is_conjunction:
                 # translate the filler list to a single entry that is a conjunction
                 # TODO: allow for different groupings; for now default to 0
                 level = 0
-                eai.add_operands((level, axiom_type.__name__, ObjectIntersectionOf.__name__), parents)
+                eai.add_operands((level, axiom_type.__name__, ObjectIntersectionOf.__name__), parents, axiom_annotations)
+                #eai.annotations += axiom_annotations
                 parents = []
             for parent in parents:
                 # TODO: make this more generic
@@ -344,7 +392,9 @@ class OWLDumper(Dumper):
                 else:
                     raise Exception(f'Unknown: {axiom_type}')
                 if axiom is not None:
-                    o.axioms.append(axiom)
+                    self.add_axiom(axiom, o, axiom_annotations)
+        # all per-slot axioms have been processed; axioms that span
+        # multiple slots are now processed
         for op_key, operands in eai.operand_list_index.items():
             _, interp, operator = op_key
             logging.debug(f'EAI {subj}: {interp} => {operator} over {operands}')
@@ -353,17 +403,19 @@ class OWLDumper(Dumper):
             elif operator == ObjectIntersectionOf.__name__:
                 expr = ObjectIntersectionOf(*operands)
             else:
-                raise ValueError(f'Cannot handle: {operator}')
+                raise ValueError(f'Cannot handle operator: {operator}')
             if interp == EquivalentClasses.__name__:
                 axiom = EquivalentClasses(subj, expr)
             elif interp == SubClassOf.__name__:
                 axiom = SubClassOf(subj, expr)
             else:
                 raise ValueError(f'Not handled: {interp}')
-            o.axioms.append(axiom)
-        #if isinstance(subj, AnonymousIndividual):
-        #  TODO: nesting
+            self.add_axiom(axiom, o, eai.annotation_list_index.get(op_key, []))
         return subj
+
+    def add_axiom(self, axiom: Axiom, ontology: Ontology, axiom_annotations: List[Annotation]) -> None:
+        axiom.annotations = axiom_annotations
+        ontology.axioms.append(axiom)
 
     def _instance_of_linkml_class(self, v) -> bool:
         try:

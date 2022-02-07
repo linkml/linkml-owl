@@ -17,11 +17,10 @@ from linkml_runtime.utils.compile_python import compile_python
 from linkml_runtime.utils.schema_as_dict import schema_as_dict
 from linkml_runtime.utils.yamlutils import YAMLRoot
 from rdflib import RDFS
-from rdflib.namespace import Namespace, SKOS
+from rdflib.namespace import Namespace, SKOS, DCTERMS
 from linkml_owl.owl_dumper import OWLDumper
 from funowl import Axiom, AnnotationAssertion, Literal, SubClassOf, ObjectSomeValuesFrom, \
-    ObjectAllValuesFrom, ObjectUnionOf, EquivalentClasses, ObjectIntersectionOf
-
+    ObjectAllValuesFrom, ObjectUnionOf, EquivalentClasses, ObjectIntersectionOf, Annotation
 
 from linkml_owl.util.trim_yaml import trim_yaml
 from tests import INPUT_DIR, OUTPUT_DIR
@@ -84,6 +83,7 @@ class TestOwlDumper(unittest.TestCase):
         """
         X = Namespace("http://example.org/")
         BFO = Namespace("http://purl.obolibrary.org/obo/BFO_")
+        IAO = Namespace("http://purl.obolibrary.org/obo/IAO_")
         dumper = OWLDumper()
         sv = SchemaView(SCHEMA_IN)
         schema = sv.schema
@@ -115,6 +115,28 @@ class TestOwlDumper(unittest.TestCase):
                   [py_mod.ExactMatchAsLiteral('x:a', exactMatch='x:b')],
                   [AnnotationAssertion(SKOS.exactMatch, X.a, Literal("x:b"))],
                   "We can force a literal by imposing a range")
+        add_check("Axiom annotation with Literal value on annotation axiom",
+                  [py_mod.DefinitionWithAxiomAnnotation('x:a', label='foo', definition='a foo is a foo',
+                                                        definition_source=['Me'])],
+                  [AnnotationAssertion(IAO['0000115'], X.a, Literal("a foo is a foo"), [
+                      Annotation(DCTERMS.source, Literal("Me"))
+                  ])],
+                  """Axiom annotations (literals) can be driven by a separate slot""")
+        add_check("Axiom annotation with IRI val on annotation axiom",
+                  [py_mod.DefinitionWithIRIAxiomAnnotation('x:a', label='foo', definition='a foo is a foo',
+                                                           definition_source=['x:src'])],
+                  [AnnotationAssertion(IAO['0000115'], X.a, Literal("a foo is a foo"), [
+                      Annotation(DCTERMS.source, X.src)
+                  ])],
+                  """Axiom annotations (IRIs) can be driven by a separate slot""")
+        add_check("Axiom annotations with IRI val on annotation axiom",
+                  [py_mod.DefinitionWithIRIAxiomAnnotation('x:a', label='foo', definition='a foo is a foo',
+                                                           definition_source=['x:src1', 'x:src2'])],
+                  [AnnotationAssertion(IAO['0000115'], X.a, Literal("a foo is a foo"), [
+                      Annotation(DCTERMS.source, X.src1),
+                      Annotation(DCTERMS.source, X.src2)
+                  ])],
+                  """Multiple axiom annotations""")
         add_check("Basic SubClassOf between named classes",
                   [py_mod.Child('x:a', subclass_of='x:b')],
                   [SubClassOf(X.a, X.b)],
@@ -161,6 +183,11 @@ class TestOwlDumper(unittest.TestCase):
                   [EquivalentClasses(X.a, ObjectIntersectionOf(X.b, X.c))],
                   """The slot is interpreted as a parent class,
                   and all slot values with a IntersectionOf annotation are collected to make a IntersectionOf expression""")
+        add_check("EquivalentTo IntersectionOf with axiom annotation",
+                  [py_mod.EquivIntersectionWithAxiomAnnotation('x:a', operands=['x:b', 'x:c'], logical_definition_source=["Me"])],
+                  [EquivalentClasses(X.a, ObjectIntersectionOf(X.b, X.c),
+                                     annotations=[Annotation(DCTERMS.source, Literal("Me"))])],
+                  """as above, with axiom annotation""")
         add_check("EquivalentTo Genus and SomeValuesFrom",
                   [py_mod.EquivGenusAndPartOf('x:a',
                                               subclass_of=['X:genus'],
@@ -179,6 +206,18 @@ class TestOwlDumper(unittest.TestCase):
                    SubClassOf(X.a, ObjectSomeValuesFrom(BFO['0000050'], X.c))],
                   """Demonstrates a case where some slots contribute to a logical definition (equiv axiom),
                      and other contribute to additional axioms (so called hidden GCIs)""")
+        add_check("Hidden GCI with axiom annotations",
+                  [py_mod.EquivGenusAndPartOfWithAxiomAnnotation('x:a',
+                                              label='a',
+                                              definition='A X:genus that part_of some x:b',
+                                              definition_source=['Auto'],
+                                              subclass_of=['X:genus'],
+                                              part_of=['x:b'],
+                                              logical_definition_source=['Me'],
+                                              other_part_ofs=['x:c'],
+                                              axiom_source=['Auto'])],
+                  [],  # TODO
+                  """End-to-end example with hidden GCIs and different axiom annotations""")
         add_check("slot-value level fstring template",
                   [py_mod.ClassTemplateExample1('x:a', subclass_of='x:b')],
                   #[SubClassOf(X.a, X.b)],
@@ -239,7 +278,8 @@ class TestOwlDumper(unittest.TestCase):
                 if not isinstance(axiom, str):
                     if axiom not in doc.ontology.axioms:
                         logging.error(f'COULD NOT FIND: {axiom}')
-                        logging.error(f'LOOKING IN: *****\b{doc.ontology}')
+                        for a in doc.ontology.axioms:
+                            logging.error(f'   HAS: {a}')
                     assert axiom in doc.ontology.axioms
                 else:
                     print(f'  LOOKING IN: {ontology_str_trimmed}')
