@@ -10,7 +10,7 @@ pip install linkml-owl
 
 Minimally you need to specify two inputs:
 
-* A [linkml schema](https://linkml.io/linkml/schemas), with annotations describing mappings
+* A [linkml schema](https://linkml.io/linkml/schemas), with *annotations* describing mappings from data to OWL
 * A datafile in YAML, JSON, RDF, or TSV conformant with the schema
 
 To convert:

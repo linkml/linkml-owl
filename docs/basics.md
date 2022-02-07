@@ -1,8 +1,8 @@
 # Basics
 
-First specify your schema using LinkML. Note that LinkML classes will typically be *metaclasses*.
+First specify your schema using LinkML. Note that LinkML classes will typically be *metaclasses* at the OWL level.
 
-A very simple schema for an anatomical ontology:
+A very simple schema for an anatomical ontology like Uberon:
 
 ```yaml
 classes:
