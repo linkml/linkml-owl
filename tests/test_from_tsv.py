@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import logging
 import os
-import json
 import unittest
 import pytest
 from linkml.generators.pythongen import PythonGenerator
@@ -10,16 +9,8 @@ from linkml_runtime import SchemaView
 from rdflib import Graph
 
 from linkml_owl.util.loader_wrapper import load_structured_file
-from tests.model.chromschema import *
 from linkml_owl.owl_dumper import OWLDumper
-from linkml.generators.yamlgen import YAMLGenerator
-from linkml.generators.owlgen import OwlSchemaGenerator
 from funowl.converters.functional_converter import to_python
-from funowl import OntologyDocument
-
-
-from linkml_runtime.dumpers import json_dumper, yaml_dumper, rdf_dumper
-from linkml_runtime.loaders import yaml_loader
 
 from tests import MODEL_DIR, INPUT_DIR, OUTPUT_DIR
 

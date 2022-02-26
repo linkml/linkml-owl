@@ -20,7 +20,7 @@ from rdflib import RDFS
 from rdflib.namespace import Namespace, SKOS, DCTERMS
 from linkml_owl.owl_dumper import OWLDumper
 from funowl import Axiom, AnnotationAssertion, Literal, SubClassOf, ObjectSomeValuesFrom, \
-    ObjectAllValuesFrom, ObjectUnionOf, EquivalentClasses, ObjectIntersectionOf, Annotation
+    ObjectAllValuesFrom, ObjectUnionOf, EquivalentClasses, ObjectIntersectionOf, Annotation, DisjointUnion
 
 from linkml_owl.util.trim_yaml import trim_yaml
 from tests import INPUT_DIR, OUTPUT_DIR
@@ -108,11 +108,11 @@ class TestOwlDumper(unittest.TestCase):
                   """Default is to use an annotation assertion,
                   and if the range is a string then this is literal""")
         add_check("Annotation using IRIs",
-                  [py_mod.ExactMatch('x:a', exactMatch='x:b')],
+                  [py_mod.NamedThingWithMatches('x:a', exactMatch='x:b')],
                   [AnnotationAssertion(SKOS.exactMatch, X.a, X.b)],
                   "As above, but if the range is an instance of a LinkML class then use a literal")
         add_check("Annotation using forced literals",
-                  [py_mod.ExactMatchAsLiteral('x:a', exactMatch='x:b')],
+                  [py_mod.NamedThingWithMatchesAsLiterals('x:a', exactMatch='x:b')],
                   [AnnotationAssertion(SKOS.exactMatch, X.a, Literal("x:b"))],
                   "We can force a literal by imposing a range")
         add_check("Axiom annotation with Literal value on annotation axiom",
@@ -178,6 +178,10 @@ class TestOwlDumper(unittest.TestCase):
                   [py_mod.EquivUnion('x:a', operands=['x:b', 'x:c'])],
                   [EquivalentClasses(X.a, ObjectUnionOf(X.b, X.c))],
                   "As above, but with equivalence")
+        #add_check("DisjointUnion",
+        #          [py_mod.DisjointUnion('x:a', operands=['x:b', 'x:c'])],
+        #          [DisjointUnion(X.a, X.b, X.c)],
+        #          "As above, combining equivalence and disjoitness into a single axiom")
         add_check("EquivalentTo IntersectionOf",
                   [py_mod.EquivIntersection('x:a', operands=['x:b', 'x:c'])],
                   [EquivalentClasses(X.a, ObjectIntersectionOf(X.b, X.c))],
