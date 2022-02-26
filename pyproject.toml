@@ -34,8 +34,8 @@ python = "^3.7.1"
 click = "*"
 funowl = "^0.1.10"
 Jinja2 = "^3.0.3"
-linkml-runtime = "^1.1.19"
-linkml = "^1.1.16"
+linkml-runtime = "^1.1.26"
+linkml = "1.1.19"
 
 [tool.poetry.dev-dependencies]
 tox = "^3.24.5"

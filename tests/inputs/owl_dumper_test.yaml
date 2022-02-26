@@ -30,28 +30,39 @@ slots:
   id:
     identifier: true
     range: uriorcurie
+    required: true
+    description: the CURIE or IRI of the focal element
   label:
     slot_uri: rdfs:label
     annotations:
       owl: AnnotationProperty, AnnotationAssertion
+    description: a descriptive name/label for an element
+    recommended: true
   definition:
     slot_uri: IAO:0000115
     annotations:
       owl: AnnotationProperty, AnnotationAssertion
+    description: a human-readable definition of an element
+    recommended: true
   source:
     slot_uri: dcterms:source
     multivalued: true
+    description: origin of element or axiom
   definition_source:
     slot_uri: dcterms:source
     multivalued: true
+    description: origin of textual definition
   logical_definition_source:
     slot_uri: dcterms:source
     multivalued: true
+    description: origin of logical definition
   axiom_source:
     slot_uri: dcterms:source
     multivalued: true
+    description: origin of axiom
   exactMatch:
     slot_uri: skos:exactMatch
+    description: a concept that is the object of a match triple
     range: NamedThing
     annotations:
       owl: AnnotationProperty, AnnotationAssertion
@@ -59,10 +70,12 @@ slots:
     slot_uri: owl:equivalentClasses
     range: NamedThing
     multivalued: true
+    description: named class this is equivalent to
   subclass_of:
     slot_uri: rdfs:subclass_of
     range: NamedThing
     multivalued: true
+    description: named class this is subclass of
   operands:
     range: NamedThing
     multivalued: true
@@ -71,15 +84,18 @@ slots:
     #transitive: true
     range: NamedThing
     multivalued: true
+    description: element this is a part of
   other_part_ofs:
     slot_uri: BFO:0000050
     range: NamedThing
     multivalued: true
+    description: this slot is used to indicate other part-of relationships that are not in the logical definition
   has_part:
     slot_uri: BFO:0000051
     range: NamedThing
     multivalued: true
     inverse: part_of
+    description: sub-elements
 
   subphenotype:
     range: Phenotype
@@ -102,18 +118,27 @@ classes:
   #    - records
 
   Thing:
+    abstract: true
+    description: root node for all metaclasses
   NamedThing:
     is_a: Thing
+    abstract: true
+    description: generic grouping for classes, relations, individuals, and other named entities
     slots:
       - id
       - label
       - definition
   Anonymous:
+    aliases:
+      - blank node
     is_a: Thing
+    description: abstract grouping for anonymous expressions
+    abstract: true
     annotations:
       owl: Class
-  ExactMatch:
+  NamedThingWithMatches:
     is_a: NamedThing
+    description: test metaclass illustrating generation of skos annotation axioms
     slots:
       - exactMatch
     slot_usage:
@@ -121,18 +146,21 @@ classes:
         required: true
         annotations:
           owl: AnnotationAssertion
-  ExactMatchAsLiteral:
+  NamedThingWithMatchesAsLiterals:
     is_a: NamedThing
+    description: test metaclass illustrating generation of skos annotation axioms, forcing use of literals
     slots:
       - exactMatch
     slot_usage:
       exactMatch:
+        description: we override the range to be a string
         range: string
         required: true
         annotations:
           owl: AnnotationAssertion
   DefinitionWithAxiomAnnotation:
     is_a: NamedThing
+    description: test metaclass illustrating how a text definition can be adorned with annotation axioms, where values are literals
     slots:
       - definition_source
     slot_usage:
@@ -141,6 +169,7 @@ classes:
           owl.axiom_annotation.slots: definition_source
   DefinitionWithIRIAxiomAnnotation:
     is_a: NamedThing
+    description: test metaclass illustrating how a text definition can be adorned with annotation axioms, where the values are IRIs
     slots:
       - definition_source
     slot_usage:
@@ -151,6 +180,7 @@ classes:
           owl.axiom_annotation.slots: definition_source
   Child:
     is_a: NamedThing
+    description: test metaclass illustrating classes with basic superclass parents
     slots:
       - subclass_of
     slot_usage:
@@ -160,6 +190,7 @@ classes:
           owl: SubClassOf
   ChildOfAnon:
     is_a: NamedThing
+    description: test metaclass illustrating classes with parents that are class expressions
     slots:
       - subclass_of
     slot_usage:
@@ -169,6 +200,7 @@ classes:
           owl: SubClassOf
   DirectEquivalent:
     is_a: NamedThing
+    description: test metaclass illustrating simple equivalence between two named classes
     slots:
       - equivalent_to
     slot_usage:
@@ -178,6 +210,7 @@ classes:
           owl: EquivalentClasses
   ChildOfUnion:
     is_a: NamedThing
+    description: test metaclass illustrating classes whose parents are a union
     slots:
       - subclass_of
     slot_usage:
@@ -187,15 +220,31 @@ classes:
           owl: SubClassOf, UnionOf
   EquivUnion:
     is_a: NamedThing
+    description: test metaclass illustrating classes defined by a union
+    slots:
+      - operands
+    examples:
+      - value: prokaryote
+        description: a prokaryote is equivalent to a bacteria or an archaea
+    slot_usage:
+      operands:
+        required: true
+        description: elements of the union expression
+        annotations:
+          owl: EquivalentClasses, UnionOf
+  DisjointUnion:
+    is_a: NamedThing
+    description: test metaclass illustrating classes defined by a disjoint union
     slots:
       - operands
     slot_usage:
       operands:
         required: true
         annotations:
-          owl: EquivalentClasses, UnionOf
+          owl: DisjointUnionOf
   EquivIntersection:
     is_a: NamedThing
+    description: test metaclass illustrating classes defined by a simple intersection of classes
     slots:
       - operands
     slot_usage:
@@ -205,6 +254,7 @@ classes:
           owl: EquivalentClasses, IntersectionOf
   EquivIntersectionWithAxiomAnnotation:
     is_a: NamedThing
+    description: test metaclass illustrating classes defined by a simple intersection of classes, including an axion annotation
     slots:
       - operands
       - logical_definition_source
@@ -216,6 +266,7 @@ classes:
           owl.axiom_annotation.slots: logical_definition_source
   Part:
     is_a: NamedThing
+    description: test metaclass illustrating classes with basic heirarchical existential parents
     slots:
       - part_of
     slot_usage:
@@ -225,6 +276,7 @@ classes:
           owl: ObjectSomeValuesFrom
   PartOnly:
     is_a: NamedThing
+    description: test metaclass illustrating classes with basic part-of-allValues pattern
     slots:
       - part_of
     slot_usage:
@@ -245,26 +297,30 @@ classes:
       owl: Class
   EquivGenusAndPartOf:
     is_a: NamedThing
+    description: test metaclass illustrating basic simple genus-differentia style logical definition, including so-called GCIs
     slots:
       - subclass_of
       - part_of
       - other_part_ofs
     slot_usage:
       subclass_of:
+        description: the genus of the definition
         required: true
         annotations:
           owl: EquivalentClasses, IntersectionOf
       part_of:
         required: true
+        description: the part-of differentiae
         annotations:
           owl: EquivalentClasses, IntersectionOf, ObjectSomeValuesFrom
       other_part_ofs:
         required: false
-        description: for hidden GCIs
+        description: other parts ofs not in the differntating conditions (sometimes called hidden GCIs)
         annotations:
           owl: ObjectSomeValuesFrom
   EquivGenusAndPartOfWithAxiomAnnotation:
     is_a: NamedThing
+    description: test metaclass illustrating basic simple genus-differentia style logical definition, including axiom annotation
     slots:
       - subclass_of
       - part_of
@@ -294,6 +350,7 @@ classes:
           owl.axiom_annotation.slots: axiom_source
   ClassTemplateExample1:
     is_a: NamedThing
+    description: test metaclass illustrating a trivial example of generating an axiom by a simple templated string
     slots:
       - subclass_of
       - part_of
@@ -305,6 +362,7 @@ classes:
 
   ClassTemplateExample2:
     is_a: NamedThing
+    description: test metaclass illustrating an example of generating multiple axioms by a jinja template
     slots:
       - subclass_of
       - part_of
@@ -317,6 +375,7 @@ classes:
 
   CollectionOfParts:
     is_a: NamedThing
+    description: test metaclass illustrating a whole which has a collection of non-overlapping parts
     slots:
       - has_part
     annotations:
@@ -333,6 +392,7 @@ classes:
 
   DefinedCollectionOfParts:
     is_a: NamedThing
+    description: test metaclass illustrating a whole which is defined by a collection of non-overlapping parts
     slots:
       - has_part
     annotations:
@@ -355,6 +415,7 @@ classes:
 
   PartWithCounts:
     is_a: Anonymous
+    description: test metaclass that generates anonymous classes used as part of a more complex class
     attributes:
       unit:
         range: NamedThing
@@ -373,6 +434,7 @@ classes:
 
   CollectionOfPartsWithCounts:
     is_a: NamedThing
+    description: test metaclass that illustrates a complex nested multi-part structure, where a whole is defined by a collection of repeared parts in specified states
     slots:
       - has_part
     slot_usage:

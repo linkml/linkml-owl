@@ -7,10 +7,8 @@ import click
 from funowl.converters.functional_converter import to_python
 from jinja2 import Template
 from linkml.generators.pythongen import PythonGenerator
-from linkml.utils import datautils
 from linkml_runtime import SchemaView
 from linkml_runtime.linkml_model import meta
-from linkml_runtime.loaders import yaml_loader
 from linkml_runtime.utils.compile_python import compile_python
 
 from rdflib import URIRef
@@ -23,10 +21,10 @@ from linkml_runtime.linkml_model.types import Uri, Uriorcurie
 from funowl import OntologyDocument, Ontology, IRI, ObjectSomeValuesFrom, \
     Literal, \
     ObjectUnionOf, SubClassOf, ClassAssertion, \
-    Class, Individual, \
+    Class, \
     AnnotationAssertion, ObjectPropertyAssertion, \
     Prefix, AnonymousIndividual, ObjectAllValuesFrom, EquivalentClasses, ObjectIntersectionOf, ClassExpression, Axiom, \
-    ObjectProperty, Declaration, ObjectInverseOf, InverseObjectProperties, ObjectPropertyDomain, ObjectPropertyRange, \
+    ObjectProperty, Declaration, InverseObjectProperties, ObjectPropertyDomain, ObjectPropertyRange, \
     SubObjectPropertyOf, TransitiveObjectProperty, SymmetricObjectProperty, AsymmetricObjectProperty, \
     ReflexiveObjectProperty, IrreflexiveObjectProperty, Annotation, ObjectMinCardinality
 
@@ -228,9 +226,9 @@ class OWLDumper(Dumper):
         # generate axioms or add axioms to EntityAxiomIndex for each
         for k, v in vars(element).items():
             slot: SlotDefinition
-            # TODO: unify slot/actual_slot
+            # TODO: unify slot/schema_level_slot
             slot = self._lookup_slot(c, k)
-            actual_slot = self._get_actual_slot(slot)
+            schema_level_slot = self._get_schema_level_slot(slot)
             # lookup OWL settings on each slot
             owl_templates = self._get_inferred_slot_annotations(slot, 'owl.template', linkml_class_name)
             owl_fstrings = self._get_inferred_slot_annotations(slot, 'owl.fstring', linkml_class_name)
@@ -258,8 +256,11 @@ class OWLDumper(Dumper):
                 # the role of the identifier slot is to determine the IRI for the element;
                 # it generates no axioms of its own
                 continue
-            slot_uri = self._get_IRI_str(actual_slot.slot_uri)
-            logging.debug(f'in {subj} {k} = {v} (URI={actual_slot.slot_uri}) // slot = {slot.name}')
+            if schema_level_slot.slot_uri is not None:
+                slot_uri = self._get_IRI_str(schema_level_slot.slot_uri)
+            else:
+                slot_uri = self._get_IRI_str(self.schemaview.get_uri(slot.name))
+            logging.debug(f'in {subj} {k} = {v} (URI={schema_level_slot.slot_uri}) // slot = {slot.name}')
             interps = self._get_slot_interpretations(slot, linkml_class_name)
             logging.debug(f'INTERPS={interps}')
             # TODO: make this more generic
@@ -520,45 +521,15 @@ class OWLDumper(Dumper):
                     interps.add(ObjectPropertyRange.__name__)
         return interps
 
-
-    def OLD_get_interpretations(self, x: Definition) -> Set[INTERPRETATION]:
-        if isinstance(x, SlotDefinition):
-            anc_names = self.schemaview.slot_ancestors(x.name, reflexive=False)
-            ancs = [self.schemaview.get_slot(a) for a in anc_names] + [x]
-        elif isinstance(x, ClassDefinition):
-            anc_names = self.schemaview.class_ancestors(x.name, reflexive=False)
-            ancs = [self.schemaview.get_class(a) for a in anc_names] + [x]
-        else:
-            raise ValueError(f'Not supported: {type(x)}')
-        interps = set()
-        #OWL_MARKER = 'OWL>>'
-        for x in ancs:
-            #for c in x.comments:
-            #    logging.warning('Use of OWL>> is deprecated - replace with an annotation')
-            #    # TODO: deprecated comment-based way of doing this
-            #    if c.startswith(OWL_MARKER) and False:
-            #        n = c.replace(OWL_MARKER, '').strip()
-            #        interps.add(n)
-            if 'owl' in x.annotations:
-                interps.update([s.strip() for s in x.annotations['owl'].value.split(',')])
-            # TODO: make this more declarative/generic; use a mapping of URIs => OWL types
-            if isinstance(x, SlotDefinition):
-                slot_uri = x.slot_uri
-                if slot_uri == 'owl:inverseOf':
-                    interps.add(InverseObjectProperties.__name__)
-                if slot_uri == 'rdfs:domain':
-                    interps.add(ObjectPropertyDomain.__name__)
-                if slot_uri == 'rdfs:range':
-                    interps.add(ObjectPropertyRange.__name__)
-        return interps
-
     def _get_IRI_str(self, id: str) -> str:
+        if id is None:
+            raise ValueError(f'Must pass an id')
         uri = self.schemaview.expand_curie(id)
         if uri:
             return uri
 
     # TODO: deprecate this
-    def _get_actual_slot(self, slot: SlotDefinition) -> SlotDefinition:
+    def _get_schema_level_slot(self, slot: SlotDefinition) -> SlotDefinition:
         """
         See
         https://github.com/linkml/linkml/issues/270
@@ -566,12 +537,12 @@ class OWLDumper(Dumper):
         """
         alias = slot.alias
         if alias in self.schema.slots:
-            actual_slot = self.schema.slots[alias]
+            schema_level_slot = self.schema.slots[alias]
         else:
-            actual_slot = slot
-        if actual_slot.name != slot.name:
-            logging.warning(f'Using actual slot uri: {actual_slot.name} >> {slot.name}')
-        return actual_slot
+            schema_level_slot = slot
+        if schema_level_slot.name != slot.name:
+            logging.warning(f'Using actual slot uri: {schema_level_slot.name} >> {slot.name}')
+        return schema_level_slot
 
     def parse_axioms_string(self, owl_str: str, schemaview: SchemaView = None) -> OntologyDocument:
         if schemaview is None:

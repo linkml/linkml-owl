@@ -20,17 +20,18 @@ prefixes:
   skos: http://www.w3.org/2004/02/skos/core#
   dcterms: http://purl.org/dc/terms/
 
-default_prefix: rometa
+default_prefix: ubmeta
 default_curi_maps:
   - semweb_context
 
 enums:
-  ActivationStateEnum:
+  BloodVesselSubcategory:
     permissible_values:
-      ACTIVATED:
-        meaning: PATO:0002354
-      INACTIVATED:
-        meaning: PATO:0002355
+      artery:
+        meaning: UBERON:0001637
+      vein:
+        meaning: UBERON:0001638
+
 
 types:
   label type:
@@ -122,24 +123,17 @@ slots:
 
   subcategory:
     slot_uri: sparqlfun:subcategory
-    range: class node
   supplies:
     slot_uri: RO:0002178
-    range: anatomical entity
+    range: AnatomicalEntity
   drains:
     slot_uri: RO:0002179
-    range: anatomical entity
+    range: AnatomicalEntity
   branching_part_of:
     slot_uri: RO:0002380
-    range: anatomical entity
+    range: AnatomicalEntity
 
-enums:
-  BloodVesselSubcategory:
-    permissible_values:
-      artery:
-        meaning: UBERON:0001637
-      vein:
-        meaning: UBERON:0001638
+
 
 classes:
 
@@ -150,7 +144,7 @@ classes:
       - in_subset
       - exact_match
       - conforms_to
-      -
+
   ClassAspect:
     mixin: true
     is_a: NamedThing
