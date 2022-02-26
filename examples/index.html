@@ -83,6 +83,12 @@
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#annotation-using-forced-literals">Annotation using forced literals</a>
     </li>
+    <li class="toctree-l2"><a class="reference internal" href="#axiom-annotation-with-literal-value-on-annotation-axiom">Axiom annotation with Literal value on annotation axiom</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#axiom-annotation-with-iri-val-on-annotation-axiom">Axiom annotation with IRI val on annotation axiom</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#axiom-annotations-with-iri-val-on-annotation-axiom">Axiom annotations with IRI val on annotation axiom</a>
+    </li>
     <li class="toctree-l2"><a class="reference internal" href="#basic-subclassof-between-named-classes">Basic SubClassOf between named classes</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#basic-direct-equivalence-between-named-classes">basic direct equivalence between named classes</a>
@@ -99,9 +105,13 @@
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#equivalentto-intersectionof">EquivalentTo IntersectionOf</a>
     </li>
+    <li class="toctree-l2"><a class="reference internal" href="#equivalentto-intersectionof-with-axiom-annotation">EquivalentTo IntersectionOf with axiom annotation</a>
+    </li>
     <li class="toctree-l2"><a class="reference internal" href="#equivalentto-genus-and-somevaluesfrom">EquivalentTo Genus and SomeValuesFrom</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#hidden-gci">Hidden GCI</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#hidden-gci-with-axiom-annotations">Hidden GCI with axiom annotations</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#slot-value-level-fstring-template">slot-value level fstring template</a>
     </li>
@@ -205,9 +215,18 @@ Prefix( rdf: = &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt; )
 Prefix( rdfs: = &lt;http://www.w3.org/2000/01/rdf-schema#&gt; )
 Prefix( xsd: = &lt;http://www.w3.org/2001/XMLSchema#&gt; )
 Prefix( owl: = &lt;http://www.w3.org/2002/07/owl#&gt; )
+Prefix( linkml: = &lt;https://w3id.org/linkml/&gt; )
+Prefix( test: = &lt;https://w3id.org/linkml/owl/tests/&gt; )
+Prefix( BFO: = &lt;http://purl.obolibrary.org/obo/BFO_&gt; )
+Prefix( IAO: = &lt;http://purl.obolibrary.org/obo/IAO_&gt; )
+Prefix( RO: = &lt;http://purl.obolibrary.org/obo/RO_&gt; )
+Prefix( PATO: = &lt;http://purl.obolibrary.org/obo/PATO_&gt; )
+Prefix( skos: = &lt;http://www.w3.org/2004/02/skos/core#&gt; )
+Prefix( dcterms: = &lt;http://purl.org/dc/terms/&gt; )
+Prefix( x: = &lt;http://example.org/&gt; )
 
 Ontology( &lt;https://w3id.org/linkml/owl/tests&gt;
-    AnnotationAssertion( rdfs:label &lt;http://example.org/a&gt; &quot;foo&quot; )
+    AnnotationAssertion( rdfs:label x:a &quot;foo&quot; )
 )
 </code></pre>
 <h2 id="annotation-using-iris">Annotation using IRIs</h2>
@@ -249,9 +268,18 @@ Prefix( rdf: = &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt; )
 Prefix( rdfs: = &lt;http://www.w3.org/2000/01/rdf-schema#&gt; )
 Prefix( xsd: = &lt;http://www.w3.org/2001/XMLSchema#&gt; )
 Prefix( owl: = &lt;http://www.w3.org/2002/07/owl#&gt; )
+Prefix( linkml: = &lt;https://w3id.org/linkml/&gt; )
+Prefix( test: = &lt;https://w3id.org/linkml/owl/tests/&gt; )
+Prefix( BFO: = &lt;http://purl.obolibrary.org/obo/BFO_&gt; )
+Prefix( IAO: = &lt;http://purl.obolibrary.org/obo/IAO_&gt; )
+Prefix( RO: = &lt;http://purl.obolibrary.org/obo/RO_&gt; )
+Prefix( PATO: = &lt;http://purl.obolibrary.org/obo/PATO_&gt; )
+Prefix( skos: = &lt;http://www.w3.org/2004/02/skos/core#&gt; )
+Prefix( dcterms: = &lt;http://purl.org/dc/terms/&gt; )
+Prefix( x: = &lt;http://example.org/&gt; )
 
 Ontology( &lt;https://w3id.org/linkml/owl/tests&gt;
-    AnnotationAssertion( &lt;http://www.w3.org/2004/02/skos/core#exactMatch&gt; &lt;http://example.org/a&gt; &lt;http://example.org/b&gt; )
+    AnnotationAssertion( skos:exactMatch x:a x:b )
 )
 </code></pre>
 <h2 id="annotation-using-forced-literals">Annotation using forced literals</h2>
@@ -293,9 +321,199 @@ Prefix( rdf: = &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt; )
 Prefix( rdfs: = &lt;http://www.w3.org/2000/01/rdf-schema#&gt; )
 Prefix( xsd: = &lt;http://www.w3.org/2001/XMLSchema#&gt; )
 Prefix( owl: = &lt;http://www.w3.org/2002/07/owl#&gt; )
+Prefix( linkml: = &lt;https://w3id.org/linkml/&gt; )
+Prefix( test: = &lt;https://w3id.org/linkml/owl/tests/&gt; )
+Prefix( BFO: = &lt;http://purl.obolibrary.org/obo/BFO_&gt; )
+Prefix( IAO: = &lt;http://purl.obolibrary.org/obo/IAO_&gt; )
+Prefix( RO: = &lt;http://purl.obolibrary.org/obo/RO_&gt; )
+Prefix( PATO: = &lt;http://purl.obolibrary.org/obo/PATO_&gt; )
+Prefix( skos: = &lt;http://www.w3.org/2004/02/skos/core#&gt; )
+Prefix( dcterms: = &lt;http://purl.org/dc/terms/&gt; )
+Prefix( x: = &lt;http://example.org/&gt; )
 
 Ontology( &lt;https://w3id.org/linkml/owl/tests&gt;
-    AnnotationAssertion( &lt;http://www.w3.org/2004/02/skos/core#exactMatch&gt; &lt;http://example.org/a&gt; &quot;x:b&quot; )
+    AnnotationAssertion( skos:exactMatch x:a &quot;x:b&quot; )
+)
+</code></pre>
+<h2 id="axiom-annotation-with-literal-value-on-annotation-axiom">Axiom annotation with Literal value on annotation axiom</h2>
+<p><strong>Description</strong>: <em>Axiom annotations (literals) can be driven by a separate slot</em></p>
+<p><strong>Schema</strong>:</p>
+<pre><code class="language-yaml">id: http//example.org/Axiom-annotation-with-Literal-value-on-annotation-axiom
+classes:
+  DefinitionWithAxiomAnnotation:
+    is_a: NamedThing
+    attributes:
+      definition_source:
+        slot_uri: dcterms:source
+        multivalued: true
+      id:
+        identifier: true
+        range: uriorcurie
+      label:
+        annotations:
+          owl: AnnotationProperty, AnnotationAssertion
+        slot_uri: rdfs:label
+      definition:
+        annotations:
+          owl.axiom_annotation.slots:
+            tag: owl.axiom_annotation.slots
+            value: definition_source
+        slot_uri: IAO:0000115
+
+</code></pre>
+<p><strong>Input</strong>:</p>
+<pre><code class="language-yaml">-
+  id: x:a
+  label: foo
+  definition: a foo is a foo
+  definition_source:
+  - Me
+
+</code></pre>
+<p><strong>Generated axioms</strong>:</p>
+<pre><code>Prefix( xml: = &lt;http://www.w3.org/XML/1998/namespace&gt; )
+Prefix( rdf: = &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt; )
+Prefix( rdfs: = &lt;http://www.w3.org/2000/01/rdf-schema#&gt; )
+Prefix( xsd: = &lt;http://www.w3.org/2001/XMLSchema#&gt; )
+Prefix( owl: = &lt;http://www.w3.org/2002/07/owl#&gt; )
+Prefix( linkml: = &lt;https://w3id.org/linkml/&gt; )
+Prefix( test: = &lt;https://w3id.org/linkml/owl/tests/&gt; )
+Prefix( BFO: = &lt;http://purl.obolibrary.org/obo/BFO_&gt; )
+Prefix( IAO: = &lt;http://purl.obolibrary.org/obo/IAO_&gt; )
+Prefix( RO: = &lt;http://purl.obolibrary.org/obo/RO_&gt; )
+Prefix( PATO: = &lt;http://purl.obolibrary.org/obo/PATO_&gt; )
+Prefix( skos: = &lt;http://www.w3.org/2004/02/skos/core#&gt; )
+Prefix( dcterms: = &lt;http://purl.org/dc/terms/&gt; )
+Prefix( x: = &lt;http://example.org/&gt; )
+
+Ontology( &lt;https://w3id.org/linkml/owl/tests&gt;
+    AnnotationAssertion( rdfs:label x:a &quot;foo&quot; )
+    AnnotationAssertion(
+        Annotation( dcterms:source &quot;Me&quot; )
+        &lt;http://purl.obolibrary.org/obo/IAO_0000115&gt; x:a &quot;a foo is a foo&quot;
+    )
+)
+</code></pre>
+<h2 id="axiom-annotation-with-iri-val-on-annotation-axiom">Axiom annotation with IRI val on annotation axiom</h2>
+<p><strong>Description</strong>: <em>Axiom annotations (IRIs) can be driven by a separate slot</em></p>
+<p><strong>Schema</strong>:</p>
+<pre><code class="language-yaml">id: http//example.org/Axiom-annotation-with-IRI-val-on-annotation-axiom
+classes:
+  DefinitionWithIRIAxiomAnnotation:
+    is_a: NamedThing
+    attributes:
+      definition_source:
+        slot_uri: dcterms:source
+        multivalued: true
+        range: NamedThing
+      id:
+        identifier: true
+        range: uriorcurie
+      label:
+        annotations:
+          owl: AnnotationProperty, AnnotationAssertion
+        slot_uri: rdfs:label
+      definition:
+        annotations:
+          owl.axiom_annotation.slots:
+            tag: owl.axiom_annotation.slots
+            value: definition_source
+        slot_uri: IAO:0000115
+
+</code></pre>
+<p><strong>Input</strong>:</p>
+<pre><code class="language-yaml">-
+  id: x:a
+  label: foo
+  definition: a foo is a foo
+  definition_source:
+  - x:src
+
+</code></pre>
+<p><strong>Generated axioms</strong>:</p>
+<pre><code>Prefix( xml: = &lt;http://www.w3.org/XML/1998/namespace&gt; )
+Prefix( rdf: = &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt; )
+Prefix( rdfs: = &lt;http://www.w3.org/2000/01/rdf-schema#&gt; )
+Prefix( xsd: = &lt;http://www.w3.org/2001/XMLSchema#&gt; )
+Prefix( owl: = &lt;http://www.w3.org/2002/07/owl#&gt; )
+Prefix( linkml: = &lt;https://w3id.org/linkml/&gt; )
+Prefix( test: = &lt;https://w3id.org/linkml/owl/tests/&gt; )
+Prefix( BFO: = &lt;http://purl.obolibrary.org/obo/BFO_&gt; )
+Prefix( IAO: = &lt;http://purl.obolibrary.org/obo/IAO_&gt; )
+Prefix( RO: = &lt;http://purl.obolibrary.org/obo/RO_&gt; )
+Prefix( PATO: = &lt;http://purl.obolibrary.org/obo/PATO_&gt; )
+Prefix( skos: = &lt;http://www.w3.org/2004/02/skos/core#&gt; )
+Prefix( dcterms: = &lt;http://purl.org/dc/terms/&gt; )
+Prefix( x: = &lt;http://example.org/&gt; )
+
+Ontology( &lt;https://w3id.org/linkml/owl/tests&gt;
+    AnnotationAssertion( rdfs:label x:a &quot;foo&quot; )
+    AnnotationAssertion(
+        Annotation( dcterms:source x:src )
+        &lt;http://purl.obolibrary.org/obo/IAO_0000115&gt; x:a &quot;a foo is a foo&quot;
+    )
+)
+</code></pre>
+<h2 id="axiom-annotations-with-iri-val-on-annotation-axiom">Axiom annotations with IRI val on annotation axiom</h2>
+<p><strong>Description</strong>: <em>Multiple axiom annotations</em></p>
+<p><strong>Schema</strong>:</p>
+<pre><code class="language-yaml">id: http//example.org/Axiom-annotations-with-IRI-val-on-annotation-axiom
+classes:
+  DefinitionWithIRIAxiomAnnotation:
+    is_a: NamedThing
+    attributes:
+      definition_source:
+        slot_uri: dcterms:source
+        multivalued: true
+        range: NamedThing
+      id:
+        identifier: true
+        range: uriorcurie
+      label:
+        annotations:
+          owl: AnnotationProperty, AnnotationAssertion
+        slot_uri: rdfs:label
+      definition:
+        annotations:
+          owl.axiom_annotation.slots:
+            tag: owl.axiom_annotation.slots
+            value: definition_source
+        slot_uri: IAO:0000115
+
+</code></pre>
+<p><strong>Input</strong>:</p>
+<pre><code class="language-yaml">-
+  id: x:a
+  label: foo
+  definition: a foo is a foo
+  definition_source:
+  - x:src1
+  - x:src2
+
+</code></pre>
+<p><strong>Generated axioms</strong>:</p>
+<pre><code>Prefix( xml: = &lt;http://www.w3.org/XML/1998/namespace&gt; )
+Prefix( rdf: = &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt; )
+Prefix( rdfs: = &lt;http://www.w3.org/2000/01/rdf-schema#&gt; )
+Prefix( xsd: = &lt;http://www.w3.org/2001/XMLSchema#&gt; )
+Prefix( owl: = &lt;http://www.w3.org/2002/07/owl#&gt; )
+Prefix( linkml: = &lt;https://w3id.org/linkml/&gt; )
+Prefix( test: = &lt;https://w3id.org/linkml/owl/tests/&gt; )
+Prefix( BFO: = &lt;http://purl.obolibrary.org/obo/BFO_&gt; )
+Prefix( IAO: = &lt;http://purl.obolibrary.org/obo/IAO_&gt; )
+Prefix( RO: = &lt;http://purl.obolibrary.org/obo/RO_&gt; )
+Prefix( PATO: = &lt;http://purl.obolibrary.org/obo/PATO_&gt; )
+Prefix( skos: = &lt;http://www.w3.org/2004/02/skos/core#&gt; )
+Prefix( dcterms: = &lt;http://purl.org/dc/terms/&gt; )
+Prefix( x: = &lt;http://example.org/&gt; )
+
+Ontology( &lt;https://w3id.org/linkml/owl/tests&gt;
+    AnnotationAssertion( rdfs:label x:a &quot;foo&quot; )
+    AnnotationAssertion(
+        Annotation( dcterms:source x:src1 )
+        Annotation( dcterms:source x:src2 )
+        &lt;http://purl.obolibrary.org/obo/IAO_0000115&gt; x:a &quot;a foo is a foo&quot;
+    )
 )
 </code></pre>
 <h2 id="basic-subclassof-between-named-classes">Basic SubClassOf between named classes</h2>
@@ -340,9 +558,18 @@ Prefix( rdf: = &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt; )
 Prefix( rdfs: = &lt;http://www.w3.org/2000/01/rdf-schema#&gt; )
 Prefix( xsd: = &lt;http://www.w3.org/2001/XMLSchema#&gt; )
 Prefix( owl: = &lt;http://www.w3.org/2002/07/owl#&gt; )
+Prefix( linkml: = &lt;https://w3id.org/linkml/&gt; )
+Prefix( test: = &lt;https://w3id.org/linkml/owl/tests/&gt; )
+Prefix( BFO: = &lt;http://purl.obolibrary.org/obo/BFO_&gt; )
+Prefix( IAO: = &lt;http://purl.obolibrary.org/obo/IAO_&gt; )
+Prefix( RO: = &lt;http://purl.obolibrary.org/obo/RO_&gt; )
+Prefix( PATO: = &lt;http://purl.obolibrary.org/obo/PATO_&gt; )
+Prefix( skos: = &lt;http://www.w3.org/2004/02/skos/core#&gt; )
+Prefix( dcterms: = &lt;http://purl.org/dc/terms/&gt; )
+Prefix( x: = &lt;http://example.org/&gt; )
 
 Ontology( &lt;https://w3id.org/linkml/owl/tests&gt;
-    SubClassOf( &lt;http://example.org/a&gt; &lt;http://example.org/b&gt; )
+    SubClassOf( x:a x:b )
 )
 </code></pre>
 <h2 id="basic-direct-equivalence-between-named-classes">basic direct equivalence between named classes</h2>
@@ -386,11 +613,20 @@ Prefix( rdf: = &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt; )
 Prefix( rdfs: = &lt;http://www.w3.org/2000/01/rdf-schema#&gt; )
 Prefix( xsd: = &lt;http://www.w3.org/2001/XMLSchema#&gt; )
 Prefix( owl: = &lt;http://www.w3.org/2002/07/owl#&gt; )
+Prefix( linkml: = &lt;https://w3id.org/linkml/&gt; )
+Prefix( test: = &lt;https://w3id.org/linkml/owl/tests/&gt; )
+Prefix( BFO: = &lt;http://purl.obolibrary.org/obo/BFO_&gt; )
+Prefix( IAO: = &lt;http://purl.obolibrary.org/obo/IAO_&gt; )
+Prefix( RO: = &lt;http://purl.obolibrary.org/obo/RO_&gt; )
+Prefix( PATO: = &lt;http://purl.obolibrary.org/obo/PATO_&gt; )
+Prefix( skos: = &lt;http://www.w3.org/2004/02/skos/core#&gt; )
+Prefix( dcterms: = &lt;http://purl.org/dc/terms/&gt; )
+Prefix( x: = &lt;http://example.org/&gt; )
 
 Ontology( &lt;https://w3id.org/linkml/owl/tests&gt;
     EquivalentClasses(
-        &lt;http://example.org/a&gt;
-        &lt;http://example.org/b&gt;
+        x:a
+        x:b
     )
 )
 </code></pre>
@@ -436,9 +672,18 @@ Prefix( rdf: = &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt; )
 Prefix( rdfs: = &lt;http://www.w3.org/2000/01/rdf-schema#&gt; )
 Prefix( xsd: = &lt;http://www.w3.org/2001/XMLSchema#&gt; )
 Prefix( owl: = &lt;http://www.w3.org/2002/07/owl#&gt; )
+Prefix( linkml: = &lt;https://w3id.org/linkml/&gt; )
+Prefix( test: = &lt;https://w3id.org/linkml/owl/tests/&gt; )
+Prefix( BFO: = &lt;http://purl.obolibrary.org/obo/BFO_&gt; )
+Prefix( IAO: = &lt;http://purl.obolibrary.org/obo/IAO_&gt; )
+Prefix( RO: = &lt;http://purl.obolibrary.org/obo/RO_&gt; )
+Prefix( PATO: = &lt;http://purl.obolibrary.org/obo/PATO_&gt; )
+Prefix( skos: = &lt;http://www.w3.org/2004/02/skos/core#&gt; )
+Prefix( dcterms: = &lt;http://purl.org/dc/terms/&gt; )
+Prefix( x: = &lt;http://example.org/&gt; )
 
 Ontology( &lt;https://w3id.org/linkml/owl/tests&gt;
-    SubClassOf( &lt;http://example.org/a&gt;     ObjectSomeValuesFrom( &lt;http://purl.obolibrary.org/obo/BFO_0000050&gt; &lt;http://example.org/b&gt; ) )
+    SubClassOf( x:a     ObjectSomeValuesFrom( &lt;http://purl.obolibrary.org/obo/BFO_0000050&gt; x:b ) )
 )
 </code></pre>
 <h2 id="subclassof-allvaluesfrom">SubClassOf AllValuesFrom</h2>
@@ -482,9 +727,18 @@ Prefix( rdf: = &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt; )
 Prefix( rdfs: = &lt;http://www.w3.org/2000/01/rdf-schema#&gt; )
 Prefix( xsd: = &lt;http://www.w3.org/2001/XMLSchema#&gt; )
 Prefix( owl: = &lt;http://www.w3.org/2002/07/owl#&gt; )
+Prefix( linkml: = &lt;https://w3id.org/linkml/&gt; )
+Prefix( test: = &lt;https://w3id.org/linkml/owl/tests/&gt; )
+Prefix( BFO: = &lt;http://purl.obolibrary.org/obo/BFO_&gt; )
+Prefix( IAO: = &lt;http://purl.obolibrary.org/obo/IAO_&gt; )
+Prefix( RO: = &lt;http://purl.obolibrary.org/obo/RO_&gt; )
+Prefix( PATO: = &lt;http://purl.obolibrary.org/obo/PATO_&gt; )
+Prefix( skos: = &lt;http://www.w3.org/2004/02/skos/core#&gt; )
+Prefix( dcterms: = &lt;http://purl.org/dc/terms/&gt; )
+Prefix( x: = &lt;http://example.org/&gt; )
 
 Ontology( &lt;https://w3id.org/linkml/owl/tests&gt;
-    SubClassOf( &lt;http://example.org/a&gt;     ObjectAllValuesFrom( &lt;http://purl.obolibrary.org/obo/BFO_0000050&gt; &lt;http://example.org/b&gt; ) )
+    SubClassOf( x:a     ObjectAllValuesFrom( &lt;http://purl.obolibrary.org/obo/BFO_0000050&gt; x:b ) )
 )
 </code></pre>
 <h2 id="subclassof-somevaluesfrom-plus-label">SubClassOf SomeValuesFrom plus label</h2>
@@ -529,10 +783,19 @@ Prefix( rdf: = &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt; )
 Prefix( rdfs: = &lt;http://www.w3.org/2000/01/rdf-schema#&gt; )
 Prefix( xsd: = &lt;http://www.w3.org/2001/XMLSchema#&gt; )
 Prefix( owl: = &lt;http://www.w3.org/2002/07/owl#&gt; )
+Prefix( linkml: = &lt;https://w3id.org/linkml/&gt; )
+Prefix( test: = &lt;https://w3id.org/linkml/owl/tests/&gt; )
+Prefix( BFO: = &lt;http://purl.obolibrary.org/obo/BFO_&gt; )
+Prefix( IAO: = &lt;http://purl.obolibrary.org/obo/IAO_&gt; )
+Prefix( RO: = &lt;http://purl.obolibrary.org/obo/RO_&gt; )
+Prefix( PATO: = &lt;http://purl.obolibrary.org/obo/PATO_&gt; )
+Prefix( skos: = &lt;http://www.w3.org/2004/02/skos/core#&gt; )
+Prefix( dcterms: = &lt;http://purl.org/dc/terms/&gt; )
+Prefix( x: = &lt;http://example.org/&gt; )
 
 Ontology( &lt;https://w3id.org/linkml/owl/tests&gt;
-    AnnotationAssertion( rdfs:label &lt;http://example.org/a&gt; &quot;foo&quot; )
-    SubClassOf( &lt;http://example.org/a&gt;     ObjectSomeValuesFrom( &lt;http://purl.obolibrary.org/obo/BFO_0000050&gt; &lt;http://example.org/b&gt; ) )
+    AnnotationAssertion( rdfs:label x:a &quot;foo&quot; )
+    SubClassOf( x:a     ObjectSomeValuesFrom( &lt;http://purl.obolibrary.org/obo/BFO_0000050&gt; x:b ) )
 )
 </code></pre>
 <h2 id="subclassof-union">SubClassOf Union</h2>
@@ -578,11 +841,20 @@ Prefix( rdf: = &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt; )
 Prefix( rdfs: = &lt;http://www.w3.org/2000/01/rdf-schema#&gt; )
 Prefix( xsd: = &lt;http://www.w3.org/2001/XMLSchema#&gt; )
 Prefix( owl: = &lt;http://www.w3.org/2002/07/owl#&gt; )
+Prefix( linkml: = &lt;https://w3id.org/linkml/&gt; )
+Prefix( test: = &lt;https://w3id.org/linkml/owl/tests/&gt; )
+Prefix( BFO: = &lt;http://purl.obolibrary.org/obo/BFO_&gt; )
+Prefix( IAO: = &lt;http://purl.obolibrary.org/obo/IAO_&gt; )
+Prefix( RO: = &lt;http://purl.obolibrary.org/obo/RO_&gt; )
+Prefix( PATO: = &lt;http://purl.obolibrary.org/obo/PATO_&gt; )
+Prefix( skos: = &lt;http://www.w3.org/2004/02/skos/core#&gt; )
+Prefix( dcterms: = &lt;http://purl.org/dc/terms/&gt; )
+Prefix( x: = &lt;http://example.org/&gt; )
 
 Ontology( &lt;https://w3id.org/linkml/owl/tests&gt;
-    SubClassOf( &lt;http://example.org/a&gt;     ObjectUnionOf(
-        &lt;http://example.org/b&gt;
-        &lt;http://example.org/c&gt;
+    SubClassOf( x:a     ObjectUnionOf(
+        x:b
+        x:c
     ) )
 )
 </code></pre>
@@ -627,13 +899,22 @@ Prefix( rdf: = &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt; )
 Prefix( rdfs: = &lt;http://www.w3.org/2000/01/rdf-schema#&gt; )
 Prefix( xsd: = &lt;http://www.w3.org/2001/XMLSchema#&gt; )
 Prefix( owl: = &lt;http://www.w3.org/2002/07/owl#&gt; )
+Prefix( linkml: = &lt;https://w3id.org/linkml/&gt; )
+Prefix( test: = &lt;https://w3id.org/linkml/owl/tests/&gt; )
+Prefix( BFO: = &lt;http://purl.obolibrary.org/obo/BFO_&gt; )
+Prefix( IAO: = &lt;http://purl.obolibrary.org/obo/IAO_&gt; )
+Prefix( RO: = &lt;http://purl.obolibrary.org/obo/RO_&gt; )
+Prefix( PATO: = &lt;http://purl.obolibrary.org/obo/PATO_&gt; )
+Prefix( skos: = &lt;http://www.w3.org/2004/02/skos/core#&gt; )
+Prefix( dcterms: = &lt;http://purl.org/dc/terms/&gt; )
+Prefix( x: = &lt;http://example.org/&gt; )
 
 Ontology( &lt;https://w3id.org/linkml/owl/tests&gt;
     EquivalentClasses(
-        &lt;http://example.org/a&gt;
+        x:a
             ObjectUnionOf(
-        &lt;http://example.org/b&gt;
-        &lt;http://example.org/c&gt;
+        x:b
+        x:c
     )
     )
 )
@@ -680,13 +961,92 @@ Prefix( rdf: = &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt; )
 Prefix( rdfs: = &lt;http://www.w3.org/2000/01/rdf-schema#&gt; )
 Prefix( xsd: = &lt;http://www.w3.org/2001/XMLSchema#&gt; )
 Prefix( owl: = &lt;http://www.w3.org/2002/07/owl#&gt; )
+Prefix( linkml: = &lt;https://w3id.org/linkml/&gt; )
+Prefix( test: = &lt;https://w3id.org/linkml/owl/tests/&gt; )
+Prefix( BFO: = &lt;http://purl.obolibrary.org/obo/BFO_&gt; )
+Prefix( IAO: = &lt;http://purl.obolibrary.org/obo/IAO_&gt; )
+Prefix( RO: = &lt;http://purl.obolibrary.org/obo/RO_&gt; )
+Prefix( PATO: = &lt;http://purl.obolibrary.org/obo/PATO_&gt; )
+Prefix( skos: = &lt;http://www.w3.org/2004/02/skos/core#&gt; )
+Prefix( dcterms: = &lt;http://purl.org/dc/terms/&gt; )
+Prefix( x: = &lt;http://example.org/&gt; )
 
 Ontology( &lt;https://w3id.org/linkml/owl/tests&gt;
     EquivalentClasses(
-        &lt;http://example.org/a&gt;
+        x:a
             ObjectIntersectionOf(
-        &lt;http://example.org/b&gt;
-        &lt;http://example.org/c&gt;
+        x:b
+        x:c
+    )
+    )
+)
+</code></pre>
+<h2 id="equivalentto-intersectionof-with-axiom-annotation">EquivalentTo IntersectionOf with axiom annotation</h2>
+<p><strong>Description</strong>: <em>as above, with axiom annotation</em></p>
+<p><strong>Schema</strong>:</p>
+<pre><code class="language-yaml">id: http//example.org/EquivalentTo-IntersectionOf-with-axiom-annotation
+classes:
+  EquivIntersectionWithAxiomAnnotation:
+    is_a: NamedThing
+    attributes:
+      operands:
+        annotations:
+          owl: EquivalentClasses, IntersectionOf
+          owl.axiom_annotation.slots:
+            tag: owl.axiom_annotation.slots
+            value: logical_definition_source
+        multivalued: true
+        range: NamedThing
+        required: true
+      logical_definition_source:
+        slot_uri: dcterms:source
+        multivalued: true
+      id:
+        identifier: true
+        range: uriorcurie
+      label:
+        annotations:
+          owl: AnnotationProperty, AnnotationAssertion
+        slot_uri: rdfs:label
+      definition:
+        annotations:
+          owl: AnnotationProperty, AnnotationAssertion
+        slot_uri: IAO:0000115
+
+</code></pre>
+<p><strong>Input</strong>:</p>
+<pre><code class="language-yaml">-
+  id: x:a
+  operands:
+  - x:b
+  - x:c
+  logical_definition_source:
+  - Me
+
+</code></pre>
+<p><strong>Generated axioms</strong>:</p>
+<pre><code>Prefix( xml: = &lt;http://www.w3.org/XML/1998/namespace&gt; )
+Prefix( rdf: = &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt; )
+Prefix( rdfs: = &lt;http://www.w3.org/2000/01/rdf-schema#&gt; )
+Prefix( xsd: = &lt;http://www.w3.org/2001/XMLSchema#&gt; )
+Prefix( owl: = &lt;http://www.w3.org/2002/07/owl#&gt; )
+Prefix( linkml: = &lt;https://w3id.org/linkml/&gt; )
+Prefix( test: = &lt;https://w3id.org/linkml/owl/tests/&gt; )
+Prefix( BFO: = &lt;http://purl.obolibrary.org/obo/BFO_&gt; )
+Prefix( IAO: = &lt;http://purl.obolibrary.org/obo/IAO_&gt; )
+Prefix( RO: = &lt;http://purl.obolibrary.org/obo/RO_&gt; )
+Prefix( PATO: = &lt;http://purl.obolibrary.org/obo/PATO_&gt; )
+Prefix( skos: = &lt;http://www.w3.org/2004/02/skos/core#&gt; )
+Prefix( dcterms: = &lt;http://purl.org/dc/terms/&gt; )
+Prefix( x: = &lt;http://example.org/&gt; )
+
+Ontology( &lt;https://w3id.org/linkml/owl/tests&gt;
+    EquivalentClasses(
+        Annotation( dcterms:source &quot;Me&quot; )
+            x:a
+                ObjectIntersectionOf(
+        x:b
+        x:c
     )
     )
 )
@@ -750,14 +1110,23 @@ Prefix( rdf: = &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt; )
 Prefix( rdfs: = &lt;http://www.w3.org/2000/01/rdf-schema#&gt; )
 Prefix( xsd: = &lt;http://www.w3.org/2001/XMLSchema#&gt; )
 Prefix( owl: = &lt;http://www.w3.org/2002/07/owl#&gt; )
+Prefix( linkml: = &lt;https://w3id.org/linkml/&gt; )
+Prefix( test: = &lt;https://w3id.org/linkml/owl/tests/&gt; )
+Prefix( BFO: = &lt;http://purl.obolibrary.org/obo/BFO_&gt; )
+Prefix( IAO: = &lt;http://purl.obolibrary.org/obo/IAO_&gt; )
+Prefix( RO: = &lt;http://purl.obolibrary.org/obo/RO_&gt; )
+Prefix( PATO: = &lt;http://purl.obolibrary.org/obo/PATO_&gt; )
+Prefix( skos: = &lt;http://www.w3.org/2004/02/skos/core#&gt; )
+Prefix( dcterms: = &lt;http://purl.org/dc/terms/&gt; )
+Prefix( x: = &lt;http://example.org/&gt; )
 
 Ontology( &lt;https://w3id.org/linkml/owl/tests&gt;
     EquivalentClasses(
-        &lt;http://example.org/a&gt;
+        x:a
             ObjectIntersectionOf(
-        &lt;http://example.org/genus&gt;
-            ObjectSomeValuesFrom( &lt;http://purl.obolibrary.org/obo/BFO_0000050&gt; &lt;http://example.org/b&gt; )
-            ObjectSomeValuesFrom( &lt;http://purl.obolibrary.org/obo/BFO_0000050&gt; &lt;http://example.org/c&gt; )
+        x:genus
+            ObjectSomeValuesFrom( &lt;http://purl.obolibrary.org/obo/BFO_0000050&gt; x:b )
+            ObjectSomeValuesFrom( &lt;http://purl.obolibrary.org/obo/BFO_0000050&gt; x:c )
     )
     )
 )
@@ -823,14 +1192,141 @@ Prefix( rdf: = &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt; )
 Prefix( rdfs: = &lt;http://www.w3.org/2000/01/rdf-schema#&gt; )
 Prefix( xsd: = &lt;http://www.w3.org/2001/XMLSchema#&gt; )
 Prefix( owl: = &lt;http://www.w3.org/2002/07/owl#&gt; )
+Prefix( linkml: = &lt;https://w3id.org/linkml/&gt; )
+Prefix( test: = &lt;https://w3id.org/linkml/owl/tests/&gt; )
+Prefix( BFO: = &lt;http://purl.obolibrary.org/obo/BFO_&gt; )
+Prefix( IAO: = &lt;http://purl.obolibrary.org/obo/IAO_&gt; )
+Prefix( RO: = &lt;http://purl.obolibrary.org/obo/RO_&gt; )
+Prefix( PATO: = &lt;http://purl.obolibrary.org/obo/PATO_&gt; )
+Prefix( skos: = &lt;http://www.w3.org/2004/02/skos/core#&gt; )
+Prefix( dcterms: = &lt;http://purl.org/dc/terms/&gt; )
+Prefix( x: = &lt;http://example.org/&gt; )
 
 Ontology( &lt;https://w3id.org/linkml/owl/tests&gt;
-    SubClassOf( &lt;http://example.org/a&gt;     ObjectSomeValuesFrom( &lt;http://purl.obolibrary.org/obo/BFO_0000050&gt; &lt;http://example.org/c&gt; ) )
+    SubClassOf( x:a     ObjectSomeValuesFrom( &lt;http://purl.obolibrary.org/obo/BFO_0000050&gt; x:c ) )
     EquivalentClasses(
-        &lt;http://example.org/a&gt;
+        x:a
             ObjectIntersectionOf(
-        &lt;http://example.org/genus&gt;
-            ObjectSomeValuesFrom( &lt;http://purl.obolibrary.org/obo/BFO_0000050&gt; &lt;http://example.org/b&gt; )
+        x:genus
+            ObjectSomeValuesFrom( &lt;http://purl.obolibrary.org/obo/BFO_0000050&gt; x:b )
+    )
+    )
+)
+</code></pre>
+<h2 id="hidden-gci-with-axiom-annotations">Hidden GCI with axiom annotations</h2>
+<p><strong>Description</strong>: <em>End-to-end example with hidden GCIs and different axiom annotations</em></p>
+<p><strong>Schema</strong>:</p>
+<pre><code class="language-yaml">id: http//example.org/Hidden-GCI-with-axiom-annotations
+classes:
+  EquivGenusAndPartOfWithAxiomAnnotation:
+    is_a: NamedThing
+    attributes:
+      subclass_of:
+        annotations:
+          owl: EquivalentClasses, IntersectionOf
+          owl.axiom_annotation.slots:
+            tag: owl.axiom_annotation.slots
+            value: logical_definition_source
+        slot_uri: rdfs:subclass_of
+        multivalued: true
+        range: NamedThing
+        required: true
+      part_of:
+        annotations:
+          owl: EquivalentClasses, IntersectionOf, ObjectSomeValuesFrom
+          owl.axiom_annotation.slots:
+            tag: owl.axiom_annotation.slots
+            value: logical_definition_source
+        slot_uri: BFO:0000050
+        multivalued: true
+        range: NamedThing
+        required: true
+      other_part_ofs:
+        annotations:
+          owl: ObjectSomeValuesFrom
+          owl.axiom_annotation.slots:
+            tag: owl.axiom_annotation.slots
+            value: axiom_source
+        description: for hidden GCIs
+        slot_uri: BFO:0000050
+        multivalued: true
+        range: NamedThing
+        required: false
+      definition_source:
+        slot_uri: dcterms:source
+        multivalued: true
+      logical_definition_source:
+        slot_uri: dcterms:source
+        multivalued: true
+      axiom_source:
+        slot_uri: dcterms:source
+        multivalued: true
+      id:
+        identifier: true
+        range: uriorcurie
+      label:
+        annotations:
+          owl: AnnotationProperty, AnnotationAssertion
+        slot_uri: rdfs:label
+      definition:
+        annotations:
+          owl.axiom_annotation.slots:
+            tag: owl.axiom_annotation.slots
+            value: definition_source
+        slot_uri: IAO:0000115
+
+</code></pre>
+<p><strong>Input</strong>:</p>
+<pre><code class="language-yaml">-
+  id: x:a
+  label: a
+  definition: A X:genus that part_of some x:b
+  subclass_of:
+  - X:genus
+  part_of:
+  - x:b
+  other_part_ofs:
+  - x:c
+  definition_source:
+  - Auto
+  logical_definition_source:
+  - Me
+  axiom_source:
+  - Auto
+
+</code></pre>
+<p><strong>Generated axioms</strong>:</p>
+<pre><code>Prefix( xml: = &lt;http://www.w3.org/XML/1998/namespace&gt; )
+Prefix( rdf: = &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt; )
+Prefix( rdfs: = &lt;http://www.w3.org/2000/01/rdf-schema#&gt; )
+Prefix( xsd: = &lt;http://www.w3.org/2001/XMLSchema#&gt; )
+Prefix( owl: = &lt;http://www.w3.org/2002/07/owl#&gt; )
+Prefix( linkml: = &lt;https://w3id.org/linkml/&gt; )
+Prefix( test: = &lt;https://w3id.org/linkml/owl/tests/&gt; )
+Prefix( BFO: = &lt;http://purl.obolibrary.org/obo/BFO_&gt; )
+Prefix( IAO: = &lt;http://purl.obolibrary.org/obo/IAO_&gt; )
+Prefix( RO: = &lt;http://purl.obolibrary.org/obo/RO_&gt; )
+Prefix( PATO: = &lt;http://purl.obolibrary.org/obo/PATO_&gt; )
+Prefix( skos: = &lt;http://www.w3.org/2004/02/skos/core#&gt; )
+Prefix( dcterms: = &lt;http://purl.org/dc/terms/&gt; )
+Prefix( x: = &lt;http://example.org/&gt; )
+
+Ontology( &lt;https://w3id.org/linkml/owl/tests&gt;
+    AnnotationAssertion( rdfs:label x:a &quot;a&quot; )
+    AnnotationAssertion(
+        Annotation( dcterms:source &quot;Auto&quot; )
+        &lt;http://purl.obolibrary.org/obo/IAO_0000115&gt; x:a &quot;A X:genus that part_of some x:b&quot;
+    )
+    SubClassOf(
+        Annotation( dcterms:source &quot;Auto&quot; )
+        x:a     ObjectSomeValuesFrom( &lt;http://purl.obolibrary.org/obo/BFO_0000050&gt; x:c )
+    )
+    EquivalentClasses(
+        Annotation( dcterms:source &quot;Me&quot; )
+            x:a
+                ObjectIntersectionOf(
+        x:genus
+            ObjectSomeValuesFrom( &lt;http://purl.obolibrary.org/obo/BFO_0000050&gt; x:b )
     )
     )
 )
@@ -887,9 +1383,18 @@ Prefix( rdf: = &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt; )
 Prefix( rdfs: = &lt;http://www.w3.org/2000/01/rdf-schema#&gt; )
 Prefix( xsd: = &lt;http://www.w3.org/2001/XMLSchema#&gt; )
 Prefix( owl: = &lt;http://www.w3.org/2002/07/owl#&gt; )
+Prefix( linkml: = &lt;https://w3id.org/linkml/&gt; )
+Prefix( test: = &lt;https://w3id.org/linkml/owl/tests/&gt; )
+Prefix( BFO: = &lt;http://purl.obolibrary.org/obo/BFO_&gt; )
+Prefix( IAO: = &lt;http://purl.obolibrary.org/obo/IAO_&gt; )
+Prefix( RO: = &lt;http://purl.obolibrary.org/obo/RO_&gt; )
+Prefix( PATO: = &lt;http://purl.obolibrary.org/obo/PATO_&gt; )
+Prefix( skos: = &lt;http://www.w3.org/2004/02/skos/core#&gt; )
+Prefix( dcterms: = &lt;http://purl.org/dc/terms/&gt; )
+Prefix( x: = &lt;http://example.org/&gt; )
 
 Ontology( &lt;https://w3id.org/linkml/owl/tests&gt;
-    SubClassOf( x:a &lt;http://example.org/b&gt; )
+    SubClassOf( x:a x:b )
 )
 </code></pre>
 <h2 id="slot-value-level-jinja-template">slot-value level jinja template</h2>
@@ -944,6 +1449,15 @@ Prefix( rdf: = &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt; )
 Prefix( rdfs: = &lt;http://www.w3.org/2000/01/rdf-schema#&gt; )
 Prefix( xsd: = &lt;http://www.w3.org/2001/XMLSchema#&gt; )
 Prefix( owl: = &lt;http://www.w3.org/2002/07/owl#&gt; )
+Prefix( linkml: = &lt;https://w3id.org/linkml/&gt; )
+Prefix( test: = &lt;https://w3id.org/linkml/owl/tests/&gt; )
+Prefix( BFO: = &lt;http://purl.obolibrary.org/obo/BFO_&gt; )
+Prefix( IAO: = &lt;http://purl.obolibrary.org/obo/IAO_&gt; )
+Prefix( RO: = &lt;http://purl.obolibrary.org/obo/RO_&gt; )
+Prefix( PATO: = &lt;http://purl.obolibrary.org/obo/PATO_&gt; )
+Prefix( skos: = &lt;http://www.w3.org/2004/02/skos/core#&gt; )
+Prefix( dcterms: = &lt;http://purl.org/dc/terms/&gt; )
+Prefix( x: = &lt;http://example.org/&gt; )
 
 Ontology( &lt;https://w3id.org/linkml/owl/tests&gt;
     SubClassOf( x:a x:b )
@@ -1007,17 +1521,26 @@ Prefix( rdf: = &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt; )
 Prefix( rdfs: = &lt;http://www.w3.org/2000/01/rdf-schema#&gt; )
 Prefix( xsd: = &lt;http://www.w3.org/2001/XMLSchema#&gt; )
 Prefix( owl: = &lt;http://www.w3.org/2002/07/owl#&gt; )
+Prefix( linkml: = &lt;https://w3id.org/linkml/&gt; )
+Prefix( test: = &lt;https://w3id.org/linkml/owl/tests/&gt; )
+Prefix( BFO: = &lt;http://purl.obolibrary.org/obo/BFO_&gt; )
+Prefix( IAO: = &lt;http://purl.obolibrary.org/obo/IAO_&gt; )
+Prefix( RO: = &lt;http://purl.obolibrary.org/obo/RO_&gt; )
+Prefix( PATO: = &lt;http://purl.obolibrary.org/obo/PATO_&gt; )
+Prefix( skos: = &lt;http://www.w3.org/2004/02/skos/core#&gt; )
+Prefix( dcterms: = &lt;http://purl.org/dc/terms/&gt; )
+Prefix( x: = &lt;http://example.org/&gt; )
 
 Ontology( &lt;https://w3id.org/linkml/owl/tests&gt;
-    SubClassOf( x:collection     ObjectSomeValuesFrom( BFO:0000051     ObjectIntersectionOf(
+    SubClassOf( x:collection     ObjectSomeValuesFrom( &lt;http://purl.obolibrary.org/obo/BFO_0000051&gt;     ObjectIntersectionOf(
         x:p1
-            ObjectSomeValuesFrom( RO:0000053 &lt;http://purl.obolibrary.org/obo/PATO_0002354&gt; )
-            DataHasValue( PATO:0001555 &quot;2&quot;^^xsd:integer )
+            ObjectSomeValuesFrom( &lt;http://purl.obolibrary.org/obo/RO_0000053&gt; &lt;http://purl.obolibrary.org/obo/PATO_0002354&gt; )
+            DataHasValue( &lt;http://purl.obolibrary.org/obo/PATO_0001555&gt; &quot;2&quot;^^xsd:integer )
     ) ) )
-    SubClassOf( x:collection     ObjectSomeValuesFrom( BFO:0000051     ObjectIntersectionOf(
+    SubClassOf( x:collection     ObjectSomeValuesFrom( &lt;http://purl.obolibrary.org/obo/BFO_0000051&gt;     ObjectIntersectionOf(
         x:p2
-            ObjectSomeValuesFrom( RO:0000053 &lt;http://purl.obolibrary.org/obo/PATO_0002354&gt; )
-            DataHasValue( PATO:0001555 &quot;3&quot;^^xsd:integer )
+            ObjectSomeValuesFrom( &lt;http://purl.obolibrary.org/obo/RO_0000053&gt; &lt;http://purl.obolibrary.org/obo/PATO_0002354&gt; )
+            DataHasValue( &lt;http://purl.obolibrary.org/obo/PATO_0001555&gt; &quot;3&quot;^^xsd:integer )
     ) ) )
 )
 </code></pre>
@@ -1069,13 +1592,22 @@ Prefix( rdf: = &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt; )
 Prefix( rdfs: = &lt;http://www.w3.org/2000/01/rdf-schema#&gt; )
 Prefix( xsd: = &lt;http://www.w3.org/2001/XMLSchema#&gt; )
 Prefix( owl: = &lt;http://www.w3.org/2002/07/owl#&gt; )
+Prefix( linkml: = &lt;https://w3id.org/linkml/&gt; )
+Prefix( test: = &lt;https://w3id.org/linkml/owl/tests/&gt; )
+Prefix( BFO: = &lt;http://purl.obolibrary.org/obo/BFO_&gt; )
+Prefix( IAO: = &lt;http://purl.obolibrary.org/obo/IAO_&gt; )
+Prefix( RO: = &lt;http://purl.obolibrary.org/obo/RO_&gt; )
+Prefix( PATO: = &lt;http://purl.obolibrary.org/obo/PATO_&gt; )
+Prefix( skos: = &lt;http://www.w3.org/2004/02/skos/core#&gt; )
+Prefix( dcterms: = &lt;http://purl.org/dc/terms/&gt; )
+Prefix( x: = &lt;http://example.org/&gt; )
 
 Ontology( &lt;https://w3id.org/linkml/owl/tests&gt;
-    SubClassOf( x:collection     ObjectSomeValuesFrom( BFO:0000051 x:p1 ) )
-    SubClassOf( x:collection     ObjectSomeValuesFrom( BFO:0000051 x:p2 ) )
+    SubClassOf( x:collection     ObjectSomeValuesFrom( &lt;http://purl.obolibrary.org/obo/BFO_0000051&gt; x:p1 ) )
+    SubClassOf( x:collection     ObjectSomeValuesFrom( &lt;http://purl.obolibrary.org/obo/BFO_0000051&gt; x:p2 ) )
     DisjointClasses(
         Annotation( rdfs:label &quot;all parts of x:collection are part-disjoint&quot; )
-            ObjectSomeValuesFrom( BFO:0000050 x:p1 )     ObjectSomeValuesFrom( BFO:0000050 x:p2 )
+            ObjectSomeValuesFrom( &lt;http://purl.obolibrary.org/obo/BFO_0000050&gt; x:p1 )     ObjectSomeValuesFrom( &lt;http://purl.obolibrary.org/obo/BFO_0000050&gt; x:p2 )
     )
 )
 </code></pre>
@@ -1134,16 +1666,25 @@ Prefix( rdf: = &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt; )
 Prefix( rdfs: = &lt;http://www.w3.org/2000/01/rdf-schema#&gt; )
 Prefix( xsd: = &lt;http://www.w3.org/2001/XMLSchema#&gt; )
 Prefix( owl: = &lt;http://www.w3.org/2002/07/owl#&gt; )
+Prefix( linkml: = &lt;https://w3id.org/linkml/&gt; )
+Prefix( test: = &lt;https://w3id.org/linkml/owl/tests/&gt; )
+Prefix( BFO: = &lt;http://purl.obolibrary.org/obo/BFO_&gt; )
+Prefix( IAO: = &lt;http://purl.obolibrary.org/obo/IAO_&gt; )
+Prefix( RO: = &lt;http://purl.obolibrary.org/obo/RO_&gt; )
+Prefix( PATO: = &lt;http://purl.obolibrary.org/obo/PATO_&gt; )
+Prefix( skos: = &lt;http://www.w3.org/2004/02/skos/core#&gt; )
+Prefix( dcterms: = &lt;http://purl.org/dc/terms/&gt; )
+Prefix( x: = &lt;http://example.org/&gt; )
 
 Ontology( &lt;https://w3id.org/linkml/owl/tests&gt;
     EquivalentClasses(
         x:collection
             ObjectIntersectionOf(
-            ObjectSomeValuesFrom( BFO:0000051 x:dp1 )
-            ObjectSomeValuesFrom( BFO:0000051 x:dp2 )
-            ObjectAllValuesFrom( BFO:0000051     ObjectSomeValuesFrom( BFO:0000050     ObjectUnionOf(
-            ObjectSomeValuesFrom( BFO:0000051 x:dp1 )
-            ObjectSomeValuesFrom( BFO:0000051 x:dp2 )
+            ObjectSomeValuesFrom( &lt;http://purl.obolibrary.org/obo/BFO_0000051&gt; x:dp1 )
+            ObjectSomeValuesFrom( &lt;http://purl.obolibrary.org/obo/BFO_0000051&gt; x:dp2 )
+            ObjectAllValuesFrom( &lt;http://purl.obolibrary.org/obo/BFO_0000051&gt;     ObjectSomeValuesFrom( &lt;http://purl.obolibrary.org/obo/BFO_0000050&gt;     ObjectUnionOf(
+            ObjectSomeValuesFrom( &lt;http://purl.obolibrary.org/obo/BFO_0000051&gt; x:dp1 )
+            ObjectSomeValuesFrom( &lt;http://purl.obolibrary.org/obo/BFO_0000051&gt; x:dp2 )
     ) ) )
     )
     )

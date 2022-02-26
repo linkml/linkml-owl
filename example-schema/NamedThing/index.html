@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  <link rel="canonical" href="https://linkml.github.io/linkml-owl/example-schema/NamedThing/">
+  <link rel="shortcut icon" href="../../img/favicon.ico">
+  <title>Class: NamedThing - LinkML-OWL</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700" />
+
+  <link rel="stylesheet" href="../../css/theme.css" />
+  <link rel="stylesheet" href="../../css/theme_extra.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Class: NamedThing";
+    var mkdocs_page_input_path = "example-schema/NamedThing.md";
+    var mkdocs_page_url = "/linkml-owl/example-schema/NamedThing/";
+  </script>
+  
+  <script src="../../js/jquery-2.1.1.min.js" defer></script>
+  <script src="../../js/modernizr-2.8.3.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-2SYBSJVZ23"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-2SYBSJVZ23');
+  </script>
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+        <a href="../.." class="icon icon-home"> LinkML-OWL</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../..">Introduction</a>
+                    </li>
+                </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../../usage/">Usage</a>
+                    </li>
+                </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../../basics/">Basics</a>
+                    </li>
+                </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../../templates/">Templates</a>
+                    </li>
+                </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../../mappings/">Mappings</a>
+                    </li>
+                </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../../examples/">Examples</a>
+                    </li>
+                </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../../tips/">Tips</a>
+                    </li>
+                </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../../comparison/">Comparison with other frameworks</a>
+                    </li>
+                </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../../further-reading/">Further reading</a>
+                    </li>
+                </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../../specification/">Specification</a>
+                    </li>
+                </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../..">LinkML-OWL</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../..">Docs</a> &raquo;</li>
+    
+      
+    
+    <li>Class: NamedThing</li>
+    <li class="wy-breadcrumbs-aside">
+      
+        <a href="https://github.com/linkml/linkml-owl/edit/master/docs/example-schema/NamedThing.md"
+          class="icon icon-github"> Edit on GitHub</a>
+      
+    </li>
+  </ul>
+  
+  <hr/>
+</div>
+
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="class-namedthing">Class: NamedThing</h1>
+<p><em>generic grouping for classes, relations, individuals, and other named entities</em></p>
+<ul>
+<li><strong>NOTE</strong>: this is an abstract class and should not be instantiated directly</li>
+</ul>
+<p>URI: <a href="https://w3id.org/linkml/owl/tests/NamedThing">test:NamedThing</a></p>
+<h2 id="inheritance">Inheritance</h2>
+<ul>
+<li><a href="../Thing/">Thing</a><ul>
+<li><strong>NamedThing</strong><ul>
+<li><a href="../NamedThingWithMatches/">NamedThingWithMatches</a></li>
+<li><a href="../NamedThingWithMatchesAsLiterals/">NamedThingWithMatchesAsLiterals</a></li>
+<li><a href="../DefinitionWithAxiomAnnotation/">DefinitionWithAxiomAnnotation</a></li>
+<li><a href="../DefinitionWithIRIAxiomAnnotation/">DefinitionWithIRIAxiomAnnotation</a></li>
+<li><a href="../Child/">Child</a></li>
+<li><a href="../ChildOfAnon/">ChildOfAnon</a></li>
+<li><a href="../DirectEquivalent/">DirectEquivalent</a></li>
+<li><a href="../ChildOfUnion/">ChildOfUnion</a></li>
+<li><a href="../EquivUnion/">EquivUnion</a></li>
+<li><a href="../DisjointUnion/">DisjointUnion</a></li>
+<li><a href="../EquivIntersection/">EquivIntersection</a></li>
+<li><a href="../EquivIntersectionWithAxiomAnnotation/">EquivIntersectionWithAxiomAnnotation</a></li>
+<li><a href="../Part/">Part</a></li>
+<li><a href="../PartOnly/">PartOnly</a></li>
+<li><a href="../EquivGenusAndPartOf/">EquivGenusAndPartOf</a></li>
+<li><a href="../EquivGenusAndPartOfWithAxiomAnnotation/">EquivGenusAndPartOfWithAxiomAnnotation</a></li>
+<li><a href="../ClassTemplateExample1/">ClassTemplateExample1</a></li>
+<li><a href="../ClassTemplateExample2/">ClassTemplateExample2</a></li>
+<li><a href="../CollectionOfParts/">CollectionOfParts</a></li>
+<li><a href="../DefinedCollectionOfParts/">DefinedCollectionOfParts</a></li>
+<li><a href="../CollectionOfPartsWithCounts/">CollectionOfPartsWithCounts</a></li>
+<li><a href="../Phenotype/">Phenotype</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="slots">Slots</h2>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Range</th>
+<th>Cardinality</th>
+<th>Description</th>
+<th>OWL</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="../id/">id</a></td>
+<td><a href="uriorcurie.md">uriorcurie</a></td>
+<td>1..1</td>
+<td>the CURIE or IRI of the focal element</td>
+<td></td>
+</tr>
+<tr>
+<td><a href="../label/">label</a></td>
+<td>NONE</td>
+<td>0..1 <em>recommended</em></td>
+<td>a descriptive name/label for an element</td>
+<td>AnnotationProperty, AnnotationAssertion</td>
+</tr>
+<tr>
+<td><a href="../definition/">definition</a></td>
+<td>NONE</td>
+<td>0..1 <em>recommended</em></td>
+<td>a human-readable definition of an element</td>
+<td>AnnotationProperty, AnnotationAssertion</td>
+</tr>
+</tbody>
+</table>
+<h2 id="owl-interpretation">OWL Interpretation</h2>
+<h3 id="id">id</h3>
+<h3 id="label">label</h3>
+<ul>
+<li>
+<p><strong>Slot URI</strong>: rdfs:label</p>
+</li>
+<li>
+<p><strong>OWL interpretation</strong>: AnnotationProperty, AnnotationAssertion</p>
+</li>
+</ul>
+<h3 id="definition">definition</h3>
+<ul>
+<li>
+<p><strong>Slot URI</strong>: IAO:0000115</p>
+</li>
+<li>
+<p><strong>OWL interpretation</strong>: AnnotationProperty, AnnotationAssertion</p>
+</li>
+</ul>
+<h2 id="usages">Usages</h2>
+<table>
+<thead>
+<tr>
+<th>used by</th>
+<th>used in</th>
+<th>type</th>
+<th>used</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="../NamedThingWithMatches/">NamedThingWithMatches</a></td>
+<td><a href="../exactMatch/">exactMatch</a></td>
+<td>range</td>
+<td>NamedThing</td>
+</tr>
+<tr>
+<td><a href="../DefinitionWithIRIAxiomAnnotation/">DefinitionWithIRIAxiomAnnotation</a></td>
+<td><a href="../definition_source/">definition_source</a></td>
+<td>range</td>
+<td>NamedThing</td>
+</tr>
+<tr>
+<td><a href="../Child/">Child</a></td>
+<td><a href="../subclass_of/">subclass_of</a></td>
+<td>range</td>
+<td>NamedThing</td>
+</tr>
+<tr>
+<td><a href="../DirectEquivalent/">DirectEquivalent</a></td>
+<td><a href="../equivalent_to/">equivalent_to</a></td>
+<td>range</td>
+<td>NamedThing</td>
+</tr>
+<tr>
+<td><a href="../ChildOfUnion/">ChildOfUnion</a></td>
+<td><a href="../subclass_of/">subclass_of</a></td>
+<td>range</td>
+<td>NamedThing</td>
+</tr>
+<tr>
+<td><a href="../EquivUnion/">EquivUnion</a></td>
+<td><a href="../operands/">operands</a></td>
+<td>range</td>
+<td>NamedThing</td>
+</tr>
+<tr>
+<td><a href="../DisjointUnion/">DisjointUnion</a></td>
+<td><a href="../operands/">operands</a></td>
+<td>range</td>
+<td>NamedThing</td>
+</tr>
+<tr>
+<td><a href="../EquivIntersection/">EquivIntersection</a></td>
+<td><a href="../operands/">operands</a></td>
+<td>range</td>
+<td>NamedThing</td>
+</tr>
+<tr>
+<td><a href="../EquivIntersectionWithAxiomAnnotation/">EquivIntersectionWithAxiomAnnotation</a></td>
+<td><a href="../operands/">operands</a></td>
+<td>range</td>
+<td>NamedThing</td>
+</tr>
+<tr>
+<td><a href="../Part/">Part</a></td>
+<td><a href="../part_of/">part_of</a></td>
+<td>range</td>
+<td>NamedThing</td>
+</tr>
+<tr>
+<td><a href="../PartOnly/">PartOnly</a></td>
+<td><a href="../part_of/">part_of</a></td>
+<td>range</td>
+<td>NamedThing</td>
+</tr>
+<tr>
+<td><a href="../AnonPartOf/">AnonPartOf</a></td>
+<td><a href="../part_of/">part_of</a></td>
+<td>range</td>
+<td>NamedThing</td>
+</tr>
+<tr>
+<td><a href="../EquivGenusAndPartOf/">EquivGenusAndPartOf</a></td>
+<td><a href="../subclass_of/">subclass_of</a></td>
+<td>range</td>
+<td>NamedThing</td>
+</tr>
+<tr>
+<td><a href="../EquivGenusAndPartOf/">EquivGenusAndPartOf</a></td>
+<td><a href="../part_of/">part_of</a></td>
+<td>range</td>
+<td>NamedThing</td>
+</tr>
+<tr>
+<td><a href="../EquivGenusAndPartOf/">EquivGenusAndPartOf</a></td>
+<td><a href="../other_part_ofs/">other_part_ofs</a></td>
+<td>range</td>
+<td>NamedThing</td>
+</tr>
+<tr>
+<td><a href="../EquivGenusAndPartOfWithAxiomAnnotation/">EquivGenusAndPartOfWithAxiomAnnotation</a></td>
+<td><a href="../subclass_of/">subclass_of</a></td>
+<td>range</td>
+<td>NamedThing</td>
+</tr>
+<tr>
+<td><a href="../EquivGenusAndPartOfWithAxiomAnnotation/">EquivGenusAndPartOfWithAxiomAnnotation</a></td>
+<td><a href="../part_of/">part_of</a></td>
+<td>range</td>
+<td>NamedThing</td>
+</tr>
+<tr>
+<td><a href="../EquivGenusAndPartOfWithAxiomAnnotation/">EquivGenusAndPartOfWithAxiomAnnotation</a></td>
+<td><a href="../other_part_ofs/">other_part_ofs</a></td>
+<td>range</td>
+<td>NamedThing</td>
+</tr>
+<tr>
+<td><a href="../ClassTemplateExample1/">ClassTemplateExample1</a></td>
+<td><a href="../subclass_of/">subclass_of</a></td>
+<td>range</td>
+<td>NamedThing</td>
+</tr>
+<tr>
+<td><a href="../ClassTemplateExample1/">ClassTemplateExample1</a></td>
+<td><a href="../part_of/">part_of</a></td>
+<td>range</td>
+<td>NamedThing</td>
+</tr>
+<tr>
+<td><a href="../ClassTemplateExample1/">ClassTemplateExample1</a></td>
+<td><a href="../other_part_ofs/">other_part_ofs</a></td>
+<td>range</td>
+<td>NamedThing</td>
+</tr>
+<tr>
+<td><a href="../ClassTemplateExample2/">ClassTemplateExample2</a></td>
+<td><a href="../subclass_of/">subclass_of</a></td>
+<td>range</td>
+<td>NamedThing</td>
+</tr>
+<tr>
+<td><a href="../ClassTemplateExample2/">ClassTemplateExample2</a></td>
+<td><a href="../part_of/">part_of</a></td>
+<td>range</td>
+<td>NamedThing</td>
+</tr>
+<tr>
+<td><a href="../ClassTemplateExample2/">ClassTemplateExample2</a></td>
+<td><a href="../other_part_ofs/">other_part_ofs</a></td>
+<td>range</td>
+<td>NamedThing</td>
+</tr>
+<tr>
+<td><a href="../CollectionOfParts/">CollectionOfParts</a></td>
+<td><a href="../has_part/">has_part</a></td>
+<td>range</td>
+<td>NamedThing</td>
+</tr>
+<tr>
+<td><a href="../DefinedCollectionOfParts/">DefinedCollectionOfParts</a></td>
+<td><a href="../has_part/">has_part</a></td>
+<td>range</td>
+<td>NamedThing</td>
+</tr>
+<tr>
+<td><a href="../PartWithCounts/">PartWithCounts</a></td>
+<td><a href="../unit/">unit</a></td>
+<td>range</td>
+<td>NamedThing</td>
+</tr>
+</tbody>
+</table>
+<h2 id="identifier-and-mapping-information">Identifier and Mapping Information</h2>
+<h2 id="linkml-specification">LinkML Specification</h2>
+<!-- TODO: investigate https://stackoverflow.com/questions/37606292/how-to-create-tabbed-code-blocks-in-mkdocs-or-sphinx -->
+
+<h3 id="direct">Direct</h3>
+<details>
+
+<pre><code class="language-yaml">name: NamedThing
+description: generic grouping for classes, relations, individuals, and other named
+  entities
+from_schema: https://w3id.org/linkml/owl/tests
+is_a: Thing
+abstract: true
+slots:
+- id
+- label
+- definition
+
+</code></pre>
+
+</details>
+
+<h3 id="induced">Induced</h3>
+<details>
+
+<pre><code class="language-yaml">name: NamedThing
+description: generic grouping for classes, relations, individuals, and other named
+  entities
+from_schema: https://w3id.org/linkml/owl/tests
+is_a: Thing
+abstract: true
+attributes:
+  id:
+    name: id
+    description: the CURIE or IRI of the focal element
+    from_schema: https://w3id.org/linkml/owl/tests
+    identifier: true
+    alias: id
+    owner: NamedThing
+    range: uriorcurie
+    required: true
+  label:
+    name: label
+    annotations:
+      owl:
+        tag: owl
+        value: AnnotationProperty, AnnotationAssertion
+    description: a descriptive name/label for an element
+    from_schema: https://w3id.org/linkml/owl/tests
+    slot_uri: rdfs:label
+    alias: label
+    owner: NamedThing
+    recommended: true
+  definition:
+    name: definition
+    annotations:
+      owl:
+        tag: owl
+        value: AnnotationProperty, AnnotationAssertion
+    description: a human-readable definition of an element
+    from_schema: https://w3id.org/linkml/owl/tests
+    slot_uri: IAO:0000115
+    alias: definition
+    owner: NamedThing
+    recommended: true
+
+</code></pre>
+
+</details>
+              
+            </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/linkml/linkml-owl/" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
+    
+    
+  </span>
+</div>
+    <script>var base_url = '../..';</script>
+    <script src="../../js/theme_extra.js" defer></script>
+    <script src="../../js/theme.js" defer></script>
+      <script src="../../search/main.js" defer></script>
+    <script defer>
+        window.onload = function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        };
+    </script>
+
+</body>
+</html>
