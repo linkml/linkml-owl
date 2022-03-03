@@ -1,0 +1,159 @@
+{
+  "success": true,
+  "id": 0,
+  "start_row": 0,
+  "num_rows": 1,
+  "total_rows": 1,
+  "msg": [
+    {
+     "id": 4005,
+     "atlas_id": 3999,
+     "ontology_id": 7,
+     "acronym": "Br",
+     "name": "brain",
+     "color_hex_triplet": "A0A0A0",
+     "graph_order": 0,
+     "st_level": null,
+     "hemisphere_id": 3,
+     "parent_structure_id": null,
+     "children": [
+      {
+       "id": 4006,
+       "atlas_id": 4000,
+       "ontology_id": 7,
+       "acronym": "GM",
+       "name": "gray matter",
+       "color_hex_triplet": "787878",
+       "graph_order": 1,
+       "st_level": null,
+       "hemisphere_id": 3,
+       "parent_structure_id": 4005,
+       "children": [
+        {
+         "id": 4007,
+         "atlas_id": 4001,
+         "ontology_id": 7,
+         "acronym": "Tel",
+         "name": "telencephalon",
+         "color_hex_triplet": "D988A3",
+         "graph_order": 2,
+         "st_level": null,
+         "hemisphere_id": 3,
+         "parent_structure_id": 4006,
+         "children": [
+          {
+           "id": 4008,
+           "atlas_id": 4002,
+           "ontology_id": 7,
+           "acronym": "Cx",
+           "name": "cerebral cortex",
+           "color_hex_triplet": "EDA65F",
+           "graph_order": 3,
+           "st_level": null,
+           "hemisphere_id": 3,
+           "parent_structure_id": 4007,
+           "children": [
+            {
+             "id": 4009,
+             "atlas_id": 4003,
+             "ontology_id": 7,
+             "acronym": "FL",
+             "name": "frontal lobe",
+             "color_hex_triplet": "E8CD59",
+             "graph_order": 4,
+             "st_level": null,
+             "hemisphere_id": 3,
+             "parent_structure_id": 4008,
+             "children": [
+              {
+               "id": 4053,
+               "atlas_id": 4047,
+               "ontology_id": 7,
+               "acronym": "AOrG",
+               "name": "anterior orbital gyrus",
+               "color_hex_triplet": "E8BF59",
+               "graph_order": 5,
+               "st_level": null,
+               "hemisphere_id": 3,
+               "parent_structure_id": 4009,
+               "children": [
+                {
+                 "id": 4054,
+                 "atlas_id": 4048,
+                 "ontology_id": 7,
+                 "acronym": "AOrG",
+                 "name": "anterior orbital gyrus, left",
+                 "color_hex_triplet": "E8BF59",
+                 "graph_order": 6,
+                 "st_level": null,
+                 "hemisphere_id": 1,
+                 "parent_structure_id": 4053,
+                 "children": []
+                },
+                {
+                 "id": 4055,
+                 "atlas_id": 4049,
+                 "ontology_id": 7,
+                 "acronym": "AOrG",
+                 "name": "anterior orbital gyrus, right",
+                 "color_hex_triplet": "E8BF59",
+                 "graph_order": 7,
+                 "st_level": null,
+                 "hemisphere_id": 2,
+                 "parent_structure_id": 4053,
+                 "children": []
+                }
+               ]
+              },
+              {
+               "id": 4078,
+               "atlas_id": 4072,
+               "ontology_id": 7,
+               "acronym": "fro",
+               "name": "frontal operculum",
+               "color_hex_triplet": "E8C159",
+               "graph_order": 8,
+               "st_level": null,
+               "hemisphere_id": 3,
+               "parent_structure_id": 4009,
+               "children": [
+                {
+                 "id": 4079,
+                 "atlas_id": 4073,
+                 "ontology_id": 7,
+                 "acronym": "fro",
+                 "name": "frontal operculum, left",
+                 "color_hex_triplet": "E8C159",
+                 "graph_order": 9,
+                 "st_level": null,
+                 "hemisphere_id": 1,
+                 "parent_structure_id": 4078,
+                 "children": []
+                },
+                {
+                 "id": 4080,
+                 "atlas_id": 4074,
+                 "ontology_id": 7,
+                 "acronym": "fro",
+                 "name": "frontal operculum, right",
+                 "color_hex_triplet": "E8C159",
+                 "graph_order": 10,
+                 "st_level": null,
+                 "hemisphere_id": 2,
+                 "parent_structure_id": 4078,
+                 "children": []
+                }
+               ]
+              }
+             ]
+            }
+           ]
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    }
+  ]
+}
