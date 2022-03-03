@@ -118,7 +118,8 @@ class OWLDumper(Dumper):
     https://github.com/linkml/linkml/issues/267
     """
 
-    def to_ontology_document(self, element: Union[YAMLRoot, List[YAMLRoot]], schema: Union[SchemaDefinition, str], iri=None) -> OntologyDocument:
+    def to_ontology_document(self, element: Union[YAMLRoot, List[YAMLRoot]], schema: Union[SchemaDefinition, str],
+                             iri: str = None) -> OntologyDocument:
         """
         Recursively convert a linkml instance tree to an OWL Ontology Document
 
@@ -524,6 +525,13 @@ class OWLDumper(Dumper):
     def _get_IRI_str(self, id: str) -> str:
         if id is None:
             raise ValueError(f'Must pass an id')
+        if not isinstance(id, str):
+            # TODO: more principled casting
+            id = str(id)
+        if ':' not in id:
+            # TODO: https://github.com/linkml/linkml/issues/576
+            #id = f'{self.ontology.iri}#{id}'
+            id = f'{self.schema.default_prefix}:{id}'
         uri = self.schemaview.expand_curie(id)
         if uri:
             return uri
