@@ -1,0 +1,184 @@
+id: http://purl.obolibrary.org/obo/uberon/meta/allen
+name: AllenBrain-Metamodel
+description: |-
+  Metamodel for AllenBrain
+see_also:
+  - https://github.com/obophenotype/ABA_Uberon/issues/9
+imports:
+  - linkml:types
+prefixes:
+  linkml: https://w3id.org/linkml/
+  aba: http://purl.obolibrary.org/obo/uberon/meta/allen/
+  biolink: https://w3id.org/biolink/vocab/
+  UBERON: http://purl.obolibrary.org/obo/UBERON_
+  GO: http://purl.obolibrary.org/obo/GO_
+  BFO: http://purl.obolibrary.org/obo/BFO_
+  IAO: http://purl.obolibrary.org/obo/IAO_
+  RO: http://purl.obolibrary.org/obo/RO_
+  BSPO: http://purl.obolibrary.org/obo/BSPO_
+  PATO: http://purl.obolibrary.org/obo/PATO_
+  NCBITaxon: http://purl.obolibrary.org/obo/NCBITaxon_
+  edam: http://edamontology.org/
+  OIO: http://www.geneontology.org/formats/oboInOwl#
+  skos: http://www.w3.org/2004/02/skos/core#
+  dcterms: http://purl.org/dc/terms/
+
+default_prefix: aba
+default_curi_maps:
+  - semweb_context
+
+enums:
+
+  # This is here as a reference, not actually used
+  Laterality:
+    permissible_values:
+      IN_LEFT_SIDE_OF:
+        meaning: BSPO:0000120
+      IN_RIGHT_SIDE_OF:
+        meaning: BSPO:0000121
+
+  # This is not actually used
+  Hemisphere:
+    permissible_values:
+      1:
+        description: left hemisphere
+      2:
+        description: right hemisphere
+      3:
+        description: either hemisphere
+
+
+types:
+  label type:
+    typeof: string
+    description: >-
+      A string that provides a human-readable name for an entity
+
+  narrative text:
+    typeof: string
+    description: >-
+      A string that provides a human-readable description of something
+
+  HexColor:
+    typeof: string
+    pattern: "^[0-9A-F]{6}$"
+
+slots:
+
+  ## Annotations
+
+  id:
+    identifier: true
+    range: string
+  name:
+    slot_uri: rdfs:label
+    annotations:
+      owl: AnnotationProperty
+    range: label type
+    exact_mappings:
+      - skos:prefLabel
+  acronym:
+    slot_uri: OIO:hasRelatedSynonym
+    annotations:
+      owl: AnnotationProperty
+    range: label type
+    notes:
+      - the acronyms provided by Allen are not unique
+    exact_mappings:
+      - skos:relatedMatch
+  atlas_id:
+    range: integer
+    annotations:
+      owl: AnnotationProperty
+  ontology_id:
+    range: integer
+  hemisphere_id:
+    range: integer
+    #range: Hemisphere
+  graph_order:
+    range: integer
+  st_level:
+    annotations:
+      owl: Ignore
+  color_hex_triplet:
+    range: HexColor
+  parent_structure_id:
+    description: the part-parent of this region
+    range: BrainRegion
+    slot_uri: BFO:0000050
+    annotations:
+      owl: ObjectSomeValuesFrom
+  children:
+    description: the part-children of this region
+    range: BrainRegion
+    multivalued: true
+    inlined: true
+    inlined_as_list: true
+    annotations:
+      # TODO: figure out why generating this takes so long
+      # TODO: better solution for implicit prefixes
+      owl.template: |-
+        {% if hemisphere_id == 1 %}
+        SubClassOf(aba:{{id}} ObjectSomeValuesFrom(BSPO:0000120 UBERON:0000955))
+        {% endif %}
+        {% if hemisphere_id == 2 %}
+        SubClassOf(aba:{{id}} ObjectSomeValuesFrom(BSPO:0000121 UBERON:0000955))
+        {% endif %}
+        {% if hemisphere_id == 3 %}
+        AnnotationAssertion( rdfs:comment aba:{{id}} "this region class is not restricted to a particular hemisphere" )
+        {% endif %}
+        SubClassOf(aba:{{id}} UBERON:0002616)
+        {% if children|length > 1 %}
+        DisjointClasses(
+        {%- for c in children -%}
+          ObjectSomeValuesFrom( BFO:0000050 aba:{{c.id}} )
+        {% endfor -%}
+        )
+        EquivalentClasses(
+                ObjectSomeValuesFrom( BFO:0000050 aba:{{id}})
+                ObjectUnionOf(
+                {%- for c in children -%}
+                  ObjectSomeValuesFrom( BFO:0000050 aba:{{c.id}} )
+                {% endfor -%}
+                )
+        )
+        {% endif %}
+
+classes:
+
+  BrainRegion:
+    slots:
+      - id
+      - atlas_id
+      - ontology_id
+      - acronym
+      - name
+      - color_hex_triplet
+      - graph_order
+      - st_level
+      - hemisphere_id
+      - parent_structure_id
+      - children
+
+  Atlas:
+    annotations:
+      owl: Ontology  ## this is not implemented yet, so the Atlas object is essentially ignored
+    attributes:
+      id:
+        range: integer
+      success:
+        range: boolean
+        annotations:
+          owl: Ignore
+      start_row:
+        range: integer
+      num_rows:
+        range: integer
+      total_rows:
+        range: integer
+      msg:
+        range: BrainRegion
+        multivalued: true
+        inlined: true
+        inlined_as_list: true
+
