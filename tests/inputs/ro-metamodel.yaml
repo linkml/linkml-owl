@@ -24,14 +24,6 @@ default_prefix: rometa
 default_curi_maps:
   - semweb_context
 
-enums:
-  ActivationStateEnum:
-    permissible_values:
-      ACTIVATED:
-        meaning: PATO:0002354
-      INACTIVATED:
-        meaning: PATO:0002355
-
 types:
   label type:
     typeof: string
@@ -121,6 +113,9 @@ slots:
     slot_uri: rdfs:range
     multivalued: false
     range: Class
+  subproperty_of_pairwise_chain:
+    multivalued: true
+    range: PairwisePropertyChain
   operands:
     range: NamedThing
     multivalued: true
@@ -209,6 +204,24 @@ slots:
 
 classes:
 
+  Expression:
+    abstract: true
+
+  PropertyChain:
+    abstract: true
+    todos:
+      - implement for more than pairwise
+
+  PairwisePropertyChain:
+    description: a property chain of length 2
+    attributes:
+      first_member:
+        range: ObjectProperty
+        #required: true
+      last_member:
+        range: ObjectProperty
+        #required: true
+
   NamedThing:
     slots:
       - id
@@ -254,6 +267,7 @@ classes:
       - reflexive
       - locally_reflexive
       - has_transitive_form
+      - subproperty_of_pairwise_chain
     slot_usage:
       genus:
         range: ObjectProperty
@@ -277,6 +291,13 @@ classes:
         {% if inverse_of and not inverse_of.definition %}
         AnnotationAssertion( IAO:00000115 {{inverse_of.id}} "Inverse of {{id}} {{label}}")
         {% endif %}
+        {% for chain in subproperty_of_pairwise_chain %}
+            SubObjectPropertyOf(
+               ObjectPropertyChain({{chain.first_member}}
+                                   {{chain.last_member}})
+               {{id}})
+        {% endfor %}
+
   GroupingObjectProperty:
     is_a: ObjectProperty
     description: An ObjectProperty that has is used for grouping purposes and should not be instantiated
@@ -305,36 +326,78 @@ classes:
   DefinedObjectPropertyByDomain:
     is_a: DefinedObjectProperty
     description: An ObjectProperty that is defined by a parent property and a domain
+    slot_usage:
+      definition:
+        string_serialization: "A {genus} that holds between a {domain} and something"
     comments:
       - hidden GCI analogs not supported (i.e. adding a more specific domain that is used for classification)
     todos:
       - rolification
+    see_also:
+      - https://oborel.github.io/obo-relations/domain-or-range-specific-relation/
     annotations:
       swrl: |-
         {{genus}}(?s, ?o), {{domain}}(?s) -> {{id}}(?s, ?o)
   DefinedObjectPropertyByRange:
     is_a: DefinedObjectProperty
     description: An ObjectProperty that is defined by a parent property and a range
+    slot_usage:
+      definition:
+        string_serialization: "A {genus} that holds between something and a {range}"
     comments:
       - hidden GCI analogs not supported (i.e. adding a more specific domain that is used for classification)
     todos:
       - rolification
+    see_also:
+      - https://oborel.github.io/obo-relations/domain-or-range-specific-relation/
     annotations:
       swrl: |-
         {{genus}}(?s, ?o), {{range}}(?o) -> {{id}}(?s, ?o)
   DefinedObjectPropertyByDomainAndRange:
     is_a: DefinedObjectProperty
     description: An ObjectProperty that is defined by a parent property and a domain and a range
+    slot_usage:
+      definition:
+        string_serialization: "A {genus} that holds between a {domain} and a {range}"
     comments:
       - hidden GCI analogs not supported (i.e. adding a more specific domain that is used for classification)
     todos:
       - SWRL rule
       - rolification
+    see_also:
+      - https://oborel.github.io/obo-relations/domain-or-range-specific-relation/
+    annotations:
+      swrl: |-
+        {{genus}}(?s, ?o), {{range}}(?o), {{domain}}(?s) -> {{id}}(?s, ?o)
   DefinedObjectPropertyByChain:
     is_a: DefinedObjectProperty
-    description: An ObjectProperty that is defined by a chain of relations
+    description: An ObjectProperty that is defined by a chain of two properties
+    slot_usage:
+      subproperty_of_pairwise_chain:
+        required: true
+    examples:
+      - value: overlaps
+        description: overlaps is defined as the chain of has-part followed by part-of
+    todos:
+      - this currently assumes chains of length 2
+      - swrl
+  DefinedObjectPropertyByChainToReflexive:
+    is_a: DefinedObjectPropertyByChain
+    description: |-
+      An ObjectProperty that is defined by a chain of two properties where the second/final member
+      is used in a reflexive sense (regardless of whether it is actually reflexive). This has
+      the effect of making the chain relation a subproperty of the first member of the chain
+    slot_usage:
+      subproperty_of_pairwise_chain:
+        required: true
     examples:
       - value: characteristic of part of
+    todos:
+      - this currently assumes chains of length 2
+      - swrl
+    #annotations:
+    #  owl.template: |-
+    #     SubObjectPropertyOf( {{subproperty_of_pairwise_chain.last_member}} {{id}} )
   TransitiveForm:
     is_a: DefinedObjectProperty
     description: An ObjectProperty that is defined as the transitive form of another relation
@@ -363,7 +426,7 @@ classes:
     attributes:
       subject_to_process_property:
         range: ObjectProperty
-      object_to_process_property:
+      process_to_object_property:
         range: ObjectProperty
       uses_rolified_property:
         range: RolifiedObjectProperty
@@ -371,13 +434,20 @@ classes:
     see_also:
       - https://oborel.github.io/obo-relations/interaction-relations/
       - http://ontologydesignpatterns.org/wiki/Submissions:N-Ary_Relation_Pattern_%28OWL_2%29
+      - https://github.com/oborel/obo-relations/pull/522
+      - https://github.com/oborel/obo-relations/issues/521
     annotations:
       owl.template: |-
         SubObjectPropertyOf(
            ObjectPropertyChain({{subject_to_process_property}}
                                {{uses_rolified_property.id}}
-                               {{object_to_process_property}})
+                               {{process_to_object_property}})
            {{id}})
+      swrl: |-
+        {{subject_to_process_property}}(?s, ?proc),
+        {{uses_rolified_property.rolification_of}}(?proc),
+        {{process_to_object_property}}(?o, ?proc)
+        -> {{id}}(?s, ?o)
 
       
       

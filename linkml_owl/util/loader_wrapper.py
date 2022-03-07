@@ -72,8 +72,6 @@ def load_structured_file(source: Union[str, dict, TextIO], target_class: Union[s
     - if the schema specified a tree_root, this is used
     - if the objects contain a type designator, this is used
 
-    TODO: add tests
-    
     :param source: path or data or stream
     :param target_class: class to be instantiated, either name or the python class
     :param fmt: Any of yaml, json, csv, ttl. inferred if None and source is a file path

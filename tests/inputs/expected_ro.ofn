@@ -19,6 +19,34 @@ Prefix( skos: = <http://www.w3.org/2004/02/skos/core#> )
 Prefix( dcterms: = <http://purl.org/dc/terms/> )
 
 Ontology( <http://purl.obolibrary.org/obo/ro/ro-metamodel.yaml>
+    AnnotationAssertion( <http://purl.obolibrary.org/obo/IAO_00000115> <http://purl.obolibrary.org/obo/BFO_0000051> "Inverse of BFO:0000050 part of" )
+    Declaration( ObjectProperty( <http://purl.obolibrary.org/obo/BFO_0000050> ) )
+    AnnotationAssertion( rdfs:label <http://purl.obolibrary.org/obo/BFO_0000050> "part of" )
+    AnnotationAssertion( <http://purl.obolibrary.org/obo/IAO_0000115> <http://purl.obolibrary.org/obo/BFO_0000050> "a core relation that holds between a part and its whole" )
+    AnnotationAssertion( dcterms:conformsTo <http://purl.obolibrary.org/obo/BFO_0000050> rometa:ObjectProperty )
+    SubObjectPropertyOf( <http://purl.obolibrary.org/obo/BFO_0000050> <http://purl.obolibrary.org/obo/RO_0002131> )
+    Declaration( ObjectProperty( <http://purl.obolibrary.org/obo/BFO_0000051> ) )
+    AnnotationAssertion( rdfs:label <http://purl.obolibrary.org/obo/BFO_0000051> "has part" )
+    InverseObjectProperties( <http://purl.obolibrary.org/obo/BFO_0000050> <http://purl.obolibrary.org/obo/BFO_0000051> )
+    TransitiveObjectProperty( <http://purl.obolibrary.org/obo/BFO_0000050> )
+    SubObjectPropertyOf(     ObjectPropertyChain(
+        <http://purl.obolibrary.org/obo/BFO_0000051>
+        <http://purl.obolibrary.org/obo/BFO_0000050>
+    ) <http://purl.obolibrary.org/obo/RO_0002131> )
+    Declaration( ObjectProperty( <http://purl.obolibrary.org/obo/RO_0002131> ) )
+    AnnotationAssertion( rdfs:label <http://purl.obolibrary.org/obo/RO_0002131> "overlaps" )
+    AnnotationAssertion( <http://purl.obolibrary.org/obo/IAO_0000115> <http://purl.obolibrary.org/obo/RO_0002131> "a core relation that holds between a part and its whole" )
+    AnnotationAssertion( dcterms:conformsTo <http://purl.obolibrary.org/obo/RO_0002131> rometa:DefinedObjectPropertyByChain )
+    SubObjectPropertyOf( <http://purl.obolibrary.org/obo/RO_0002131> <http://purl.obolibrary.org/obo/RO_0002323> )
+    SymmetricObjectProperty( <http://purl.obolibrary.org/obo/RO_0002131> )
+    SubObjectPropertyOf(     ObjectPropertyChain(
+        <http://purl.obolibrary.org/obo/RO_0000052>
+        <http://purl.obolibrary.org/obo/BFO_0000050>
+    ) <http://purl.obolibrary.org/obo/RO_0002314> )
+    Declaration( ObjectProperty( <http://purl.obolibrary.org/obo/RO_0002314> ) )
+    AnnotationAssertion( rdfs:label <http://purl.obolibrary.org/obo/RO_0002314> "characteristic of part of" )
+    AnnotationAssertion( <http://purl.obolibrary.org/obo/IAO_0000115> <http://purl.obolibrary.org/obo/RO_0002314> "A relationship between a characteristic and an entity where the characteristic is of either the entity itself or a part of the entity" )
+    AnnotationAssertion( dcterms:conformsTo <http://purl.obolibrary.org/obo/RO_0002314> rometa:DefinedObjectPropertyByChain )
     AnnotationAssertion( <http://purl.obolibrary.org/obo/IAO_00000115> <http://purl.obolibrary.org/obo/RO_0002203> "Inverse of RO:0002202 develops from" )
     Declaration( ObjectProperty( <http://purl.obolibrary.org/obo/RO_0002202> ) )
     AnnotationAssertion( rdfs:label <http://purl.obolibrary.org/obo/RO_0002202> "develops from" )
@@ -31,16 +59,48 @@ Ontology( <http://purl.obolibrary.org/obo/ro/ro-metamodel.yaml>
     AnnotationAssertion( rdfs:label <http://purl.obolibrary.org/obo/RO_0002203> "develops into" )
     InverseObjectProperties( <http://purl.obolibrary.org/obo/RO_0002202> <http://purl.obolibrary.org/obo/RO_0002203> )
     TransitiveObjectProperty( <http://purl.obolibrary.org/obo/RO_0002202> )
+    AnnotationAssertion( <http://purl.obolibrary.org/obo/IAO_00000115> <http://purl.obolibrary.org/obo/RO_9999998> "Inverse of RO:0002012 occurrent part of" )
+    Declaration( ObjectProperty( <http://purl.obolibrary.org/obo/RO_0002012> ) )
+    AnnotationAssertion( rdfs:label <http://purl.obolibrary.org/obo/RO_0002012> "occurrent part of" )
+    AnnotationAssertion( dcterms:conformsTo <http://purl.obolibrary.org/obo/RO_0002012> rometa:DefinedObjectPropertyByDomainAndRange )
+    SubObjectPropertyOf( <http://purl.obolibrary.org/obo/RO_0002012> <http://purl.obolibrary.org/obo/BFO_0000050> )
+    ObjectPropertyDomain( <http://purl.obolibrary.org/obo/RO_0002012> <http://purl.obolibrary.org/obo/BFO_0000003> )
+    ObjectPropertyRange( <http://purl.obolibrary.org/obo/RO_0002012> <http://purl.obolibrary.org/obo/BFO_0000003> )
+    Declaration( ObjectProperty( <http://purl.obolibrary.org/obo/RO_9999998> ) )
+    AnnotationAssertion( rdfs:label <http://purl.obolibrary.org/obo/RO_9999998> "has occurrent part" )
+    InverseObjectProperties( <http://purl.obolibrary.org/obo/RO_0002012> <http://purl.obolibrary.org/obo/RO_9999998> )
     SubObjectPropertyOf(     ObjectPropertyChain(
         <http://purl.obolibrary.org/obo/RO_0002215>
         <http://purl.obolibrary.org/obo/RO_0002481>
         <http://purl.obolibrary.org/obo/RO_0002400>
     ) <http://purl.obolibrary.org/obo/RO_0002447> )
+    AnnotationAssertion( <http://purl.obolibrary.org/obo/IAO_00000115> <http://purl.obolibrary.org/obo/RO_9999999> "Inverse of RO:0002447 phosphorylates" )
     Declaration( ObjectProperty( <http://purl.obolibrary.org/obo/RO_0002447> ) )
     AnnotationAssertion( rdfs:label <http://purl.obolibrary.org/obo/RO_0002447> "phosphorylates" )
+    AnnotationAssertion( <http://purl.obolibrary.org/obo/IAO_0000115> <http://purl.obolibrary.org/obo/RO_0002447> "A molecularly-interacts-with relationship between two entities, where the subject catalyzes a kinase activity that takes the object as input" )
     AnnotationAssertion( dcterms:conformsTo <http://purl.obolibrary.org/obo/RO_0002447> rometa:ObjectPropertyDefinedByInteractionProcess )
     SubObjectPropertyOf( <http://purl.obolibrary.org/obo/RO_0002447> <http://purl.obolibrary.org/obo/RO_0002436> )
+    Declaration( ObjectProperty( <http://purl.obolibrary.org/obo/RO_9999999> ) )
+    AnnotationAssertion( rdfs:label <http://purl.obolibrary.org/obo/RO_9999999> "phosphorylated by" )
+    InverseObjectProperties( <http://purl.obolibrary.org/obo/RO_0002447> <http://purl.obolibrary.org/obo/RO_9999999> )
     SubClassOf( <http://purl.obolibrary.org/obo/GO_0016301>     ObjectHasSelf( <http://purl.obolibrary.org/obo/RO_0002481> ) )
     Declaration( ObjectProperty( <http://purl.obolibrary.org/obo/RO_0002481> ) )
     AnnotationAssertion( rdfs:label <http://purl.obolibrary.org/obo/RO_0002481> "is kinase activity" )
+    SubObjectPropertyOf(     ObjectPropertyChain(
+        <http://purl.obolibrary.org/obo/RO_0002215>
+        <http://purl.obolibrary.org/obo/RO_0018001>
+        <http://purl.obolibrary.org/obo/RO_0002400>
+    ) <http://purl.obolibrary.org/obo/RO_0018002> )
+    AnnotationAssertion( <http://purl.obolibrary.org/obo/IAO_00000115> <http://purl.obolibrary.org/obo/RO_0018003> "Inverse of RO:0018002 myristoylates" )
+    Declaration( ObjectProperty( <http://purl.obolibrary.org/obo/RO_0018002> ) )
+    AnnotationAssertion( rdfs:label <http://purl.obolibrary.org/obo/RO_0018002> "myristoylates" )
+    AnnotationAssertion( <http://purl.obolibrary.org/obo/IAO_0000115> <http://purl.obolibrary.org/obo/RO_0018002> "A molecularly-interacts-with relationship between two entities, where the subject catalyzes a myristoylation activity that takes the object as input" )
+    AnnotationAssertion( dcterms:conformsTo <http://purl.obolibrary.org/obo/RO_0018002> rometa:ObjectPropertyDefinedByInteractionProcess )
+    SubObjectPropertyOf( <http://purl.obolibrary.org/obo/RO_0018002> <http://purl.obolibrary.org/obo/RO_0002436> )
+    Declaration( ObjectProperty( <http://purl.obolibrary.org/obo/RO_0018003> ) )
+    AnnotationAssertion( rdfs:label <http://purl.obolibrary.org/obo/RO_0018003> "myristoylated by" )
+    InverseObjectProperties( <http://purl.obolibrary.org/obo/RO_0018002> <http://purl.obolibrary.org/obo/RO_0018003> )
+    SubClassOf( <http://purl.obolibrary.org/obo/GO_0019107>     ObjectHasSelf( <http://purl.obolibrary.org/obo/RO_0018001> ) )
+    Declaration( ObjectProperty( <http://purl.obolibrary.org/obo/RO_0018001> ) )
+    AnnotationAssertion( rdfs:label <http://purl.obolibrary.org/obo/RO_0018001> "is myristoyltransferase activity" )
 )

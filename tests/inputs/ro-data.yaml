@@ -1,3 +1,41 @@
+## basic example
+
+- id: BFO:0000050
+  conforms_to: ObjectProperty
+  label: part of
+  inverse_of:
+    id: BFO:0000051
+    label: has part
+  subproperty_of: RO:0002131 ## overlaps
+  definition: a core relation that holds between a part and its whole
+  transitive: true
+  locally_reflexive: true
+
+## chains
+
+- id: RO:0002131
+  conforms_to: DefinedObjectPropertyByChain
+  label: overlaps
+  subproperty_of: RO:0002323
+  definition: a core relation that holds between a part and its whole
+  symmetric: true
+  subproperty_of_pairwise_chain:
+    - first_member: BFO:0000051
+      last_member: BFO:0000050
+
+## chains to reflexive, see https://oborel.github.io/obo-relations/reflexivity/
+
+- id: RO:0002314
+  conforms_to: DefinedObjectPropertyByChain
+  #conforms_to: DefinedObjectPropertyByChainToReflexive ### TODO
+  label: characteristic of part of
+  definition: A relationship between a characteristic and an entity where the characteristic is of either the entity itself or a part of the entity
+  subproperty_of_pairwise_chain:
+    - first_member: RO:0000052
+      last_member: BFO:0000050
+
+## test for transitive form, e.g. develops-from is transitive form of directly-develops-from
+
 - id: RO:0002202
   conforms_to: TransitiveForm
   label: develops from
@@ -12,17 +50,55 @@
   domain: BFO:0000004
   range: BFO:0000004
   transitive: true
+
+## See https://github.com/oborel/obo-relations/pull/522
+
+- id: RO:0002012
+  conforms_to: DefinedObjectPropertyByDomainAndRange
+  label: occurrent part of
+  subproperty_of: BFO:0000050
+  inverse_of:
+    id: RO:9999998
+    label: has occurrent part
+  domain: BFO:0000003
+  range: BFO:0000003
+
+
+## https://github.com/oborel/obo-relations/pull/522
+
+# this one exists in RO
 - id: RO:0002447
   conforms_to: ObjectPropertyDefinedByInteractionProcess
   label: phosphorylates
-  subproperty_of: RO:0002436
-  #inverse_of:
-  #  id: TODO
-  #  label: phosphorylated by
+  definition: >-
+    A molecularly-interacts-with relationship between two entities,
+    where the subject catalyzes a kinase activity that takes the object as input
+  subproperty_of: RO:0002436  ## molecularly interacts with
+  inverse_of:
+    id: RO:9999999
+    label: phosphorylated by
   subject_to_process_property: RO:0002215  ## capable of
   uses_rolified_property:
     id: RO:0002481
     label: is kinase activity
     rolification_of: GO:0016301
-  object_to_process_property: RO:0002400   ## has direct input
+  process_to_object_property: RO:0002400   ## has direct input
+
+# new one proposed in https://github.com/oborel/obo-relations/pull/522
+- id: RO:0018002
+  conforms_to: ObjectPropertyDefinedByInteractionProcess
+  label: myristoylates
+  definition: >-
+    A molecularly-interacts-with relationship between two entities,
+    where the subject catalyzes a myristoylation activity that takes the object as input
+  subproperty_of: RO:0002436  ## molecularly interacts with
+  inverse_of:
+    id: RO:0018003
+    label: myristoylated by
+  subject_to_process_property: RO:0002215  ## capable of
+  uses_rolified_property:
+    id: RO:0018001
+    label: is myristoyltransferase activity
+    rolification_of: GO:0019107
+  process_to_object_property: RO:0002400   ## has direct input
 
