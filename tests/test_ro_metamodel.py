@@ -33,7 +33,7 @@ EXPECTED = os.path.join(INPUT_DIR, 'expected_ro.ofn')
 
 
 
-class TestROMetamodeel(unittest.TestCase):
+class TestROMetamodel(unittest.TestCase):
     """Relation Ontology test case."""
 
     def test_build_relation_ontology(self):
