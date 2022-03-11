@@ -63,6 +63,18 @@
   domain: BFO:0000003
   range: BFO:0000003
 
+- id: RO:0002104
+  conforms_to: DefinedTransitiveObjectPropertyByIntermediary
+  label: has plasma membrane part
+  definition: >-
+    A part-of relationship between two material entities where there is a plasma membrane intermediate,
+    such that the larger material entity has a plasma membrane as part, and the plasma membrane has the smaller entity
+    as part
+  genus: BFO:0000050
+  has_intermediary_of_type: GO:0005886
+  domain: CARO:0000006
+  range: CARO:0000006
+
 
 ## https://github.com/oborel/obo-relations/pull/522
 
@@ -70,6 +82,7 @@
 - id: RO:0002447
   conforms_to: ObjectPropertyDefinedByInteractionProcess
   label: phosphorylates
+  contributor: orcid:0000-0002-6601-2165
   definition: >-
     A molecularly-interacts-with relationship between two entities,
     where the subject catalyzes a kinase activity that takes the object as input

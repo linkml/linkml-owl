@@ -30,9 +30,6 @@ SCHEMA_IN = os.path.join(INPUT_DIR, 'allen-brain.yaml')
 DATA_IN = os.path.join(INPUT_DIR, 'allen-brain-hba-truncated.json')
 OWL_OUT = os.path.join(OUTPUT_DIR, 'allen-brain-hba.ofn')
 
-
-
-
 class TestAllenBrain(unittest.TestCase):
     """
     Allen Brain Ontology test case.

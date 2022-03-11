@@ -1,0 +1,330 @@
+id: http://www.co-ode.org/ontologies/pizza/2005/10/18/pizza.owl
+name: Pizza-Ontology-Metamodel
+prefixes:
+  pizza: http://www.co-ode.org/ontologies/pizza/2005/10/18/pizza.owl#
+  linkml: https://w3id.org/linkml/
+  skos: http://www.w3.org/2004/02/skos/core#
+  skosxl: http://www.w3.org/2008/05/skos-xl#
+  schema: http://schema.org/
+  bibo: http://purl.org/ontology/bibo/
+  swrl: http://www.w3.org/2003/11/swrl#
+  sh: https://w3id.org/shacl/
+  owl: http://www.w3.org/2002/07/owl#
+  prov: http://www.w3.org/ns/prov#
+default_prefix: pizza
+imports:
+  - linkml:types
+
+enums:
+  Spiciness:
+    permissible_values:
+      Mild:
+      Medium:
+      Hot:
+
+
+classes:
+
+  Named:
+    mixin: true
+    slots:
+      - id
+      - label
+      - altLabels
+      - structuredLabels
+      - definition
+      - conforms_to
+      - subClassOf
+  Instance:
+    mixin: true
+    slots:
+      - typeOf
+    annotations:
+      owl: Individual
+
+  Food:
+    annotations:
+      owl: Class
+
+  Pizza:
+    slots:
+      - hasBase
+      - hasToppings
+      - hasCountryOfOrigin
+      - typeOf   ## TODO
+    is_a: Food
+  NamedPizza:
+    slots:
+      - id
+    is_a: Pizza
+    mixins:
+      - Named
+    slot_usage:
+      #hasBase:
+      #  required: true
+      subClassOf:
+        range: NamedPizza
+      hasBase:
+        annotations:
+          owl: ObjectSomeValuesFrom
+      hasToppings:
+        annotations:
+          owl: ObjectSomeValuesFrom, Closed
+    annotations:
+      owl: Class
+  VariantPizza:
+    is_a: Pizza
+    mixins:
+      - Named
+    slots:
+      - variantOf
+      - hasSubstitutions
+    slot_usage:
+      variantOf:
+        range: NamedPizza
+  Substitution:
+    attributes:
+      swapsOut:
+        range: PizzaComponent
+      swapsIn:
+        range: PizzaComponent
+  PizzaComponent:
+    slots:
+      - hasBase
+      - hasToppings
+
+
+  PizzaBase:
+    is_a: Food
+    mixins:
+      - Named
+  PizzaTopping:
+    is_a: Food
+    mixins:
+      - Named
+  Country:
+    mixins:
+      - Named
+    annotations:
+      owl: Class
+    slots:
+      - typeOf
+    comments:
+      - A class that is equivalent to the set of individuals that are described in the
+        enumeration - ie Countries can only be either America, England, France, Germany
+        or Italy and nothing else. Note that these individuals have been asserted to
+        be allDifferent from each other.@en
+
+  StructuredLabel:
+    class_uri: skosxl:Label
+    attributes:
+      literalForm:
+      inLanguage:
+
+  # Grouping metaclasses
+  PizzaGroupingClass:
+    is_a: NamedPizza
+    description: Instances are grouping classes with both necessary and sufficient conditions
+    slots:
+      - genus
+    #slot_usage:
+    #  genus:
+    #    annotations:
+    #      owl: EquivalentClasses
+
+  PizzaByToppings:
+    is_a: PizzaGroupingClass
+    description: Instances are grouping classes defined by their toppings
+    slot_usage:
+      hasToppings:
+        annotations:
+          owl: EquivalentClasses, IntersectionOf, ObjectSomeValuesFrom
+      genus:
+        annotations:
+          owl: EquivalentClasses, IntersectionOf
+
+  PizzaByOrigin:
+    is_a: PizzaGroupingClass
+    description: Instances are grouping classes defined by their country of origin
+    slot_usage:
+      hasCountryOfOrigin:
+        annotations:
+          owl: EquivalentClasses, IntersectionOf, ObjectSomeValuesFrom
+      genus:
+        annotations:
+          owl: EquivalentClasses, IntersectionOf
+
+  PizzaOrder:
+    mixins:
+      - Named
+      - Instance
+    attributes:
+      hasParts:
+        singular_name: hasPart
+        range: PizzaCustomInstance
+        multivalued: true
+        annotations:
+          owl: ObjectPropertyAssertion
+    annotations:
+      owl: NamedIndividual
+
+  PizzaCustomInstance:
+    mixins:
+      - Instance
+    slots:
+      - hasToppings
+      - hasBase
+    slot_usage:
+      hasToppings:
+        annotations:
+          owl: ObjectPropertyAssertion
+      hasBase:
+        annotations:
+          owl: ObjectPropertyAssertion
+
+
+  OrderComponent:
+    mixins:
+      - Instance
+    attributes:
+      orderItem:
+        range: NamedPizza
+        annotations:
+          owl: ClassAssertion
+      orderMakeYourOwn:
+        range: PizzaCustomInstance
+        annotations:
+          owl: ObjectPropertyAssertion
+      quantity:
+        range: integer
+    annotations:
+      owl: Individual
+
+slots:
+  id:
+    identifier: true
+    range: uriorcurie
+  conforms_to:
+    designates_type: true
+    slot_uri: dcterms:conformsTo
+    range: string
+    annotations:
+      owl.fstring: |-
+        AnnotationAssertion( dcterms:conformsTo {id} pizza:{V} )
+  label:
+    slot_uri: rdfs:label
+    annotations:
+      owl: AnnotationAssertion
+  subClassOf:
+    slot_uri: rdfs:subClassOf
+    range: Named
+    annotations:
+      owl: SubClassOf
+  typeOf:
+    slot_uri: rdf:type
+    range: Named
+    annotations:
+      owl: ClassAssertion
+  genus:
+    #is_a: subClassOf
+    annotations:
+      owl: EquivalentClasses
+    range: Named
+  variantOf:
+    range: Named
+  hasBase:
+    slot_uri: pizza:hasBase
+    range: PizzaBase
+    is_a: hasIngredient
+    multivalued: true
+    #annotations:
+    #  owl: ObjectSomeValuesFrom
+    annotations:
+      owl: ObjectProperty
+  hasToppings:
+    singular_name: hasTopping
+    slot_uri: pizza:hasTopping
+    range: PizzaTopping
+    is_a: hasIngredient
+    comments:
+      - Note that hasTopping is inverse functional because isToppingOf is functional@en
+    multivalued: true
+    annotations:
+      owl: ObjectProperty
+    #annotations:
+    #  owl: ObjectSomeValuesFrom
+  hasCountryOfOrigin:
+    slot_uri: pizza:hasCountryOfOrigin
+    multivalued: true
+    annotations:
+      owl: ObjectHasValue, ObjectProperty
+  hasIngredient:
+    slot_uri: pizza:hasIngredient
+    range: Food
+    #transitive: true
+    comments:
+      - NB Transitive - the ingredients of ingredients are ingredients of the whole@en
+    multivalued: true
+    annotations:
+      owl: ObjectProperty
+  hasSpiciness:
+    slot_uri: pizza:hasSpiciness
+    range: Spiciness
+    comments:
+      - A property created to be used with the ValuePartition - Spiciness.@en
+    multivalued: true
+    #annotations:
+    #  owl: ObjectSomeValuesFrom
+    annotations:
+      owl: ObjectProperty
+  hasSubstitutions:
+    multivalued: true
+    range: Substitution
+    annotations:
+      owl: ObjectProperty
+  isBaseOf:
+    slot_uri: pizza:isBaseOf
+    is_a: isIngredientOf
+    multivalued: true
+  isIngredientOf:
+    slot_uri: pizza:isIngredientOf
+    comments:
+      - The inverse property tree to hasIngredient - all subproperties and attributes
+        of the properties should reflect those under hasIngredient.
+    multivalued: true
+  isToppingOf:
+    slot_uri: pizza:isToppingOf
+    is_a: isIngredientOf
+    comments:
+      - Any given instance of topping should only be added to a single pizza (no cheap
+        half-measures on our pizzas)
+    multivalued: true
+  description:
+    slot_uri: dc:description
+    multivalued: true
+  title:
+    slot_uri: dc:title
+    multivalued: true
+  contributor:
+    slot_uri: terms:contributor
+    multivalued: true
+  license:
+    slot_uri: terms:license
+    multivalued: true
+  provenance:
+    slot_uri: terms:provenance
+    multivalued: true
+  altLabels:
+    singular_name: altLabel
+    slot_uri: skos:altLabel
+    multivalued: true
+  structuredLabels:
+    singular_name: structuredLabel
+    slot_uri: skosxl:altLabel
+    multivalued: true
+  definition:
+    slot_uri: skos:definition
+    multivalued: true
+  prefLabel:
+    slot_uri: skos:prefLabel
+    multivalued: true

@@ -26,7 +26,8 @@ from funowl import OntologyDocument, Ontology, IRI, ObjectSomeValuesFrom, \
     Prefix, AnonymousIndividual, ObjectAllValuesFrom, EquivalentClasses, ObjectIntersectionOf, ClassExpression, Axiom, \
     ObjectProperty, Declaration, InverseObjectProperties, ObjectPropertyDomain, ObjectPropertyRange, \
     SubObjectPropertyOf, TransitiveObjectProperty, SymmetricObjectProperty, AsymmetricObjectProperty, \
-    ReflexiveObjectProperty, IrreflexiveObjectProperty, Annotation, ObjectMinCardinality
+    ReflexiveObjectProperty, IrreflexiveObjectProperty, Annotation, ObjectMinCardinality, ObjectHasValue, \
+    NamedIndividual
 
 from linkml_runtime.dumpers.dumper_root import Dumper
 from linkml_runtime.utils.yamlutils import YAMLRoot
@@ -214,7 +215,7 @@ class OWLDumper(Dumper):
             slot: SlotDefinition
             slot = self._lookup_slot(c, k)
             if slot is None:
-                raise ValueError(f'Lookup slot in {c.name} failed for {k}')
+                raise ValueError(f'Lookup slot in {c.name} failed for {k} // element={element}')
             if slot.identifier:
                 subj = URIRef(self._get_IRI_str(v))
         if subj is None:
@@ -222,6 +223,10 @@ class OWLDumper(Dumper):
         if ObjectProperty.__name__ in cls_interps:
             # TODO: make this generic for all declarations
             decl = Declaration(ObjectProperty(subj))
+            o.axioms.append(decl)
+        if NamedIndividual.__name__ in cls_interps:
+            # TODO: make this generic for all declarations
+            decl = Declaration(NamedIndividual(subj))
             o.axioms.append(decl)
         # iterate through all slot-value assignments for element;
         # generate axioms or add axioms to EntityAxiomIndex for each
@@ -280,6 +285,7 @@ class OWLDumper(Dumper):
             logging.debug(f'TR Vals={tr_vals}')
             parents = []  ## expressions that are the referents of the axioms to be generated
             is_class_logical_axiom = False
+            closure_axiom_parents = []
             for tr_val in tr_vals:
                 logging.debug(f'  TR_VAL = {tr_val}')
                 if tr_val is None:
@@ -312,6 +318,9 @@ class OWLDumper(Dumper):
                 if ObjectSomeValuesFrom.__name__ in interps:
                     parent = ObjectSomeValuesFrom(slot_uri, tr_val)
                     is_class_logical_axiom = True
+                elif ObjectHasValue.__name__ in interps:
+                    parent = ObjectHasValue(slot_uri, tr_val)
+                    is_class_logical_axiom = True
                 elif ObjectAllValuesFrom.__name__ in interps:
                     parent = ObjectAllValuesFrom(slot_uri, tr_val)
                     is_class_logical_axiom = True
@@ -322,12 +331,25 @@ class OWLDumper(Dumper):
                 elif EquivalentClasses.__name__ in interps:
                     is_class_logical_axiom = True
                 parents.append(parent)
+                if 'Closed' in interps:
+                    closure_axiom_parents.append(ObjectAllValuesFrom(slot_uri, tr_val))
+            if closure_axiom_parents:
+                if len(closure_axiom_parents) == 1:
+                    closure_axiom_parent_expr = closure_axiom_parents[0]
+                else:
+                    closure_axiom_parent_expr = ObjectUnionOf(*closure_axiom_parents)
+                self.add_axiom(SubClassOf(subj, closure_axiom_parent_expr), o, [])
+            #    eai.add_operands((0, SubClassOf.__name__, ObjectUnionOf.__name__), parents, axiom_annotations)
             axiom_type = None
             # TODO: make this more generic / less repetitive
             if SubClassOf.__name__ in interps:
                 axiom_type = SubClassOf
             elif SubObjectPropertyOf.__name__ in interps:
                 axiom_type = SubObjectPropertyOf
+            elif ClassAssertion.__name__ in interps:
+                axiom_type = ClassAssertion
+            elif ObjectPropertyAssertion.__name__ in interps:
+                axiom_type = ObjectPropertyAssertion
             elif EquivalentClasses.__name__ in interps:
                 axiom_type = EquivalentClasses
             elif InverseObjectProperties.__name__ in interps:
@@ -648,6 +670,7 @@ def cli(inputfile: str, schema: str, target_class, module, output, format, **arg
         python_module = compile_python(module)
     sv = SchemaView(schema)
     element = load_structured_file(inputfile, target_class=target_class, python_module=python_module, schemaview=sv, fmt=format)
+
     dumper = OWLDumper()
     doc = dumper.dumps(element, schemaview=sv)
     with open(output, 'w') as stream:

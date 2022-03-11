@@ -1,0 +1,78 @@
+id: http://www.co-ode.org/ontologies/pizza/2005/10/18/pizza.owl
+name: Pizza-Ontology-Metamodel
+prefixes:
+  pizza: http://www.co-ode.org/ontologies/pizza/2005/10/18/pizza.owl#
+  linkml: https://w3id.org/linkml/
+  dcterms: http://purl.org/dc/terms/
+default_curi_maps:
+    - semweb_context
+default_prefix: pizza
+imports:
+  - linkml:types
+
+classes:
+
+  ## ---
+  ## this class is introduced here
+  ## ---
+  NamedPizza:
+    annotations:
+      owl: Class
+    attributes:
+      ## ---
+      ## these attributes are the same as for PizzaTopping
+      ## ---
+      id:
+        identifier: true
+        range: uriorcurie
+      label:
+        annotations:
+          owl: AnnotationAssertion
+        slot_uri: rdfs:label
+      conforms_to:
+        annotations:
+          owl.fstring: AnnotationAssertion( dcterms:conformsTo {id} pizza:{V} )
+        slot_uri: dcterms:conformsTo
+        designates_type: true
+      subClassOf:
+        annotations:
+          owl: SubClassOf
+        slot_uri: rdfs:subClassOf
+        range: NamedPizza
+        
+      ## ---
+      ## this attribute is unique to NamedPizza
+      ## ---
+      hasToppings:
+        annotations:
+          owl: ObjectSomeValuesFrom
+        multivalued: true
+        range: PizzaTopping
+  ## ---
+  ## copied from part 1
+  ## ---
+  PizzaTopping:
+    attributes:
+      id:
+        identifier: true
+        range: uriorcurie
+      label:
+        annotations:
+          owl: AnnotationAssertion
+        slot_uri: rdfs:label
+      conforms_to:
+        annotations:
+          owl.fstring: AnnotationAssertion( dcterms:conformsTo {id} pizza:{V} )
+        slot_uri: dcterms:conformsTo
+        designates_type: true
+      subClassOf:
+        annotations:
+          owl: SubClassOf
+        slot_uri: rdfs:subClassOf
+      hasToppings:
+        singular_name: hasTopping
+        range: PizzaTopping
+        multivalued: true
+        annotations:
+          owl: ObjectSomeValuesFrom
+

@@ -29,13 +29,12 @@ classifiers = [
 linkml-data2owl = "linkml_owl.owl_dumper:cli"
 
 [tool.poetry.dependencies]
-python = "^3.7.1"
+python = "^3.8"
 
 click = "*"
 funowl = "^0.1.10"
 Jinja2 = "^3.0.3"
-linkml-runtime = "^1.1.26"
-linkml = "1.1.19"
+linkml = "^1.2.1"
 
 [tool.poetry.dev-dependencies]
 tox = "^3.24.5"

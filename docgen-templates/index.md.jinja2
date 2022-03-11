@@ -1,0 +1,30 @@
+# {{ schema.name }}
+
+{% if "logo" in schema.annotations %}
+![logo]({{ schema.annotations["logo"].value }})
+{% endif %}
+
+__Description__:  {{ schema.description }}
+
+URI: {{ schema.id }}
+
+## Templates and Classes
+
+|Template|Description|
+|---|---|
+{% for c in schema.classes.values() -%}
+{%- if not c.mixin and not c.abstract -%}
+| {{gen.link(c)}} | {{ c.description }} |
+{% endif -%}
+{% endfor %}
+
+## Template Slots
+
+| Name | Domain | Range | Cardinality | Description  | OWL |
+| ---  | --- | --- | --- | --- | --- |
+{% for s in schemaview.all_slots().values() -%}
+{%- if not s.mixin and not s.abstract -%}
+{%- set owl = s.annotations["owl"] -%}
+| {{gen.link(s)}} | {{gen.link(s.domain)}} | {{gen.link(s.range)}} | {{ gen.cardinality(s) }} | {{ s.description }}  | {% if owl %}{{ owl.value }}{% endif %} |
+{% endif -%}
+{% endfor %}

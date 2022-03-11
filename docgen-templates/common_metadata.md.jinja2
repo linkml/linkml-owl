@@ -1,0 +1,34 @@
+## Identifier and Mapping Information
+
+{% if element.id_prefixes %}
+### Valid ID Prefixes
+
+Instances of this class *should* have identifiers with one of the following prefixes:
+{% for p in element.id_prefixes %}
+* {{p}}
+{% endfor %}
+
+{% endif %}
+
+
+{% if element.annotations %}
+### Annotations
+
+| property | value |
+| --- | --- |
+{% for a in element.annotations -%}
+{% if a != "owl.template" %}
+| {{a}} | {{ element.annotations[a].value }} |
+{% endif %}
+{% endfor %}
+{% endif %}
+
+{% if element.examples %}
+### Examples
+
+| Example | Description |
+| --- | --- |
+{% for e in element.examples -%}
+| {{e.value}} | {{ e.description }} |
+{% endfor %}
+{% endif %}

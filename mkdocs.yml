@@ -4,15 +4,31 @@ theme:
   analytics:
     gtag: G-2SYBSJVZ23
 nav:
-  - Introduction: index.md
-  - Usage: usage.md
-  - Basics: basics.md
-  - Templates: templates.md
-  - Mappings: mappings.md
-  - Examples: examples.md
-  - Tips: tips.md
-  - Comparison with other frameworks: comparison.md
-  - Further reading: further-reading.md
-  - Specification: specification.md
+  - Introduction:
+      What is it?: index.md
+      Usage: usage.md
+      Basics: basics.md
+      Templates: templates.md
+  - Examples:
+      Showcase: examples.md
+  - Tutorial (in progress):
+      About: tutorial/index.md
+      Part 1: tutorial/pizza01.md
+      Part 2: tutorial/pizza02.md
+      Part 3: tutorial/pizza03.md
+      Part 4: tutorial/pizza04.md
+#      Part 5: tutorial/pizza05.md
+#      Part 6: tutorial/pizza06.md
+#      Part 7: tutorial/pizza07.md
+#      Part 8: tutorial/pizza08.md
+#      Part 9: tutorial/pizza09.md
+#      Part 10: tutorial/pizza10.md
+  - Futher Info:
+      Tips: tips.md
+      Comparison with other frameworks: comparison.md
+      Further reading: further-reading.md
+  - Reference:
+      Mappings: mappings.md
+      Specification: specification.md
 site_url: https://linkml.github.io/linkml-owl/
 repo_url: https://github.com/linkml/linkml-owl/

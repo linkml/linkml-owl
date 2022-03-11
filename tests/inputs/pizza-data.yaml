@@ -1,0 +1,119 @@
+# pizzas
+- id: pizza:Mushroom
+  conforms_to: NamedPizza
+  label: mushroom
+  altLabels:
+    - Mushroom Pizza
+  structuredLabels:
+    literalForm: Cogumela
+    inLanguage: pt
+  hasToppings:
+    - pizza:MozzarellaTopping
+    - pizza:MushroomTopping
+    - pizza:TomatoTopping
+- id: pizza:Margherita
+  conforms_to: NamedPizza
+  label: Margherita
+  hasToppings:
+    - pizza:MozzarellaTopping
+    - pizza:TomatoTopping
+- id: pizza:AmericanPizza
+  conforms_to: NamedPizza
+  label: american
+  altLabels:
+    - American Pizza
+  hasToppings:
+    - pizza:MozzarellaTopping
+    - pizza:PepperoniSausageTopping
+    - pizza:TomatoTopping
+  hasCountryOfOrigin:
+    - pizza:America
+
+- id: pizza:VeganMushroomPizza
+  conforms_to: VariantPizza
+  variantOf: pizza:MushroomPizza
+
+# pizza groupings
+- id: pizza:MeatyPizza
+  conforms_to: PizzaByToppings
+  genus: pizza:NamedPizza
+  hasToppings:
+    - pizza:MeatTopping
+- id: pizza:CheesyPizza
+  conforms_to: PizzaByToppings
+  genus: pizza:Pizza
+  hasToppings:
+    - pizza:CheeseTopping
+- id: pizza:RealItalianPizza
+  conforms_to: PizzaByOrigin
+  genus: pizza:Pizza
+  hasCountryOfOrigin:
+    - pizza:Italy
+
+
+# toppings
+- id: pizza:FishTopping
+  label: fish topping
+  conforms_to: PizzaTopping
+  subClassOf: pizza:PizzaTopping
+- id: pizza:MeatTopping
+  label: meat topping
+  conforms_to: PizzaTopping
+  subClassOf: pizza:PizzaTopping
+- id: pizza:VegetableTopping
+  label: vegetable topping
+  conforms_to: PizzaTopping
+  subClassOf: pizza:PizzaTopping
+- id: pizza:CheeseTopping
+  label: cheese topping
+  conforms_to: PizzaTopping
+  subClassOf: pizza:PizzaTopping
+
+- id: pizza:PepperoniSausageTopping
+  conforms_to: PizzaTopping
+  subClassOf: pizza:MeatTopping
+
+- id: pizza:AnchoviesTopping
+  conforms_to: PizzaTopping
+  subClassOf: pizza:FishTopping
+
+- id: pizza:ArtichokeTopping
+  conforms_to: PizzaTopping
+  subClassOf: pizza:VegetableTopping
+
+- id: pizza:MushroomTopping
+  conforms_to: PizzaTopping
+  subClassOf: pizza:VegetableTopping
+
+- id: pizza:MozzarellaTopping
+  conforms_to: PizzaTopping
+  subClassOf: pizza:CheeseTopping
+
+# bases
+- id: pizza:DeepPanBase
+  conforms_to: PizzaBase
+  subClassOf: pizza:PizzaBase
+- id: pizza:ThinAndCrispyBase
+  conforms_to: PizzaBase
+  subClassOf: pizza:PizzaBase
+
+# countries
+- id: pizza:America
+  conforms_to: Country
+  typeOf: pizza:Country
+  label: America
+
+# ABox: orders
+- id: pizza:MyOrder123
+  label: my order 123
+  conforms_to: PizzaOrder
+  typeOf: pizza:PizzaOrder
+  hasParts:
+    - typeOf: pizza:American
+    - typeOf: pizza:Pizza
+      hasToppings:
+        - pizza:MozzarellaTopping
+        - pizza:MushroomTopping
+        - pizza:PepperoniSausageTopping
+      hasBase:
+        - pizza:DeepPanBase

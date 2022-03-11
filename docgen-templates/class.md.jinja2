@@ -1,0 +1,145 @@
+# Class: {{ gen.name(element) }}
+
+{%- if header -%}
+{{header}}
+{%- endif -%}
+
+{% if element.description %}
+_{{ element.description }}_
+{% endif %}
+
+{% for c in element.comments %}
+* __Comment__: {{c}}
+{% endfor %}
+
+{% if "depiction" in schema.annotations %}
+## Depiction
+![logo]({{ schema.annotations["depiction"].value }})
+{% endif %}
+
+
+{% if element.abstract %}
+* __NOTE__: this is an abstract class and should not be instantiated directly
+{% endif %}
+{% if element.mixin %}
+* __NOTE__: this is a mixin class intended to be used in combination with other classes, and not used directly
+{% endif %}
+
+URI: {{ gen.uri_link(element) }}
+
+
+{% if schemaview.class_parents(element.name) or schemaview.class_children(element.name, mixins=False) %}
+
+## Inheritance
+
+{{ gen.inheritance_tree(element, mixins=True) }}
+{% else %}
+<!-- no inheritance hierarchy -->
+{% endif %}
+
+
+## Slots
+
+| Name | Range | Cardinality | Description  | OWL |
+| ---  | --- | --- | --- | --- |
+{% for s in schemaview.class_induced_slots(element.name) -%}
+{%- set owl = s.annotations["owl"] -%}
+| {{gen.link(s)}} | {{gen.link(s.range)}} | {{ gen.cardinality(s) }} | {{ s.description }}  | {% if owl %}{{ owl.value }}{% endif %} |
+{% endfor %}
+
+## OWL Interpretation
+
+{% if element.annotations["owl"] %}
+* OWL interpretation of instances of this class: {{element.annotations["owl"].value}}
+{% endif %}
+
+{% if element.annotations["owl.template"] %}
+
+Axiom Template for Class:
+
+```
+{{element.annotations["owl.template"].value}}
+```
+
+
+{% endif %}
+
+{% for s in schemaview.class_induced_slots(element.name) -%}
+
+### {{s.name}}
+
+{% if s.slot_uri %}
+* __Slot URI__: {{s.slot_uri}}
+{% endif %}
+
+{% if s.identifier %}
+* __OWL interpretation__: this is the main IRI of the entity that instantiates the template
+{% endif %}
+
+{% if s.annotations["owl"] %}
+* __OWL interpretation__: {{s.annotations["owl"].value}}
+{% endif %}
+
+{% if s.annotations["boolean_form_of"] %}
+* __OWL interpretation__: boolean form of {{s.annotations["boolean_form_of"].value}}
+{% endif %}
+
+{% if s.annotations["owl.axiom_annotations.slots"] %}
+* Axiom Annotations: {{s.annotations["owl.axiom_annotations.slots"].value}}
+{% endif %}
+
+{% if s.annotations["owl.template"] %}
+
+Axiom Template:
+
+```
+{{s.annotations["owl.template"].value}}
+```
+
+{% endif %}
+
+{% endfor %}
+
+
+## Usages
+
+{% if schemaview.usage_index().get(element.name) %}
+| used by | used in | type | used |
+| ---  | --- | --- | --- |
+{% for usage in schemaview.usage_index().get(element.name) -%}
+| {{gen.link(usage.used_by)}} | {{gen.link(usage.slot)}} | {{usage.metaslot}} | {{usage.used }} |
+{% endfor %}
+{% endif %}
+
+{% include "common_metadata.md.jinja2" %}
+
+
+{% if element.rules or element.classification_rules %}
+
+## Rules
+
+{% endif %}
+
+## LinkML Specification
+
+<!-- TODO: investigate https://stackoverflow.com/questions/37606292/how-to-create-tabbed-code-blocks-in-mkdocs-or-sphinx -->
+
+### Direct
+
+<details>
+```yaml
+{{gen.yaml(element)}}
+```
+</details>
+
+### Induced
+
+<details>
+```yaml
+{{gen.yaml(element, inferred=True)}}
+```
+</details>
+
+{%- if footer -%}
+{{footer}}
+{%- endif -%}
