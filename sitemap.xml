@@ -2,387 +2,437 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://linkml.github.io/linkml-owl/</loc>
-         <lastmod>2022-02-26</lastmod>
+         <lastmod>2022-03-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://linkml.github.io/linkml-owl/basics/</loc>
-         <lastmod>2022-02-26</lastmod>
+         <lastmod>2022-03-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://linkml.github.io/linkml-owl/comparison/</loc>
-         <lastmod>2022-02-26</lastmod>
+         <lastmod>2022-03-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://linkml.github.io/linkml-owl/examples/</loc>
-         <lastmod>2022-02-26</lastmod>
+         <lastmod>2022-03-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://linkml.github.io/linkml-owl/further-reading/</loc>
-         <lastmod>2022-02-26</lastmod>
+         <lastmod>2022-03-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://linkml.github.io/linkml-owl/mappings/</loc>
-         <lastmod>2022-02-26</lastmod>
+         <lastmod>2022-03-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://linkml.github.io/linkml-owl/specification/</loc>
-         <lastmod>2022-02-26</lastmod>
+         <lastmod>2022-03-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://linkml.github.io/linkml-owl/templates/</loc>
-         <lastmod>2022-02-26</lastmod>
+         <lastmod>2022-03-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://linkml.github.io/linkml-owl/tips/</loc>
-         <lastmod>2022-02-26</lastmod>
+         <lastmod>2022-03-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://linkml.github.io/linkml-owl/usage/</loc>
-         <lastmod>2022-02-26</lastmod>
+         <lastmod>2022-03-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://linkml.github.io/linkml-owl/example-schema/</loc>
-         <lastmod>2022-02-26</lastmod>
+         <lastmod>2022-03-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://linkml.github.io/linkml-owl/example-schema/ActivationStateEnum/</loc>
-         <lastmod>2022-02-26</lastmod>
+         <lastmod>2022-03-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://linkml.github.io/linkml-owl/example-schema/AnonPartOf/</loc>
-         <lastmod>2022-02-26</lastmod>
+         <lastmod>2022-03-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://linkml.github.io/linkml-owl/example-schema/Anonymous/</loc>
-         <lastmod>2022-02-26</lastmod>
+         <lastmod>2022-03-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://linkml.github.io/linkml-owl/example-schema/Boolean/</loc>
-         <lastmod>2022-02-26</lastmod>
+         <lastmod>2022-03-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://linkml.github.io/linkml-owl/example-schema/Child/</loc>
-         <lastmod>2022-02-26</lastmod>
+         <lastmod>2022-03-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://linkml.github.io/linkml-owl/example-schema/ChildOfAnon/</loc>
-         <lastmod>2022-02-26</lastmod>
+         <lastmod>2022-03-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://linkml.github.io/linkml-owl/example-schema/ChildOfUnion/</loc>
-         <lastmod>2022-02-26</lastmod>
+         <lastmod>2022-03-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://linkml.github.io/linkml-owl/example-schema/ClassTemplateExample1/</loc>
-         <lastmod>2022-02-26</lastmod>
+         <lastmod>2022-03-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://linkml.github.io/linkml-owl/example-schema/ClassTemplateExample2/</loc>
-         <lastmod>2022-02-26</lastmod>
+         <lastmod>2022-03-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://linkml.github.io/linkml-owl/example-schema/CollectionOfParts/</loc>
-         <lastmod>2022-02-26</lastmod>
+         <lastmod>2022-03-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://linkml.github.io/linkml-owl/example-schema/CollectionOfPartsWithCounts/</loc>
-         <lastmod>2022-02-26</lastmod>
+         <lastmod>2022-03-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://linkml.github.io/linkml-owl/example-schema/Date/</loc>
-         <lastmod>2022-02-26</lastmod>
+         <lastmod>2022-03-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://linkml.github.io/linkml-owl/example-schema/Datetime/</loc>
-         <lastmod>2022-02-26</lastmod>
+         <lastmod>2022-03-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://linkml.github.io/linkml-owl/example-schema/Decimal/</loc>
-         <lastmod>2022-02-26</lastmod>
+         <lastmod>2022-03-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://linkml.github.io/linkml-owl/example-schema/DefinedCollectionOfParts/</loc>
-         <lastmod>2022-02-26</lastmod>
+         <lastmod>2022-03-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://linkml.github.io/linkml-owl/example-schema/DefinitionWithAxiomAnnotation/</loc>
-         <lastmod>2022-02-26</lastmod>
+         <lastmod>2022-03-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://linkml.github.io/linkml-owl/example-schema/DefinitionWithIRIAxiomAnnotation/</loc>
-         <lastmod>2022-02-26</lastmod>
+         <lastmod>2022-03-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://linkml.github.io/linkml-owl/example-schema/DirectEquivalent/</loc>
-         <lastmod>2022-02-26</lastmod>
+         <lastmod>2022-03-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://linkml.github.io/linkml-owl/example-schema/DisjointUnion/</loc>
-         <lastmod>2022-02-26</lastmod>
+         <lastmod>2022-03-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://linkml.github.io/linkml-owl/example-schema/Double/</loc>
-         <lastmod>2022-02-26</lastmod>
+         <lastmod>2022-03-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://linkml.github.io/linkml-owl/example-schema/EquivGenusAndPartOf/</loc>
-         <lastmod>2022-02-26</lastmod>
+         <lastmod>2022-03-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://linkml.github.io/linkml-owl/example-schema/EquivGenusAndPartOfWithAxiomAnnotation/</loc>
-         <lastmod>2022-02-26</lastmod>
+         <lastmod>2022-03-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://linkml.github.io/linkml-owl/example-schema/EquivIntersection/</loc>
-         <lastmod>2022-02-26</lastmod>
+         <lastmod>2022-03-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://linkml.github.io/linkml-owl/example-schema/EquivIntersectionWithAxiomAnnotation/</loc>
-         <lastmod>2022-02-26</lastmod>
+         <lastmod>2022-03-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://linkml.github.io/linkml-owl/example-schema/EquivUnion/</loc>
-         <lastmod>2022-02-26</lastmod>
+         <lastmod>2022-03-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://linkml.github.io/linkml-owl/example-schema/Float/</loc>
-         <lastmod>2022-02-26</lastmod>
+         <lastmod>2022-03-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://linkml.github.io/linkml-owl/example-schema/Integer/</loc>
-         <lastmod>2022-02-26</lastmod>
+         <lastmod>2022-03-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://linkml.github.io/linkml-owl/example-schema/NamedThing/</loc>
-         <lastmod>2022-02-26</lastmod>
+         <lastmod>2022-03-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://linkml.github.io/linkml-owl/example-schema/NamedThingWithMatches/</loc>
-         <lastmod>2022-02-26</lastmod>
+         <lastmod>2022-03-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://linkml.github.io/linkml-owl/example-schema/NamedThingWithMatchesAsLiterals/</loc>
-         <lastmod>2022-02-26</lastmod>
+         <lastmod>2022-03-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://linkml.github.io/linkml-owl/example-schema/Ncname/</loc>
-         <lastmod>2022-02-26</lastmod>
+         <lastmod>2022-03-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://linkml.github.io/linkml-owl/example-schema/Nodeidentifier/</loc>
-         <lastmod>2022-02-26</lastmod>
+         <lastmod>2022-03-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://linkml.github.io/linkml-owl/example-schema/Objectidentifier/</loc>
-         <lastmod>2022-02-26</lastmod>
+         <lastmod>2022-03-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://linkml.github.io/linkml-owl/example-schema/OwlTest/</loc>
-         <lastmod>2022-02-26</lastmod>
+         <lastmod>2022-03-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://linkml.github.io/linkml-owl/example-schema/Part/</loc>
-         <lastmod>2022-02-26</lastmod>
+         <lastmod>2022-03-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://linkml.github.io/linkml-owl/example-schema/PartOnly/</loc>
-         <lastmod>2022-02-26</lastmod>
+         <lastmod>2022-03-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://linkml.github.io/linkml-owl/example-schema/PartWithCounts/</loc>
-         <lastmod>2022-02-26</lastmod>
+         <lastmod>2022-03-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://linkml.github.io/linkml-owl/example-schema/Phenotype/</loc>
-         <lastmod>2022-02-26</lastmod>
+         <lastmod>2022-03-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://linkml.github.io/linkml-owl/example-schema/SizeTriad/</loc>
-         <lastmod>2022-02-26</lastmod>
+         <lastmod>2022-03-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://linkml.github.io/linkml-owl/example-schema/String/</loc>
-         <lastmod>2022-02-26</lastmod>
+         <lastmod>2022-03-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://linkml.github.io/linkml-owl/example-schema/Thing/</loc>
-         <lastmod>2022-02-26</lastmod>
+         <lastmod>2022-03-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://linkml.github.io/linkml-owl/example-schema/Time/</loc>
-         <lastmod>2022-02-26</lastmod>
+         <lastmod>2022-03-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://linkml.github.io/linkml-owl/example-schema/Uri/</loc>
-         <lastmod>2022-02-26</lastmod>
+         <lastmod>2022-03-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://linkml.github.io/linkml-owl/example-schema/Uriorcurie/</loc>
-         <lastmod>2022-02-26</lastmod>
+         <lastmod>2022-03-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://linkml.github.io/linkml-owl/example-schema/abnormal/</loc>
-         <lastmod>2022-02-26</lastmod>
+         <lastmod>2022-03-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://linkml.github.io/linkml-owl/example-schema/axiom_source/</loc>
-         <lastmod>2022-02-26</lastmod>
+         <lastmod>2022-03-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://linkml.github.io/linkml-owl/example-schema/count/</loc>
-         <lastmod>2022-02-26</lastmod>
+         <lastmod>2022-03-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://linkml.github.io/linkml-owl/example-schema/decreased/</loc>
-         <lastmod>2022-02-26</lastmod>
+         <lastmod>2022-03-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://linkml.github.io/linkml-owl/example-schema/definition/</loc>
-         <lastmod>2022-02-26</lastmod>
+         <lastmod>2022-03-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://linkml.github.io/linkml-owl/example-schema/definition_source/</loc>
-         <lastmod>2022-02-26</lastmod>
+         <lastmod>2022-03-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://linkml.github.io/linkml-owl/example-schema/equivalent_to/</loc>
-         <lastmod>2022-02-26</lastmod>
+         <lastmod>2022-03-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://linkml.github.io/linkml-owl/example-schema/exactMatch/</loc>
-         <lastmod>2022-02-26</lastmod>
+         <lastmod>2022-03-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://linkml.github.io/linkml-owl/example-schema/has_part/</loc>
-         <lastmod>2022-02-26</lastmod>
+         <lastmod>2022-03-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://linkml.github.io/linkml-owl/example-schema/id/</loc>
-         <lastmod>2022-02-26</lastmod>
+         <lastmod>2022-03-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://linkml.github.io/linkml-owl/example-schema/increased/</loc>
-         <lastmod>2022-02-26</lastmod>
+         <lastmod>2022-03-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://linkml.github.io/linkml-owl/example-schema/label/</loc>
-         <lastmod>2022-02-26</lastmod>
+         <lastmod>2022-03-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://linkml.github.io/linkml-owl/example-schema/logical_definition_source/</loc>
-         <lastmod>2022-02-26</lastmod>
+         <lastmod>2022-03-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://linkml.github.io/linkml-owl/example-schema/operands/</loc>
-         <lastmod>2022-02-26</lastmod>
+         <lastmod>2022-03-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://linkml.github.io/linkml-owl/example-schema/other_part_ofs/</loc>
-         <lastmod>2022-02-26</lastmod>
+         <lastmod>2022-03-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://linkml.github.io/linkml-owl/example-schema/part_of/</loc>
-         <lastmod>2022-02-26</lastmod>
+         <lastmod>2022-03-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://linkml.github.io/linkml-owl/example-schema/source/</loc>
-         <lastmod>2022-02-26</lastmod>
+         <lastmod>2022-03-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://linkml.github.io/linkml-owl/example-schema/state/</loc>
-         <lastmod>2022-02-26</lastmod>
+         <lastmod>2022-03-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://linkml.github.io/linkml-owl/example-schema/subclass_of/</loc>
-         <lastmod>2022-02-26</lastmod>
+         <lastmod>2022-03-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://linkml.github.io/linkml-owl/example-schema/subphenotype/</loc>
-         <lastmod>2022-02-26</lastmod>
+         <lastmod>2022-03-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://linkml.github.io/linkml-owl/example-schema/types/</loc>
-         <lastmod>2022-02-26</lastmod>
+         <lastmod>2022-03-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://linkml.github.io/linkml-owl/example-schema/unit/</loc>
-         <lastmod>2022-02-26</lastmod>
+         <lastmod>2022-03-11</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://linkml.github.io/linkml-owl/tutorial/</loc>
+         <lastmod>2022-03-11</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://linkml.github.io/linkml-owl/tutorial/pizza01/</loc>
+         <lastmod>2022-03-11</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://linkml.github.io/linkml-owl/tutorial/pizza02/</loc>
+         <lastmod>2022-03-11</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://linkml.github.io/linkml-owl/tutorial/pizza03/</loc>
+         <lastmod>2022-03-11</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://linkml.github.io/linkml-owl/tutorial/pizza04/</loc>
+         <lastmod>2022-03-11</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://linkml.github.io/linkml-owl/tutorial/pizza05/</loc>
+         <lastmod>2022-03-11</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://linkml.github.io/linkml-owl/tutorial/pizza06/</loc>
+         <lastmod>2022-03-11</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://linkml.github.io/linkml-owl/tutorial/pizza07/</loc>
+         <lastmod>2022-03-11</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://linkml.github.io/linkml-owl/tutorial/pizza08/</loc>
+         <lastmod>2022-03-11</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://linkml.github.io/linkml-owl/tutorial/pizza09/</loc>
+         <lastmod>2022-03-11</lastmod>
          <changefreq>daily</changefreq>
     </url>
 </urlset>

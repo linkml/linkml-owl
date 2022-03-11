@@ -1,0 +1,68 @@
+# named pizzas
+- id: pizza:NamedPizza
+  conforms_to: NamedPizza
+  label: named pizza
+  
+- id: pizza:Mushroom
+  conforms_to: NamedPizza
+  label: mushroom
+  subClassOf: pizza:NamedPizza
+  hasToppings:
+    - pizza:MozzarellaTopping
+    - pizza:MushroomTopping
+    - pizza:TomatoTopping
+- id: pizza:Margherita
+  conforms_to: NamedPizza
+  label: Margherita
+  subClassOf: pizza:NamedPizza
+  hasToppings:
+    - pizza:MozzarellaTopping
+    - pizza:TomatoTopping
+
+# toppings
+- id: pizza:FishTopping
+  label: fish topping
+  conforms_to: PizzaTopping
+  subClassOf: pizza:PizzaTopping
+- id: pizza:MeatTopping
+  label: meat topping
+  conforms_to: PizzaTopping
+  subClassOf: pizza:PizzaTopping
+- id: pizza:VegetableTopping
+  label: vegetable topping
+  conforms_to: PizzaTopping
+  subClassOf: pizza:PizzaTopping
+- id: pizza:CheeseTopping
+  label: cheese topping
+  conforms_to: PizzaTopping
+  subClassOf: pizza:PizzaTopping
+
+- id: pizza:PepperoniSausageTopping
+  label: pepperoni sausage topping
+  conforms_to: PizzaTopping
+  subClassOf: pizza:MeatTopping
+
+- id: pizza:AnchoviesTopping
+  label: anchovies topping
+  conforms_to: PizzaTopping
+  subClassOf: pizza:FishTopping
+
+- id: pizza:ArtichokeTopping
+  label: artichoke topping
+  conforms_to: PizzaTopping
+  subClassOf: pizza:VegetableTopping
+
+- id: pizza:MushroomTopping
+  label: mushroom topping
+  conforms_to: PizzaTopping
+  subClassOf: pizza:VegetableTopping
+
+- id: pizza:TomatoTopping
+  label: tomato topping
+  conforms_to: PizzaTopping
+  subClassOf: pizza:VegetableTopping
+
+- id: pizza:MozzarellaTopping
+  label: mozzarella topping
+  conforms_to: PizzaTopping
+  subClassOf: pizza:CheeseTopping

@@ -1,0 +1,39 @@
+id: http://www.co-ode.org/ontologies/pizza/2005/10/18/pizza.owl
+name: Pizza-Ontology-Metamodel
+prefixes:
+  pizza: http://www.co-ode.org/ontologies/pizza/2005/10/18/pizza.owl#
+  linkml: https://w3id.org/linkml/
+  dcterms: http://purl.org/dc/terms/
+default_curi_maps:
+    - semweb_context
+default_prefix: pizza
+imports:
+  - linkml:types
+
+classes:
+
+  PizzaTopping:
+    annotations:
+      owl: Class
+    attributes:
+      id:
+        name: id
+        identifier: true
+        range: uriorcurie
+      label:
+        name: label
+        annotations:
+          owl: AnnotationAssertion
+        slot_uri: rdfs:label
+      conforms_to:
+        name: conforms_to
+        annotations:
+          owl.fstring: AnnotationAssertion( dcterms:conformsTo {id} pizza:{V} )
+        slot_uri: dcterms:conformsTo
+        designates_type: true
+      subClassOf:
+        name: subClassOf
+        annotations:
+          owl: SubClassOf
+        slot_uri: rdfs:subClassOf
+        range: PizzaTopping

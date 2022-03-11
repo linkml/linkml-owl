@@ -1,0 +1,91 @@
+# pizzas
+- id: pizza:NamedPizza
+  conforms_to: NamedPizza
+  label: named pizza
+
+- id: pizza:Mushroom
+  conforms_to: NamedPizza
+  label: mushroom
+  subClassOf: pizza:NamedPizza
+  altLabels:
+    - Mushroom Pizza
+  hasToppings:
+    - pizza:MozzarellaTopping
+    - pizza:MushroomTopping
+    - pizza:TomatoTopping
+- id: pizza:Margherita
+  conforms_to: NamedPizza
+  label: Margherita
+  subClassOf: pizza:NamedPizza
+  hasToppings:
+    - pizza:MozzarellaTopping
+    - pizza:TomatoTopping
+- id: pizza:AmericanPizza
+  conforms_to: NamedPizza
+  label: american
+  subClassOf: pizza:NamedPizza
+  altLabels:
+    - American Pizza
+  hasToppings:
+    - pizza:MozzarellaTopping
+    - pizza:PepperoniSausageTopping
+    - pizza:TomatoTopping
+  hasCountryOfOrigin:
+    - pizza:America
+
+# toppings
+- id: pizza:FishTopping
+  label: fish topping
+  conforms_to: PizzaTopping
+  subClassOf: pizza:PizzaTopping
+- id: pizza:MeatTopping
+  label: meat topping
+  conforms_to: PizzaTopping
+  subClassOf: pizza:PizzaTopping
+- id: pizza:VegetableTopping
+  label: vegetable topping
+  conforms_to: PizzaTopping
+  subClassOf: pizza:PizzaTopping
+- id: pizza:CheeseTopping
+  label: cheese topping
+  conforms_to: PizzaTopping
+  subClassOf: pizza:PizzaTopping
+
+- id: pizza:PepperoniSausageTopping
+  conforms_to: PizzaTopping
+  subClassOf: pizza:MeatTopping
+
+- id: pizza:AnchoviesTopping
+  conforms_to: PizzaTopping
+  subClassOf: pizza:FishTopping
+
+- id: pizza:ArtichokeTopping
+  conforms_to: PizzaTopping
+  subClassOf: pizza:VegetableTopping
+
+- id: pizza:MushroomTopping
+  conforms_to: PizzaTopping
+  subClassOf: pizza:VegetableTopping
+
+- id: pizza:TomatoTopping
+  label: tomato topping
+  conforms_to: PizzaTopping
+  subClassOf: pizza:VegetableTopping
+
+- id: pizza:MozzarellaTopping
+  conforms_to: PizzaTopping
+  subClassOf: pizza:CheeseTopping
+
+# bases
+- id: pizza:DeepPanBase
+  conforms_to: PizzaBase
+  subClassOf: pizza:PizzaBase
+- id: pizza:ThinAndCrispyBase
+  conforms_to: PizzaBase
+  subClassOf: pizza:PizzaBase
+
+# countries
+- id: pizza:America
+  conforms_to: Country
+  typeOf: pizza:Country
+  label: America

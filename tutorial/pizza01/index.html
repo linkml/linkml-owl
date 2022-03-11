@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  <link rel="canonical" href="https://linkml.github.io/linkml-owl/tutorial/pizza01/">
+  <link rel="shortcut icon" href="../../img/favicon.ico">
+  <title>Part 1 - LinkML-OWL</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700" />
+
+  <link rel="stylesheet" href="../../css/theme.css" />
+  <link rel="stylesheet" href="../../css/theme_extra.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Part 1";
+    var mkdocs_page_input_path = "tutorial/pizza01.md";
+    var mkdocs_page_url = "/linkml-owl/tutorial/pizza01/";
+  </script>
+  
+  <script src="../../js/jquery-2.1.1.min.js" defer></script>
+  <script src="../../js/modernizr-2.8.3.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-2SYBSJVZ23"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-2SYBSJVZ23');
+  </script>
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+        <a href="../.." class="icon icon-home"> LinkML-OWL</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+                <p class="caption"><span class="caption-text">Introduction</span></p>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../..">What is it?</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../../usage/">Usage</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../../basics/">Basics</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../../templates/">Templates</a>
+                    </li>
+                </ul>
+                <p class="caption"><span class="caption-text">Examples</span></p>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../../examples/">Showcase</a>
+                    </li>
+                </ul>
+                <p class="caption"><span class="caption-text">Tutorial (in progress)</span></p>
+                <ul class="current">
+                    <li class="toctree-l1"><a class="reference internal" href="../">About</a>
+                    </li>
+                    <li class="toctree-l1 current"><a class="reference internal current" href="./">Part 1</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#first-schema-pizza-toppings">First Schema: Pizza Toppings</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#ontology-source-records">Ontology Source Records</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#compiling-to-owl">Compiling to OWL</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#viewing-in-proetege">Viewing in Proetege</a>
+    </li>
+    </ul>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../pizza02/">Part 2</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../pizza03/">Part 3</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../pizza04/">Part 4</a>
+                    </li>
+                </ul>
+                <p class="caption"><span class="caption-text">Futher Info</span></p>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../../tips/">Tips</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../../comparison/">Comparison with other frameworks</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../../further-reading/">Further reading</a>
+                    </li>
+                </ul>
+                <p class="caption"><span class="caption-text">Reference</span></p>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../../mappings/">Mappings</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../../specification/">Specification</a>
+                    </li>
+                </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../..">LinkML-OWL</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../..">Docs</a> &raquo;</li>
+    
+      
+        
+          <li>Tutorial (in progress) &raquo;</li>
+        
+      
+    
+    <li>Part 1</li>
+    <li class="wy-breadcrumbs-aside">
+      
+        <a href="https://github.com/linkml/linkml-owl/edit/master/docs/tutorial/pizza01.md"
+          class="icon icon-github"> Edit on GitHub</a>
+      
+    </li>
+  </ul>
+  
+  <hr/>
+</div>
+
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="part-1-basics">Part 1: Basics</h1>
+<p>Let's start with absolute basics - our goal here is to make
+a small simple hierarchy of <em>pizza toppings</em>.</p>
+<p>To do this we need two components:</p>
+<ol>
+<li>A <em>template</em> for pizza toppings</li>
+<li>A collection of pizza topping <em>records</em></li>
+</ol>
+<p>In LinkML parlance, templates are <em>classes</em>, and records are <em>instances</em>, but note this can get confusing as our records/instances will be later translated to OWL <em>classes</em>!</p>
+<p>Templates/classes are organized together in a <em>schema</em>, represented as a YAML file</p>
+<h2 id="first-schema-pizza-toppings">First Schema: Pizza Toppings</h2>
+<p>Here is our first schema:</p>
+<p><a href="../pizza01-toppings-model.yaml">pizza01-toppings-model.yaml</a>:</p>
+<pre><code class="language-yaml">id: http://www.co-ode.org/ontologies/pizza/2005/10/18/pizza.owl
+name: Pizza-Ontology-Metamodel
+prefixes:
+  pizza: http://www.co-ode.org/ontologies/pizza/2005/10/18/pizza.owl#
+  linkml: https://w3id.org/linkml/
+  dcterms: http://purl.org/dc/terms/
+default_curi_maps:
+    - semweb_context
+default_prefix: pizza
+imports:
+  - linkml:types
+
+classes:
+
+  PizzaTopping:
+    annotations:
+      owl: Class
+    attributes:
+      id:
+        name: id
+        identifier: true
+        range: uriorcurie
+      label:
+        name: label
+        annotations:
+          owl: AnnotationAssertion
+        slot_uri: rdfs:label
+      conforms_to:
+        name: conforms_to
+        annotations:
+          owl.fstring: AnnotationAssertion( dcterms:conformsTo {id} pizza:{V} )
+        slot_uri: dcterms:conformsTo
+        designates_type: true
+      subClassOf:
+        name: subClassOf
+        annotations:
+          owl: SubClassOf
+        slot_uri: rdfs:subClassOf
+        range: PizzaTopping
+</code></pre>
+<p>The header part of the schema is fairly standard linkml boilerplate. We can focus our attention
+on the <code>classes</code> section. Here we see we have introduced to represent pizza toppings.</p>
+<p><strong>NOTE</strong>: if you are familiar with OWL templating systems such as ROBOT and DOSDPs,
+you may want to think of these classes as "templates"</p>
+<p>We have 4 attributes at this time:</p>
+<ol>
+<li>An <em>id</em>, which holds the unique IRI of the record (identifier is set to true)</li>
+<li>A label, mapped to rdfs:label</li>
+<li>conformsTo, which serves as the record type designator -- more on this below</li>
+<li>subClassOf, mapped to rdfs:subClassOf</li>
+</ol>
+<p>Note that the above schema is a standard LinkML schema, and you can
+find out more details about the different schema elements on the
+<a href="https://linkml.io/linkml">linkml.io/linkml</a> site.</p>
+<p>The LinkML-OWL framework makes use of OWL <em>interpretations</em> annotations on classes and attributes. In the above schema:</p>
+<ul>
+<li>records instantiating PizzaTopping are interpreted as <a href="https://www.w3.org/TR/owl2-syntax/#Classes">Classes</a></li>
+<li>labels are interpreted as <a href="https://www.w3.org/TR/owl2-syntax/#Annotation_Assertion">AnnotationAssertion</a>s</li>
+<li>subClassOf is interprted as <a href="https://www.w3.org/TR/owl2-syntax/#Subclass_Axioms">SubClassOf</a></li>
+</ul>
+<p>These are all terms in the official <a href="https://www.w3.org/TR/owl2-syntax">OWL2 syntax</a>, which can be consulted for more details</p>
+<h2 id="ontology-source-records">Ontology Source Records</h2>
+<p>Next we provide a set of records that are used to populate our
+template. These can be specified in different ways, but for many purposes YAML is the best.</p>
+<p>We will create a file that is a YAML list, with each element being a
+record that instantiates a PizzaTopping template. Each key in the record conforms to the above schema:</p>
+<p><a href="../pizza01-toppings-data.yaml">pizza01-toppings-data.yaml</a>:</p>
+<pre><code class="language-yaml"># toppings
+- id: pizza:FishTopping
+  label: fish topping
+  conforms_to: PizzaTopping
+  subClassOf: pizza:PizzaTopping
+- id: pizza:MeatTopping
+  label: meat topping
+  conforms_to: PizzaTopping
+  subClassOf: pizza:PizzaTopping
+- id: pizza:VegetableTopping
+  label: vegetable topping
+  conforms_to: PizzaTopping
+  subClassOf: pizza:PizzaTopping
+- id: pizza:CheeseTopping
+  label: cheese topping
+  conforms_to: PizzaTopping
+  subClassOf: pizza:PizzaTopping
+
+- id: pizza:PepperoniSausageTopping
+  label: pepperoni sausage topping
+  conforms_to: PizzaTopping
+  subClassOf: pizza:MeatTopping
+
+- id: pizza:AnchoviesTopping
+  label: anchovies topping
+  conforms_to: PizzaTopping
+  subClassOf: pizza:FishTopping
+
+- id: pizza:ArtichokeTopping
+  label: artichoke topping
+  conforms_to: PizzaTopping
+  subClassOf: pizza:VegetableTopping
+
+- id: pizza:MushroomTopping
+  label: mushroom topping
+  conforms_to: PizzaTopping
+  subClassOf: pizza:VegetableTopping
+
+- id: pizza:TomatoTopping
+  label: tomato topping
+  conforms_to: PizzaTopping
+  subClassOf: pizza:VegetableTopping
+
+- id: pizza:MozzarellaTopping
+  label: mozzarella topping
+  conforms_to: PizzaTopping
+  subClassOf: pizza:CheeseTopping
+</code></pre>
+<p>Note that the conformsTo value is the same for every record. This may seem redundant, but as we will see later, an ontology is typically built from different templates.</p>
+<p>Note the use of CURIEs throughout the file. Prefixes must be declared in the header of the schema</p>
+<h2 id="compiling-to-owl">Compiling to OWL</h2>
+<p>Next we will compile our PizzaTopping records to a PizzaTopping OWL ontology:</p>
+<pre><code class="language-bash">linkml-owl -s pizza01-toppings-model.yaml pizza01-toppings-data.yaml -o pizza01.ofn
+</code></pre>
+<p>This generates a file:</p>
+<p><a href="../pizza01.ofn">pizza01.ofn</a></p>
+<pre><code class="language-owl">Ontology( &lt;http://www.co-ode.org/ontologies/pizza/2005/10/18/pizza.owl&gt;
+    AnnotationAssertion( rdfs:label pizza:FishTopping &quot;fish topping&quot; )
+    AnnotationAssertion( dcterms:conformsTo pizza:FishTopping pizza:PizzaTopping )
+    SubClassOf( pizza:FishTopping pizza:PizzaTopping )
+    AnnotationAssertion( rdfs:label pizza:MeatTopping &quot;meat topping&quot; )
+    AnnotationAssertion( dcterms:conformsTo pizza:MeatTopping pizza:PizzaTopping )
+    SubClassOf( pizza:MeatTopping pizza:PizzaTopping )
+    AnnotationAssertion( rdfs:label pizza:VegetableTopping &quot;vegetable topping&quot; )
+    AnnotationAssertion( dcterms:conformsTo pizza:VegetableTopping pizza:PizzaTopping )
+    SubClassOf( pizza:VegetableTopping pizza:PizzaTopping )
+    AnnotationAssertion( rdfs:label pizza:CheeseTopping &quot;cheese topping&quot; )
+    AnnotationAssertion( dcterms:conformsTo pizza:CheeseTopping pizza:PizzaTopping )
+    SubClassOf( pizza:CheeseTopping pizza:PizzaTopping )
+    AnnotationAssertion( rdfs:label pizza:PepperoniSausageTopping &quot;pepperoni sausage topping&quot; )
+    AnnotationAssertion( dcterms:conformsTo pizza:PepperoniSausageTopping pizza:PizzaTopping )
+    SubClassOf( pizza:PepperoniSausageTopping pizza:MeatTopping )
+    AnnotationAssertion( rdfs:label pizza:AnchoviesTopping &quot;anchovies topping&quot; )
+    AnnotationAssertion( dcterms:conformsTo pizza:AnchoviesTopping pizza:PizzaTopping )
+    SubClassOf( pizza:AnchoviesTopping pizza:FishTopping )
+    AnnotationAssertion( rdfs:label pizza:ArtichokeTopping &quot;artichoke topping&quot; )
+    AnnotationAssertion( dcterms:conformsTo pizza:ArtichokeTopping pizza:PizzaTopping )
+    SubClassOf( pizza:ArtichokeTopping pizza:VegetableTopping )
+    AnnotationAssertion( rdfs:label pizza:MushroomTopping &quot;mushroom topping&quot; )
+    AnnotationAssertion( dcterms:conformsTo pizza:MushroomTopping pizza:PizzaTopping )
+    SubClassOf( pizza:MushroomTopping pizza:VegetableTopping )
+    AnnotationAssertion( rdfs:label pizza:MozzarellaTopping &quot;mozzarella topping&quot; )
+    AnnotationAssertion( dcterms:conformsTo pizza:MozzarellaTopping pizza:PizzaTopping )
+    SubClassOf( pizza:MozzarellaTopping pizza:CheeseTopping )
+</code></pre>
+<p>Note that the default output is OWL <em>functional syntax</em>. You can also use any serialization supported by rdflib.</p>
+<p>We recommend ROBOT as an easy way to perform convesion between OWL serialization formats:</p>
+<pre><code class="language-bash">robot convert -i pizza01.ofn -o pizza01.owl
+</code></pre>
+<h2 id="viewing-in-proetege">Viewing in Proetege</h2>
+<p>You can also view the ontology in Protege:</p>
+<p><img alt="screenshot" src="../pizza01.png" /></p>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../pizza02/" class="btn btn-neutral float-right" title="Part 2">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../" class="btn btn-neutral" title="About"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/linkml/linkml-owl/" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
+    
+      <span><a href="../" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../pizza02/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script>var base_url = '../..';</script>
+    <script src="../../js/theme_extra.js" defer></script>
+    <script src="../../js/theme.js" defer></script>
+      <script src="../../search/main.js" defer></script>
+    <script defer>
+        window.onload = function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        };
+    </script>
+
+</body>
+</html>

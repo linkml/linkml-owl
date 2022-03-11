@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  <link rel="canonical" href="https://linkml.github.io/linkml-owl/tutorial/pizza02/">
+  <link rel="shortcut icon" href="../../img/favicon.ico">
+  <title>Part 2 - LinkML-OWL</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700" />
+
+  <link rel="stylesheet" href="../../css/theme.css" />
+  <link rel="stylesheet" href="../../css/theme_extra.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Part 2";
+    var mkdocs_page_input_path = "tutorial/pizza02.md";
+    var mkdocs_page_url = "/linkml-owl/tutorial/pizza02/";
+  </script>
+  
+  <script src="../../js/jquery-2.1.1.min.js" defer></script>
+  <script src="../../js/modernizr-2.8.3.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-2SYBSJVZ23"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-2SYBSJVZ23');
+  </script>
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+        <a href="../.." class="icon icon-home"> LinkML-OWL</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+                <p class="caption"><span class="caption-text">Introduction</span></p>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../..">What is it?</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../../usage/">Usage</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../../basics/">Basics</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../../templates/">Templates</a>
+                    </li>
+                </ul>
+                <p class="caption"><span class="caption-text">Examples</span></p>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../../examples/">Showcase</a>
+                    </li>
+                </ul>
+                <p class="caption"><span class="caption-text">Tutorial (in progress)</span></p>
+                <ul class="current">
+                    <li class="toctree-l1"><a class="reference internal" href="../">About</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../pizza01/">Part 1</a>
+                    </li>
+                    <li class="toctree-l1 current"><a class="reference internal current" href="./">Part 2</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#model">Model</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#data">Data</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#output">Output</a>
+    </li>
+    </ul>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../pizza03/">Part 3</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../pizza04/">Part 4</a>
+                    </li>
+                </ul>
+                <p class="caption"><span class="caption-text">Futher Info</span></p>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../../tips/">Tips</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../../comparison/">Comparison with other frameworks</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../../further-reading/">Further reading</a>
+                    </li>
+                </ul>
+                <p class="caption"><span class="caption-text">Reference</span></p>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../../mappings/">Mappings</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../../specification/">Specification</a>
+                    </li>
+                </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../..">LinkML-OWL</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../..">Docs</a> &raquo;</li>
+    
+      
+        
+          <li>Tutorial (in progress) &raquo;</li>
+        
+      
+    
+    <li>Part 2</li>
+    <li class="wy-breadcrumbs-aside">
+      
+        <a href="https://github.com/linkml/linkml-owl/edit/master/docs/tutorial/pizza02.md"
+          class="icon icon-github"> Edit on GitHub</a>
+      
+    </li>
+  </ul>
+  
+  <hr/>
+</div>
+
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="part-2-adding-relationships">Part 2: Adding Relationships</h1>
+<p>So far we have made a simple subsumption hierarchy with minimal metadata on each class</p>
+<p>We will now extend the model to include relationships, modeled using
+<a href="https://www.w3.org/TR/owl2-syntax/#Existential_Quantification">existential restriction</a> axioms. Specifically, we will add some pizza classes
+and relate them to toppings via a hasToppings relationships.</p>
+<h2 id="model">Model</h2>
+<p><a href="../pizza02-hasToppings-model.yaml">pizza02-hasToppings-model.yaml</a></p>
+<pre><code class="language-yaml">id: http://www.co-ode.org/ontologies/pizza/2005/10/18/pizza.owl
+name: Pizza-Ontology-Metamodel
+prefixes:
+  pizza: http://www.co-ode.org/ontologies/pizza/2005/10/18/pizza.owl#
+  linkml: https://w3id.org/linkml/
+  dcterms: http://purl.org/dc/terms/
+default_curi_maps:
+    - semweb_context
+default_prefix: pizza
+imports:
+  - linkml:types
+
+classes:
+
+  ## ---
+  ## this class is introduced here
+  ## ---
+  NamedPizza:
+    annotations:
+      owl: Class
+    attributes:
+      ## ---
+      ## these attributes are the same as for PizzaTopping
+      ## ---
+      id:
+        identifier: true
+        range: uriorcurie
+      label:
+        annotations:
+          owl: AnnotationAssertion
+        slot_uri: rdfs:label
+      conforms_to:
+        annotations:
+          owl.fstring: AnnotationAssertion( dcterms:conformsTo {id} pizza:{V} )
+        slot_uri: dcterms:conformsTo
+        designates_type: true
+      subClassOf:
+        annotations:
+          owl: SubClassOf
+        slot_uri: rdfs:subClassOf
+        range: NamedPizza
+
+      ## ---
+      ## this attribute is unique to NamedPizza
+      ## ---
+      hasToppings:
+        annotations:
+          owl: ObjectSomeValuesFrom
+        multivalued: true
+        range: PizzaTopping
+  ## ---
+  ## copied from part 1
+  ## ---
+  PizzaTopping:
+    attributes:
+      id:
+        identifier: true
+        range: uriorcurie
+      label:
+        annotations:
+          owl: AnnotationAssertion
+        slot_uri: rdfs:label
+      conforms_to:
+        annotations:
+          owl.fstring: AnnotationAssertion( dcterms:conformsTo {id} pizza:{V} )
+        slot_uri: dcterms:conformsTo
+        designates_type: true
+      subClassOf:
+        annotations:
+          owl: SubClassOf
+        slot_uri: rdfs:subClassOf
+      hasToppings:
+        singular_name: hasTopping
+        range: PizzaTopping
+        multivalued: true
+        annotations:
+          owl: ObjectSomeValuesFrom
+
+</code></pre>
+<p>Note that we have some repetition in the schema, with the same
+information about the same attribute repeated in both <code>NamedPizza</code> and
+<code>PizzaTopping</code> (although note the difference in range for subClassOf
+in both classes). We will return to address this issue later.</p>
+<p>Here we introduce a new slot/attribute <code>hasToppings</code>. This has an interpretation of <a href="https://www.w3.org/TR/owl2-syntax/#Existential_Quantification">ObjectSomeValuesFrom</a></p>
+<h2 id="data">Data</h2>
+<p>Our new data file now has two kinds of records: PizzaToppings and NamedPizzas:</p>
+<p><a href="../pizza02-hasToppings-data.yaml">pizza02-hasToppings-data.yaml</a></p>
+<pre><code class="language-yaml"># named pizzas
+- id: pizza:NamedPizza
+  conforms_to: NamedPizza
+  label: named pizza
+
+- id: pizza:Mushroom
+  conforms_to: NamedPizza
+  label: mushroom
+  subClassOf: pizza:NamedPizza
+  hasToppings:
+    - pizza:MozzarellaTopping
+    - pizza:MushroomTopping
+    - pizza:TomatoTopping
+- id: pizza:Margherita
+  conforms_to: NamedPizza
+  label: Margherita
+  subClassOf: pizza:NamedPizza
+  hasToppings:
+    - pizza:MozzarellaTopping
+    - pizza:TomatoTopping
+
+# toppings
+- id: pizza:FishTopping
+  label: fish topping
+  conforms_to: PizzaTopping
+  subClassOf: pizza:PizzaTopping
+- id: pizza:MeatTopping
+  label: meat topping
+  conforms_to: PizzaTopping
+  subClassOf: pizza:PizzaTopping
+- id: pizza:VegetableTopping
+  label: vegetable topping
+  conforms_to: PizzaTopping
+  subClassOf: pizza:PizzaTopping
+- id: pizza:CheeseTopping
+  label: cheese topping
+  conforms_to: PizzaTopping
+  subClassOf: pizza:PizzaTopping
+
+- id: pizza:PepperoniSausageTopping
+  label: pepperoni sausage topping
+  conforms_to: PizzaTopping
+  subClassOf: pizza:MeatTopping
+
+- id: pizza:AnchoviesTopping
+  label: anchovies topping
+  conforms_to: PizzaTopping
+  subClassOf: pizza:FishTopping
+
+- id: pizza:ArtichokeTopping
+  label: artichoke topping
+  conforms_to: PizzaTopping
+  subClassOf: pizza:VegetableTopping
+
+- id: pizza:MushroomTopping
+  label: mushroom topping
+  conforms_to: PizzaTopping
+  subClassOf: pizza:VegetableTopping
+
+- id: pizza:TomatoTopping
+  label: tomato topping
+  conforms_to: PizzaTopping
+  subClassOf: pizza:VegetableTopping
+
+- id: pizza:MozzarellaTopping
+  label: mozzarella topping
+  conforms_to: PizzaTopping
+  subClassOf: pizza:CheeseTopping
+</code></pre>
+<p>Note the hasToppings slot is multivalued, so this is specified as a list.</p>
+<h2 id="output">Output</h2>
+<p><a href="../pizza02.ofn">pizza02.ofn</a>:</p>
+<pre><code class="language-owl">Ontology( &lt;http://www.co-ode.org/ontologies/pizza/2005/10/18/pizza.owl&gt;
+    AnnotationAssertion( rdfs:label pizza:Mushroom &quot;mushroom&quot; )
+    AnnotationAssertion( dcterms:conformsTo pizza:Mushroom pizza:NamedPizza )
+    SubClassOf( pizza:Mushroom     ObjectSomeValuesFrom( pizza:hasToppings pizza:MozzarellaTopping ) )
+    SubClassOf( pizza:Mushroom     ObjectSomeValuesFrom( pizza:hasToppings pizza:MushroomTopping ) )
+    SubClassOf( pizza:Mushroom     ObjectSomeValuesFrom( pizza:hasToppings pizza:TomatoTopping ) )
+    AnnotationAssertion( rdfs:label pizza:Margherita &quot;Margherita&quot; )
+    AnnotationAssertion( dcterms:conformsTo pizza:Margherita pizza:NamedPizza )
+    SubClassOf( pizza:Margherita     ObjectSomeValuesFrom( pizza:hasToppings pizza:MozzarellaTopping ) )
+    SubClassOf( pizza:Margherita     ObjectSomeValuesFrom( pizza:hasToppings pizza:TomatoTopping ) )
+    AnnotationAssertion( rdfs:label pizza:FishTopping &quot;fish topping&quot; )
+    AnnotationAssertion( dcterms:conformsTo pizza:FishTopping pizza:PizzaTopping )
+    SubClassOf( pizza:FishTopping pizza:PizzaTopping )
+    AnnotationAssertion( rdfs:label pizza:MeatTopping &quot;meat topping&quot; )
+    AnnotationAssertion( dcterms:conformsTo pizza:MeatTopping pizza:PizzaTopping )
+    SubClassOf( pizza:MeatTopping pizza:PizzaTopping )
+    AnnotationAssertion( rdfs:label pizza:VegetableTopping &quot;vegetable topping&quot; )
+    AnnotationAssertion( dcterms:conformsTo pizza:VegetableTopping pizza:PizzaTopping )
+    SubClassOf( pizza:VegetableTopping pizza:PizzaTopping )
+    AnnotationAssertion( rdfs:label pizza:CheeseTopping &quot;cheese topping&quot; )
+    AnnotationAssertion( dcterms:conformsTo pizza:CheeseTopping pizza:PizzaTopping )
+    SubClassOf( pizza:CheeseTopping pizza:PizzaTopping )
+    AnnotationAssertion( rdfs:label pizza:PepperoniSausageTopping &quot;pepperoni sausage topping&quot; )
+    AnnotationAssertion( dcterms:conformsTo pizza:PepperoniSausageTopping pizza:PizzaTopping )
+    SubClassOf( pizza:PepperoniSausageTopping pizza:MeatTopping )
+    AnnotationAssertion( rdfs:label pizza:AnchoviesTopping &quot;anchovies topping&quot; )
+    AnnotationAssertion( dcterms:conformsTo pizza:AnchoviesTopping pizza:PizzaTopping )
+    SubClassOf( pizza:AnchoviesTopping pizza:FishTopping )
+    AnnotationAssertion( rdfs:label pizza:ArtichokeTopping &quot;artichoke topping&quot; )
+    AnnotationAssertion( dcterms:conformsTo pizza:ArtichokeTopping pizza:PizzaTopping )
+    SubClassOf( pizza:ArtichokeTopping pizza:VegetableTopping )
+    AnnotationAssertion( rdfs:label pizza:MushroomTopping &quot;mushroom topping&quot; )
+    AnnotationAssertion( dcterms:conformsTo pizza:MushroomTopping pizza:PizzaTopping )
+    SubClassOf( pizza:MushroomTopping pizza:VegetableTopping )
+    AnnotationAssertion( rdfs:label pizza:MozzarellaTopping &quot;mozzarella topping&quot; )
+    AnnotationAssertion( dcterms:conformsTo pizza:MozzarellaTopping pizza:PizzaTopping )
+    SubClassOf( pizza:MozzarellaTopping pizza:CheeseTopping )
+</code></pre>
+<p>In Protege:</p>
+<p><img alt="screenshot" src="../pizza02.png" /></p>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../pizza03/" class="btn btn-neutral float-right" title="Part 3">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../pizza01/" class="btn btn-neutral" title="Part 1"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/linkml/linkml-owl/" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
+    
+      <span><a href="../pizza01/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../pizza03/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script>var base_url = '../..';</script>
+    <script src="../../js/theme_extra.js" defer></script>
+    <script src="../../js/theme.js" defer></script>
+      <script src="../../search/main.js" defer></script>
+    <script defer>
+        window.onload = function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        };
+    </script>
+
+</body>
+</html>
