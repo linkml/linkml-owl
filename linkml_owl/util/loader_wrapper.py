@@ -4,17 +4,21 @@ import logging
 from copy import copy
 from dataclasses import dataclass
 from io import StringIO
+from types import ModuleType
 
 from typing import Union, TextIO, Type, Optional, List, Dict
 
+import click
 import yaml
 from hbreader import FileInfo, hbread
 from jsonasobj2 import as_dict
+from linkml.generators.pythongen import PythonGenerator
 from linkml.utils import datautils
-from linkml.utils.datautils import infer_index_slot
+from linkml.utils.datautils import infer_index_slot, _is_xsv, get_dumper
 from linkml_runtime import SchemaView
-from linkml_runtime.linkml_model import SchemaDefinition
+from linkml_runtime.linkml_model import SchemaDefinition, ClassDefinition, SlotDefinition
 from linkml_runtime.loaders import json_loader, yaml_loader, csv_loader, rdf_loader, rdflib_loader
+from linkml_runtime.utils.compile_python import compile_python
 
 from linkml_runtime.utils.yamlutils import YAMLRoot, DupCheckYamlLoader
 
@@ -113,7 +117,7 @@ def load_structured_file(source: Union[str, dict, TextIO], target_class: Union[s
         else:
             obj = load_from_csv(source, delimiter=delimiter)
             logging.debug(f'INST {target_class} <= {obj}')
-            out_obj = [instantiate_object(x, target_class, python_module=python_module) for x in obj]
+            out_obj = [instantiate_object(x, target_class, python_module=python_module, schemaview=schemaview) for x in obj]
     elif datautils._is_rdf_format(fmt):
         loader = rdflib_loader
         out_obj = rdflib_loader.load(source, schemaview=schemaview, fmt=fmt)
@@ -130,9 +134,9 @@ def load_structured_file(source: Union[str, dict, TextIO], target_class: Union[s
             loader = json_loader
             loader.json_clean(obj)
         if isinstance(obj, list):
-            out_obj = [instantiate_object(x, target_class, type_designator=type_designator, python_module=python_module) for x in obj]
+            out_obj = [instantiate_object(x, target_class, type_designator=type_designator, python_module=python_module, schemaview=schemaview) for x in obj]
         else:
-            out_obj = instantiate_object(obj, target_class, type_designator=type_designator, python_module=python_module)
+            out_obj = instantiate_object(obj, target_class, type_designator=type_designator, python_module=python_module, schemaview=schemaview)
     else:
         raise ValueError(f'Unknown format: {fmt}')
     logging.info(f'Loaded {type(out_obj)} using {loader}')
@@ -140,12 +144,15 @@ def load_structured_file(source: Union[str, dict, TextIO], target_class: Union[s
 
 def instantiate_object(data: Dict, target_class: Type[YAMLRoot] = None, schemaview: SchemaView = None,
                        type_designator: str = '@type',
-                       python_module=None) -> YAMLRoot:
+                       python_module: ModuleType = None) -> YAMLRoot:
     #if not(target_class or schemaview):
     #    raise ValueError(f'Must pass AT LEAST ONE OF target_class OR schemaview')
     if not target_class:
         if type_designator in data:
             target_class_name = data[type_designator]
+            if ':' in target_class_name:
+                pfx, loc = str(target_class_name).split(':')
+                target_class_name = loc
             data = copy(data)
         else:
             raise ValueError(f'Cannot determine type for {data}')
@@ -166,7 +173,65 @@ def get_type_designator(schemaview: SchemaView = None) -> str:
     else:
         return '@type'
 
+def add_index_slot(sv: SchemaView) -> None:
+    container = ClassDefinition('Container', from_schema='http://x.org/')
+    for cn in sv.all_classes():
+        a = SlotDefinition(cn, multivalued=True, range=cn, inlined=True, inlined_as_list=True)
+        container.attributes[a.name] = a
+    sv.add_class(container)
+    sv.set_modified()
 
+
+@click.command()
+@click.option('-s', '--schema', required=True,
+              help="Path to LinkML schema")
+@click.option("--target-class", "-C",
+              help="name of class in datamodel that the root node instantiates")
+@click.option("--module", "-m",
+              help="Path to python datamodel module")
+@click.option("--index-slot", "-S",
+              help="top level slot. Required for CSV dumping/loading")
+@click.option("--format", "-f",
+              help="Input format (will be inferred from file suffix if not specified)")
+@click.option('-o', '--output', required=True,
+              help="Path to OWL functional syntax output")
+@click.option('-t', '--output-format',
+              default='tsv',
+              help="Output format")
+@click.argument('inputfile')
+def cli(inputfile: str, schema: str, target_class, module, output, format, index_slot, output_format, **args):
+    """
+    converts
+
+    """
+    sv = SchemaView(schema)
+    add_index_slot(sv)
+    if module is None:
+        if schema is None:
+            raise Exception('must pass one of module OR schema')
+        else:
+            python_module = PythonGenerator(sv.schema).compile_module()
+    else:
+        python_module = compile_python(module)
+    element = load_structured_file(inputfile, target_class=target_class,
+                                   python_module=python_module, schemaview=sv, fmt=format)
+    outargs = {}
+    if _is_xsv(output_format):
+        if index_slot is None:
+            index_slot = infer_index_slot(sv, target_class)
+            if index_slot is None:
+                raise Exception('--index-slot is required for CSV output')
+        outargs['index_slot'] = index_slot
+        outargs['schema'] = schema
+    dumper = get_dumper(output_format)
+    if output is not None:
+        dumper.dump(element, output, **outargs)
+    else:
+        print(dumper.dumps(element, **outargs))
+
+
+if __name__ == '__main__':
+    cli()
 
 
 

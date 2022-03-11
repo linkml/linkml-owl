@@ -1,0 +1,98 @@
+id: http://www.co-ode.org/ontologies/pizza/2005/10/18/pizza.owl
+name: Pizza-Ontology-Metamodel
+prefixes:
+  pizza: http://www.co-ode.org/ontologies/pizza/2005/10/18/pizza.owl#
+  linkml: https://w3id.org/linkml/
+  dcterms: http://purl.org/dc/terms/
+default_curi_maps:
+    - semweb_context
+default_prefix: pizza
+imports:
+  - linkml:types
+
+classes:
+  ## ---
+  ## The Country class is new in part 2
+  ## ---
+  Country:
+    annotations:
+      owl: NamedIndividual
+    attributes:
+      id:
+        identifier: true
+        range: uriorcurie
+      label:
+        annotations:
+          owl: AnnotationAssertion
+        slot_uri: rdfs:label
+      conforms_to:
+        annotations:
+          owl.fstring: AnnotationAssertion( dcterms:conformsTo {id} pizza:{V} )
+        slot_uri: dcterms:conformsTo
+        designates_type: true
+      typeOf:
+        name: typeOf
+        annotations:
+          owl:
+            tag: owl
+            value: ClassAssertion
+        from_schema: http://www.co-ode.org/ontologies/pizza/2005/10/18/pizza.owl
+        slot_uri: rdf:type
+  NamedPizza:
+    annotations:
+      owl: Class
+    attributes:
+      id:
+        identifier: true
+        range: uriorcurie
+      label:
+        annotations:
+          owl: AnnotationAssertion
+        slot_uri: rdfs:label
+      conforms_to:
+        annotations:
+          owl.fstring: AnnotationAssertion( dcterms:conformsTo {id} pizza:{V} )
+        slot_uri: dcterms:conformsTo
+        designates_type: true
+      subClassOf:
+        annotations:
+          owl: SubClassOf
+        slot_uri: rdfs:subClassOf
+      hasToppings:
+        annotations:
+          owl: ObjectSomeValuesFrom
+        singular_name: hasTopping
+        multivalued: true
+        range: PizzaTopping
+      ## ---
+      ## This attribute is new in part 3:
+      ## ---
+      hasCountryOfOrigin:
+        annotations:
+          owl: ObjectHasValue
+        range: Country
+  PizzaTopping:
+    attributes:
+      id:
+        identifier: true
+        range: uriorcurie
+      label:
+        annotations:
+          owl: AnnotationAssertion
+        slot_uri: rdfs:label
+      conforms_to:
+        annotations:
+          owl.fstring: AnnotationAssertion( dcterms:conformsTo {id} pizza:{V} )
+        slot_uri: dcterms:conformsTo
+        designates_type: true
+      subClassOf:
+        annotations:
+          owl: SubClassOf
+        slot_uri: rdfs:subClassOf
+      hasToppings:
+        singular_name: hasTopping
+        range: PizzaTopping
+        multivalued: true
+        annotations:
+          owl: ObjectSomeValuesFrom
+

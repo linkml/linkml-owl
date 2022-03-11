@@ -16,6 +16,7 @@ docs/examples.md: tests/output/owl_dumper_test.md
 example-docs docs/example-schema/index.md: tests/inputs/owl_dumper_test.yaml
 	poetry run gen-doc --template-directory docgen-templates -d docs/example-schema $< 
 
+
 serve:
 	$(RUN) mkdocs serve
 
