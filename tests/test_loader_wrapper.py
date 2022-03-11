@@ -25,8 +25,8 @@ from tests import MODEL_DIR, INPUT_DIR, OUTPUT_DIR
 
 """Test the module can be imported."""
 
-SCHEMA_IN = os.path.join(INPUT_DIR, 'ro-metamodel-v2.yaml')
-DATA_IN = os.path.join(INPUT_DIR, 'ro-data-v2.yaml')
+SCHEMA_IN = os.path.join(INPUT_DIR, 'ro-metamodel.yaml')
+DATA_IN = os.path.join(INPUT_DIR, 'ro-data.yaml')
 META_ONT_OUT = os.path.join(OUTPUT_DIR, 'ro-meta-ont.ttl')
 
 
