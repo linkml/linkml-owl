@@ -297,7 +297,7 @@ classes:
       owl: Class
   EquivGenusAndPartOf:
     is_a: NamedThing
-    description: test metaclass illustrating basic simple genus-differentia style logical definition, including so-called GCIs
+    description: test metaclass illustrating basic simple genus-differentia style logical definition, including so-called hidden GCIs
     slots:
       - subclass_of
       - part_of
@@ -318,6 +318,27 @@ classes:
         description: other parts ofs not in the differntating conditions (sometimes called hidden GCIs)
         annotations:
           owl: ObjectSomeValuesFrom
+  EquivGenusAndPartOfWithAutoLabel:
+    is_a: NamedThing
+    description: As EquivGenusAndPartOf, demonstrating string serialization
+    slots:
+      - subclass_of
+      - part_of
+    slot_usage:
+      label:
+        # TODO
+        string_serialization:
+          "{part_of.label} of {subclass_of.label}"
+      subclass_of:
+        description: the genus of the definition
+        required: true
+        annotations:
+          owl: EquivalentClasses, IntersectionOf
+      part_of:
+        required: true
+        description: the part-of differentiae
+        annotations:
+          owl: EquivalentClasses, IntersectionOf, ObjectSomeValuesFrom
   EquivGenusAndPartOfWithAxiomAnnotation:
     is_a: NamedThing
     description: test metaclass illustrating basic simple genus-differentia style logical definition, including axiom annotation
@@ -457,6 +478,35 @@ classes:
                   )
         {% endfor %}
 
+  GCIPropagationMetapattern:
+    mixin: true
+    description: mixin for patterns that require GCI inference
+    attributes:
+      genus:
+        range: NamedThing
+      differentia_relation:
+        range: NamedThing
+      differentia_filler:
+        range: NamedThing
+      inferred_predicate:
+        range: NamedThing
+      propagation_relation:
+        range: NamedThing
+    annotations:
+      owl.template: |-
+        SubClassOf(
+           ObjectSomeValuesFrom(
+             ObjectIntersectionOf( {{genus}}
+                                   ObjectSomeValuesFrom(
+                                     {{differentia_relation}}
+                                     ObjectSomeValuesFrom( {{propagation_relation}}
+                                                           {{differentia_filler}} ))))
+           ObjectSomeValuesFrom(
+              {{inferred_predicate}}
+              ObjectIntersectionOf( {{genus}}
+                                    ObjectSomeValuesFrom(
+                                      {{differentia_relation}}
+                                      {{differentia_filler}} ))
 
   Phenotype:
     is_a: NamedThing

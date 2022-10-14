@@ -2,7 +2,6 @@
 import logging
 import os
 import yaml
-import pytest
 import unittest
 
 from copy import deepcopy
@@ -18,9 +17,9 @@ from linkml_runtime.utils.schema_as_dict import schema_as_dict
 from linkml_runtime.utils.yamlutils import YAMLRoot
 from rdflib import RDFS
 from rdflib.namespace import Namespace, SKOS, DCTERMS
-from linkml_owl.owl_dumper import OWLDumper
+from linkml_owl.dumpers.owl_dumper import OWLDumper
 from funowl import Axiom, AnnotationAssertion, Literal, SubClassOf, ObjectSomeValuesFrom, \
-    ObjectAllValuesFrom, ObjectUnionOf, EquivalentClasses, ObjectIntersectionOf, Annotation, DisjointUnion
+    ObjectAllValuesFrom, ObjectUnionOf, EquivalentClasses, ObjectIntersectionOf, Annotation
 
 from linkml_owl.util.trim_yaml import trim_yaml
 from tests import INPUT_DIR, OUTPUT_DIR
@@ -80,6 +79,8 @@ class TestOwlDumper(unittest.TestCase):
     def test_owl_dumper(self):
         """
         Test OWLDumper
+
+        This also generates the file ./tests/output/owl_dumper_test.md
         """
         X = Namespace("http://example.org/")
         BFO = Namespace("http://purl.obolibrary.org/obo/BFO_")
@@ -93,8 +94,7 @@ class TestOwlDumper(unittest.TestCase):
 
         md = "# linkml-owl Test Cases\n\n"
         md += 'These examples are generated automatically from test_owl_dumper\n\n'
-        md += 'For the complete schema, see tests/input/owl_dumper_test.yaml\n\n'
-
+        md += 'For the complete schema, see [owl_dumper_test.yaml](https://github.com/linkml/linkml-owl/blob/main/tests/inputs/owl_dumper_test.yaml)\n\n'
 
         checks = []
         def add_check(*args, **kwargs):
@@ -140,12 +140,11 @@ class TestOwlDumper(unittest.TestCase):
         add_check("Basic SubClassOf between named classes",
                   [py_mod.Child('x:a', subclass_of='x:b')],
                   [SubClassOf(X.a, X.b)],
-                  """Adding SubClassOf annotation to the linkml class forces a SubClass axiom
-                  """)
+                  """Adding SubClassOf annotation to the linkml class forces a SubClass axiom""")
         add_check("basic direct equivalence between named classes",
                   [py_mod.DirectEquivalent('x:a', equivalent_to='x:b')],
                   [EquivalentClasses(X.a, X.b)],
-                  "Adding EquivalentTo annotation to the linkml class forces a SubClass axiom")
+                  "Adding EquivalentTo annotation to the linkml class forces an EquivalentClass axiom")
         #add_check("n-ary equivalence between named classes",
         #           [py_mod.DirectEquivalent('x:a', equivalent_to=['x:b', 'x:c'])],
         #          [EquivalentClasses(X.a, X.b, X.c)],

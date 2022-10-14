@@ -42,6 +42,11 @@ We recommend you constrain things as strictly as possible
 - Declare ranges for all slots
 - Use `pattern` to constraint string values
 
+Note that the general LinkML framework can be used to *structurally validate* input data,
+but to *semantically validate* the OWL output you should use an OWL reasoner.
+
+We recommend use of ROBOT and ODK to build pipelines for validating and releasing ontologies.
+
 ## Auto-filling in data
 
 The linkml-owl framework does not provide extensive mechanisms for auto-filling data. Here auto-filling means:

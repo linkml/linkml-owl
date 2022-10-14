@@ -200,7 +200,7 @@ We recommend ROBOT as an easy way to perform convesion between OWL serialization
 robot convert -i pizza01.ofn -o pizza01.owl
 ```
 
-## Viewing in Proetege
+## Viewing in Protege
 
 You can also view the ontology in Protege:
 

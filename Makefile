@@ -4,12 +4,14 @@ RUN = poetry run
 all: docs/examples.md test
 
 test:
-	$(RUN) python -m unittest tests/test_*.py
+	$(RUN) python -m unittest discover
 #	$(RUN) pytest
 
 tests/model/%.py: tests/model/%.yaml
 	$(RUN) gen-python $< > $@.tmp && mv $@.tmp $@
 
+# the examples.md file displayed on the site is generated
+# from test_owl_dumper.py
 docs/examples.md: tests/output/owl_dumper_test.md
 	cp $< $@
 

@@ -11,12 +11,13 @@ nav:
       Templates: templates.md
   - Examples:
       Showcase: examples.md
+      Use in other projects: current-uses.md
   - Tutorial (in progress):
       About: tutorial/index.md
-      Part 1: tutorial/pizza01.md
-      Part 2: tutorial/pizza02.md
-      Part 3: tutorial/pizza03.md
-      Part 4: tutorial/pizza04.md
+      Part 1 Basics: tutorial/pizza01.md
+      Part 2 Relationships: tutorial/pizza02.md
+      Part 3 Individuals: tutorial/pizza03.md
+      Part 4 Inheritance: tutorial/pizza04.md
 #      Part 5: tutorial/pizza05.md
 #      Part 6: tutorial/pizza06.md
 #      Part 7: tutorial/pizza07.md
@@ -32,3 +33,4 @@ nav:
       Specification: specification.md
 site_url: https://linkml.github.io/linkml-owl/
 repo_url: https://github.com/linkml/linkml-owl/
+edit_uri: ./edit/main/docs/

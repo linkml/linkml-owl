@@ -3,7 +3,7 @@
 So far we have made a simple subsumption hierarchy with minimal metadata on each class
 
 We will now extend the model to include relationships, modeled using
-[existential restriction](https://www.w3.org/TR/owl2-syntax/#Existential_Quantification) axioms. Specifically, we will add some pizza classes
+[existential restriction](https://www.w3.org/TR/owl2-syntax/#Existential_Quantification) axioms (aka *restrictions*). Specifically, we will add some pizza classes
 and relate them to toppings via a hasToppings relationships.
 
 ## Model
@@ -98,7 +98,7 @@ in both classes). We will return to address this issue later.
 
 Here we introduce a new slot/attribute `hasToppings`. This has an interpretation of [ObjectSomeValuesFrom](https://www.w3.org/TR/owl2-syntax/#Existential_Quantification)
 
-## Data
+## Input Records
 
 Our new data file now has two kinds of records: PizzaToppings and NamedPizzas:
 
@@ -177,7 +177,7 @@ Our new data file now has two kinds of records: PizzaToppings and NamedPizzas:
 
 Note the hasToppings slot is multivalued, so this is specified as a list.
 
-## Output
+## OWL Output
 
 [pizza02.ofn](pizza02.ofn):
 

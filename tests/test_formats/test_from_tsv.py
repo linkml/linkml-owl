@@ -2,17 +2,14 @@
 import logging
 import os
 import unittest
-import pytest
 from linkml.generators.pythongen import PythonGenerator
 from linkml_runtime import SchemaView
 
-from rdflib import Graph
-
 from linkml_owl.util.loader_wrapper import load_structured_file
-from linkml_owl.owl_dumper import OWLDumper
+from linkml_owl.dumpers.owl_dumper import OWLDumper
 from funowl.converters.functional_converter import to_python
 
-from tests import MODEL_DIR, INPUT_DIR, OUTPUT_DIR
+from tests import INPUT_DIR, OUTPUT_DIR
 
 SCHEMA_IN = os.path.join(INPUT_DIR, 'owl_dumper_test.yaml')
 DATA_IN = os.path.join(INPUT_DIR, 'parts.csv')

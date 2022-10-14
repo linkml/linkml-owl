@@ -2,9 +2,15 @@
 
 ## Installation
 
+LinkML-OWL is pure python and can be installed from PyPI:
+
 ```bash
 pip install linkml-owl
 ```
+
+You will need Python 3.8 or higher.
+
+This will give you the command line tools you need. 
 
 ## Usage
 
