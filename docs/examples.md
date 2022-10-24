@@ -2,7 +2,7 @@
 
 These examples are generated automatically from test_owl_dumper
 
-For the complete schema, see tests/input/owl_dumper_test.yaml
+For the complete schema, see [owl_dumper_test.yaml](https://github.com/linkml/linkml-owl/blob/main/tests/inputs/owl_dumper_test.yaml)
 
 ## Annotation using literals
 
@@ -17,19 +17,28 @@ __Schema__:
 id: http//example.org/Annotation-using-literals
 classes:
   NamedThing:
+    description: generic grouping for classes, relations, individuals, and other named
+      entities
     is_a: Thing
+    abstract: true
     attributes:
       id:
+        description: the CURIE or IRI of the focal element
         identifier: true
         range: uriorcurie
+        required: true
       label:
         annotations:
           owl: AnnotationProperty, AnnotationAssertion
+        description: a descriptive name/label for an element
         slot_uri: rdfs:label
+        recommended: true
       definition:
         annotations:
           owl: AnnotationProperty, AnnotationAssertion
+        description: a human-readable definition of an element
         slot_uri: IAO:0000115
+        recommended: true
 
 ```
 
@@ -46,11 +55,11 @@ __Input__:
 __Generated axioms__:
 
 ```
-Prefix( xml: = <http://www.w3.org/XML/1998/namespace> )
+Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
 Prefix( rdf: = <http://www.w3.org/1999/02/22-rdf-syntax-ns#> )
 Prefix( rdfs: = <http://www.w3.org/2000/01/rdf-schema#> )
 Prefix( xsd: = <http://www.w3.org/2001/XMLSchema#> )
-Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
+Prefix( xml: = <http://www.w3.org/XML/1998/namespace> )
 Prefix( linkml: = <https://w3id.org/linkml/> )
 Prefix( test: = <https://w3id.org/linkml/owl/tests/> )
 Prefix( BFO: = <http://purl.obolibrary.org/obo/BFO_> )
@@ -77,26 +86,34 @@ __Schema__:
 ```yaml
 id: http//example.org/Annotation-using-IRIs
 classes:
-  ExactMatch:
+  NamedThingWithMatches:
+    description: test metaclass illustrating generation of skos annotation axioms
     is_a: NamedThing
     attributes:
       exactMatch:
         annotations:
           owl: AnnotationAssertion
+        description: a concept that is the object of a match triple
         slot_uri: skos:exactMatch
         range: NamedThing
         required: true
       id:
+        description: the CURIE or IRI of the focal element
         identifier: true
         range: uriorcurie
+        required: true
       label:
         annotations:
           owl: AnnotationProperty, AnnotationAssertion
+        description: a descriptive name/label for an element
         slot_uri: rdfs:label
+        recommended: true
       definition:
         annotations:
           owl: AnnotationProperty, AnnotationAssertion
+        description: a human-readable definition of an element
         slot_uri: IAO:0000115
+        recommended: true
 
 ```
 
@@ -113,11 +130,11 @@ __Input__:
 __Generated axioms__:
 
 ```
-Prefix( xml: = <http://www.w3.org/XML/1998/namespace> )
+Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
 Prefix( rdf: = <http://www.w3.org/1999/02/22-rdf-syntax-ns#> )
 Prefix( rdfs: = <http://www.w3.org/2000/01/rdf-schema#> )
 Prefix( xsd: = <http://www.w3.org/2001/XMLSchema#> )
-Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
+Prefix( xml: = <http://www.w3.org/XML/1998/namespace> )
 Prefix( linkml: = <https://w3id.org/linkml/> )
 Prefix( test: = <https://w3id.org/linkml/owl/tests/> )
 Prefix( BFO: = <http://purl.obolibrary.org/obo/BFO_> )
@@ -144,26 +161,35 @@ __Schema__:
 ```yaml
 id: http//example.org/Annotation-using-forced-literals
 classes:
-  ExactMatchAsLiteral:
+  NamedThingWithMatchesAsLiterals:
+    description: test metaclass illustrating generation of skos annotation axioms,
+      forcing use of literals
     is_a: NamedThing
     attributes:
       exactMatch:
         annotations:
           owl: AnnotationAssertion
+        description: we override the range to be a string
         slot_uri: skos:exactMatch
         range: string
         required: true
       id:
+        description: the CURIE or IRI of the focal element
         identifier: true
         range: uriorcurie
+        required: true
       label:
         annotations:
           owl: AnnotationProperty, AnnotationAssertion
+        description: a descriptive name/label for an element
         slot_uri: rdfs:label
+        recommended: true
       definition:
         annotations:
           owl: AnnotationProperty, AnnotationAssertion
+        description: a human-readable definition of an element
         slot_uri: IAO:0000115
+        recommended: true
 
 ```
 
@@ -180,11 +206,11 @@ __Input__:
 __Generated axioms__:
 
 ```
-Prefix( xml: = <http://www.w3.org/XML/1998/namespace> )
+Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
 Prefix( rdf: = <http://www.w3.org/1999/02/22-rdf-syntax-ns#> )
 Prefix( rdfs: = <http://www.w3.org/2000/01/rdf-schema#> )
 Prefix( xsd: = <http://www.w3.org/2001/XMLSchema#> )
-Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
+Prefix( xml: = <http://www.w3.org/XML/1998/namespace> )
 Prefix( linkml: = <https://w3id.org/linkml/> )
 Prefix( test: = <https://w3id.org/linkml/owl/tests/> )
 Prefix( BFO: = <http://purl.obolibrary.org/obo/BFO_> )
@@ -212,24 +238,33 @@ __Schema__:
 id: http//example.org/Axiom-annotation-with-Literal-value-on-annotation-axiom
 classes:
   DefinitionWithAxiomAnnotation:
+    description: test metaclass illustrating how a text definition can be adorned
+      with annotation axioms, where values are literals
     is_a: NamedThing
     attributes:
       definition_source:
+        description: origin of textual definition
         slot_uri: dcterms:source
         multivalued: true
       id:
+        description: the CURIE or IRI of the focal element
         identifier: true
         range: uriorcurie
+        required: true
       label:
         annotations:
           owl: AnnotationProperty, AnnotationAssertion
+        description: a descriptive name/label for an element
         slot_uri: rdfs:label
+        recommended: true
       definition:
         annotations:
           owl.axiom_annotation.slots:
             tag: owl.axiom_annotation.slots
             value: definition_source
+        description: a human-readable definition of an element
         slot_uri: IAO:0000115
+        recommended: true
 
 ```
 
@@ -249,11 +284,11 @@ __Input__:
 __Generated axioms__:
 
 ```
-Prefix( xml: = <http://www.w3.org/XML/1998/namespace> )
+Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
 Prefix( rdf: = <http://www.w3.org/1999/02/22-rdf-syntax-ns#> )
 Prefix( rdfs: = <http://www.w3.org/2000/01/rdf-schema#> )
 Prefix( xsd: = <http://www.w3.org/2001/XMLSchema#> )
-Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
+Prefix( xml: = <http://www.w3.org/XML/1998/namespace> )
 Prefix( linkml: = <https://w3id.org/linkml/> )
 Prefix( test: = <https://w3id.org/linkml/owl/tests/> )
 Prefix( BFO: = <http://purl.obolibrary.org/obo/BFO_> )
@@ -285,25 +320,34 @@ __Schema__:
 id: http//example.org/Axiom-annotation-with-IRI-val-on-annotation-axiom
 classes:
   DefinitionWithIRIAxiomAnnotation:
+    description: test metaclass illustrating how a text definition can be adorned
+      with annotation axioms, where the values are IRIs
     is_a: NamedThing
     attributes:
       definition_source:
+        description: origin of textual definition
         slot_uri: dcterms:source
         multivalued: true
         range: NamedThing
       id:
+        description: the CURIE or IRI of the focal element
         identifier: true
         range: uriorcurie
+        required: true
       label:
         annotations:
           owl: AnnotationProperty, AnnotationAssertion
+        description: a descriptive name/label for an element
         slot_uri: rdfs:label
+        recommended: true
       definition:
         annotations:
           owl.axiom_annotation.slots:
             tag: owl.axiom_annotation.slots
             value: definition_source
+        description: a human-readable definition of an element
         slot_uri: IAO:0000115
+        recommended: true
 
 ```
 
@@ -323,11 +367,11 @@ __Input__:
 __Generated axioms__:
 
 ```
-Prefix( xml: = <http://www.w3.org/XML/1998/namespace> )
+Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
 Prefix( rdf: = <http://www.w3.org/1999/02/22-rdf-syntax-ns#> )
 Prefix( rdfs: = <http://www.w3.org/2000/01/rdf-schema#> )
 Prefix( xsd: = <http://www.w3.org/2001/XMLSchema#> )
-Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
+Prefix( xml: = <http://www.w3.org/XML/1998/namespace> )
 Prefix( linkml: = <https://w3id.org/linkml/> )
 Prefix( test: = <https://w3id.org/linkml/owl/tests/> )
 Prefix( BFO: = <http://purl.obolibrary.org/obo/BFO_> )
@@ -359,25 +403,34 @@ __Schema__:
 id: http//example.org/Axiom-annotations-with-IRI-val-on-annotation-axiom
 classes:
   DefinitionWithIRIAxiomAnnotation:
+    description: test metaclass illustrating how a text definition can be adorned
+      with annotation axioms, where the values are IRIs
     is_a: NamedThing
     attributes:
       definition_source:
+        description: origin of textual definition
         slot_uri: dcterms:source
         multivalued: true
         range: NamedThing
       id:
+        description: the CURIE or IRI of the focal element
         identifier: true
         range: uriorcurie
+        required: true
       label:
         annotations:
           owl: AnnotationProperty, AnnotationAssertion
+        description: a descriptive name/label for an element
         slot_uri: rdfs:label
+        recommended: true
       definition:
         annotations:
           owl.axiom_annotation.slots:
             tag: owl.axiom_annotation.slots
             value: definition_source
+        description: a human-readable definition of an element
         slot_uri: IAO:0000115
+        recommended: true
 
 ```
 
@@ -398,11 +451,11 @@ __Input__:
 __Generated axioms__:
 
 ```
-Prefix( xml: = <http://www.w3.org/XML/1998/namespace> )
+Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
 Prefix( rdf: = <http://www.w3.org/1999/02/22-rdf-syntax-ns#> )
 Prefix( rdfs: = <http://www.w3.org/2000/01/rdf-schema#> )
 Prefix( xsd: = <http://www.w3.org/2001/XMLSchema#> )
-Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
+Prefix( xml: = <http://www.w3.org/XML/1998/namespace> )
 Prefix( linkml: = <https://w3id.org/linkml/> )
 Prefix( test: = <https://w3id.org/linkml/owl/tests/> )
 Prefix( BFO: = <http://purl.obolibrary.org/obo/BFO_> )
@@ -426,8 +479,7 @@ Ontology( <https://w3id.org/linkml/owl/tests>
 ## Basic SubClassOf between named classes
 
 
-__Description__: _Adding SubClassOf annotation to the linkml class forces a SubClass axiom
-                  _
+__Description__: _Adding SubClassOf annotation to the linkml class forces a SubClass axiom_
 
 
 __Schema__:
@@ -436,26 +488,34 @@ __Schema__:
 id: http//example.org/Basic-SubClassOf-between-named-classes
 classes:
   Child:
+    description: test metaclass illustrating classes with basic superclass parents
     is_a: NamedThing
     attributes:
       subclass_of:
         annotations:
           owl: SubClassOf
+        description: named class this is subclass of
         slot_uri: rdfs:subclass_of
         multivalued: true
         range: NamedThing
         required: true
       id:
+        description: the CURIE or IRI of the focal element
         identifier: true
         range: uriorcurie
+        required: true
       label:
         annotations:
           owl: AnnotationProperty, AnnotationAssertion
+        description: a descriptive name/label for an element
         slot_uri: rdfs:label
+        recommended: true
       definition:
         annotations:
           owl: AnnotationProperty, AnnotationAssertion
+        description: a human-readable definition of an element
         slot_uri: IAO:0000115
+        recommended: true
 
 ```
 
@@ -473,11 +533,11 @@ __Input__:
 __Generated axioms__:
 
 ```
-Prefix( xml: = <http://www.w3.org/XML/1998/namespace> )
+Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
 Prefix( rdf: = <http://www.w3.org/1999/02/22-rdf-syntax-ns#> )
 Prefix( rdfs: = <http://www.w3.org/2000/01/rdf-schema#> )
 Prefix( xsd: = <http://www.w3.org/2001/XMLSchema#> )
-Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
+Prefix( xml: = <http://www.w3.org/XML/1998/namespace> )
 Prefix( linkml: = <https://w3id.org/linkml/> )
 Prefix( test: = <https://w3id.org/linkml/owl/tests/> )
 Prefix( BFO: = <http://purl.obolibrary.org/obo/BFO_> )
@@ -496,7 +556,7 @@ Ontology( <https://w3id.org/linkml/owl/tests>
 ## basic direct equivalence between named classes
 
 
-__Description__: _Adding EquivalentTo annotation to the linkml class forces a SubClass axiom_
+__Description__: _Adding EquivalentTo annotation to the linkml class forces an EquivalentClass axiom_
 
 
 __Schema__:
@@ -505,26 +565,35 @@ __Schema__:
 id: http//example.org/basic-direct-equivalence-between-named-classes
 classes:
   DirectEquivalent:
+    description: test metaclass illustrating simple equivalence between two named
+      classes
     is_a: NamedThing
     attributes:
       equivalent_to:
         annotations:
           owl: EquivalentClasses
+        description: named class this is equivalent to
         slot_uri: owl:equivalentClasses
         multivalued: true
         range: NamedThing
         required: true
       id:
+        description: the CURIE or IRI of the focal element
         identifier: true
         range: uriorcurie
+        required: true
       label:
         annotations:
           owl: AnnotationProperty, AnnotationAssertion
+        description: a descriptive name/label for an element
         slot_uri: rdfs:label
+        recommended: true
       definition:
         annotations:
           owl: AnnotationProperty, AnnotationAssertion
+        description: a human-readable definition of an element
         slot_uri: IAO:0000115
+        recommended: true
 
 ```
 
@@ -542,11 +611,11 @@ __Input__:
 __Generated axioms__:
 
 ```
-Prefix( xml: = <http://www.w3.org/XML/1998/namespace> )
+Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
 Prefix( rdf: = <http://www.w3.org/1999/02/22-rdf-syntax-ns#> )
 Prefix( rdfs: = <http://www.w3.org/2000/01/rdf-schema#> )
 Prefix( xsd: = <http://www.w3.org/2001/XMLSchema#> )
-Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
+Prefix( xml: = <http://www.w3.org/XML/1998/namespace> )
 Prefix( linkml: = <https://w3id.org/linkml/> )
 Prefix( test: = <https://w3id.org/linkml/owl/tests/> )
 Prefix( BFO: = <http://purl.obolibrary.org/obo/BFO_> )
@@ -578,26 +647,35 @@ __Schema__:
 id: http//example.org/SubClassOf-SomeValuesFrom
 classes:
   Part:
+    description: test metaclass illustrating classes with basic heirarchical existential
+      parents
     is_a: NamedThing
     attributes:
       part_of:
         annotations:
           owl: ObjectSomeValuesFrom
+        description: element this is a part of
         slot_uri: BFO:0000050
         multivalued: true
         range: NamedThing
         required: true
       id:
+        description: the CURIE or IRI of the focal element
         identifier: true
         range: uriorcurie
+        required: true
       label:
         annotations:
           owl: AnnotationProperty, AnnotationAssertion
+        description: a descriptive name/label for an element
         slot_uri: rdfs:label
+        recommended: true
       definition:
         annotations:
           owl: AnnotationProperty, AnnotationAssertion
+        description: a human-readable definition of an element
         slot_uri: IAO:0000115
+        recommended: true
 
 ```
 
@@ -615,11 +693,11 @@ __Input__:
 __Generated axioms__:
 
 ```
-Prefix( xml: = <http://www.w3.org/XML/1998/namespace> )
+Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
 Prefix( rdf: = <http://www.w3.org/1999/02/22-rdf-syntax-ns#> )
 Prefix( rdfs: = <http://www.w3.org/2000/01/rdf-schema#> )
 Prefix( xsd: = <http://www.w3.org/2001/XMLSchema#> )
-Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
+Prefix( xml: = <http://www.w3.org/XML/1998/namespace> )
 Prefix( linkml: = <https://w3id.org/linkml/> )
 Prefix( test: = <https://w3id.org/linkml/owl/tests/> )
 Prefix( BFO: = <http://purl.obolibrary.org/obo/BFO_> )
@@ -647,26 +725,35 @@ __Schema__:
 id: http//example.org/SubClassOf-AllValuesFrom
 classes:
   PartOnly:
+    description: test metaclass illustrating classes with basic part-of-allValues
+      pattern
     is_a: NamedThing
     attributes:
       part_of:
         annotations:
           owl: ObjectAllValuesFrom
+        description: element this is a part of
         slot_uri: BFO:0000050
         multivalued: true
         range: NamedThing
         required: true
       id:
+        description: the CURIE or IRI of the focal element
         identifier: true
         range: uriorcurie
+        required: true
       label:
         annotations:
           owl: AnnotationProperty, AnnotationAssertion
+        description: a descriptive name/label for an element
         slot_uri: rdfs:label
+        recommended: true
       definition:
         annotations:
           owl: AnnotationProperty, AnnotationAssertion
+        description: a human-readable definition of an element
         slot_uri: IAO:0000115
+        recommended: true
 
 ```
 
@@ -684,11 +771,11 @@ __Input__:
 __Generated axioms__:
 
 ```
-Prefix( xml: = <http://www.w3.org/XML/1998/namespace> )
+Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
 Prefix( rdf: = <http://www.w3.org/1999/02/22-rdf-syntax-ns#> )
 Prefix( rdfs: = <http://www.w3.org/2000/01/rdf-schema#> )
 Prefix( xsd: = <http://www.w3.org/2001/XMLSchema#> )
-Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
+Prefix( xml: = <http://www.w3.org/XML/1998/namespace> )
 Prefix( linkml: = <https://w3id.org/linkml/> )
 Prefix( test: = <https://w3id.org/linkml/owl/tests/> )
 Prefix( BFO: = <http://purl.obolibrary.org/obo/BFO_> )
@@ -716,26 +803,35 @@ __Schema__:
 id: http//example.org/SubClassOf-SomeValuesFrom-plus-label
 classes:
   Part:
+    description: test metaclass illustrating classes with basic heirarchical existential
+      parents
     is_a: NamedThing
     attributes:
       part_of:
         annotations:
           owl: ObjectSomeValuesFrom
+        description: element this is a part of
         slot_uri: BFO:0000050
         multivalued: true
         range: NamedThing
         required: true
       id:
+        description: the CURIE or IRI of the focal element
         identifier: true
         range: uriorcurie
+        required: true
       label:
         annotations:
           owl: AnnotationProperty, AnnotationAssertion
+        description: a descriptive name/label for an element
         slot_uri: rdfs:label
+        recommended: true
       definition:
         annotations:
           owl: AnnotationProperty, AnnotationAssertion
+        description: a human-readable definition of an element
         slot_uri: IAO:0000115
+        recommended: true
 
 ```
 
@@ -754,11 +850,11 @@ __Input__:
 __Generated axioms__:
 
 ```
-Prefix( xml: = <http://www.w3.org/XML/1998/namespace> )
+Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
 Prefix( rdf: = <http://www.w3.org/1999/02/22-rdf-syntax-ns#> )
 Prefix( rdfs: = <http://www.w3.org/2000/01/rdf-schema#> )
 Prefix( xsd: = <http://www.w3.org/2001/XMLSchema#> )
-Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
+Prefix( xml: = <http://www.w3.org/XML/1998/namespace> )
 Prefix( linkml: = <https://w3id.org/linkml/> )
 Prefix( test: = <https://w3id.org/linkml/owl/tests/> )
 Prefix( BFO: = <http://purl.obolibrary.org/obo/BFO_> )
@@ -788,26 +884,34 @@ __Schema__:
 id: http//example.org/SubClassOf-Union
 classes:
   ChildOfUnion:
+    description: test metaclass illustrating classes whose parents are a union
     is_a: NamedThing
     attributes:
       subclass_of:
         annotations:
           owl: SubClassOf, UnionOf
+        description: named class this is subclass of
         slot_uri: rdfs:subclass_of
         multivalued: true
         range: NamedThing
         required: true
       id:
+        description: the CURIE or IRI of the focal element
         identifier: true
         range: uriorcurie
+        required: true
       label:
         annotations:
           owl: AnnotationProperty, AnnotationAssertion
+        description: a descriptive name/label for an element
         slot_uri: rdfs:label
+        recommended: true
       definition:
         annotations:
           owl: AnnotationProperty, AnnotationAssertion
+        description: a human-readable definition of an element
         slot_uri: IAO:0000115
+        recommended: true
 
 ```
 
@@ -826,11 +930,11 @@ __Input__:
 __Generated axioms__:
 
 ```
-Prefix( xml: = <http://www.w3.org/XML/1998/namespace> )
+Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
 Prefix( rdf: = <http://www.w3.org/1999/02/22-rdf-syntax-ns#> )
 Prefix( rdfs: = <http://www.w3.org/2000/01/rdf-schema#> )
 Prefix( xsd: = <http://www.w3.org/2001/XMLSchema#> )
-Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
+Prefix( xml: = <http://www.w3.org/XML/1998/namespace> )
 Prefix( linkml: = <https://w3id.org/linkml/> )
 Prefix( test: = <https://w3id.org/linkml/owl/tests/> )
 Prefix( BFO: = <http://purl.obolibrary.org/obo/BFO_> )
@@ -861,25 +965,36 @@ __Schema__:
 id: http//example.org/EquivalentTo-Union
 classes:
   EquivUnion:
+    description: test metaclass illustrating classes defined by a union
+    examples:
+    - value: prokaryote
+      description: a prokaryote is equivalent to a bacteria or an archaea
     is_a: NamedThing
     attributes:
       operands:
         annotations:
           owl: EquivalentClasses, UnionOf
+        description: elements of the union expression
         multivalued: true
         range: NamedThing
         required: true
       id:
+        description: the CURIE or IRI of the focal element
         identifier: true
         range: uriorcurie
+        required: true
       label:
         annotations:
           owl: AnnotationProperty, AnnotationAssertion
+        description: a descriptive name/label for an element
         slot_uri: rdfs:label
+        recommended: true
       definition:
         annotations:
           owl: AnnotationProperty, AnnotationAssertion
+        description: a human-readable definition of an element
         slot_uri: IAO:0000115
+        recommended: true
 
 ```
 
@@ -898,11 +1013,11 @@ __Input__:
 __Generated axioms__:
 
 ```
-Prefix( xml: = <http://www.w3.org/XML/1998/namespace> )
+Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
 Prefix( rdf: = <http://www.w3.org/1999/02/22-rdf-syntax-ns#> )
 Prefix( rdfs: = <http://www.w3.org/2000/01/rdf-schema#> )
 Prefix( xsd: = <http://www.w3.org/2001/XMLSchema#> )
-Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
+Prefix( xml: = <http://www.w3.org/XML/1998/namespace> )
 Prefix( linkml: = <https://w3id.org/linkml/> )
 Prefix( test: = <https://w3id.org/linkml/owl/tests/> )
 Prefix( BFO: = <http://purl.obolibrary.org/obo/BFO_> )
@@ -937,6 +1052,8 @@ __Schema__:
 id: http//example.org/EquivalentTo-IntersectionOf
 classes:
   EquivIntersection:
+    description: test metaclass illustrating classes defined by a simple intersection
+      of classes
     is_a: NamedThing
     attributes:
       operands:
@@ -946,16 +1063,22 @@ classes:
         range: NamedThing
         required: true
       id:
+        description: the CURIE or IRI of the focal element
         identifier: true
         range: uriorcurie
+        required: true
       label:
         annotations:
           owl: AnnotationProperty, AnnotationAssertion
+        description: a descriptive name/label for an element
         slot_uri: rdfs:label
+        recommended: true
       definition:
         annotations:
           owl: AnnotationProperty, AnnotationAssertion
+        description: a human-readable definition of an element
         slot_uri: IAO:0000115
+        recommended: true
 
 ```
 
@@ -974,11 +1097,11 @@ __Input__:
 __Generated axioms__:
 
 ```
-Prefix( xml: = <http://www.w3.org/XML/1998/namespace> )
+Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
 Prefix( rdf: = <http://www.w3.org/1999/02/22-rdf-syntax-ns#> )
 Prefix( rdfs: = <http://www.w3.org/2000/01/rdf-schema#> )
 Prefix( xsd: = <http://www.w3.org/2001/XMLSchema#> )
-Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
+Prefix( xml: = <http://www.w3.org/XML/1998/namespace> )
 Prefix( linkml: = <https://w3id.org/linkml/> )
 Prefix( test: = <https://w3id.org/linkml/owl/tests/> )
 Prefix( BFO: = <http://purl.obolibrary.org/obo/BFO_> )
@@ -1012,6 +1135,8 @@ __Schema__:
 id: http//example.org/EquivalentTo-IntersectionOf-with-axiom-annotation
 classes:
   EquivIntersectionWithAxiomAnnotation:
+    description: test metaclass illustrating classes defined by a simple intersection
+      of classes, including an axion annotation
     is_a: NamedThing
     attributes:
       operands:
@@ -1024,19 +1149,26 @@ classes:
         range: NamedThing
         required: true
       logical_definition_source:
+        description: origin of logical definition
         slot_uri: dcterms:source
         multivalued: true
       id:
+        description: the CURIE or IRI of the focal element
         identifier: true
         range: uriorcurie
+        required: true
       label:
         annotations:
           owl: AnnotationProperty, AnnotationAssertion
+        description: a descriptive name/label for an element
         slot_uri: rdfs:label
+        recommended: true
       definition:
         annotations:
           owl: AnnotationProperty, AnnotationAssertion
+        description: a human-readable definition of an element
         slot_uri: IAO:0000115
+        recommended: true
 
 ```
 
@@ -1057,11 +1189,11 @@ __Input__:
 __Generated axioms__:
 
 ```
-Prefix( xml: = <http://www.w3.org/XML/1998/namespace> )
+Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
 Prefix( rdf: = <http://www.w3.org/1999/02/22-rdf-syntax-ns#> )
 Prefix( rdfs: = <http://www.w3.org/2000/01/rdf-schema#> )
 Prefix( xsd: = <http://www.w3.org/2001/XMLSchema#> )
-Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
+Prefix( xml: = <http://www.w3.org/XML/1998/namespace> )
 Prefix( linkml: = <https://w3id.org/linkml/> )
 Prefix( test: = <https://w3id.org/linkml/owl/tests/> )
 Prefix( BFO: = <http://purl.obolibrary.org/obo/BFO_> )
@@ -1096,11 +1228,14 @@ __Schema__:
 id: http//example.org/EquivalentTo-Genus-and-SomeValuesFrom
 classes:
   EquivGenusAndPartOf:
+    description: test metaclass illustrating basic simple genus-differentia style
+      logical definition, including so-called hidden GCIs
     is_a: NamedThing
     attributes:
       subclass_of:
         annotations:
           owl: EquivalentClasses, IntersectionOf
+        description: the genus of the definition
         slot_uri: rdfs:subclass_of
         multivalued: true
         range: NamedThing
@@ -1108,6 +1243,7 @@ classes:
       part_of:
         annotations:
           owl: EquivalentClasses, IntersectionOf, ObjectSomeValuesFrom
+        description: the part-of differentiae
         slot_uri: BFO:0000050
         multivalued: true
         range: NamedThing
@@ -1115,22 +1251,29 @@ classes:
       other_part_ofs:
         annotations:
           owl: ObjectSomeValuesFrom
-        description: for hidden GCIs
+        description: other parts ofs not in the differntating conditions (sometimes
+          called hidden GCIs)
         slot_uri: BFO:0000050
         multivalued: true
         range: NamedThing
         required: false
       id:
+        description: the CURIE or IRI of the focal element
         identifier: true
         range: uriorcurie
+        required: true
       label:
         annotations:
           owl: AnnotationProperty, AnnotationAssertion
+        description: a descriptive name/label for an element
         slot_uri: rdfs:label
+        recommended: true
       definition:
         annotations:
           owl: AnnotationProperty, AnnotationAssertion
+        description: a human-readable definition of an element
         slot_uri: IAO:0000115
+        recommended: true
 
 ```
 
@@ -1151,11 +1294,11 @@ __Input__:
 __Generated axioms__:
 
 ```
-Prefix( xml: = <http://www.w3.org/XML/1998/namespace> )
+Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
 Prefix( rdf: = <http://www.w3.org/1999/02/22-rdf-syntax-ns#> )
 Prefix( rdfs: = <http://www.w3.org/2000/01/rdf-schema#> )
 Prefix( xsd: = <http://www.w3.org/2001/XMLSchema#> )
-Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
+Prefix( xml: = <http://www.w3.org/XML/1998/namespace> )
 Prefix( linkml: = <https://w3id.org/linkml/> )
 Prefix( test: = <https://w3id.org/linkml/owl/tests/> )
 Prefix( BFO: = <http://purl.obolibrary.org/obo/BFO_> )
@@ -1178,6 +1321,127 @@ Ontology( <https://w3id.org/linkml/owl/tests>
 )
 ```
 
+## EquivalentTo Genus and SomeValuesFrom with AutoLabel
+
+
+__Description__: _Label auto-added_
+
+
+__Schema__:
+
+```yaml
+id: http//example.org/EquivalentTo-Genus-and-SomeValuesFrom-with-AutoLabel
+classes:
+  EquivGenusAndPartOfWithAutoLabel:
+    description: As EquivGenusAndPartOf, demonstrating string serialization
+    is_a: NamedThing
+    attributes:
+      label:
+        string_serialization: '{part.label} of {whole.label}'
+        slot_uri: rdfs:label
+        recommended: true
+      part:
+        annotations:
+          owl: EquivalentClasses, IntersectionOf
+        description: the genus of the definition
+        slot_uri: rdfs:subClassOf
+        range: NamedThing
+        required: true
+      whole:
+        annotations:
+          owl: EquivalentClasses, IntersectionOf, ObjectSomeValuesFrom
+        description: the part-of differentia
+        slot_uri: BFO:0000050
+        range: NamedThing
+        required: true
+      id:
+        description: the CURIE or IRI of the focal element
+        identifier: true
+        range: uriorcurie
+        required: true
+      definition:
+        annotations:
+          owl: AnnotationProperty, AnnotationAssertion
+        description: a human-readable definition of an element
+        slot_uri: IAO:0000115
+        recommended: true
+  NamedThing:
+    description: generic grouping for classes, relations, individuals, and other named
+      entities
+    is_a: Thing
+    abstract: true
+    attributes:
+      id:
+        description: the CURIE or IRI of the focal element
+        identifier: true
+        range: uriorcurie
+        required: true
+      label:
+        annotations:
+          owl: AnnotationProperty, AnnotationAssertion
+        description: a descriptive name/label for an element
+        slot_uri: rdfs:label
+        recommended: true
+      definition:
+        annotations:
+          owl: AnnotationProperty, AnnotationAssertion
+        description: a human-readable definition of an element
+        slot_uri: IAO:0000115
+        recommended: true
+
+```
+
+
+__Input__:
+
+```yaml
+-
+  id: x:NewClass
+  part: x:IN
+  whole: x:H
+  
+-
+  id: x:IN
+  label: interneuron
+  
+-
+  id: x:H
+  label: hippocampus
+  
+```
+
+__Generated axioms__:
+
+```
+Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
+Prefix( rdf: = <http://www.w3.org/1999/02/22-rdf-syntax-ns#> )
+Prefix( rdfs: = <http://www.w3.org/2000/01/rdf-schema#> )
+Prefix( xsd: = <http://www.w3.org/2001/XMLSchema#> )
+Prefix( xml: = <http://www.w3.org/XML/1998/namespace> )
+Prefix( linkml: = <https://w3id.org/linkml/> )
+Prefix( test: = <https://w3id.org/linkml/owl/tests/> )
+Prefix( BFO: = <http://purl.obolibrary.org/obo/BFO_> )
+Prefix( IAO: = <http://purl.obolibrary.org/obo/IAO_> )
+Prefix( RO: = <http://purl.obolibrary.org/obo/RO_> )
+Prefix( PATO: = <http://purl.obolibrary.org/obo/PATO_> )
+Prefix( skos: = <http://www.w3.org/2004/02/skos/core#> )
+Prefix( dcterms: = <http://purl.org/dc/terms/> )
+Prefix( x: = <http://example.org/> )
+
+Ontology( <https://w3id.org/linkml/owl/tests>
+    AnnotationAssertion( rdfs:label x:NewClass "interneuron of hippocampus" )
+    EquivalentClasses(
+        x:NewClass
+            ObjectIntersectionOf(
+        x:IN
+            ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000050> x:H )
+    )
+    )
+    AnnotationAssertion( rdfs:label x:IN "interneuron" )
+    AnnotationAssertion( rdfs:label x:H "hippocampus" )
+)
+```
+
 ## Hidden GCI
 
 
@@ -1191,11 +1455,14 @@ __Schema__:
 id: http//example.org/Hidden-GCI
 classes:
   EquivGenusAndPartOf:
+    description: test metaclass illustrating basic simple genus-differentia style
+      logical definition, including so-called hidden GCIs
     is_a: NamedThing
     attributes:
       subclass_of:
         annotations:
           owl: EquivalentClasses, IntersectionOf
+        description: the genus of the definition
         slot_uri: rdfs:subclass_of
         multivalued: true
         range: NamedThing
@@ -1203,6 +1470,7 @@ classes:
       part_of:
         annotations:
           owl: EquivalentClasses, IntersectionOf, ObjectSomeValuesFrom
+        description: the part-of differentiae
         slot_uri: BFO:0000050
         multivalued: true
         range: NamedThing
@@ -1210,22 +1478,29 @@ classes:
       other_part_ofs:
         annotations:
           owl: ObjectSomeValuesFrom
-        description: for hidden GCIs
+        description: other parts ofs not in the differntating conditions (sometimes
+          called hidden GCIs)
         slot_uri: BFO:0000050
         multivalued: true
         range: NamedThing
         required: false
       id:
+        description: the CURIE or IRI of the focal element
         identifier: true
         range: uriorcurie
+        required: true
       label:
         annotations:
           owl: AnnotationProperty, AnnotationAssertion
+        description: a descriptive name/label for an element
         slot_uri: rdfs:label
+        recommended: true
       definition:
         annotations:
           owl: AnnotationProperty, AnnotationAssertion
+        description: a human-readable definition of an element
         slot_uri: IAO:0000115
+        recommended: true
 
 ```
 
@@ -1247,11 +1522,11 @@ __Input__:
 __Generated axioms__:
 
 ```
-Prefix( xml: = <http://www.w3.org/XML/1998/namespace> )
+Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
 Prefix( rdf: = <http://www.w3.org/1999/02/22-rdf-syntax-ns#> )
 Prefix( rdfs: = <http://www.w3.org/2000/01/rdf-schema#> )
 Prefix( xsd: = <http://www.w3.org/2001/XMLSchema#> )
-Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
+Prefix( xml: = <http://www.w3.org/XML/1998/namespace> )
 Prefix( linkml: = <https://w3id.org/linkml/> )
 Prefix( test: = <https://w3id.org/linkml/owl/tests/> )
 Prefix( BFO: = <http://purl.obolibrary.org/obo/BFO_> )
@@ -1286,6 +1561,8 @@ __Schema__:
 id: http//example.org/Hidden-GCI-with-axiom-annotations
 classes:
   EquivGenusAndPartOfWithAxiomAnnotation:
+    description: test metaclass illustrating basic simple genus-differentia style
+      logical definition, including axiom annotation
     is_a: NamedThing
     attributes:
       subclass_of:
@@ -1294,6 +1571,7 @@ classes:
           owl.axiom_annotation.slots:
             tag: owl.axiom_annotation.slots
             value: logical_definition_source
+        description: named class this is subclass of
         slot_uri: rdfs:subclass_of
         multivalued: true
         range: NamedThing
@@ -1304,6 +1582,7 @@ classes:
           owl.axiom_annotation.slots:
             tag: owl.axiom_annotation.slots
             value: logical_definition_source
+        description: element this is a part of
         slot_uri: BFO:0000050
         multivalued: true
         range: NamedThing
@@ -1320,27 +1599,36 @@ classes:
         range: NamedThing
         required: false
       definition_source:
+        description: origin of textual definition
         slot_uri: dcterms:source
         multivalued: true
       logical_definition_source:
+        description: origin of logical definition
         slot_uri: dcterms:source
         multivalued: true
       axiom_source:
+        description: origin of axiom
         slot_uri: dcterms:source
         multivalued: true
       id:
+        description: the CURIE or IRI of the focal element
         identifier: true
         range: uriorcurie
+        required: true
       label:
         annotations:
           owl: AnnotationProperty, AnnotationAssertion
+        description: a descriptive name/label for an element
         slot_uri: rdfs:label
+        recommended: true
       definition:
         annotations:
           owl.axiom_annotation.slots:
             tag: owl.axiom_annotation.slots
             value: definition_source
+        description: a human-readable definition of an element
         slot_uri: IAO:0000115
+        recommended: true
 
 ```
 
@@ -1370,11 +1658,11 @@ __Input__:
 __Generated axioms__:
 
 ```
-Prefix( xml: = <http://www.w3.org/XML/1998/namespace> )
+Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
 Prefix( rdf: = <http://www.w3.org/1999/02/22-rdf-syntax-ns#> )
 Prefix( rdfs: = <http://www.w3.org/2000/01/rdf-schema#> )
 Prefix( xsd: = <http://www.w3.org/2001/XMLSchema#> )
-Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
+Prefix( xml: = <http://www.w3.org/XML/1998/namespace> )
 Prefix( linkml: = <https://w3id.org/linkml/> )
 Prefix( test: = <https://w3id.org/linkml/owl/tests/> )
 Prefix( BFO: = <http://purl.obolibrary.org/obo/BFO_> )
@@ -1420,6 +1708,8 @@ __Schema__:
 id: http//example.org/slot-value-level-fstring-template
 classes:
   ClassTemplateExample1:
+    description: test metaclass illustrating a trivial example of generating an axiom
+      by a simple templated string
     is_a: NamedThing
     attributes:
       subclass_of:
@@ -1427,28 +1717,38 @@ classes:
           owl.fstring:
             tag: owl.fstring
             value: SubClassOf({id} {V})
+        description: named class this is subclass of
         slot_uri: rdfs:subclass_of
         multivalued: true
         range: NamedThing
       part_of:
+        description: element this is a part of
         slot_uri: BFO:0000050
         multivalued: true
         range: NamedThing
       other_part_ofs:
+        description: this slot is used to indicate other part-of relationships that
+          are not in the logical definition
         slot_uri: BFO:0000050
         multivalued: true
         range: NamedThing
       id:
+        description: the CURIE or IRI of the focal element
         identifier: true
         range: uriorcurie
+        required: true
       label:
         annotations:
           owl: AnnotationProperty, AnnotationAssertion
+        description: a descriptive name/label for an element
         slot_uri: rdfs:label
+        recommended: true
       definition:
         annotations:
           owl: AnnotationProperty, AnnotationAssertion
+        description: a human-readable definition of an element
         slot_uri: IAO:0000115
+        recommended: true
 
 ```
 
@@ -1466,11 +1766,11 @@ __Input__:
 __Generated axioms__:
 
 ```
-Prefix( xml: = <http://www.w3.org/XML/1998/namespace> )
+Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
 Prefix( rdf: = <http://www.w3.org/1999/02/22-rdf-syntax-ns#> )
 Prefix( rdfs: = <http://www.w3.org/2000/01/rdf-schema#> )
 Prefix( xsd: = <http://www.w3.org/2001/XMLSchema#> )
-Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
+Prefix( xml: = <http://www.w3.org/XML/1998/namespace> )
 Prefix( linkml: = <https://w3id.org/linkml/> )
 Prefix( test: = <https://w3id.org/linkml/owl/tests/> )
 Prefix( BFO: = <http://purl.obolibrary.org/obo/BFO_> )
@@ -1500,6 +1800,8 @@ __Schema__:
 id: http//example.org/slot-value-level-jinja-template
 classes:
   ClassTemplateExample2:
+    description: test metaclass illustrating an example of generating multiple axioms
+      by a jinja template
     is_a: NamedThing
     attributes:
       subclass_of:
@@ -1507,28 +1809,38 @@ classes:
           owl.template:
             tag: owl.template
             value: '{% for p in subclass_of %}SubClassOf({{id}} {{p}}){% endfor %}'
+        description: named class this is subclass of
         slot_uri: rdfs:subclass_of
         multivalued: true
         range: NamedThing
       part_of:
+        description: element this is a part of
         slot_uri: BFO:0000050
         multivalued: true
         range: NamedThing
       other_part_ofs:
+        description: this slot is used to indicate other part-of relationships that
+          are not in the logical definition
         slot_uri: BFO:0000050
         multivalued: true
         range: NamedThing
       id:
+        description: the CURIE or IRI of the focal element
         identifier: true
         range: uriorcurie
+        required: true
       label:
         annotations:
           owl: AnnotationProperty, AnnotationAssertion
+        description: a descriptive name/label for an element
         slot_uri: rdfs:label
+        recommended: true
       definition:
         annotations:
           owl: AnnotationProperty, AnnotationAssertion
+        description: a human-readable definition of an element
         slot_uri: IAO:0000115
+        recommended: true
 
 ```
 
@@ -1546,11 +1858,11 @@ __Input__:
 __Generated axioms__:
 
 ```
-Prefix( xml: = <http://www.w3.org/XML/1998/namespace> )
+Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
 Prefix( rdf: = <http://www.w3.org/1999/02/22-rdf-syntax-ns#> )
 Prefix( rdfs: = <http://www.w3.org/2000/01/rdf-schema#> )
 Prefix( xsd: = <http://www.w3.org/2001/XMLSchema#> )
-Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
+Prefix( xml: = <http://www.w3.org/XML/1998/namespace> )
 Prefix( linkml: = <https://w3id.org/linkml/> )
 Prefix( test: = <https://w3id.org/linkml/owl/tests/> )
 Prefix( BFO: = <http://purl.obolibrary.org/obo/BFO_> )
@@ -1591,25 +1903,34 @@ classes:
           \                                                        {% endif %}\n \
           \                                                     )\n\n            \
           \                     )\n          )\n{% endfor %}"
+    description: test metaclass that illustrates a complex nested multi-part structure,
+      where a whole is defined by a collection of repeared parts in specified states
     is_a: NamedThing
     attributes:
       has_part:
+        description: sub-elements
         slot_uri: BFO:0000051
         multivalued: true
-        inlined: true
         inverse: part_of
         range: PartWithCounts
+        inlined: true
       id:
+        description: the CURIE or IRI of the focal element
         identifier: true
         range: uriorcurie
+        required: true
       label:
         annotations:
           owl: AnnotationProperty, AnnotationAssertion
+        description: a descriptive name/label for an element
         slot_uri: rdfs:label
+        recommended: true
       definition:
         annotations:
           owl: AnnotationProperty, AnnotationAssertion
+        description: a human-readable definition of an element
         slot_uri: IAO:0000115
+        recommended: true
 
 ```
 
@@ -1632,11 +1953,11 @@ __Input__:
 __Generated axioms__:
 
 ```
-Prefix( xml: = <http://www.w3.org/XML/1998/namespace> )
+Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
 Prefix( rdf: = <http://www.w3.org/1999/02/22-rdf-syntax-ns#> )
 Prefix( rdfs: = <http://www.w3.org/2000/01/rdf-schema#> )
 Prefix( xsd: = <http://www.w3.org/2001/XMLSchema#> )
-Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
+Prefix( xml: = <http://www.w3.org/XML/1998/namespace> )
 Prefix( linkml: = <https://w3id.org/linkml/> )
 Prefix( test: = <https://w3id.org/linkml/owl/tests/> )
 Prefix( BFO: = <http://purl.obolibrary.org/obo/BFO_> )
@@ -1681,24 +2002,33 @@ classes:
           \ BFO:0000051 {{p}} ) )\n{% endfor %}\nDisjointClasses(\n   Annotation(\
           \ rdfs:label \"all parts of {{id}} are part-disjoint\")\n  {% for p in has_part\
           \ %}\n  ObjectSomeValuesFrom( BFO:0000050 {{p}} )\n  {% endfor %}\n)"
+    description: test metaclass illustrating a whole which has a collection of non-overlapping
+      parts
     is_a: NamedThing
     attributes:
       has_part:
+        description: sub-elements
         slot_uri: BFO:0000051
         multivalued: true
         inverse: part_of
         range: NamedThing
       id:
+        description: the CURIE or IRI of the focal element
         identifier: true
         range: uriorcurie
+        required: true
       label:
         annotations:
           owl: AnnotationProperty, AnnotationAssertion
+        description: a descriptive name/label for an element
         slot_uri: rdfs:label
+        recommended: true
       definition:
         annotations:
           owl: AnnotationProperty, AnnotationAssertion
+        description: a human-readable definition of an element
         slot_uri: IAO:0000115
+        recommended: true
 
 ```
 
@@ -1717,11 +2047,11 @@ __Input__:
 __Generated axioms__:
 
 ```
-Prefix( xml: = <http://www.w3.org/XML/1998/namespace> )
+Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
 Prefix( rdf: = <http://www.w3.org/1999/02/22-rdf-syntax-ns#> )
 Prefix( rdfs: = <http://www.w3.org/2000/01/rdf-schema#> )
 Prefix( xsd: = <http://www.w3.org/2001/XMLSchema#> )
-Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
+Prefix( xml: = <http://www.w3.org/XML/1998/namespace> )
 Prefix( linkml: = <https://w3id.org/linkml/> )
 Prefix( test: = <https://w3id.org/linkml/owl/tests/> )
 Prefix( BFO: = <http://purl.obolibrary.org/obo/BFO_> )
@@ -1769,24 +2099,33 @@ classes:
           \                               {% endfor %} )\n                       \
           \                   )\n                                        )\n     \
           \              )\n                 )"
+    description: test metaclass illustrating a whole which is defined by a collection
+      of non-overlapping parts
     is_a: NamedThing
     attributes:
       has_part:
+        description: sub-elements
         slot_uri: BFO:0000051
         multivalued: true
         inverse: part_of
         range: NamedThing
       id:
+        description: the CURIE or IRI of the focal element
         identifier: true
         range: uriorcurie
+        required: true
       label:
         annotations:
           owl: AnnotationProperty, AnnotationAssertion
+        description: a descriptive name/label for an element
         slot_uri: rdfs:label
+        recommended: true
       definition:
         annotations:
           owl: AnnotationProperty, AnnotationAssertion
+        description: a human-readable definition of an element
         slot_uri: IAO:0000115
+        recommended: true
 
 ```
 
@@ -1805,11 +2144,11 @@ __Input__:
 __Generated axioms__:
 
 ```
-Prefix( xml: = <http://www.w3.org/XML/1998/namespace> )
+Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
 Prefix( rdf: = <http://www.w3.org/1999/02/22-rdf-syntax-ns#> )
 Prefix( rdfs: = <http://www.w3.org/2000/01/rdf-schema#> )
 Prefix( xsd: = <http://www.w3.org/2001/XMLSchema#> )
-Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
+Prefix( xml: = <http://www.w3.org/XML/1998/namespace> )
 Prefix( linkml: = <https://w3id.org/linkml/> )
 Prefix( test: = <https://w3id.org/linkml/owl/tests/> )
 Prefix( BFO: = <http://purl.obolibrary.org/obo/BFO_> )

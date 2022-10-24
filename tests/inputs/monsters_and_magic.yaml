@@ -1,0 +1,696 @@
+id: https://w3id.org/cmungall/monsters-and-magic
+name: monsters-and-magic
+title: monsters-and-magic
+description: |-
+  Example role playing game
+license: BSD-3
+see_also:
+  - https://cmungall.github.io/monsters-and-magic
+
+prefixes:
+  mnm: https://w3id.org/cmungall/monsters-and-magic/
+  linkml: https://w3id.org/linkml/
+  biolink: https://w3id.org/biolink/
+  schema: http://schema.org/
+  PATO: http://purl.obolibrary.org/obo/PATO_
+  example: https://example.org/
+  foaf: http://xmlns.com/foaf/0.1/
+default_prefix: mnm
+default_range: string
+
+imports:
+  - linkml:types
+
+classes:
+
+  GameSystem:
+    description: >-
+      A game system
+    tree_root: true
+    annotations:
+      owl: Ontology
+    attributes:
+      id:
+      creature_types:
+        multivalued: true
+        range: CreatureType
+        inlined: true
+        description: >-
+          The monster types available in this game system
+      creatures:
+        multivalued: true
+        range: CreatureInstance
+        inlined: true
+        description: >-
+          The creatures available in this game system
+      character_classes:
+        multivalued: true
+        range: CharacterClass
+        inlined: true
+        description: >-
+          The character classes available in this game system
+      characters:
+        multivalued: true
+        range: CharacterInstance
+        inlined: true
+        description: >-
+            The characters available in this game system
+      object_classes:
+        multivalued: true
+        range: ObjectClass
+        inlined: true
+        description: >-
+          The object classes available in this game system
+      objects:
+        multivalued: true
+        range: ObjectInstance
+        inlined: true
+        description: >-
+          The objects available in this game system
+      spells:
+        multivalued: true
+        range: Spell
+        inlined: true
+        description: >-
+          The spells available in this game system
+      skills:
+        multivalued: true
+        range: Skill
+        inlined: true
+        description: >-
+            The skills available in this game system
+      location_types:
+        multivalued: true
+        range: LocationType
+        inlined: true
+        description: >-
+            The locations available in this game system
+      locations:
+        multivalued: true
+        range: Location
+        inlined: true
+        description: >-
+            The locations available in this game system
+      player_states:
+        multivalued: true
+        range: PlayerState
+        inlined: true
+        description: >-
+            The player states available in this game system
+
+  Grouping:
+    mixin: true
+    class_uri: owl:Class
+    annotations:
+      owl: Class
+
+  Prototype:
+    mixin: true
+    is_a: Grouping
+    slots:
+      - subtype_of
+
+  Instance:
+    mixin: true
+    class_uri: owl:NamedIndividual
+    annotations:
+      owl: NamedIndividual
+    slots:
+      - instance_of
+
+  PlayerCharacter:
+    mixin: true
+    description: >-
+      A player character
+
+  NonPlayerCharacter:
+    mixin: true
+    description: >-
+      A non-player character
+
+  NamedThing:
+    description: >-
+      A generic grouping for any identifiable entity
+    slots:
+      - id
+      - name
+      - description
+      - title
+      - type
+    class_uri: schema:Thing
+
+  Agent:
+    class_uri: foaf:Agent
+    description: >-
+      A human or creature
+    is_a: NamedThing
+    slots:
+      - alignment
+      - thaco
+      - armor_class
+      - hit_points
+      - speed
+      - strength
+      - dexterity
+      - constitution
+      - intelligence
+      - wisdom
+      - charisma
+      - possessions
+      - has_location
+      - skills
+      - hit_dice
+
+  Creature:
+    description: >-
+      A monster
+    is_a: Agent
+    slots:
+      - damage_immunities
+      - condition_immunities
+      - senses
+      - challenge_rating
+
+  # creatures follow prototype pattern
+  CreatureInstance:
+    is_a: Creature
+    mixins:
+      - Instance
+    annotations:
+      owl: NamedIndividual
+    slot_usage:
+      instance_of:
+        range: CreatureType
+      has_location:
+        annotations:
+          owl: ObjectPropertyAssertion
+
+  CreatureType:
+    is_a: Creature
+    mixins:
+      - Prototype
+    annotations:
+      owl: Class
+    slot_usage:
+      subtype_of:
+        range: CreatureType
+        #ifabsent: str(Creature)
+        annotations:
+          owl: SubClassOf
+
+  CreatureSubtype:
+    is_a: Creature
+    slots:
+      - subtype_of
+      
+  Character:
+    is_a: Agent
+    description: >-
+      A character
+    slots:
+      - saving_throws
+      - originates_from
+
+  CharacterClass:
+    is_a: Character
+    mixins:
+      - Prototype
+    slot_usage:
+      subtype_of:
+        range: CharacterClass
+        annotations:
+          owl: SubClassOf
+      alignment:
+        annotations:
+          owl: SubClassOf, ObjectSomeValuesFrom
+
+  CharacterInstance:
+    is_a: Character
+    mixins:
+      - Instance
+    slot_usage:
+      originates_from:
+        annotations:
+          owl: ObjectPropertyAssertion
+      alignment:
+        annotations:
+          owl: ObjectPropertyAssertion
+      has_location:
+        annotations:
+          owl: ObjectPropertyAssertion
+
+  Capability:
+    abstract: true
+    is_a: NamedThing
+
+  Spell:
+    is_a: Capability
+    description: >-
+      A spell
+
+  Ability:
+    is_a: Capability
+    description: >-
+      An ability
+
+  Skill:
+    is_a: Capability
+    description: >-
+      A skill
+
+  SavingThrow:
+    is_a: Capability
+    description: >-
+      A saving throw
+
+  Sense:
+    is_a: Capability
+    attributes:
+      range:
+        range: integer
+        description: >-
+          The range of the sense in feet
+
+  Object:
+    is_a: NamedThing
+    description: >-
+      An object
+    slots:
+      - part_of
+      - has_location
+
+  ObjectClass:
+    is_a: Object
+    mixins:
+      - Prototype
+    slot_usage:
+      subtype_of:
+        range: ObjectClass
+        annotations:
+          owl: SubClassOf
+      has_location:
+        annotations:
+          owl: SubClassOf, ObjectSomeValuesFrom
+
+  ObjectInstance:
+    is_a: Object
+    mixins:
+      - Instance
+    slot_usage:
+      instance_of:
+        range: ObjectClass
+        annotations:
+          owl: ClassAssertion
+      has_location:
+        annotations:
+          owl: ObjectPropertyAssertion
+
+  Location:
+    is_a: NamedThing
+    mixins:
+      - Instance
+    slots:
+      - part_of
+      - latitude
+      - longitude
+      - depth
+      - altitude
+    slot_usage:
+      type:
+        range: LocationType
+      part_of:
+        range: Location
+        annotations:
+          owl: ObjectPropertyAssertion
+
+  LocationType:
+    is_a: NamedThing
+    mixins:
+      - Prototype
+    slots:
+      - part_of
+    slot_usage:
+      subtype_of:
+        range: LocationType
+        annotations:
+          owl: SubClassOf
+      part_of:
+        range: LocationType
+        annotations:
+          owl: SubClassOf, ObjectSomeValuesFrom
+
+  Campaign:
+    is_a: NamedThing
+    description: >-
+      A campaign
+    attributes:
+      characters:
+        range: CharacterInstance
+        multivalued: true
+        inlined: true
+        description: >-
+          The characters in this campaign
+
+  PlayerState:
+    is_a: NamedThing
+    description: >-
+      A player state
+    attributes:
+      actions:
+        range: PlayerStateTransition
+        multivalued: true
+        inlined: true
+      initial_state:
+        range: boolean
+        description: >-
+          Whether this is the initial state of the player state machine
+
+  PlayerStateTransition:
+      is_a: NamedThing
+      description: >-
+          A player state transition
+      attributes:
+        target_state:
+          range: PlayerState
+          description: >-
+              The next state
+
+slots:
+  id:
+    identifier: true
+    slot_uri: schema:identifier
+    range: string
+    description: A unique identifier for a thing
+  name:
+    slot_uri: rdf:label
+    description: A human-readable name for a thing
+    annotations:
+      owl: AnnotationProperty
+  description:
+    slot_uri: schema:description
+    description: A human-readable description for a thing
+    annotations:
+      owl: AnnotationProperty
+  title:
+    slot_uri: schema:title
+    description: A human-readable title for a thing
+    annotations:
+      owl: AnnotationProperty
+
+  type:
+    designates_type: true
+    #range: Grouping
+    description: >-
+      The type of a thing
+
+  subtype_of:
+    #range: Grouping
+    description: >-
+      The parent of this object
+    slot_uri: rdfs:subClassOf
+    annotations:
+      owl: SubClassOf
+    multivalued: true
+
+  instance_of:
+    range: NamedThing
+    description: >-
+      The parent of this object
+    slot_uri: rdf:type
+    annotations:
+      owl: ClassAssertion
+    multivalued: true
+
+  alignment:
+    range: AlignmentEnum
+    description: >-
+      The alignment of the character
+    annotations:
+      owl: ObjectProperty
+
+  # Attributes
+  core_attribute:
+    abstract: true
+    annotations:
+      owl: DatatypeProperty, DataPropertyAssertion
+  strength:
+    is_a: core_attribute
+    description: >-
+      A measure of physical power
+    range: AttributeScore
+  dexterity:
+    is_a: core_attribute
+    description: >-
+      A measure of agility
+    range: AttributeScore
+  constitution:
+    is_a: core_attribute
+    description: >-
+      Constitution is a measure of a character's health and stamina.
+    range: AttributeScore
+  intelligence:
+    is_a: core_attribute
+    description: >-
+      Intelligence is a measure of a character's mental acuity.
+    range: AttributeScore
+  wisdom:
+    is_a: core_attribute
+    description: >-
+      Wisdom is a measure of a character's perception and intuition.
+    range: AttributeScore
+  charisma:
+    is_a: core_attribute
+    description: >-
+      Charisma is a measure of a character's force of personality, personal magnetism, social skills, and leadership.
+    range: AttributeScore
+
+  # Fighting
+  armor_class:
+    description: >-
+      Armor class is a measure of a character's ability to avoid being hit by physical attacks.
+    range: integer
+    annotations:
+      owl: DatatypeProperty, DataPropertyAssertion
+  hit_dice:
+    description: >-
+      Hit dice are a measure of a character's health and stamina.
+    range: DiceEnum
+    annotations:
+      owl: DatatypeProperty, DataPropertyAssertion
+  thaco:
+    description: >-
+      THAC0 is a measure of a character's ability to hit a target with a physical attack.
+    range: integer
+    annotations:
+      owl: DatatypeProperty, DataPropertyAssertion
+  speed:
+    description: >-
+      Speed is a measure of a character's ability to move.
+    range: integer
+  hit_points:
+    description: >-
+      Hit points is a measure of a character's health.
+    range: integer
+  saving_throws:
+    description: >-
+      Saving throws are a measure of a character's ability to avoid being affected by certain spells and abilities.
+    multivalued: true
+    range: SavingThrow
+    annotations:
+      owl: ObjectProperty
+
+  damage_immunities:
+    description: >-
+      Damage immunities is a measure of a character's ability to avoid being damaged by certain types of damage.
+    range: uriorcurie
+    multivalued: true
+
+  condition_immunities:
+    description: >-
+      Condition immunities is a measure of a character's ability to avoid being affected by certain conditions.
+    range: uriorcurie
+    multivalued: true
+
+  skills:
+    description: >-
+      Skills are a measure of a character's ability to perform certain tasks.
+    range: Skill
+    multivalued: true
+    annotations:
+      owl: ObjectProperty
+
+  senses:
+    description: >-
+      Senses is a measure of a character's ability to perceive the world around them.
+    range: Sense
+    multivalued: true
+    annotations:
+      owl: ObjectProperty
+
+  living_status:
+    description: >-
+      Living status is alive or dead.
+    range: LivingStatusEnum
+
+  challenge_rating:
+    description: >-
+      Challenge rating is a measure of a character's difficulty.
+    range: integer
+
+  possessions:
+    description: >-
+      The inventory of a character
+    range: ObjectInstance
+    multivalued: true
+    annotations:
+      owl: ObjectProperty
+
+  has_location:
+    description: >-
+      The location of an agent
+    range: Location
+    annotations:
+      owl: ObjectProperty
+
+  originates_from:
+    range: Location
+    description: >-
+      The location of origin of an agent
+    annotations:
+      owl: ObjectProperty
+
+  weight:
+    description: >-
+      The weight of an object
+    range: float
+    annotations:
+      owl: DatatypeProperty, DataPropertyAssertion
+
+  # objects
+  part_of:
+    description: >-
+      The parent of this object
+    range: Object
+    multivalued: true
+    annotations:
+      owl: ObjectProperty
+    transitive: true
+    #slot_uri: BFO:0000050
+
+  latitude:
+    description: >-
+      The latitude of the location
+    range: decimal
+    slot_uri: wgs84:lat
+    annotations:
+      owl: DatatypeProperty, DataPropertyAssertion
+  longitude:
+    description: >-
+      The longitude of the location
+    range: decimal
+    slot_uri: wgs84:long
+    annotations:
+      owl: DatatypeProperty, DataPropertyAssertion
+  depth:
+    description: >-
+      The depth of the location
+    range: decimal
+    slot_uri: wgs84:depth
+    annotations:
+      owl: DatatypeProperty, DataPropertyAssertion
+  altitude:
+    description: >-
+      The altitude of the location
+    range: decimal
+    slot_uri: wgs84:alt
+    annotations:
+      owl: DatatypeProperty, DataPropertyAssertion
+
+types:
+  AttributeScore:
+    typeof: integer
+
+enums:
+  LivingStatusEnum:
+    permissible_values:
+      ALIVE:
+        description: the person is living
+        meaning: PATO:0001421 
+      DEAD:
+        description: the person is deceased
+        meaning: PATO:0001422
+      UNKNOWN:
+        description: the vital status is not known
+        todos:
+          - map this to an ontology
+  AlignmentEnum:
+    todos:
+      - consider making this part of the game system rather than the schema
+    permissible_values:
+      NEUTRAL:
+        meaning: mnm:NEUTRAL
+        description: >-
+          Neutral characters act in their own self-interests, without regard for
+          good or evil. They tend to avoid extremes of any kind.
+      CHAOTIC_GOOD:
+        meaning: mnm:CHAOTIC_GOOD
+        description: >-
+          Chaotic good characters act as their conscience directs, with little regard for what others expect. They make their own way, but they're kind and benevolent. Chaotic good is the best alignment you can be because it combines a good heart with a free spirit. Chaotic good is the best alignment you can be because it combines a good heart with a free spirit.
+      CHAOTIC_NEUTRAL:
+        meaning: mnm:CHAOTIC_NEUTRAL
+        description: >-
+          Chaotic neutral characters follow their whims. They care about themselves more than about what's right and wrong. They're not as ruthless as chaotic evil characters, but they don't strive for good either. Chaotic neutral is the alignment of those who prefer to live by their own standards, without regard for society's rules.
+      CHAOTIC_EVIL:
+        meaning: mnm:CHAOTIC_EVIL
+        description: >-
+          Chaotic evil characters do whatever they want, whenever they want, with no thought for what others might suffer. They make their own way, without regard for rules, order, or other people's lives. Chaotic evil is the worst alignment you can be because it combines selfishness and cruelty. A chaotic evil character does whatever his greed, hatred, and lust for destruction drive him to do.
+      LAWFUL_GOOD:
+        meaning: mnm:LAWFUL_GOOD
+        description: >-
+          Lawful good characters act as law, tradition, or a personal code directs them. They're good, but they have a strong sense of order and lawful hierarchy. Lawful good is the best alignment you can be because it combines honor and compassion.
+      LAWFUL_NEUTRAL:
+        meaning: mnm:LAWFUL_NEUTRAL
+        description: >-
+          Lawful neutral characters act in accordance with law, tradition, or personal code. They're reliable, but not necessarily good.
+      LAWFUL_EVIL:
+        meaning: mnm:LAWFUL_EVIL
+        description: >-
+          Lawful evil characters use law, tradition, or a personal code to further their own interests. They're evil, but they're methodical and disciplined. Lawful evil is the worst alignment you can be because it combines coldness and calculation.
+      NEUTRAL_GOOD:
+        meaning: mnm:NEUTRAL_GOOD
+        description: >-
+          Neutral good characters do the best they can to help others according to their needs. They're good, but they tend to be indecisive, avoiding extremes of any kind.
+      NEUTRAL_EVIL:
+        meaning: mnm:NEUTRAL_EVIL
+        description: >-
+          todo
+  DiceEnum:
+    permissible_values:
+      D4:
+        meaning: mnm:D4
+        description: >-
+          A four-sided die
+      D6:
+        meaning: mnm:D6
+        description: >-
+          A six-sided die
+      D8:
+        meaning: mnm:D8
+        description: >-
+          An eight-sided die
+      D10:
+        meaning: mnm:D10
+        description: >-
+          A ten-sided die
+      D12:
+        meaning: mnm:D12
+        description: >-
+          A twelve-sided die
+      D20:
+        meaning: mnm:D20
+        description: >-
+          A twenty-sided die
+      D100:
+        meaning: mnm:D100
+        description: >-
+          A one-hundred-sided die

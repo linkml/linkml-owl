@@ -10,6 +10,9 @@ from linkml.generators.pythongen import PythonGenerator
 from linkml_runtime import SchemaView
 from linkml_runtime.linkml_model import meta
 from linkml_runtime.utils.compile_python import compile_python
+from linkml_runtime.utils.eval_utils import eval_expr
+from linkml_runtime.index.object_index import ObjectIndex
+from linkml_runtime.utils.inference_utils import infer_all_slot_values, infer_slot_value, Config
 
 from rdflib import URIRef
 
@@ -27,7 +30,7 @@ from funowl import OntologyDocument, Ontology, IRI, ObjectSomeValuesFrom, \
     ObjectProperty, Declaration, InverseObjectProperties, ObjectPropertyDomain, ObjectPropertyRange, \
     SubObjectPropertyOf, TransitiveObjectProperty, SymmetricObjectProperty, AsymmetricObjectProperty, \
     ReflexiveObjectProperty, IrreflexiveObjectProperty, Annotation, ObjectMinCardinality, ObjectHasValue, \
-    NamedIndividual
+    NamedIndividual, DataSomeValuesFrom, DataHasValue, DataAllValuesFrom
 
 from linkml_runtime.dumpers.dumper_root import Dumper
 from linkml_runtime.utils.yamlutils import YAMLRoot
@@ -66,6 +69,7 @@ class EntityAxiomIndex:
     operand_list_index: Dict[OP_KEY, List[ClassExpression]] = field(default_factory=lambda: defaultdict(list))
     annotation_list_index: Dict[OP_KEY, List[Annotation]] = field(default_factory=lambda: defaultdict(list))
     annotations: List[Annotation] = field(default_factory=lambda: [])
+    object_index: ObjectIndex = None
 
     def add_operand(self, key: OP_KEY, op: ClassExpression, anns: List[Annotation] = None):
         """
@@ -99,7 +103,7 @@ class EntityAxiomIndex:
         for op in ops:
             self.add_operand(key, op, anns)
 
-
+@dataclass
 class OWLDumper(Dumper):
     """
     Translate LinkML instances to OWL
@@ -118,6 +122,20 @@ class OWLDumper(Dumper):
     For context, see:
     https://github.com/linkml/linkml/issues/267
     """
+    ontology: Ontology = None
+    """Background ontology to use."""
+
+    schema: SchemaDefinition = None
+    """A LinkML schema that defines templates for generating OWL axioms"""
+
+    schemaview: SchemaView = None
+    """View over the schema."""
+
+    object_index: ObjectIndex = None
+    """Index of LinkML objects."""
+
+    infer_missing_values: bool = False
+    """If True, infer missing values in data."""
 
     def to_ontology_document(self, element: Union[YAMLRoot, List[YAMLRoot]], schema: Union[SchemaDefinition, str],
                              iri: str = None) -> OntologyDocument:
@@ -200,6 +218,16 @@ class OWLDumper(Dumper):
         o = self.ontology
         python_type = type(element)
         linkml_class_name = python_type.class_name
+        if self.infer_missing_values:
+            if not self.object_index:
+                raise ValueError("object_index must be set if infer_missing_values is True")
+            proxy = self.object_index.bless(element)
+            for k, v in vars(element).items():
+                if v is None:
+                    infer_slot_value(proxy, k, schemaview=self.schemaview, class_name=linkml_class_name,
+                                     config=Config(use_string_serialization=True,
+                                                   use_expressions=True,
+                                                   ))
         c = schema.classes[linkml_class_name]
         for fstr in self._get_inferred_class_annotations(c, 'owl.fstring'):
             self.add_axioms_from_fstring(fstr, element)
@@ -227,6 +255,10 @@ class OWLDumper(Dumper):
         if NamedIndividual.__name__ in cls_interps:
             # TODO: make this generic for all declarations
             decl = Declaration(NamedIndividual(subj))
+            o.axioms.append(decl)
+        if Class.__name__ in cls_interps and not isinstance(subj, AnonymousIndividual):
+            # TODO: make this generic for all declarations
+            decl = Declaration(Class(subj))
             o.axioms.append(decl)
         # iterate through all slot-value assignments for element;
         # generate axioms or add axioms to EntityAxiomIndex for each
@@ -315,14 +347,24 @@ class OWLDumper(Dumper):
                             else:
                                 raise ValueError(f'Cannot interpret {owl_uri}')
                 # transform parents if an expression type is specified
+                # TODO: use a mapping rather than repetitive code
                 if ObjectSomeValuesFrom.__name__ in interps:
                     parent = ObjectSomeValuesFrom(slot_uri, tr_val)
+                    is_class_logical_axiom = True
+                elif DataSomeValuesFrom.__name__ in interps:
+                    parent = DataSomeValuesFrom(slot_uri, tr_val)
                     is_class_logical_axiom = True
                 elif ObjectHasValue.__name__ in interps:
                     parent = ObjectHasValue(slot_uri, tr_val)
                     is_class_logical_axiom = True
+                elif DataHasValue.__name__ in interps:
+                    parent = DataHasValue(slot_uri, tr_val)
+                    is_class_logical_axiom = True
                 elif ObjectAllValuesFrom.__name__ in interps:
                     parent = ObjectAllValuesFrom(slot_uri, tr_val)
+                    is_class_logical_axiom = True
+                elif DataAllValuesFrom.__name__ in interps:
+                    parent = DataAllValuesFrom(slot_uri, tr_val)
                     is_class_logical_axiom = True
                 elif ObjectMinCardinality.__name__ in interps:
                     raise NotImplementedError(f'TODO: QCRs')
@@ -626,6 +668,28 @@ class OWLDumper(Dumper):
         axioms = self.parse_axioms_string(owl_str).ontology.axioms
         self.ontology.axioms += axioms
 
+    def populate_missing_values(self, element: YAMLRoot):
+        """
+        Perform inference on data and populate missing data.
+
+        Uses string_serialization.
+
+        :param element:
+        :return:
+        """
+        python_type = type(element)
+        linkml_class_name = python_type.class_name
+        c = self.schema.classes[linkml_class_name]
+        for k, v in vars(element).items():
+            slot: SlotDefinition
+            slot = self._lookup_slot(c, k)
+            if v is None:
+                if slot.string_serialization:
+                    ctxt_obj = self.object_index.bless(element)
+                    ctxt_dict = {k: getattr(ctxt_obj, k) for k in ctxt_obj._attributes()}
+                    v = eval_expr(sd.expr, **ctxt_dict)
+                    setattr(element, k, v)
+
 
 @click.command()
 @click.option('-s', '--schema', required=True,
@@ -638,8 +702,12 @@ class OWLDumper(Dumper):
               help="Input format (will be inferred from file suffix if not specified)")
 @click.option('-o', '--output', required=True,
               help="Path to OWL functional syntax output")
+@click.option("--infer-missing/--no-infer-missing",
+              default=False,
+              show_default=True,
+              help="If True, fill missing data slots using string_serialization")
 @click.argument('inputfile')
-def cli(inputfile: str, schema: str, target_class, module, output, format, **args):
+def cli(inputfile: str, schema: str, target_class, module, output, format, infer_missing: bool, **args):
     """
     Dump LinkML instance data as OWL
 
@@ -672,6 +740,8 @@ def cli(inputfile: str, schema: str, target_class, module, output, format, **arg
     element = load_structured_file(inputfile, target_class=target_class, python_module=python_module, schemaview=sv, fmt=format)
 
     dumper = OWLDumper()
+    if infer_missing:
+        dumper.infer_missing_values = True
     doc = dumper.dumps(element, schemaview=sv)
     with open(output, 'w') as stream:
         stream.write(str(doc))

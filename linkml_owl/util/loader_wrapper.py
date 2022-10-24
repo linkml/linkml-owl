@@ -93,14 +93,14 @@ def load_structured_file(source: Union[str, dict, TextIO], target_class: Union[s
         else:
             schemaview = SchemaView(schema)
             schema = schemaview.schema
-    if target_class is None:
+    #if target_class is None:
         # TODO: de-convolute this
         # attempt to infer root class, but if this cannot
         # be found then we rely on there being a type designator present
-        try:
-            target_class = datautils.infer_root_class(schemaview)
-        except:
-            pass
+        #try:
+        #    target_class = datautils.infer_root_class(schemaview)
+        #except:
+        #    pass
     if target_class and isinstance(target_class, str):
         target_class = python_module.__dict__[target_class]
     if isinstance(source, str):
@@ -155,7 +155,9 @@ def instantiate_object(data: Dict, target_class: Type[YAMLRoot] = None, schemavi
                 target_class_name = loc
             data = copy(data)
         else:
-            raise ValueError(f'Cannot determine type for {data}')
+            target_class_name = datautils.infer_root_class(schemaview)
+            if target_class_name is None:
+                raise ValueError(f'Cannot determine type for {data}')
         target_class = python_module.__dict__[target_class_name]
         if '@type' in data:
             del data['@type']
