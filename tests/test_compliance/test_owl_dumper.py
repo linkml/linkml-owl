@@ -11,6 +11,7 @@ from typing import List, Optional
 from linkml.generators.pythongen import PythonGenerator
 from linkml_runtime import SchemaView
 from linkml_runtime.dumpers import yaml_dumper
+from linkml_runtime.index.object_index import ObjectIndex
 from linkml_runtime.linkml_model import SchemaDefinition
 from linkml_runtime.utils.compile_python import compile_python
 from linkml_runtime.utils.schema_as_dict import schema_as_dict
@@ -54,6 +55,8 @@ class Check:
             c = deepcopy(sv.get_class(cn))
             for s in sv.class_induced_slots(cn):
                 c.attributes[s.name] = s
+                s.alias = None
+                s.domain_of = None
             schema.classes[c.name] = c
             c.slots = []
             c.slot_usage = {}
@@ -199,6 +202,16 @@ class TestOwlDumper(unittest.TestCase):
                                                                ObjectSomeValuesFrom(BFO['0000050'],X.b),
                                                                ObjectSomeValuesFrom(BFO['0000050'],X.c)))],
                   """All slot value interpretations are collected into a single IntersectionOf""")
+        add_check("EquivalentTo Genus and SomeValuesFrom with AutoLabel",
+                  [py_mod.EquivGenusAndPartOfWithAutoLabel('x:NewClass',
+                                                           part='x:IN',
+                                                           whole='x:H'),
+                   py_mod.NamedThing('x:IN', label='interneuron'),
+                   py_mod.NamedThing('x:H', label='hippocampus')],
+                  [AnnotationAssertion(RDFS.label, X.NewClass, Literal('interneuron of hippocampus')),
+                   EquivalentClasses(X.NewClass, ObjectIntersectionOf(X.IN,
+                                                                      ObjectSomeValuesFrom(BFO['0000050'], X.H)))],
+                  """Label auto-added""")
         add_check("Hidden GCI",
                   [py_mod.EquivGenusAndPartOf('x:a',
                                               subclass_of=['X:genus'],
@@ -268,6 +281,9 @@ class TestOwlDumper(unittest.TestCase):
                 for line in yaml_str.split('\n'):
                     md += f'  {line}\n'
             md += '```\n'
+            container = py_mod.Container(entities=check.records)
+            dumper.object_index = ObjectIndex(container, schemaview=sv)
+            dumper.infer_missing_values = True
             doc = dumper.to_ontology_document(check.records, schema)
             md += '\n__Generated axioms__:\n\n'
             md += f'```\n{str(doc)}\n```\n\n'

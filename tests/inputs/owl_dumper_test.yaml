@@ -112,10 +112,14 @@ slots:
   #  inlined: true
 
 classes:
-  #Container:
-  #  tree_root: true
-  #  slots:
-  #    - records
+  Container:
+    tree_root: true
+    attributes:
+      entities:
+        range: NamedThing
+        multivalued: true
+        inlined: true
+        inlined_as_list: true
 
   Thing:
     abstract: true
@@ -321,22 +325,24 @@ classes:
   EquivGenusAndPartOfWithAutoLabel:
     is_a: NamedThing
     description: As EquivGenusAndPartOf, demonstrating string serialization
-    slots:
-      - subclass_of
-      - part_of
-    slot_usage:
+    attributes:
       label:
-        # TODO
+        slot_uri: rdfs:label
         string_serialization:
-          "{part_of.label} of {subclass_of.label}"
-      subclass_of:
+          "{part.label} of {whole.label}"
+          #"{whole.label}"
+      part:
+        slot_uri: rdfs:subClassOf
         description: the genus of the definition
+        range: NamedThing
         required: true
         annotations:
           owl: EquivalentClasses, IntersectionOf
-      part_of:
+      whole:
+        slot_uri: BFO:0000050
+        range: NamedThing
         required: true
-        description: the part-of differentiae
+        description: the part-of differentia
         annotations:
           owl: EquivalentClasses, IntersectionOf, ObjectSomeValuesFrom
   EquivGenusAndPartOfWithAxiomAnnotation:

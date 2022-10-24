@@ -13,8 +13,10 @@ from tests import INPUT_DIR, OUTPUT_DIR
 
 SCHEMA_IN = os.path.join(INPUT_DIR, 'owl_dumper_test.yaml')
 DATA_IN = os.path.join(INPUT_DIR, 'parts.csv')
+OWL_IN_CHECK = os.path.join(INPUT_DIR, 'parts.csv.check.ofn')
 DATA_IMPLICIT_IN = os.path.join(INPUT_DIR, 'parts_implicit_type.csv')
 OWL_OUT = os.path.join(OUTPUT_DIR, 'parts.owl.ofn')
+
 
 class TestFromCSV(unittest.TestCase):
     """Test import from csv."""
@@ -32,9 +34,12 @@ class TestFromCSV(unittest.TestCase):
         dumper = OWLDumper()
         doc = dumper.to_ontology_document(data, schema=sv.schema)
         doc_rt = to_python(str(doc))
+        #print(doc_rt)
         axioms = doc_rt.ontology.axioms
         logging.info(f'AXIOMS={len(axioms)}')
         assert len(axioms) > 5
+        expected_doc = to_python(str(OWL_IN_CHECK))
+        self.assertCountEqual(expected_doc.ontology.axioms, axioms)
         data = load_structured_file(DATA_IMPLICIT_IN,
                                     target_class='EquivGenusAndPartOf', schemaview=sv, delimiter=',', python_module=python_module)
         dumper = OWLDumper()

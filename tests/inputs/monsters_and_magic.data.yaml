@@ -1,0 +1,615 @@
+id: my-awesome-game
+creature_types:
+  Creature:
+  Humanoid:
+    description: >-
+      A humanoid creature is a creature that has a humanoid body, and is
+      capable of speech and other human-like activities.
+    subtype_of: Creature
+  Orc:
+    subtype_of: Humanoid
+    description: An orc is a humanoid creature from Middle-earth.
+    armor_class: 13
+    speed: 30
+    hit_points: 13
+    strength: 16
+    dexterity: 11
+    constitution: 12
+    intelligence: 10
+    wisdom: 8
+    charisma: 8
+  Goblin:
+    subtype_of: Humanoid
+    description: A goblin is a humanoid creature from Middle-earth.
+    armor_class: 15
+    speed: 30
+    hit_points: 7
+    strength: 8
+    dexterity: 14
+    constitution: 10
+    intelligence: 10
+    wisdom: 8
+    charisma: 8
+  SerpentineCreature:
+    subtype_of: Creature
+    description: >-
+      A serpentine creature is a creature that has a snake-like body.
+  Dragon:
+    subtype_of: SerpentineCreature
+    description: A dragon is a large, serpent-like legendary creature that appears in the folklore of many cultures around the world.
+  RedDragon:
+    description: A red dragon is a dragon with red scales.
+    subtype_of: Dragon
+  GreenDragon:
+    description: A green dragon is a dragon with green scales.
+    subtype_of: Dragon
+  Griffin:
+    description: A griffin is a legendary creature with the body, tail, and back legs of a lion; the head and wings of an eagle; and an eagle's talons as its front feet.
+    subtype_of: SerpentineCreature
+  Giant:
+    description: A giant is a creature of human appearance but prodigious size and strength.
+    subtype_of: Humanoid
+  Troll:
+    description: A troll is a giant creature that lives in caves and eats humans.
+    subtype_of: Giant
+  Hobbit:
+    description: A hobbit is a small humanoid creature from Middle-earth.
+    subtype_of: Humanoid
+  Elf:
+    description: An elf is a humanoid creature from Middle-earth.
+    subtype_of: Humanoid
+  Dwarf:
+    description: A dwarf is a humanoid creature from Middle-earth.
+    subtype_of: Humanoid
+  Wyvern:
+    description: A wyvern is a legendary creature with a reptilian body, bat-like wings, and a barbed tail.
+    subtype_of: SerpentineCreature
+  Chimera:
+    description: A chimera is a legendary creature with the head of a lion, the body of a goat, and the tail of a serpent.
+    subtype_of: SerpentineCreature
+  Doppelganger:
+    description: A doppelganger is a legendary creature that can take the form of another creature.
+    subtype_of: Humanoid
+    skills:
+      - Deception
+      - Stealth
+  MagicallyCreatedCreature:
+    description: A magicially created creature is a creature that was created by magic.
+    subtype_of: Creature
+  RugOfSmothering:
+    subtype_of: MagicallyCreatedCreature
+    description: A rug of smothering is a rug that can be used to suffocate a creature.
+    armor_class: 13
+    speed: 0
+    hit_points: 13
+    strength: 16
+    dexterity: 11
+    constitution: 12
+    intelligence: 10
+    wisdom: 8
+    charisma: 8
+    damage_immunities:
+      - poison
+      - psychic
+    condition_immunities:
+      - poisoned
+      - charmed
+      - frightened
+      - paralyzed
+      - stunned
+      - unconscious
+      - grappled
+      - restrained
+      - prone
+      - petrified
+      - incapacitated
+      - blinded
+      - deafened
+      - exhausted
+      - frightened
+      - grappled
+      - paralyzed
+      - petrified
+      - poisoned
+      - prone
+      - restrained
+      - stunned
+      - unconscious
+      - incapacitated
+    senses:
+      - type: blindsight
+        range: 60
+      - type: passive perception
+        value: 6
+    challenge_rating: 2
+  Basilisk:
+    subtype_of: SerpentineCreature
+    description: A basilisk is a legendary serpent-like creature with the body of a snake and the head of a king cobra.
+    armor_class: 13
+    speed: 30
+    hit_points: 13
+    strength: 16
+    dexterity: 11
+    constitution: 12
+    intelligence: 10
+    wisdom: 8
+    charisma: 8
+    damage_immunities:
+      - poison
+      - psychic
+    skills:
+      PetrifyingGaze:
+    senses:
+      - type: blindsight
+        range: 60
+      - type: passive perception
+        value: 6
+    challenge_rating: 2
+  UndeadCreature:
+    subtype_of: Humanoid
+    description: >-
+      An undead creature is a creature that is dead, but has been brought back to
+      life by magic.
+  WhiteWalker:
+    subtype_of: UndeadCreature
+    description: A white walker is an undead creature from the Game of Thrones universe.
+    armor_class: 13
+    speed: 30
+    hit_points: 13
+    strength: 16
+    dexterity: 11
+    constitution: 12
+    intelligence: 10
+    wisdom: 8
+    charisma: 8
+    damage_immunities:
+      - poison
+      - psychic
+    condition_immunities:
+      - poisoned
+      - charmed
+      - frightened
+      - paralyzed
+      - stunned
+      - unconscious
+      - grappled
+      - restrained
+      - prone
+      - petrified
+      - incapacitated
+      - blinded
+      - deafened
+      - exhausted
+      - frightened
+      - grappled
+      - paralyzed
+      - petrified
+      - poisoned
+      - prone
+      - restrained
+      - stunned
+      - unconscious
+      - incapacitated
+    senses:
+      - type: blindsight
+        range: 60
+      - type: passive perception
+        value: 6
+    challenge_rating: 2
+  Lich:
+    subtype_of: UndeadCreature
+    description: A lich is a fictional undead creature in the Dungeons & Dragons fantasy role-playing game.
+    armor_class: 13
+    speed: 30
+    hit_points: 13
+    strength: 16
+    dexterity: 11
+    constitution: 12
+    intelligence: 10
+    wisdom: 8
+    charisma: 8
+    damage_immunities:
+      - poison
+      - psychic
+    senses:
+      - type: blindsight
+        range: 60
+      - type: passive perception
+        value: 6
+    challenge_rating: 2
+  Vampire:
+    subtype_of: UndeadCreature
+    description: A vampire is a fictional undead creature in the Dungeons & Dragons fantasy role-playing game.
+    armor_class: 13
+    speed: 30
+    hit_points: 13
+    strength: 16
+    dexterity: 11
+    constitution: 12
+    intelligence: 10
+    wisdom: 8
+    charisma: 8
+    damage_immunities:
+      - poison
+      - psychic
+    senses:
+      - type: blindsight
+        range: 60
+      - type: passive perception
+        value: 6
+    challenge_rating: 2
+  Zombie:
+    subtype_of: UndeadCreature
+    description: A zombie is a fictional undead creature in the Dungeons & Dragons fantasy role-playing game.
+    armor_class: 13
+    speed: 30
+    hit_points: 13
+    strength: 16
+    dexterity: 11
+    constitution: 12
+    intelligence: 10
+    wisdom: 8
+    charisma: 8
+    damage_immunities:
+      - poison
+      - psychic
+    senses:
+      - type: blindsight
+        range: 60
+      - type: passive perception
+        value: 6
+    challenge_rating: 2
+
+creatures:
+  Smaug:
+    description: Smaug is a fictional dragon from J. R. R. Tolkien's The Hobbit.
+    instance_of: RedDragon
+    has_location: LonelyMountain
+  TheNightKing:
+    description: The Night King is a fictional character in the HBO fantasy television series Game of Thrones.
+    instance_of: WhiteWalker
+    has_location: Winterfell
+
+# classes
+character_classes:
+  Paladin:
+    description: A paladin is a holy warrior who fights evil using divine magic.
+    hit_dice: D10
+    saving_throws:
+      - wisdom
+      - charisma
+  Wizard:
+    description: A wizard is a person who practices magic.
+  Rogue:
+    description: A rogue is a thief or assassin.
+  Necromancer:
+    description: A necromancer is a wizard who practices necromancy.
+    subtype_of: Wizard
+    alignment: CHAOTIC_EVIL
+  Fighter:
+    description: A fighter is a person who fights.
+  Barbarian:
+    description: A barbarian is a person who fights without weapons.
+    subtype_of: Fighter
+  Ranger:
+    description: A ranger is a person who fights with a bow and arrow.
+    subtype_of: Fighter
+  Noble:
+    description: A noble is a person who is a member of the nobility.
+  Monarch:
+    description: A monarch is a person who rules a kingdom.
+    subtype_of: Noble
+  Artisan:
+    description: An artisan is a person who makes things.
+  Blacksmith:
+    description: A blacksmith is a person who makes and repairs metal objects.
+    subtype_of: Artisan
+  Artist:
+    description: An artist is a person who makes art.
+    subtype_of: Artisan
+  Bard:
+    description: A bard is a person who sings and plays music.
+    subtype_of: Artisan
+  Cleric:
+    description: A cleric is a person who practices religion.
+  Druid:
+    description: A druid is a person who practices druidism.
+    subtype_of: Cleric
+  Monk:
+    description: A monk is a person who practices martial arts.
+    subtype_of: Fighter
+  Sorcerer:
+    description: A sorcerer is a person who practices sorcery.
+    subtype_of: Wizard
+  Warlock:
+    description: A warlock is a person who practices warlockry.
+    subtype_of: Wizard
+  Pyromancer:
+    description: A pyromancer is a person who practices pyromancy.
+    subtype_of: Sorcerer
+    alignment: CHAOTIC_EVIL
+  Assassin:
+    description: An assassin is a person who kills people.
+    subtype_of: Rogue
+    alignment: CHAOTIC_EVIL
+  Thief:
+    description: A thief is a person who steals things.
+    subtype_of: Rogue
+
+object_classes:
+  Artifact:
+  ManufacturedArtifact:
+    subtype_of: Artifact
+    description: A manufactured artifact is an artifact that was created by a human.
+  Weapon:
+    subtype_of: ManufacturedArtifact
+    description: A weapon is an object that is used to inflict damage.
+  Armor:
+    subtype_of: ManufacturedArtifact
+    description: Armor is an object that is worn to protect the wearer from physical attacks.
+  Mace:
+    description: A mace is a blunt weapon.
+    subtype_of: Weapon
+  BattleAxe:
+    description: A battle axe is a sharp weapon.
+    subtype_of: Weapon
+  Sword:
+    description: A sword is a sharp weapon.
+    subtype_of: Weapon
+  BastardSword:
+    description: A bastard sword is a sharp weapon.
+    subtype_of: Sword
+  LongSword:
+    description: A long sword is a sharp weapon.
+    subtype_of: Sword
+  EnchantedArmor:
+    description: Enchanted armor is armor that has been enchanted.
+    subtype_of: Armor
+  PieceOfGold:
+    description: A piece of gold is a coin made of gold.
+    subtype_of: ManufacturedArtifact
+  Jewelry:
+    description: Jewelry is a piece of jewelry.
+    subtype_of: ManufacturedArtifact
+  Ring:
+    subtype_of: Jewelry
+    description: A ring is a piece of jewelry.
+  Throne:
+    description: A throne is a chair that is used by a king or queen.
+    subtype_of: ManufacturedArtifact
+objects:
+  TheRing:
+    description: The Ring is a fictional magical ring that appears in J. R. R. Tolkien's The Lord of the Rings.
+    instance_of: Ring
+    has_location: MountDoom
+  TheIronThrone:
+    description: The Iron Throne is a fictional throne that appears in George R. R. Martin's A Song of Ice and Fire.
+    instance_of: Throne
+    has_location: KingsLanding
+  TerminusEst:
+    description: Terminus Est is a fictional sword that appears in Gene Wolfe's The Book of the New Sun.
+    instance_of: BastardSword
+spells:
+  InvisibilitySpell:
+    description: An invisibility spell makes a character invisible.
+  FireballSpell:
+    description: A fireball spell causes a fireball to appear and explode.
+  LightningBoltSpell:
+    description: A lightning bolt spell causes a lightning bolt to appear and strike a target.
+skills:
+  PerceptionSkill:
+    description: Perception is a measure of a character's ability to notice things.
+  StealthSkill:
+    description: Stealth is a measure of a character's ability to hide.
+  AcrobaticsSkill:
+    description: Acrobatics is a measure of a character's ability to perform acrobatic stunts.
+location_types:
+  Location:
+  World:
+    description: A world is a place where a game takes place.
+    subtype_of: Location
+  GeographicFeature:
+    description: A geographic feature is a natural feature of a location.
+    subtype_of: Location
+  ConstructedFeature:
+    description: A constructed feature is a feature that was created by humans.
+    subtype_of: Location
+  Country:
+    description: A country is a place where a game takes place.
+    part_of: World
+    subtype_of: GeographicFeature
+  HumanSettlement:
+    description: A human settlement is a settlement inhabited by humans.
+    subtype_of: ConstructedFeature
+  City:
+    subtype_of: HumanSettlement
+    description: A city is a large human settlement.
+  Town:
+    subtype_of: HumanSettlement
+    description: A town is a small human settlement.
+  Village:
+    subtype_of: HumanSettlement
+    description: A village is a small human settlement.
+
+  Forest:
+    description: A forest is a large area of land covered with trees.
+    subtype_of: GeographicFeature
+  Mountain:
+    description: A mountain is a large natural elevation of the Earth's surface.
+    subtype_of: GeographicFeature
+  Cave:
+    description: A cave is a natural underground opening.
+    subtype_of: GeographicFeature
+
+  Dungeon:
+    description:
+    subtype_of: ConstructedFeature
+  Mine:
+    description: A mine is a place where ore is extracted from the ground.
+    subtype_of: ConstructedFeature
+  Mineshaft:
+    description: A mineshaft is a tunnel that leads to a mine.
+    subtype_of: ConstructedFeature
+    part_of: Mine
+  Building:
+    description: A building is a structure that is used for human habitation.
+    subtype_of: ConstructedFeature
+  Tavern:
+    description: A tavern is a place where people go to drink alcohol.
+    subtype_of: Building
+  Palace:
+    description: A palace is a large building that is used by a monarch.
+    subtype_of: Building
+  Castle:
+    description: A castle is a large building that is used by a monarch.
+    subtype_of: Building
+  Temple:
+    description: A temple is a building that is used for religious purposes.
+    subtype_of: Building
+  School:
+    description: A school is a place where people learn.
+    subtype_of: Building
+  NecromancerSchool:
+    description: A necromancer school is a school that teaches necromancy.
+    subtype_of: School
+  NecromancerTower:
+    description: A necromancer tower is a tower that is used by a necromancer.
+    subtype_of: Building
+  Necropolis:
+    description: A necropolis is a city of the dead.
+    subtype_of: City
+locations:
+  MiddleEarth:
+    description: Middle-earth is a fictional setting created by J. R. R. Tolkien.
+    instance_of: World
+  Hyboria:
+    description: Hyboria is a fictional setting created by Robert E. Howard.
+    instance_of: World
+  DyingEarth:
+    description: The Dying Earth is a fictional setting created by Jack Vance.
+    instance_of: World
+  MinasTirith:
+    description: Minas Tirith is a city in Middle-earth.
+    instance_of: City
+    part_of: Gondor
+  Gondor:
+    description: Gondor is a kingdom in Middle-earth.
+    instance_of: Country
+    part_of: MiddleEarth
+  Rivendell:
+    description: Rivendell is a city in Middle-earth.
+    instance_of: City
+    part_of: MiddleEarth
+  Mirkwood:
+    description: Mirkwood is a forest in Middle-earth.
+    instance_of: Forest
+    part_of: MiddleEarth
+  Moria:
+    description: Moria is a mine in Middle-earth.
+    instance_of: Mine
+    part_of: MiddleEarth
+  Lankhmar:
+    description: Lankhmar is a city in Nehwon.
+    instance_of: City
+    part_of: Nehwon
+  Cimmeria:
+    description: Cimmeria is a country in Hyboria.
+    instance_of: Country
+    part_of: Hyboria
+  WizardingWorld:
+    description: The Wizarding World is a fictional setting created by J. K. Rowling.
+    instance_of: World
+  Hogwarts:
+    description: Hogwarts is a school in the Wizarding World.
+    instance_of: School
+    part_of: WizardingWorld
+  Westeros:
+    description: Westeros is a country in the Seven Kingdoms.
+    instance_of: Country
+    part_of: TheSevenKingdoms
+  Winterfell:
+    description: Winterfell is a castle in Westeros.
+    instance_of: Castle
+    part_of: Westeros
+  TheSevenKingdoms:
+    description: The Seven Kingdoms is a fictional setting created by George R. R. Martin.
+    instance_of: World
+  KingsLanding:
+    description: King's Landing is a city in Westeros.
+    instance_of: City
+    part_of: Westeros
+  Commonwealth:
+    description: The Commonwealth is a country in the Dying Earth.
+    instance_of: Country
+    part_of: DyingEarth
+  Ascia:
+    description: Ascia is a city in the Commonwealth.
+    instance_of: City
+    part_of: Commonwealth
+  MountDoom:
+    description: Mount Doom is a mountain in Middle-earth.
+    instance_of: Mountain
+    part_of: Mordor
+  Mordor:
+    description: Mordor is a country in Middle-earth.
+    instance_of: Country
+    part_of: MiddleEarth
+
+characters:
+  Gandalf:
+    description: Gandalf is a wizard in Middle-earth.
+    instance_of: Wizard
+    originates_from: MiddleEarth
+    alignment: LAWFUL_GOOD
+  Aragorn:
+    description: Aragorn is a ranger in Middle-earth.
+    instance_of: Ranger
+    originates_from: MiddleEarth
+    alignment: NEUTRAL_GOOD
+  Hawkmoon:
+    description: Hawkmoon is a paladin in Middle-earth.
+    instance_of: Paladin
+  Elric:
+    description: Elric is a necromancer in Middle-earth.
+    instance_of: Necromancer
+    alignment: CHAOTIC_NEUTRAL
+  Fafhrd:
+    description: Fafhrd is a thief in Nehwon.
+    instance_of: Thief
+    originates_from: DyingEarth
+    alignment: CHAOTIC_GOOD
+  TheGreyMouser:
+    description: The Grey Mouser is a thief in Nehwon.
+    instance_of: Thief
+    originates_from: DyingEarth
+    alignment: CHAOTIC_GOOD
+  Conan:
+    description: Conan is a barbarian in Cimmeria.
+    instance_of: Barbarian
+    originates_from: Cimmeria
+  Vecna:
+    description: Vecna is a lich in Middle-earth.
+    instance_of: Lich
+    alignment: LAWFUL_EVIL
+    originates_from: MiddleEarth
+  HarryPotter:
+    description: Harry Potter is a wizard in the Wizarding World.
+    instance_of: Wizard
+    originates_from: WizardingWorld
+    alignment: NEUTRAL_GOOD
+  Littlefinger:
+    description: Littlefinger is a noble in Westeros.
+    instance_of: Noble
+    originates_from: Westeros
+    alignment: CHAOTIC_EVIL
+  Severian:
+    description: Severian is a torturer in the Commonwealth.
+    instance_of: Torturer
+    originates_from: Commonwealth
+    alignment: NEUTRAL_GOOD
+  TheAutarch:
+    description: The Autarch is a Monarch in the Commonwealth.
+    instance_of: Monarch
+    originates_from: Commonwealth
+
+

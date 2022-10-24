@@ -19,8 +19,6 @@ OWL_OUT = os.path.join(OUTPUT_DIR, 'ro.ofn')
 EXPECTED = os.path.join(INPUT_DIR, 'expected_ro.ofn')
 
 
-
-
 class TestROMetamodel(unittest.TestCase):
     """Relation Ontology test case."""
 
