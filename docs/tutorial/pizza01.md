@@ -154,7 +154,7 @@ Note the use of CURIEs throughout the file. Prefixes must be declared in the hea
 Next we will compile our PizzaTopping records to a PizzaTopping OWL ontology:
 
 ```bash
-linkml-owl -s pizza01-toppings-model.yaml pizza01-toppings-data.yaml -o pizza01.ofn
+linkml-data2owl -s pizza01-toppings-model.yaml pizza01-toppings-data.yaml -o pizza01.ofn
 ```
 
 This generates a file:
