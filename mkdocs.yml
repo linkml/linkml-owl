@@ -9,6 +9,7 @@ nav:
       Usage: usage.md
       Basics: basics.md
       Templates: templates.md
+      Auto-filling: autofilling.md
   - Examples:
       Showcase: examples.md
       Use in other projects: current-uses.md

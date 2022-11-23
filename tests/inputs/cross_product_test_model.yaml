@@ -1,0 +1,79 @@
+id: http://example.org/xp-test
+name: Cross-product-test
+description: |-
+  Test autofilling of cross-products
+imports:
+  - linkml:types
+prefixes:
+  linkml: https://w3id.org/linkml/
+  xp: http://example.org/xp-test/
+
+default_prefix: xp
+default_curi_maps:
+  - semweb_context
+
+
+slots:
+
+  ## Annotations
+
+  id:
+    identifier: true
+    range: uriorcurie
+
+
+  ## Logic
+
+  equivalent_to:
+    slot_uri: owl:equivalentClasses
+    range: NamedThing
+    multivalued: true
+  subclass_of:
+    slot_uri: rdfs:subClassOf
+    range: NamedThing
+    multivalued: true
+  is_model:
+    range: Model
+    annotations:
+      owl: ObjectSomeValuesFrom
+  has_color:
+    range: Color
+    annotations:
+      owl: ObjectSomeValuesFrom
+
+
+classes:
+
+  Ontology:
+    attributes:
+      models:
+        range: Model
+        multivalued: true
+        inlined: true
+      colors:
+        range: Color
+        multivalued: true
+        inlined: true
+      cars:
+        range: Car
+        multivalued: true
+        inlined: true
+
+  Concept:
+    slots:
+      - id
+
+  Model:
+    is_a: Concept
+
+  Color:
+    is_a: Concept
+
+  Car:
+    is_a: Concept
+    slots:
+      - is_model
+      - has_color
+    slot_usage:
+      id:
+        string_serialization: "xp:{is_model.id}.{has_color.id}"

@@ -1,0 +1,103 @@
+developmental_stages:
+
+  JuvenileStage:
+    definition: A developmental stage that is a juvenile.
+  AdultStage:
+    definition: A developmental stage that is an adult.
+  EmbryonicStage:
+    definition: A developmental stage that is an embryo.
+    subtypes:
+      EarlyEmbryonicStage:
+        definition: A developmental stage that is an early embryo.
+        subdivisions:
+          BlastulaStage:
+            definition: A developmental stage that is a blastula.
+            subtypes:
+              EarlyBlastulaStage:
+                definition: A developmental stage that is an early blastula.
+              LateBlastulaStage:
+                definition: A developmental stage that is a late blastula.
+          GastrulaStage:
+            definition: A developmental stage that is a gastrula.
+            preceding_stage: BlastulaStage
+            subtypes:
+              EarlyGastrulaStage:
+                definition: A developmental stage that is an early gastrula.
+              LateGastrulaStage:
+                definition: A developmental stage that is a late gastrula.
+          MorulaStage:
+            preceding_stage: BlastulaStage
+            definition: A developmental stage that is a morula.
+            subtypes:
+              EarlyMorulaStage:
+                definition: A developmental stage that is an early morula.
+              LateMorulaStage:
+                definition: A developmental stage that is a late morula.
+          ZygoteStage:
+            definition: A developmental stage that is a zygote.
+      MidEmbryonicStage:
+        definition: A developmental stage that is a mid embryo.
+      LateEmbryonicStage:
+        definition: A developmental stage that is a late embryo.
+      CarnegieStage:
+        definition: A developmental stage that is a Carnegie stage.
+        subtypes:
+          CarnegieStage1:
+            definition: A developmental stage that is a Carnegie stage 1.
+          CarnegieStage2:
+            definition: A developmental stage that is a Carnegie stage 2.
+            preceding_stage: CarnegieStage1
+          CarnegieStage3:
+            definition: A developmental stage that is a Carnegie stage 3.
+            preceding_stage: CarnegieStage2
+          CarnegieStage4:
+            definition: A developmental stage that is a Carnegie stage 4.
+            preceding_stage: CarnegieStage3
+          CarnegieStage5:
+            definition: A developmental stage that is a Carnegie stage 5.
+            preceding_stage: CarnegieStage4
+          CarnegieStage6:
+            definition: A developmental stage that is a Carnegie stage 6.
+          CarnegieStage7:
+            definition: A developmental stage that is a Carnegie stage 7.
+          CarnegieStage8:
+            definition: A developmental stage that is a Carnegie stage 8.
+          CarnegieStage9:
+            definition: A developmental stage that is a Carnegie stage 9.
+          CarnegieStage10:
+            definition: A developmental stage that is a Carnegie stage 10.
+          CarnegieStage11:
+            definition: A developmental stage that is a Carnegie stage 11.
+          CarnegieStage12:
+            definition: A developmental stage that is a Carnegie stage 12.
+            preceding_stage: CarnegieStage11
+          CarnegieStage13:
+            definition: A developmental stage that is a Carnegie stage 13.
+            preceding_stage: CarnegieStage12
+          CarnegieStage14:
+            definition: A developmental stage that is a Carnegie stage 14.
+            preceding_stage: CarnegieStage13
+          CarnegieStage15:
+            definition: A developmental stage that is a Carnegie stage 15.
+          CarnegieStage16:
+            definition: A developmental stage that is a Carnegie stage 16.
+          CarnegieStage17:
+            definition: A developmental stage that is a Carnegie stage 17.
+          CarnegieStage18:
+            definition: A developmental stage that is a Carnegie stage 18.
+          CarnegieStage19:
+            definition: A developmental stage that is a Carnegie stage 19.
+          CarnegieStage20:
+            definition: A developmental stage that is a Carnegie stage 20.
+          CarnegieStage21:
+            definition: A developmental stage that is a Carnegie stage 21.
+          CarnegieStage22:
+            definition: A developmental stage that is a Carnegie stage 22.
+          CarnegieStage23:
+            definition: A developmental stage that is a Carnegie stage 23.
+          CarnegieStage24:
+            definition: A developmental stage that is a Carnegie stage 24.
+          CarnegieStage25:
+            definition: A developmental stage that is a Carnegie stage 25.
+          CarnegieStage26:
+            definition:

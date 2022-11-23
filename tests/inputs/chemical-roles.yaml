@@ -1,0 +1,101 @@
+roles:
+  ProteaseInhibitor:
+    description: An inhibitor role that is realized by a process that inhibits protease activity
+    is_a: HydrolaseInhibitor
+    relation: inhibits
+    target: Protease
+    chemicals:
+      - amastatin
+      - cilastatin sodium
+  HydrolaseInhibitor:
+    description: An inhibitor role that is realized by a process that inhibits hydrolase activity
+    is_a: EnzymeInhibitor
+    relation: inhibits
+    target: Hydrolase
+  EnzymeInhibitor:
+    description: An inhibitor role that is realized by a process that inhibits enzyme activity
+    is_a: ChemicalRole
+    relation: inhibits
+    target: Enzyme
+  TyrosineKinaseInhibitor:
+    description: An inhibitor role that is realized by a process that inhibits tyrosine kinase activity
+    is_a: KinaseInhibitor
+    relation: inhibits
+    target: TyrosineKinase
+    chemicals:
+      - nilotinib
+      - dasatinib
+      - bosutinib
+  Pesticide:
+    description: A chemical role that is realized by a process that disrupts the normal functioning of a pest organism
+    is_a: ChemicalRole
+    relation: disrupts
+    target: PestOrganism
+    chemicals:
+      - glyphosate
+      - imidacloprid
+      - chlorpyrifos
+  Insecticide:
+    description: A pesticide that is realized by a process that disrupts the normal functioning of an insect
+    is_a: Pesticide
+    relation: disrupts
+    target: Insect
+    chemicals:
+      - chlorpyrifos
+  Herbicide:
+    description: A pesticide that is realized by a process that disrupts the normal functioning of a plant
+    is_a: Pesticide
+    relation: disrupts
+    target: Plant
+    chemicals:
+      - glyphosate
+  AntifungalAgrochemical:
+    description: A pesticide that is realized by a process that disrupts the normal functioning of a fungus
+    is_a: Pesticide
+    relation: disrupts
+    target: Fungus
+    chemicals:
+      - imidacloprid
+  CalciumChannelAgonist:
+    description: An agonist role that is realized by a process that activates a calcium channel
+    is_a: CalciumChannelModulator
+    relation: agonist
+    target: CalciumChannel
+    chemicals:
+      - nifedipine
+      - verapamil
+      - diltiazem
+  CalciumChannelAntagonist:
+    description: An antagonist role that is realized by a process that inhibits a calcium channel
+    is_a: CalciumChannelModulator
+    relation: antagonist
+    target: CalciumChannel
+    chemicals:
+      - nifedipine
+      - verapamil
+      - diltiazem
+  CalciumChannelModulator:
+    description: A modulator role that is realized by a process that modulates a calcium channel
+    is_a: ChemicalRole
+    relation: modulates
+    target: CalciumChannel
+  VasoconstrictorAgent:
+    description: A chemical role that is realized by a process that constricts a blood vessel
+    is_a: ChemicalRole
+    relation: constricts
+    target: BloodVessel
+    chemicals:
+      - nifedipine
+      - verapamil
+      - diltiazem
+  AntihypertensiveAgent:
+    description: A chemical role that is realized by a process that lowers blood pressure
+    is_a: ChemicalRole
+    relation: lowers
+    target: BloodPressure
+    chemicals:
+      - nifedipine
+      - verapamil
+      - diltiazem
+
+

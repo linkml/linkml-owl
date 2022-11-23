@@ -1,0 +1,501 @@
+id: body-parts-ontology
+title: Body Parts Ontology
+developmental_processes:
+  ClosureOfEmbryonicHeartTube:
+    type: TubeClosure
+    input: OpenEmbryonicHeartTube
+    output: ClosedEmbryonicHeartTube
+  ProgressionFromLarvaToPupa:
+    type: DevelopmentalProgression
+    input: Larva
+    output: Pupa
+  ProgressionFromLifeToDeath:
+    type: DevelopmentalProgression
+    input: LivingOrganism
+    output: DeadOrganism
+evolutionary_processes:
+  EvolutionOfPairedFinFromFinFold:
+    input: FinFold
+    output: PairedFin
+    in_taxon: Vertebrata
+  EvolutionOfLimbsFromPairedFin:
+    input: PairedFin
+    output: Limb
+    in_taxon: Tetrapoda
+  EvolutionOfAdrenalGland:
+    output: AdrenalGland
+    in_taxon: Mammalia
+  EvolutionOfHair:
+    output: Hair
+    in_taxon: Mammalia
+  EvolutionOfCellNucleus:
+    inputs:
+      - ProkaryoticCell
+      - EukaryoticCell
+    output: CellNucleus
+    in_taxon: Eukaryota
+developmental_stages:
+  EmbryonicStage:
+  LarvalStage:
+  JuvenileStage:
+  AdultStage:
+elements:
+  # units of organization, from cells through populations
+  Macromolecule:
+  CellPlusAdnexa:
+    subdivisions:
+      Cell:
+        subdivisions:
+          Cytosol:
+          PlasmaMembrane:
+      CellAdnexa:
+        subdivisions:
+          CellJunction:
+          CellProjection:
+          CellWall:
+  # Metazoan organism and its subdivisions
+  MetazoanOrganism:
+    subdivisions:
+      HeadAndNeck:
+        subdivisions:
+          Head:
+            attributes:
+              - Circumference
+            subdivisions:
+              Face:
+              BackOfHead:
+              TopOfHead:
+            parts:
+              Mouth:
+                parts:
+                  Lips:
+                    parts:
+                      UpperLip:
+                      LowerLip:
+                  Tongue:
+                  ToothAndAdnexa:
+                    repetitions:
+                      - LeftRightSymmetry
+                      - UpperLowerSymmetry
+                      - MedialLateralSymmetry
+                    subdivisions:
+                      Tooth:
+                      AdnexaOfTooth:
+                        parts:
+                          Crown:
+                          Root:
+                          Enamel:
+                          Dentin:
+                          Pulp:
+                          Cementum:
+                          PeriodontalLigament:
+                          Gingiva:
+                          Alveolus:
+          Neck:
+      Body:
+        subdivisions:
+          Trunk:
+          Limb:
+            undergoes:
+              - development
+              - morphogenesis
+            repetitions:
+              - LeftRightSymmetry
+            subtypes:
+              Forelimb:
+              Hindlimb:
+            subdivisions:
+              Girdle:
+                subtypes:
+                  PectoralGirdle:
+                    differentia: Forelimb
+                  PelvicGirdle:
+                    differentia: Hindlimb
+                skeleton:
+                  GirdleSkeleton:
+                    parts:
+                      Scapula:
+                      Clavicle:
+              FreeLimb:
+                subtypes:
+                  ForeFreeLimb:
+                    differentia: Forelimb
+                  HindFreeLimb:
+                    differentia: Hindlimb
+                MainFreeLimb:
+                  subtypes:
+                    ForeMainFreeLimb:
+                      differentia: Forelimb
+                    HindMainFreeLimb:
+                      differentia: Hindlimb
+                  subdivisions:
+                    Zeugopod:
+                      description: "The zeugopod is the middle part of the main free limb, between the autopod and stylopod segments."
+                      subtypes:
+                        ForeZeugopod:
+                          differentia: Forelimb
+                        HindZeugopod:
+                          differentia: Hindlimb
+                    Stylopod:
+                      description: "The stylopod is the proximal part of the main free limb, between the girdle and the zeugopod."
+                      subtypes:
+                        ForeStylopod:
+                          differentia: Forelimb
+                        HindStylopod:
+                          differentia: Hindlimb
+                AutopodPartOfLimb:
+                  subtypes:
+                    Manus:
+                      differentia: Forelimb
+                      subdivisions:
+                        Carpus:
+                        Metacarpus:
+                        Phalanges:
+                          subdivisions:
+                            ProximalPhalanx:
+                            MiddlePhalanx:
+                            DistalPhalanx:
+                      skeleton:
+                        HandSkeleton:
+                          parts:
+                            MetacarpalSkeleton:
+                            Carpals:
+                            Phalanges:
+                    Pes:
+                      differentia: Hindlimb
+portions:
+  Tissue:
+    attributes:
+      - Mass
+    subtypes:
+      ConnectiveTissue:
+        subtypes:
+          RegularConnectiveTissue:
+            subtypes:
+              DenseRegularConnectiveTissue:
+              LooseRegularConnectiveTissue:
+          IrregularConnectiveTissue:
+            subtypes:
+              DenseIrregularConnectiveTissue:
+              LooseIrregularConnectiveTissue:
+      SkeletalTissue:
+        subtypes:
+          BoneTissue:
+          CartilageTissue:
+      MuscleTissue:
+      NeuralTissue:
+  OrganismSubstance:
+    CirculatoryFluid:
+      subtypes:
+        LympathicFluid:
+        BloodOrBloodAnalog:
+          organismal_subtypes:
+            Hemolymph:
+            Blood:
+              only_in_taxon:
+                - Vertebrate
+              subdivisions:
+                Plasma:
+                Erythrocytes:
+    InterstitialFluid:
+    SeminalFluid:
+
+## connectors act as reified relationships between classes
+connectors:
+  Connector:
+    subtypes:
+      Ligament:
+      Tendon:
+      Nerve:
+      SkeletalJoint:
+        SacroiliacJoint:
+          connects:
+            - Sacrum
+            - Ilium
+      BloodVessel:
+        subtypes:
+          Artery:
+          Vein:
+          Capillary:
+systems:
+  System:
+    subtypes:
+      FunctionalSystem:
+        subtypes:
+          SensorySystem:
+            subtypes:
+              VisualSystem:
+                components:
+                  Eyeball:
+                    aliases:
+                      eye:
+              AuditorySystem:
+                components:
+                  Ear:
+                    aliases:
+                      entire ear:
+                    subdivisions:
+                      OuterEar:
+                      MiddleEar:
+                      InnerEar:
+          CirculatorySystem:
+            subdivisions:
+              CirculatoryOrgan:
+                subtypes:
+                  PrimaryCirculatoryOrgan:
+                    subtypes:
+                      VertebrateHeart:
+                        variants:
+                          Dextrocardia:
+                            description: "The heart is on the right side of the body."
+                            abnormality: true
+                        subdivisions:
+                          Atrium:
+                            repetitions:
+                              AtriumSide:
+                                subtypes:
+                                  RightAtrium:
+                                  LeftAtrium:
+                          Ventricle:
+                            repetitions:
+                              VentricleSide:
+                                subtypes:
+                                  RightVentricle:
+                                  LeftVentricle:
+              CirculatoryVasculature:
+          RespiratorySystem:
+          DigestiveSystem:
+          MusculoskeletalSystem:
+            subdivisions:
+              SkeletalSystem:
+                subdivisions:
+                  VertebralSkeleton:
+                    components:
+                      VertebralElement:
+                        repetitions:
+                          - AnteriorPosterior
+                        subdivisions:
+                          VertebralArch:
+                          VertebralBody:
+                components:
+                  SkeletalElement:
+                    attributes:
+                      - MineralDensity
+                    states:
+                      - CartilaginousState
+                      - BoneState
+                      - MesenchymalCondensationState
+                    subtypes:
+                      Bone:
+                        subtypes:
+                          # TODO - model as elements?
+                          LongBone:
+                            variant_attribute_values:
+                              - Bowed
+                            subtypes:
+                              Femur:
+                              Tibia:
+                              Fibula:
+                              Humerus:
+                              Radius:
+                              Ulna:
+                              Metacarpal:
+                              Metatarsal:
+                              Phalanx:
+                          ShortBone:
+                            subtypes:
+                              Carpals:
+                              Tarsals:
+                          FlatBone:
+                            subtypes:
+                              Sternum:
+                              Scapula:
+                              Ribs:
+                              Skull:
+                              Vertebra:
+                          IrregularBone:
+                            subtypes:
+                              Hyoid:
+                              Mandible:
+                              Maxilla:
+                              Zygomatic:
+                              Nasal:
+                              Palatine:
+                              Lacrimal:
+                              Vomer:
+                              Sphenoid:
+                              Ethmoid:
+                              Frontal:
+                              Parietal:
+                              Occipital:
+                              Temporal:
+                              Pterygoid:
+                              ZygomaticProcess:
+                              MandibularProcess:
+                              MaxillaryProcess:
+                              PalatineProcess:
+                              LacrimalProcess:
+                              NasalProcess:
+                              VomerProcess:
+                              SphenoidProcess:
+                              EthmoidProcess:
+                              FrontalProcess:
+                              ParietalProcess:
+                              OccipitalProcess:
+                              TemporalProcess:
+                              PterygoidProcess:
+                              ZygomaticProcess:
+                              MandibularProcess:
+                              MaxillaryProcess:
+                              PalatineProcess:
+                              LacrimalProcess:
+                              NasalProcess:
+                              VomerProcess:
+                              SphenoidProcess:
+                              EthmoidProcess:
+                              FrontalProcess:
+                              ParietalProcess:
+                              OccipitalProcess:
+                              TemporalProcess:
+                              PterygoidProcess:
+                              ZygomaticProcess:
+                              MandibularProcess:
+                              MaxillaryProcess:
+                              PalatineProcess:
+                              LacrimalProcess:
+                              NasalProcess:
+                              VomerProcess:
+                              SphenoidProcess:
+                              EthmoidProcess:
+                              FrontalProcess:
+                              ParietalProcess:
+                              OccipitalProcess:
+                              TemporalProcess:
+                              PterygoidProcess:
+                              ZygomaticProcess:
+                              MandibularProcess:
+                              MaxillaryProcess:
+                              PalatineProcess:
+                              LacrimalProcess:
+                              NasalProcess:
+                              VomerProcess:
+                              SphenoidProcess:
+                              EthmoidProcess:
+                              FrontalProcess:
+                              ParietalProcess:
+                              OccipitalProcess:
+                              TemporalProcess:
+                              PterygoidProcess:
+              SkeletalMuscularSystem:
+          IntegumentalSystem:
+            components:
+              IntegumentaryUnit:
+          NervousSystem:
+            subdivisions:
+              PeripheralNervousSystem:
+              CentralNervousSystem:
+                subdivisions:
+                  Brain:
+                    subdivisions:
+                      Cerebrum:
+                        subdivisions:
+                          FrontalLobe:
+                          ParietalLobe:
+                          OccipitalLobe:
+                          TemporalLobe:
+                      Cerebellum:
+                      Brainstem:
+                        subdivsiions:
+                          Midbrain:
+                          Pons:
+                          MedullaOblongata:
+                  SpinalCord:
+          ImmuneSystem:
+            subdivisions:
+              LymphaticSystem:
+                components:
+                  LymphNode:
+                    subtypes:
+                      AxillaryLymphNode:
+                        definition: "A lymph node located in the axilla."
+                        differentia: Axilla
+                        synonyms:
+                          - axillary lymph node
+                          - axillary lymph nodes
+                      CervicalLymphNode:
+                        definition: "A lymph node located in the neck."
+                        differentia: Neck
+                        synonyms:
+                          - cervical lymph node
+                          - cervical lymph nodes
+                      InguinalLymphNode:
+                        definition: "A lymph node located in the groin."
+                        differentia: Groin
+                      MesentericLymphNode:
+                        definition: "A lymph node located in the mesentery."
+                        differentia: Mesentery
+                      PoplitealLymphNode:
+                        definition: "A lymph node located in the popliteal fossa."
+                        differentia: PoplitealFossa
+                      SubclavianLymphNode:
+                        definition: "A lymph node located in the subclavian fossa."
+                        differentia: SubclavianFossa
+                      SupraclavicularLymphNode:
+                        definition: "A lymph node located in the supraclavicular fossa."
+                        differentia: SupraclavicularFossa
+              ImmuneOrgan:
+                subtypes:
+                  Thymus:
+                    subdivisions:
+                      ThymicLobe:
+                        subtypes:
+                          AnteriorThymicLobe:
+                          PosteriorThymicLobe:
+                  Spleen:
+                    subdivisions:
+                      RedPulp:
+                        definition: "The portion of the spleen that contains red blood cells."
+                      WhitePulp:
+                        definition: "The portion of the spleen that contains lymphocytes."
+                        subdivisions:
+                          TCellZone:
+                            definition: "The portion of the white pulp that contains T cells."
+                          BCellZone:
+                            definition: "The portion of the white pulp that contains B cells."
+                          MacrophageZone:
+                            definition: "The portion of the white pulp that contains macrophages."
+                          Follicle:
+                            definition: "The portion of the white pulp that contains germinal centers."
+                            subtypes:
+                              GerminalCenter:
+                                definition: "The portion of the follicle that contains germinal centers."
+                                subtypes:
+                                  MarginalZone:
+                                    definition: "The portion of the germinal center that contains marginal zone B cells."
+                                  FollicularDendriticCellZone:
+                                    definition: "The portion of the germinal center that contains follicular dendritic cells."
+                                  FollicularHelperTCellZone:
+                                    definition: "The portion of the germinal center that contains follicular helper T cells."
+                                  FollicularBCellZone:
+                                    definition: "The portion of the germinal center that contains follicular B cells."
+                              MarginalZone:
+                                definition: "The portion of the follicle that contains marginal zone B cells."
+                              OuterZone:
+                                definition: "The portion of the follicle that contains outer zone B cells."
+                              InnerZone:
+                                definition: "The portion of the follicle that contains inner zone B cells."
+          RenalSystem:
+            components:
+              Kidney:
+                subdivisions:
+                  RenalPyramid:
+                    definition: "The portion of the kidney that contains the renal tubules."
+              Glomerulus:
+                definition: "The portion of the kidney that filters blood."
+                subdivisions:
+                  AfferentArteriole:
+                    definition: "The portion of the glomerulus that receives blood from the renal artery."
+                  EfferentArteriole:
+                    definition: "The portion of the glomerulus that delivers blood to the renal tubules."
+                  BowmanCapsule:
+                    definition: "The portion of the glomerulus that contains the glomerular capillaries."

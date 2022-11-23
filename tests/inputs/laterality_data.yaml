@@ -1,0 +1,99 @@
+id: anatomy
+lateralities:
+  Left:
+  Right:
+taxons:
+  Mammalia:
+    subtypes:
+      HomoSapiens:
+      MusMusculus:
+      FelisCatus:
+  Arthropoda:
+    subtypes:
+      DrosophilaMelanogaster:
+      AnophelesGambiae:
+structures:
+  Head:
+    potential_taxon:
+      - Mammalia
+      - HomoSapiens
+      - MusMusculus
+      - FelisCatus
+    parts:
+      Face:
+        parts:
+          Mouth:
+            parts:
+              Lips:
+                parts:
+                  UpperLip:
+                  LowerLip:
+              Tongue:
+              Tooth:
+                parts:
+                  Crown:
+                  Root:
+                  Neck:
+                subtypes:
+                  Incisor:
+                  Canine:
+                  Molariform:
+                    subtypes:
+                      Molar:
+                      Premolar:
+          Nose:
+          Eyes:
+            potential_lateralities:
+              - Left
+              - Right
+            parts:
+              Pupil:
+              Iris:
+              Eyelid:
+                subtypes:
+                  UpperEyelid:
+                  LowerEyelid:
+  ForeLimb:
+    potential_lateralities:
+      - Left
+      - Right
+    potential_taxon:
+      - HomoSapiens
+      - MusMusculus
+      - FelisCatus
+      - Mammalia
+    parts:
+      ForelimbZeugopod:
+      ForelimbStylopod:
+      Shoulder:
+      Elbow:
+      Wrist:
+      Hand:
+        parts:
+          Thumb:
+            # test: include redundant assertion
+            lateralized_forms:
+              LeftThumb:
+                has_laterality: Left
+                parent: Thumb
+          IndexFinger:
+          MiddleFinger:
+          RingFinger:
+          Pinky:
+  HindLimb:
+    potential_lateralities:
+      - Left
+      - Right
+    parts:
+      HindlimbZeugopod:
+      HindlimbStylopod:
+      Hip:
+      Knee:
+      Ankle:
+      Foot:
+        parts:
+          BigToe:
+          SecondToe:
+          ThirdToe:
+          FourthToe:
+          FifthToe:

@@ -1,0 +1,217 @@
+id: http://purl.obolibrary.org/obo/uberon/body-parts-schema
+name: BodyParts
+description: |-
+  Experimental metamodel for a new way of doing vertebrate anatomy
+imports:
+  - linkml:types
+prefixes:
+  linkml: https://w3id.org/linkml/
+  bodyparts: http://purl.obolibrary.org/obo/uberon/uberon-metamodel/
+  biolink: https://w3id.org/biolink/vocab/
+  SO: http://purl.obolibrary.org/obo/SO_
+  GO: http://purl.obolibrary.org/obo/GO_
+  BFO: http://purl.obolibrary.org/obo/BFO_
+  IAO: http://purl.obolibrary.org/obo/IAO_
+  RO: http://purl.obolibrary.org/obo/RO_
+  PATO: http://purl.obolibrary.org/obo/PATO_
+  NCBITaxon: http://purl.obolibrary.org/obo/NCBITaxon_
+  edam: http://edamontology.org/
+  OIO: http://www.geneontology.org/formats/oboInOwl#
+  skos: http://www.w3.org/2004/02/skos/core#
+  dcterms: http://purl.org/dc/terms/
+
+default_prefix:   bodyparts
+default_curi_maps:
+  - semweb_context
+
+enums:
+  BloodVesselSubcategory:
+    permissible_values:
+      artery:
+        meaning: UBERON:0001637
+      vein:
+        meaning: UBERON:0001638
+
+
+types:
+  label type:
+    typeof: string
+    description: >-
+      A string that provides a human-readable name for an entity
+
+  narrative text:
+    typeof: string
+    description: >-
+      A string that provides a human-readable description of something
+
+slots:
+
+  ## Annotations
+
+  code:
+    identifier: true
+  label:
+    slot_uri: rdfs:label
+    annotations:
+      owl: AnnotationProperty, AnnotationAssertion
+    range: label type
+    exact_mappings:
+      - skos:prefLabel
+  definition:
+    slot_uri: IAO:0000115
+    annotations:
+      owl: AnnotationProperty, AnnotationAssertion
+    range: narrative text
+    exact_mappings:
+      - skos:definition
+
+  ## Logic
+
+  subtypes:
+    multivalued: true
+    range: AnatomicalEntity
+    inlined: true
+    annotations:
+      owl: Inverted, SubClassOf
+
+  components:
+    multivalued: true
+    range: AnatomicalEntity
+    inlined: true
+    annotations:
+      owl: Inverted, ObjectSomeValuesFrom
+
+  subdivisions:
+    multivalued: true
+    range: AnatomicalEntity
+    inlined: true
+    annotations:
+      owl: Inverted, ObjectSomeValuesFrom
+
+  elements:
+    multivalued: true
+    range: AnatomicalEntity
+    inlined: true
+    annotations:
+      owl: Inverted, ObjectSomeValuesFrom
+
+  attributes:
+    multivalued: true
+    range: Attribute
+    inlined: false
+
+  repetitions:
+    multivalued: true
+    range: Repetition
+    inlined: false
+
+  undergoes:
+    multivalued: true
+    range: Process
+    inlined: false
+
+  only_in_taxon:
+    multivalued: true
+    range: TaxonClass
+    inlined: false
+
+classes:
+
+  Ontology:
+    attributes:
+      id:
+      title:
+      elements:
+        range: AnatomicalEntity
+        inlined: true
+        multivalued: true
+      tissues:
+        range: Tissue
+        inlined: true
+        multivalued: true
+      systems:
+        range: System
+        inlined: true
+        multivalued: true
+      developmental_stages:
+        range: DevelopmentalStage
+        inlined: true
+        multivalued: true
+      developmental_processes:
+        range: DevelopmentalProcess
+        inlined: true
+        multivalued: true
+      evolutionary_processes:
+        range: EvolutionaryProcess
+        inlined: true
+        multivalued: true
+
+
+
+  Concept:
+    slots:
+      - code
+      - label
+
+  AnatomicalEntity:
+    is_a: Concept
+    class_uri: UBERON:0001062
+    slots:
+      - subtypes
+      - components
+      - subdivisions
+
+  Subdivision:
+    is_a: AnatomicalEntity
+    slot_usage:
+      subtypes:
+        range: Subdivision
+      subdivisions:
+        range: Subdivision
+
+  Component:
+    is_a: AnatomicalEntity
+    slot_usage:
+      subtypes:
+        range: Component
+
+  Connector:
+    is_a: AnatomicalEntity
+    slot_usage:
+      subtypes:
+        range: Connector
+
+  GroupingClass:
+    is_a: AnatomicalEntity
+    slot_usage:
+      subtypes:
+        range: GroupingClass
+
+  Tissue:
+    is_a: AnatomicalEntity
+    slot_usage:
+      subtypes:
+        range: Tissue
+
+  Delta:
+    is_a: Concept
+
+  Process:
+    is_a: Delta
+
+  Variation:
+    is_a: Delta
+
+  Phenotype:
+    is_a: Delta
+
+  TaxonClass:
+    is_a: Concept
+
+
+
+
+
+
+
+

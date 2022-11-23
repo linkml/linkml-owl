@@ -30,7 +30,8 @@ from funowl import OntologyDocument, Ontology, IRI, ObjectSomeValuesFrom, \
     ObjectProperty, Declaration, InverseObjectProperties, ObjectPropertyDomain, ObjectPropertyRange, \
     SubObjectPropertyOf, TransitiveObjectProperty, SymmetricObjectProperty, AsymmetricObjectProperty, \
     ReflexiveObjectProperty, IrreflexiveObjectProperty, Annotation, ObjectMinCardinality, ObjectHasValue, \
-    NamedIndividual, DataSomeValuesFrom, DataHasValue, DataAllValuesFrom
+    NamedIndividual, DataSomeValuesFrom, DataHasValue, DataAllValuesFrom, AnnotationProperty, DataProperty, Datatype, \
+    DisjointClasses
 
 from linkml_runtime.dumpers.dumper_root import Dumper
 from linkml_runtime.utils.yamlutils import YAMLRoot
@@ -134,7 +135,7 @@ class OWLDumper(Dumper):
     object_index: ObjectIndex = None
     """Index of LinkML objects."""
 
-    infer_missing_values: bool = False
+    autofill: bool = False
     """If True, infer missing values in data."""
 
     def to_ontology_document(self, element: Union[YAMLRoot, List[YAMLRoot]], schema: Union[SchemaDefinition, str],
@@ -181,8 +182,7 @@ class OWLDumper(Dumper):
         doc = self.to_ontology_document(element, schema, iri=iri)
         return str(doc)
 
-    def transform(self, element: YAMLRoot, schema: SchemaDefinition, is_element_an_object=True,
-                  is_element_an_owl_class=False) -> Any:
+    def transform(self, element: YAMLRoot, schema: SchemaDefinition, is_element_an_object=True) -> Any:
         """
         Recursively transform a LinkML element
 
@@ -195,6 +195,7 @@ class OWLDumper(Dumper):
         :param is_element_an_owl_class:
         :return: IRI or node of transformation of element
         """
+        logging.debug(f"transform: {element}")
         if element is None:
             return None
         try:
@@ -218,7 +219,7 @@ class OWLDumper(Dumper):
         o = self.ontology
         python_type = type(element)
         linkml_class_name = python_type.class_name
-        if self.infer_missing_values:
+        if self.autofill:
             if not self.object_index:
                 raise ValueError("object_index must be set if infer_missing_values is True")
             proxy = self.object_index.bless(element)
@@ -234,10 +235,9 @@ class OWLDumper(Dumper):
         for tmpl_str in self._get_inferred_class_annotations(c, 'owl.template'):
             self.add_axioms_from_template(tmpl_str, element)
         cls_interps = self._get_class_interpretations(c)
-        if Class.__name__ in cls_interps:
-            is_element_an_owl_class = True
         subj = None
         eai = EntityAxiomIndex()
+        unprocessed_parents = []
         # set subj = IRI for element
         for k, v in vars(element).items():
             slot: SlotDefinition
@@ -246,26 +246,32 @@ class OWLDumper(Dumper):
                 raise ValueError(f'Lookup slot in {c.name} failed for {k} // element={element}')
             if slot.identifier:
                 subj = URIRef(self._get_IRI_str(v))
-        if subj is None:
+                logging.debug(f"set subj from {slot.name}={v} asURI: {subj}")
+        if AnonymousIndividual.__name__ in cls_interps or (subj is None and "Individual" in cls_interps):
             subj = AnonymousIndividual()
-        if ObjectProperty.__name__ in cls_interps:
-            # TODO: make this generic for all declarations
-            decl = Declaration(ObjectProperty(subj))
-            o.axioms.append(decl)
-        if NamedIndividual.__name__ in cls_interps:
-            # TODO: make this generic for all declarations
-            decl = Declaration(NamedIndividual(subj))
-            o.axioms.append(decl)
-        if Class.__name__ in cls_interps and not isinstance(subj, AnonymousIndividual):
-            # TODO: make this generic for all declarations
-            decl = Declaration(Class(subj))
-            o.axioms.append(decl)
+            logging.debug(f"No identifier slot; Creating anon individual for element = {subj}")
+        else:
+            for obj_type in [ObjectProperty, DataProperty, AnnotationProperty, NamedIndividual, Class, Datatype]:
+                if obj_type.__name__ in cls_interps:
+                    decl = Declaration(obj_type(subj))
+                    logging.debug(f"Inferred {decl} based on {obj_type.__name__} in {cls_interps}")
+                    o.axioms.append(decl)
+        logging.info(f"Subject={subj}")
+        expression_termset = {"IntersectionOf", "UnionOf", "ComplementOf", "OneOf", "SomeValuesFrom", "AllValuesFrom"}
+        is_returns_expression = len(expression_termset.intersection(cls_interps)) > 0
         # iterate through all slot-value assignments for element;
         # generate axioms or add axioms to EntityAxiomIndex for each
         for k, v in vars(element).items():
             slot: SlotDefinition
             # TODO: unify slot/schema_level_slot
             slot = self._lookup_slot(c, k)
+            if slot is None:
+                logging.error(f'No slot for {k}')
+                continue
+            if slot.identifier:
+                # the role of the identifier slot is to determine the IRI for the element;
+                # it generates no axioms of its own
+                continue
             schema_level_slot = self._get_schema_level_slot(slot)
             # lookup OWL settings on each slot
             owl_templates = self._get_inferred_slot_annotations(slot, 'owl.template', linkml_class_name)
@@ -285,26 +291,16 @@ class OWLDumper(Dumper):
                             ann_val = self.transform(ann_val, schema, is_element_an_object=ann_slot.range in self.schema.classes)
                             ann_slot_iri = self._get_IRI_str(ann_slot.slot_uri)
                             axiom_annotations.append(Annotation(ann_slot_iri, ann_val))
+            # templates
             for tmpl in owl_templates:
                 self.add_axioms_from_template(tmpl, element)
-            if slot is None:
-                logging.error(f'No slot for {k}')
-                continue
-            if slot.identifier:
-                # the role of the identifier slot is to determine the IRI for the element;
-                # it generates no axioms of its own
-                continue
             if schema_level_slot.slot_uri is not None:
                 slot_uri = self._get_IRI_str(schema_level_slot.slot_uri)
             else:
                 slot_uri = self._get_IRI_str(self.schemaview.get_uri(slot.name))
-            logging.debug(f'in {subj} {k} = {v} (URI={schema_level_slot.slot_uri}) // slot = {slot.name}')
-            interps = self._get_slot_interpretations(slot, linkml_class_name)
-            logging.debug(f'INTERPS={interps}')
-            # TODO: make this more generic
-            is_disjunction = 'UnionOf' in interps
-            is_conjunction = 'IntersectionOf' in interps
-            is_annotation = 'AnnotationProperty' in interps or 'Annotation' in interps
+            logging.debug(f'SlotVal {subj}.{k} = {v} (URI={schema_level_slot.slot_uri}) // slot = {slot.name}')
+            slot_interps = self._get_slot_interpretations(slot, linkml_class_name)
+            logging.debug(f'OWL interpretations for {k}={slot_interps}')
             is_object_ref = slot.range in self.schema.classes
             # normalize input_vals to a list, then recursively transform
             if isinstance(v, list):
@@ -317,6 +313,10 @@ class OWLDumper(Dumper):
             logging.debug(f'TR Vals={tr_vals}')
             parents = []  ## expressions that are the referents of the axioms to be generated
             is_class_logical_axiom = False
+            # TODO: make this more generic
+            is_disjunction = 'UnionOf' in slot_interps
+            is_conjunction = 'IntersectionOf' in slot_interps
+            is_annotation = 'AnnotationProperty' in slot_interps or 'Annotation' in slot_interps
             closure_axiom_parents = []
             for tr_val in tr_vals:
                 logging.debug(f'  TR_VAL = {tr_val}')
@@ -326,7 +326,7 @@ class OWLDumper(Dumper):
                     for owl_fstring in owl_fstrings:
                         self.add_axioms_from_fstring(owl_fstring, element, tr_val)
                     continue
-                if slot.range in self.schema.classes:
+                if is_object_ref:
                     if isinstance(tr_val, str):
                         tr_val = self._get_IRI_str(tr_val)
                 parent = tr_val
@@ -348,32 +348,16 @@ class OWLDumper(Dumper):
                                 raise ValueError(f'Cannot interpret {owl_uri}')
                 # transform parents if an expression type is specified
                 # TODO: use a mapping rather than repetitive code
-                if ObjectSomeValuesFrom.__name__ in interps:
-                    parent = ObjectSomeValuesFrom(slot_uri, tr_val)
-                    is_class_logical_axiom = True
-                elif DataSomeValuesFrom.__name__ in interps:
-                    parent = DataSomeValuesFrom(slot_uri, tr_val)
-                    is_class_logical_axiom = True
-                elif ObjectHasValue.__name__ in interps:
-                    parent = ObjectHasValue(slot_uri, tr_val)
-                    is_class_logical_axiom = True
-                elif DataHasValue.__name__ in interps:
-                    parent = DataHasValue(slot_uri, tr_val)
-                    is_class_logical_axiom = True
-                elif ObjectAllValuesFrom.__name__ in interps:
-                    parent = ObjectAllValuesFrom(slot_uri, tr_val)
-                    is_class_logical_axiom = True
-                elif DataAllValuesFrom.__name__ in interps:
-                    parent = DataAllValuesFrom(slot_uri, tr_val)
-                    is_class_logical_axiom = True
-                elif ObjectMinCardinality.__name__ in interps:
-                    raise NotImplementedError(f'TODO: QCRs')
-                elif SubClassOf.__name__ in interps:
-                    is_class_logical_axiom = True
-                elif EquivalentClasses.__name__ in interps:
-                    is_class_logical_axiom = True
+                simple_expression_types = [ObjectSomeValuesFrom, DataSomeValuesFrom, ObjectHasValue, DataHasValue, ObjectAllValuesFrom, DataAllValuesFrom]
+                for expression_type in simple_expression_types:
+                    if expression_type.__name__ in slot_interps:
+                        parent = expression_type(slot_uri, tr_val)
+                        is_class_logical_axiom = True
+                for logical_axiom_type in [SubClassOf, EquivalentClasses, DisjointClasses]:
+                    if logical_axiom_type.__name__ in slot_interps:
+                        is_class_logical_axiom = True
                 parents.append(parent)
-                if 'Closed' in interps:
+                if 'Closed' in slot_interps:
                     closure_axiom_parents.append(ObjectAllValuesFrom(slot_uri, tr_val))
             if closure_axiom_parents:
                 if len(closure_axiom_parents) == 1:
@@ -384,27 +368,14 @@ class OWLDumper(Dumper):
             #    eai.add_operands((0, SubClassOf.__name__, ObjectUnionOf.__name__), parents, axiom_annotations)
             axiom_type = None
             # TODO: make this more generic / less repetitive
-            if SubClassOf.__name__ in interps:
-                axiom_type = SubClassOf
-            elif SubObjectPropertyOf.__name__ in interps:
-                axiom_type = SubObjectPropertyOf
-            elif ClassAssertion.__name__ in interps:
-                axiom_type = ClassAssertion
-            elif ObjectPropertyAssertion.__name__ in interps:
-                axiom_type = ObjectPropertyAssertion
-            elif EquivalentClasses.__name__ in interps:
-                axiom_type = EquivalentClasses
-            elif InverseObjectProperties.__name__ in interps:
-                axiom_type = InverseObjectProperties
-            elif ObjectPropertyDomain.__name__ in interps:
-                axiom_type = ObjectPropertyDomain
-            elif ObjectPropertyRange.__name__ in interps:
-                axiom_type = ObjectPropertyRange
-            elif AnnotationAssertion.__name__ in interps:
-                axiom_type = AnnotationAssertion
+            axiom_types = [SubClassOf, SubObjectPropertyOf, ClassAssertion, ObjectPropertyAssertion, EquivalentClasses, InverseObjectProperties,ObjectPropertyDomain, ObjectPropertyRange, AnnotationAssertion]
+            for candidate_axiom_type in axiom_types:
+                if candidate_axiom_type.__name__ in slot_interps:
+                    axiom_type = candidate_axiom_type
+            # fill in default axiom type
             if axiom_type is None:
                 # default: SubClassOf R some V for logical; otherwise annotation
-                if is_class_logical_axiom:
+                if is_class_logical_axiom and not is_returns_expression:
                     if is_annotation:
                         raise ValueError(f'{slot.name} cannot be both logical and an annotation')
                     axiom_type = SubClassOf
@@ -413,57 +384,70 @@ class OWLDumper(Dumper):
                         axiom_type = AnnotationAssertion
                     else:
                         axiom_type = None
+                        logging.info(f"Cannot determine axiom type for {slot.name}, unprocessed={parents}")
+                        unprocessed_parents += parents
+                        #continue
             logging.debug(f'AXIOM TYPE = {axiom_type}')
-            if not axiom_type:
-                logging.debug(f'No axiom type; skipping {k} for {subj}')
-                continue
-            if is_disjunction:
-                # translate the filler list to a single entry that is a disjunction
-                # TODO: allow for different groupings; for now default to 0
-                level = 0
-                eai.add_operands((level, axiom_type.__name__, ObjectUnionOf.__name__), parents, axiom_annotations)
-                #eai.annotations += axiom_annotations
-                parents = []
-            if is_conjunction:
-                # translate the filler list to a single entry that is a conjunction
-                # TODO: allow for different groupings; for now default to 0
-                level = 0
-                eai.add_operands((level, axiom_type.__name__, ObjectIntersectionOf.__name__), parents, axiom_annotations)
-                #eai.annotations += axiom_annotations
-                parents = []
-            for parent in parents:
-                # TODO: make this more generic
-                if axiom_type == SubClassOf:
-                    logging.debug(f'type(subj) = {type(subj)} // {subj}')
-                    if isinstance(subj, AnonymousIndividual):
-                        axiom = None
+            if axiom_type:
+                # special case handling of conjunctions and disjunctions;
+                # these are added to the index, to be processed at the entity level
+                if is_disjunction:
+                    # translate the filler list to a single entry that is a disjunction
+                    # TODO: allow for different groupings; for now default to 0
+                    level = 0
+                    eai.add_operands((level, axiom_type.__name__, ObjectUnionOf.__name__), parents, axiom_annotations)
+                    #eai.annotations += axiom_annotations
+                    parents = []
+                if is_conjunction:
+                    # translate the filler list to a single entry that is a conjunction
+                    # TODO: allow for different groupings; for now default to 0
+                    level = 0
+                    eai.add_operands((level, axiom_type.__name__, ObjectIntersectionOf.__name__), parents, axiom_annotations)
+                    #eai.annotations += axiom_annotations
+                    parents = []
+                for parent in parents:
+                    # Note: when considering making this more generic,
+                    # bear in mind that order or number of arguments may vary
+                    if axiom_type == SubClassOf:
+                        logging.debug(f'type(subj) = {type(subj)} // {subj}')
+                        if isinstance(subj, AnonymousIndividual):
+                            axiom = None
+                        else:
+                            axiom = SubClassOf(subj, parent)
+                    elif axiom_type == SubObjectPropertyOf:
+                        axiom = SubObjectPropertyOf(subj, parent)
+                    elif axiom_type == EquivalentClasses:
+                        axiom = EquivalentClasses(subj, parent)
+                    elif axiom_type == ClassAssertion:
+                        # Note: ClassAssertion axioms are "inverted"
+                        axiom = ClassAssertion(parent, subj)
+                    elif axiom_type == ObjectPropertyAssertion:
+                        axiom = ObjectPropertyAssertion(slot_uri, subj, parent)
+                    elif axiom_type == InverseObjectProperties:
+                        axiom = InverseObjectProperties(subj, parent)
+                    elif axiom_type == ObjectPropertyDomain:
+                        axiom = ObjectPropertyDomain(subj, parent)
+                    elif axiom_type == ObjectPropertyRange:
+                        axiom = ObjectPropertyRange(subj, parent)
+                    elif axiom_type == AnnotationAssertion:
+                        axiom = AnnotationAssertion(slot_uri, subj, parent)
                     else:
-                        axiom = SubClassOf(subj, parent)
-                elif axiom_type == SubObjectPropertyOf:
-                    axiom = SubObjectPropertyOf(subj, parent)
-                elif axiom_type == EquivalentClasses:
-                    axiom = EquivalentClasses(subj, parent)
-                elif axiom_type == ClassAssertion:
-                    axiom = ClassAssertion(parent, subj)
-                elif axiom_type == ObjectPropertyAssertion:
-                    axiom = ObjectPropertyAssertion(slot_uri, subj, parent)
-                elif axiom_type == InverseObjectProperties:
-                    axiom = InverseObjectProperties(subj, parent)
-                elif axiom_type == ObjectPropertyDomain:
-                    axiom = ObjectPropertyDomain(subj, parent)
-                elif axiom_type == ObjectPropertyRange:
-                    axiom = ObjectPropertyRange(subj, parent)
-                elif axiom_type == AnnotationAssertion:
-                    axiom = AnnotationAssertion(slot_uri, subj, parent)
-                else:
-                    raise Exception(f'Unknown: {axiom_type}')
-                if axiom is not None:
-                    self.add_axiom(axiom, o, axiom_annotations)
+                        raise Exception(f'Unknown: {axiom_type}')
+                    if axiom is not None:
+                        self.add_axiom(axiom, o, axiom_annotations)
+                    else:
+                        unprocessed_parents.append(parent)
         # all per-slot axioms have been processed; axioms that span
         # multiple slots are now processed
+        if "IntersectionOf" in cls_interps:
+            expr = ObjectIntersectionOf(*unprocessed_parents)
+            logging.debug(f"Returning expression {expr} // {eai.operand_list_index.items()}")
+            return expr
         for op_key, operands in eai.operand_list_index.items():
             _, interp, operator = op_key
-            logging.debug(f'EAI {subj}: {interp} => {operator} over {operands}')
+            logging.debug(f'EntityAxiomIndex {subj}: {interp} => {operator} over {operands}')
+            if len(operands) < 2:
+                raise ValueError(f'Too few operands: {operands} for {operator} in {subj}')
             if operator == ObjectUnionOf.__name__:
                 expr = ObjectUnionOf(*operands)
             elif operator == ObjectIntersectionOf.__name__:
@@ -474,12 +458,24 @@ class OWLDumper(Dumper):
                 axiom = EquivalentClasses(subj, expr)
             elif interp == SubClassOf.__name__:
                 axiom = SubClassOf(subj, expr)
+            elif interp == DisjointClasses.__name__:
+                axiom = DisjointClasses(subj, expr)
             else:
                 raise ValueError(f'Not handled: {interp}')
+            logging.debug(f'Adding axiom: {axiom}')
             self.add_axiom(axiom, o, eai.annotation_list_index.get(op_key, []))
+        logging.debug(f"Returning {subj}")
         return subj
 
     def add_axiom(self, axiom: Axiom, ontology: Ontology, axiom_annotations: List[Annotation]) -> None:
+        """
+        Add an axiom to the ontology, appending any annotations to the axiom.
+
+        :param axiom:
+        :param ontology:
+        :param axiom_annotations:
+        :return:
+        """
         axiom.annotations = axiom_annotations
         ontology.axioms.append(axiom)
 
@@ -692,6 +688,8 @@ class OWLDumper(Dumper):
 
 
 @click.command()
+@click.option("-v", "--verbose", count=True)
+@click.option("-q", "--quiet")
 @click.option('-s', '--schema', required=True,
               help="Path to LinkML schema")
 @click.option("--target-class", "-C",
@@ -702,12 +700,12 @@ class OWLDumper(Dumper):
               help="Input format (will be inferred from file suffix if not specified)")
 @click.option('-o', '--output', required=True,
               help="Path to OWL functional syntax output")
-@click.option("--infer-missing/--no-infer-missing",
+@click.option("--autofill/--no-autofill",
               default=False,
               show_default=True,
               help="If True, fill missing data slots using string_serialization")
 @click.argument('inputfile')
-def cli(inputfile: str, schema: str, target_class, module, output, format, infer_missing: bool, **args):
+def cli(inputfile: str, schema: str, target_class, module, output, format, autofill: bool, verbose: int, quiet: bool, **args):
     """
     Dump LinkML instance data as OWL
 
@@ -729,6 +727,15 @@ def cli(inputfile: str, schema: str, target_class, module, output, format, infer
         linkml-data2owl -s tests/inputs/owl_dumper_test.yaml tests/inputs/owl_dumper_test_data.yaml -o ont.ofn
 
     """
+    logger = logging.getLogger()
+    if verbose >= 2:
+        logger.setLevel(level=logging.DEBUG)
+    elif verbose == 1:
+        logger.setLevel(level=logging.INFO)
+    else:
+        logger.setLevel(level=logging.WARNING)
+    if quiet:
+        logger.setLevel(level=logging.ERROR)
     if module is None:
         if schema is None:
             raise Exception('must pass one of module OR schema')
@@ -740,8 +747,8 @@ def cli(inputfile: str, schema: str, target_class, module, output, format, infer
     element = load_structured_file(inputfile, target_class=target_class, python_module=python_module, schemaview=sv, fmt=format)
 
     dumper = OWLDumper()
-    if infer_missing:
-        dumper.infer_missing_values = True
+    if autofill:
+        dumper.autofill = True
     doc = dumper.dumps(element, schemaview=sv)
     with open(output, 'w') as stream:
         stream.write(str(doc))
