@@ -1,0 +1,594 @@
+id: diseases
+diseases:
+  ParkinsonDisease:
+    definition: A neurodegenerative disease characterized by resting tremor, rigidity, bradykinesia, and postural instability.
+    synonyms:
+      - Parkinson's disease
+      - Parkinson's
+      - Parkinson disease
+      - Parkinson
+      - PD
+    is_a: NeurodegenerativeDisease
+  AlzheimerDisease:
+    definition: A neurodegenerative disease characterized by progressive dementia, loss of cognitive function, and behavioral changes.
+    synonyms:
+      - Alzheimer's disease
+      - Alzheimer's
+      - Alzheimer disease
+      - Alzheimer
+      - AD
+    is_a: NeurodegenerativeDisease
+  Mucopolysaccharidosis:
+    definition: A group of lysosomal storage diseases characterized by the accumulation of glycosaminoglycans in the lysosomes of various tissues.
+    synonyms:
+      - MPS
+    is_a: LysosomalStorageDisease
+  LysosomalStorageDisease:
+    definition: A group of inherited metabolic disorders characterized by the accumulation of undegraded macromolecules in lysosomes.
+    is_a: MetabolicDisease
+  MetabolicDisease:
+    definition: A group of diseases characterized by the abnormal metabolism of macromolecules.
+    is_a: Disease
+  NeurodegenerativeDisease:
+    definition: A group of diseases characterized by the progressive loss of neurons.
+    is_a: Disease
+    subtypes:
+      AmyotrophicLateralSclerosis:
+        definition: A neurodegenerative disease characterized by progressive degeneration of motor neurons.
+        synonyms:
+          - ALS
+        is_a: NeurodegenerativeDisease
+        subtype_of: MotorNeuronDisease
+      HuntingtonDisease:
+        definition: A neurodegenerative disease characterized by progressive degeneration of neurons in the basal ganglia.
+        synonyms:
+          - Huntington's disease
+          - Huntington's
+          - Huntington disease
+          - Huntington
+          - HD
+        is_a: NeurodegenerativeDisease
+      MultipleSclerosis:
+        definition: A neurodegenerative disease characterized by demyelination of neurons in the central nervous system.
+        synonyms:
+          - MS
+        is_a: NeurodegenerativeDisease
+      MotorNeuronDisease:
+        definition: A group of neurodegenerative diseases characterized by the progressive degeneration of motor neurons.
+        is_a: NeurodegenerativeDisease
+        subtypes:
+          AmyotrophicLateralSclerosis:
+            definition: A neurodegenerative disease characterized by progressive degeneration of motor neurons.
+            synonyms:
+              - ALS
+            is_a: NeurodegenerativeDisease
+            subtype_of: MotorNeuronDisease
+          SpinalMuscularAtrophy:
+            definition: A neurodegenerative disease characterized by progressive degeneration of motor neurons in the spinal cord.
+            synonyms:
+              - SMA
+            is_a: NeurodegenerativeDisease
+            subtype_of: MotorNeuronDisease
+  Disease:
+    definition: A group of disorders characterized by the abnormal functioning of the body.
+    is_a: PathologicalProcess
+  PathologicalProcess:
+    definition: A group of processes characterized by the abnormal functioning of the body.
+    is_a: BiologicalProcess
+  BiologicalProcess:
+    definition: A group of processes characterized by the functioning of the body.
+    is_a: Process
+  Process:
+    definition: A group of processes characterized by the functioning of the body.
+    is_a: Entity
+  MucopolysaccharidosisI:
+    definition: A lysosomal storage disease characterized by the accumulation of heparan sulfate in the lysosomes of various tissues.
+    synonyms:
+      - MPS I
+      - Hurler syndrome
+      - Hurler's syndrome
+      - Hurler's
+      - Hurler
+      - Hurler-Scheie syndrome
+      - Hurler-Scheie
+      - Hurler Scheie syndrome
+      - Hurler Scheie
+      - Scheie syndrome
+      - Scheie
+    is_a: Mucopolysaccharidosis
+  MucopolysaccharidosisIH:
+    definition: A lysosomal storage disease characterized by the accumulation of heparan sulfate in the lysosomes of various tissues.
+    synonyms:
+      - MPS IH
+      - Hurler-Scheie syndrome
+      - Hurler-Scheie
+      - Hurler Scheie syndrome
+      - Hurler Scheie
+      - Scheie syndrome
+      - Scheie
+    is_a: MucopolysaccharidosisI
+  MucopolysaccharidosisII:
+    definition: A lysosomal storage disease characterized by the accumulation of dermatan sulfate in the lysosomes of various tissues.
+    synonyms:
+      - MPS II
+      - Hunter syndrome
+      - Hunter's syndrome
+      - Hunter's
+      - Hunter
+      - Hunter-Thompson syndrome
+      - Hunter-Thompson
+      - Hunter Thompson syndrome
+      - Hunter Thompson
+      - Thompson syndrome
+      - Thompson
+    is_a: Mucopolysaccharidosis
+  MucopolysaccharidosisIII:
+    definition: A lysosomal storage disease characterized by the accumulation of heparan sulfate and dermatan sulfate in the lysosomes of various tissues.
+    synonyms:
+      - MPS III
+      - Sanfilippo syndrome
+      - Sanfilippo's syndrome
+      - Sanfilippo's
+      - Sanfilippo
+      - Sanfilippo-Bucy syndrome
+      - Sanfilippo-Bucy
+      - Sanfilippo Bucy syndrome
+      - Sanfilippo Bucy
+      - Bucy syndrome
+      - Bucy
+    is_a: Mucopolysaccharidosis
+  MucopolysaccharidosisIV:
+    definition: A lysosomal storage disease characterized by the accumulation of heparan sulfate and dermatan sulfate in the lysosomes of various tissues.
+    synonyms:
+      - MPS IV
+      - Morquio syndrome
+      - Morquio's syndrome
+      - Morquio's
+      - Morquio
+      - Morquio-Brody syndrome
+      - Morquio-Brody
+      - Morquio Brody syndrome
+      - Morquio Brody
+      - Brody syndrome
+      - Brody
+    is_a: Mucopolysaccharidosis
+  MucopolysaccharidosisVI:
+    definition: A lysosomal storage disease characterized by the accumulation of heparan sulfate and dermatan sulfate in the lysosomes of various tissues.
+    synonyms:
+      - MPS VI
+      - Maroteaux-Lamy syndrome
+      - Maroteaux-Lamy's syndrome
+      - Maroteaux-Lamy's
+      - Maroteaux-Lamy
+      - Maroteaux-Lamy-Morquio syndrome
+      - Maroteaux-Lamy-Morquio
+      - Maroteaux-Lamy Morquio syndrome
+      - Maroteaux-Lamy Morquio
+      - Morquio syndrome
+      - Morquio
+    is_a: Mucopolysaccharidosis
+  MucopolysaccharidosisVII:
+    definition: A lysosomal storage disease characterized by the accumulation of heparan sulfate and dermatan sulfate in the lysosomes of various tissues.
+    synonyms:
+      - MPS V
+      - Sly syndrome
+      - Sly's syndrome
+      - Sly's
+      - Sly
+      - Sly-Morquio syndrome
+      - Sly-Morquio
+      - Sly Morquio syndrome
+      - Sly Morquio
+      - Morquio syndrome
+      - Morquio
+    is_a: Mucopolysaccharidosis
+  Neoplasm:
+    definition: A group of diseases characterized by the abnormal proliferation of cells.
+    subtypes:
+      Cancer:
+        definition: A group of neoplasms characterized by the abnormal proliferation of cells.
+        synonyms:
+          - malignant neoplasm
+          - malignant tumor
+          - malignant tumour
+          - malignant growth
+          - malignant neoplasia
+        subtypes:
+          Carcinoma:
+              definition: A group of cancers characterized by the abnormal proliferation of epithelial cells.
+              origin: EpithelialCell
+              synonyms:
+              - epithelial cancer
+              - epithelial neoplasm
+              - epithelial tumor
+              - epithelial tumour
+              - epithelial growth
+              - epithelial neoplasia
+              subtypes:
+                Adenocarcinoma:
+                  definition: A group of carcinomas characterized by the abnormal proliferation of glandular epithelial cells.
+                  origin: EpithelialCell
+                  location: Gland
+                  synonyms:
+                  - glandular cancer
+                  - glandular neoplasm
+                  - glandular tumor
+                  - glandular tumour
+                  - glandular growth
+                  - glandular neoplasia
+                  subtypes:
+                  AdenocarcinomaOfColon:
+                    definition: A group of adenocarcinomas characterized by the abnormal proliferation of glandular epithelial cells in the colon.
+                    origin: EpithelialCell
+                    location: Colon
+                    synonyms:
+                    - colon cancer
+                    - colon neoplasm
+                    - colon tumor
+                    - colon tumour
+                    - colon growth
+                    - colon neoplasia
+                    is_a: Adenocarcinoma
+                  AdenocarcinomaOfEsophagus:
+                      definition: A group of adenocarcinomas characterized by the abnormal proliferation of glandular epithelial cells in the esophagus.
+                      origin: EpithelialCell
+                      location: Esophagus
+                      synonyms:
+                      - esophageal cancer
+                      - esophageal neoplasm
+                      - esophageal tumor
+                      - esophageal tumour
+                      - esophageal growth
+                      - esophageal neoplasia
+                      is_a: Adenocarcinoma
+                  AdenocarcinomaOfGallbladder:
+                      definition: A group of adenocarcinomas characterized by the abnormal proliferation of glandular epithelial cells in the gallbladder.
+                      origin: EpithelialCell
+                      location: Gallbladder
+                      synonyms:
+                      - gallbladder cancer
+                      - gallbladder neoplasm
+                      - gallbladder tumor
+                      - gallbladder tumour
+                      - gallbladder growth
+                      - gallbladder neoplasia
+                      is_a: Adenocarcinoma
+                  AdenocarcinomaOfKidney:
+                      definition: A group of adenocarcinomas characterized by the abnormal proliferation of glandular epithelial cells in the kidney.
+                      origin: EpithelialCell
+                      location: Kidney
+                      synonyms:
+                      - renal cancer
+                      - renal neoplasm
+                      - renal tumor
+                      - renal
+        Sarcoma:
+          definition: A group of cancers characterized by the abnormal proliferation of mesenchymal cells.
+          origin: MesenchymalCell
+          synonyms:
+            - mesenchymal cancer
+          subtypes:
+            Fibrosarcoma:
+              definition: A group of sarcomas characterized by the abnormal proliferation of fibroblasts.
+              origin: Fibroblast
+              synonyms:
+                  - fibroblast cancer
+                  - fibroblast neoplasm
+                  - fibroblast tumor
+                  - fibroblast tumour
+                  - fibroblast growth
+                  - fibroblast neoplasia
+            Leiomyosarcoma:
+              definition: A group of sarcomas characterized by the abnormal proliferation of smooth muscle cells.
+              origin: SmoothMuscleCell
+              synonyms:
+                - smooth muscle cancer
+                - smooth muscle neoplasm
+                - smooth muscle tumor
+                - smooth muscle tumour
+                - smooth muscle growth
+                - smooth muscle neoplasia
+              is_a: Fibrosarcoma
+            Rhabdomyosarcoma:
+              definition: A group of sarcomas characterized by the abnormal proliferation of skeletal muscle cells.
+              origin: SkeletalMuscleCell
+              synonyms:
+                - skeletal muscle cancer
+                - skeletal muscle neoplasm
+                - skeletal muscle tumor
+                - skeletal muscle tumour
+                - skeletal muscle growth
+                - skeletal muscle neoplasia
+              is_a: Fibrosarcoma
+            SynovialSarcoma:
+              definition: A group of sarcomas characterized by the abnormal proliferation of synovial cells.
+              origin: SynovialCell
+              synonyms:
+                - synovial cancer
+                - synovial neoplasm
+                - synovial tumor
+                - synovial tumour
+                - synovial growth
+                - synovial neoplasia
+              is_a: Fibrosarcoma
+cell_types:
+  Cell:
+    definition: A basic unit of life.
+    synonyms:
+      - cell
+      - cells
+    subtypes:
+        StemCell:
+            definition: A cell that can differentiate into other cell types.
+            synonyms:
+            - stem cell
+            - stem cells
+            subtypes:
+            EmbryonicStemCell:
+                definition: A stem cell derived from an embryo.
+                synonyms:
+                - embryonic stem cell
+                - embryonic stem cells
+            InducedPluripotentStemCell:
+                definition: A stem cell derived from a differentiated cell by reprogramming.
+                synonyms:
+                - induced pluripotent stem cell
+                - induced pluripotent stem cells
+            MesenchymalStemCell:
+                definition: A stem cell derived from mesenchymal tissue.
+                synonyms:
+                - mesenchymal stem cell
+                - mesenchymal stem cells
+            HematopoieticStemCell:
+                definition: A stem cell derived from hematopoietic tissue.
+                synonyms:
+                - hematopoietic stem cell
+                - hematopoietic stem cells
+            NeuralStemCell:
+                definition: A stem cell derived from neural tissue.
+                synonyms:
+                - neural stem cell
+                - neural stem cells
+            OligodendrocyteStemCell:
+                definition: A stem cell derived from oligodendrocytes.
+                synonyms:
+                - oligodendrocyte stem cell
+                - oligodendrocyte stem cells
+            ProgenitorCell:
+                definition: A cell that can differentiate into other cell types.
+                synonyms:
+                - progenitor cell
+                - progenitor cells
+                subtypes:
+                HematopoieticProgenitorCell:
+                    definition: A progenitor cell derived from hematopoietic tissue.
+                    synonyms:
+                    - hematopoietic progenitor cell
+                    - hematopoietic progenitor cells
+                NeuralProgenitorCell:
+                    definition: A progenitor cell derived from neural tissue.
+                    synonyms:
+                    - neural progenitor cell
+                    - neural progenitor cells
+                OligodendrocyteProgenitorCell:
+                    definition: A progenitor cell derived from oligodendrocytes.
+                    synonyms:
+                    - oligodendrocyte progenitor cell
+                    - oligodendrocyte progenitor cells
+        EpithelialCell:
+          definition: A cell that lines the surface of an organ or tissue.
+          synonyms:
+          - epithelial cell
+          subtypes:
+            BasalEpithelialCell:
+              synonyms:
+              - basal epithelial cell
+              - basal epithelial cells
+            SquamousEpithelialCell:
+              synonyms:
+              - squamous epithelial cell
+              - squamous epithelial cells
+            CuboidalEpithelialCell:
+              synonyms:
+              - cuboidal epithelial cell
+              - cuboidal epithelial cells
+            ColumnarEpithelialCell:
+              synonyms:
+              - columnar epithelial cell
+              - columnar epithelial cells
+        GobletCell:
+          synonyms:
+          - goblet cell
+          - goblet cells
+        MucousCell:
+          synonyms:
+          - mucous cell
+          - mucous cells
+        CiliatedCell:
+          synonyms:
+          - ciliated cell
+          - ciliated cells
+        EndothelialCell:
+          synonyms:
+          - endothelial cell
+          - endothelial cells
+        MesothelialCell:
+          synonyms:
+          - mesothelial cell
+          - mesothelial cells
+        Pericyte:
+          synonyms:
+          - pericyte
+          - pericytes
+        Fibroblast:
+          synonyms:
+          - fibroblast
+          - fibroblasts
+        SmoothMuscleCell:
+          synonyms:
+          - smooth muscle cell
+          - smooth muscle cells
+        SkeletalMuscleCell:
+          synonyms:
+          - skeletal muscle cell
+          - skeletal muscle cells
+        CardiacMuscleCell:
+            synonyms:
+            - heart muscle cell
+        MesechymalCell:
+          definition: A cell that is not an epithelial cell, a hematopoietic cell, or a neural cell.
+      Adipocyte:
+          synonyms:
+          - adipocyte
+          - adipocytes
+      Neuron:
+        definition: A cell that transmits information.
+        subtype:
+          MotorNeuron:
+          SensoryNeuron:
+          Interneuron:
+            subtypes:
+              InhibitoryInterneuron:
+                definition: An interneuron that inhibits the activity of other neurons.
+              ExcitatoryInterneuron:
+                definition: An interneuron that excites the activity of other neurons.
+              GABAergicInterneuron:
+                definition: An interneuron that uses GABA as a neurotransmitter.
+                location: CentralNervousSystem
+                produces: GABA
+                subtypes:
+                  GABAergicInhibitoryInterneuron:
+                    definition: An inhibitory interneuron that uses GABA as a neurotransmitter.
+                    genus: InhibitoryInterneuron
+                    location: CentralNervousSystem
+                    produces: GABA
+                  GABAergicExcitatoryInterneuron:
+                    definition: An excitatory interneuron that uses GABA as a neurotransmitter.
+                    genus: ExcitatoryInterneuron
+                    location: CentralNervousSystem
+                    produces: GABA
+                  ForebrainGABAergicInterneuron:
+                    definition: A GABAergic interneuron that is located in the forebrain.
+                    location: Forebrain
+                    produces: GABA
+                    subtypes:
+                      ForebrainGABAergicInhibitoryInterneuron:
+                        definition: A GABAergic inhibitory interneuron that is located in the forebrain.
+                        genus: GABAergicInhibitoryInterneuron
+                        location: Forebrain
+                        produces: GABA
+                      ForebrainGABAergicExcitatoryInterneuron:
+                        definition: A GABAergic excitatory interneuron that is located in the forebrain.
+                        genus: GABAergicExcitatoryInterneuron
+                        location: Forebrain
+                        produces: GABA
+                    subtypes_by_location:
+                      HippocampusGABAergicInterneuron:
+                        definition: A GABAergic interneuron that is located in the hippocampus.
+                        location: Hippocampus
+                        produces: GABA
+                        subtypes:
+                          HippocampusGABAergicInhibitoryInterneuron:
+                            definition: A GABAergic inhibitory interneuron that is located in the hippocampus.
+                            genus: GABAergicInhibitoryInterneuron
+                            location: Hippocampus
+                            produces: GABA
+                          HippocampusGABAergicExcitatoryInterneuron:
+                            definition: A GABAergic excitatory interneuron that is located in the hippocampus.
+                            genus: GABAergicExcitatoryInterneuron
+                            location: Hippocampus
+                            produces: GABA
+                        subtypes_by_location:
+                          HippocampusCA1GABAergicInterneuron:
+                            definition: A GABAergic interneuron that is located in the CA1 region of the hippocampus.
+                            location: CA1
+                            produces: GABA
+                            subtypes:
+                              HippocampusCA1GABAergicInhibitoryInterneuron:
+                                definition: A GABAergic inhibitory interneuron that is located in the CA1 region of the hippocampus.
+                                genus: GABAergicInhibitoryInterneuron
+                                location: CA1
+                                produces: GABA
+                              HippocampusCA1GABAergicExcitatoryInterneuron:
+                                definition: A GABAergic excitatory interneuron that is located in the CA1 region of the hippocampus.
+                                genus: GABAergicExcitatoryInterneuron
+                                location: CA1
+                                produces: GABA
+                          HippocampusCA3GABAergicInterneuron:
+                            definition: A GABAergic interneuron that is located in the CA3 region of the hippocampus.
+                            location: CA3
+                            produces: GABA
+                            subtypes:
+                              HippocampusCA3GABAergicInhibitoryInterneuron:
+                                definition: A GABAergic inhibitory interneuron that is located in the CA3 region of the hippocampus.
+                                genus: GABAergicInhibitoryInterneuron
+                                location: CA3
+                                produces: GABA
+                              HippocampusCA3GABAergicExcitatoryInterneuron:
+                                definition: A GABAergic excitatory interneuron that is located in the CA3 region of the hippocampus.
+                                genus: GABAergicExcitatoryInterneuron
+                                location: CA3
+                                produces: GABA
+                          HippocampusDGGABAergicInterneuron:
+                            definition: A GABAergic interneuron that is located in the dentate gyrus of the hippocampus.
+                            location: DentateGyrus
+                            produces: GABA
+                            subtypes:
+                              HippocampusDGGABAergicInhibitoryInterneuron:
+                                definition: A GABAergic inhibitory interneuron that is located in the dentate gyrus of the hippocampus.
+                                genus: GABAergicInhibitoryInterneuron
+                                location: DentateGyrus
+                                produces: GABA
+                              HippocampusDGGABAergicExcitatoryInterneuron:
+                                definition: A GABAergic excitatory interneuron that is located in the dentate gyrus of the hippocampus.
+                                genus: GABAergicExcitatoryInterneuron
+                                location: DentateGyrus
+                                produces: GABA
+                  MidbrainGABAergicInterneuron:
+                    definition: A GABAergic interneuron that is located in the midbrain.
+                    location: Midbrain
+                    produces: GABA
+                    subtypes:
+                      MidbrainGABAergicInhibitoryInterneuron:
+                        definition: A GABAergic inhibitory interneuron that is located in the midbrain.
+                        genus: GABAergicInhibitoryInterneuron
+                        location: Midbrain
+                        produces: GABA
+                      MidbrainGABAergicExcitatoryInterneuron:
+                        definition: A GABAergic excitatory interneuron that is located in the midbrain.
+                        genus: GABAergicExcitatoryInterneuron
+                        location: Midbrain
+                        produces: GABA
+                  HindbrainGABAergicInterneuron:
+                    definition: A GABAergic interneuron that is located in the hindbrain.
+                    location: Hindbrain
+                    produces: GABA
+                    subtypes:
+                      HindbrainGABAergicInhibitoryInterneuron:
+                        definition: A GABAergic inhibitory interneuron that is located in the hindbrain.
+                        genus: GABAergicInhibitoryInterneuron
+                        location: Hindbrain
+                        produces: GABA
+                      HindbrainGABAergicExcitatoryInterneuron:
+                        definition: A GABAergic excitatory interneuron that is located in the hindbrain.
+                        genus: GABAergicExcitatoryInterneuron
+                        location: Hindbrain
+                        produces: GABA
+              GlutamatergicInterneuron:
+                definition: An interneuron that uses glutamate as a neurotransmitter.
+                location: CentralNervousSystem
+                produces: Glutamate
+              GlycinergicInterneuron:
+                definition: An interneuron that uses glycine as a neurotransmitter.
+                location: CentralNervousSystem
+                produces: Glycine
+              SerotonergicInterneuron:
+                definition: An interneuron that uses serotonin as a neurotransmitter.
+                location: CentralNervousSystem
+                produces: Serotonin
+      GlialCell:
+        subtypes:
+          Oligodendrocyte:
+            definition: A glial cell that produces myelin.
+          Astrocyte:
+            definition: A glial cell that provides structural support.

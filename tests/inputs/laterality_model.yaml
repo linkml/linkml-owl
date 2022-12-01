@@ -1,0 +1,219 @@
+id: http://example.org/laterality-test
+name: Laterality-test
+description: |-
+  Test autofilling of laterality cross-product
+imports:
+  - linkml:types
+prefixes:
+  linkml: https://w3id.org/linkml/
+  xp: http://example.org/laterality-test/
+  BFO: http://purl.obolibrary.org/obo/BFO_
+
+default_prefix: xp
+default_curi_maps:
+  - semweb_context
+
+slots:
+  id:
+    identifier: true
+    range: uriorcurie
+  has_laterality:
+    range: Laterality
+  in_taxon:
+    range: Taxon
+  parts:
+    range: Structure
+    annotations:
+      owl: ObjectSomeValuesFrom
+    inlined: true
+    multivalued: true
+  subtypes:
+    range: Structure
+    inlined: true
+    multivalued: true
+  potential_lateralities:
+    range: Laterality
+    multivalued: true
+  potential_taxon:
+    range: Taxon
+    multivalued: true
+  lateralized_forms:
+    range: LateralizedStructure
+    multivalued: true
+    inlined: true
+    annotations:
+      cross_product_generator: |-
+        id_format: "{has_laterality}{parent}"
+        propagates_over: [parts]
+        slots:
+          parent: .
+          has_laterality: potential_lateralities
+  taxon_specific_forms:
+    range: TaxonSpecificStructure
+    multivalued: true
+    inlined: true
+    annotations:
+      cross_product_generator: |-
+        id_format: "{parent}{in_taxon}"
+        propagates_over: [parts]
+        #propagates_over: [parts, lateralized_forms]
+        #map:
+        #  lateralized_forms: subforms
+        slots:
+          parent: .
+          in_taxon: potential_taxon
+  parent:
+    range: Structure
+    required: true
+    annotations:
+      owl: EquivalentClasses, IntersectionOf
+
+classes:
+
+  Ontology:
+    attributes:
+      id:
+        identifier: true
+        range: uriorcurie
+      lateralities:
+        range: Laterality
+        multivalued: true
+        inlined: true
+      structures:
+        range: Structure
+        multivalued: true
+        inlined: true
+      lateralized_structures:
+        range: LateralizedStructure
+        multivalued: true
+        inlined: true
+      taxon_specific_structures:
+        range: TaxonSpecificStructure
+        multivalued: true
+        inlined: true
+        annotations:
+          generator.start: structures
+          generator.slot: potential_taxon
+      taxons:
+        range: Taxon
+        multivalued: true
+        inlined: true
+
+  Concept:
+    slots:
+      - id
+      - subtypes
+    annotations:
+      owl.template: |-
+        {% for s in subtypes %}
+        SubClassOf( xp:{{s}} xp:{{id}} )
+        {% endfor %}
+
+  Laterality:
+    is_a: Concept
+
+  Taxon:
+    is_a: Concept
+    slot_usage:
+      subtypes:
+        range: Taxon
+
+  Structure:
+    is_a: Concept
+    slots:
+      #- has_laterality
+      #- in_taxon
+      - parts
+      - subtypes
+      - potential_lateralities
+      - potential_taxon
+      - lateralized_forms
+      - taxon_specific_forms
+    slot_usage:
+      parts:
+        range: Structure
+        annotations:
+          owl: ObjectSomeValuesFrom
+        inlined: true
+        multivalued: true
+      subtypes:
+        range: Structure
+      potential_lateralities:
+        range: Laterality
+        multivalued: true
+      potential_taxon:
+        range: Taxon
+        multivalued: true
+      lateralized_forms:
+        range: LateralizedStructure
+        multivalued: true
+        inlined: true
+        annotations:
+          cross_product_generator: |-
+            id_format: "{has_laterality}{parent}"
+            propagates_over: [parts]
+            slots:
+              parent: .
+              has_laterality: potential_lateralities
+      taxon_specific_forms:
+        range: TaxonSpecificStructure
+        multivalued: true
+        inlined: true
+        annotations:
+          cross_product_generator: |-
+            id_format: "{parent}{in_taxon}"
+            propagates_over: [parts, subtypes]
+            #propagates_over: [parts, lateralized_forms]
+            #map:
+            #  lateralized_forms: subforms
+            slots:
+              parent: .
+              in_taxon: potential_taxon
+    annotations:
+      owl.template: |-
+        {% for p in parts %}
+        SubClassOf( xp:{{p}} ObjectSomeValuesFrom(BFO:0000050 xp:{{id}} ))
+        {% endfor %}
+
+
+  LateralizedStructure:
+    is_a: Structure
+    slots:
+      - has_laterality
+      - parent
+    slot_usage:
+      has_laterality:
+        required: true
+        annotations:
+          owl: EquivalentClasses, IntersectionOf, ObjectSomeValuesFrom
+      parent:
+        range: Structure
+        required: true
+        annotations:
+          owl: EquivalentClasses, IntersectionOf
+      parts:
+        range: LateralizedStructure
+      subtypes:
+        range: LateralizedStructure
+  TaxonSpecificStructure:
+    is_a: Structure
+    slots:
+      - in_taxon
+      - parent
+    slot_usage:
+      in_taxon:
+        required: true
+        annotations:
+          owl: EquivalentClasses, IntersectionOf, ObjectSomeValuesFrom
+      parent:
+        required: true
+        annotations:
+          owl: EquivalentClasses, IntersectionOf
+      parts:
+        range: TaxonSpecificStructure
+      subtypes:
+        range: TaxonSpecificStructure
+      lateralized_forms:
+        range: TaxonSpecificStructure
+
+

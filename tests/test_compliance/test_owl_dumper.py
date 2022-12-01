@@ -183,7 +183,7 @@ class TestOwlDumper(unittest.TestCase):
         #add_check("DisjointUnion",
         #          [py_mod.DisjointUnion('x:a', operands=['x:b', 'x:c'])],
         #          [DisjointUnion(X.a, X.b, X.c)],
-        #          "As above, combining equivalence and disjoitness into a single axiom")
+        #          "As above, combining equivalence and disjointness into a single axiom")
         add_check("EquivalentTo IntersectionOf",
                   [py_mod.EquivIntersection('x:a', operands=['x:b', 'x:c'])],
                   [EquivalentClasses(X.a, ObjectIntersectionOf(X.b, X.c))],
@@ -211,7 +211,7 @@ class TestOwlDumper(unittest.TestCase):
                   [AnnotationAssertion(RDFS.label, X.NewClass, Literal('interneuron of hippocampus')),
                    EquivalentClasses(X.NewClass, ObjectIntersectionOf(X.IN,
                                                                       ObjectSomeValuesFrom(BFO['0000050'], X.H)))],
-                  """Label auto-added""")
+                  """Label auto-added using string_serialization""")
         add_check("Hidden GCI",
                   [py_mod.EquivGenusAndPartOf('x:a',
                                               subclass_of=['X:genus'],
@@ -283,7 +283,7 @@ class TestOwlDumper(unittest.TestCase):
             md += '```\n'
             container = py_mod.Container(entities=check.records)
             dumper.object_index = ObjectIndex(container, schemaview=sv)
-            dumper.infer_missing_values = True
+            dumper.autofill = True
             doc = dumper.to_ontology_document(check.records, schema)
             md += '\n__Generated axioms__:\n\n'
             md += f'```\n{str(doc)}\n```\n\n'
