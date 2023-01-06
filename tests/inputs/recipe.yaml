@@ -4,7 +4,7 @@ title: Food Recipe Template
 id: https://w3id.org/ontogpt/recipe
 imports:
 - linkml:types
-- core
+- recipe_core
 license: https://creativecommons.org/publicdomain/zero/1.0/
 prefixes:
   linkml:
