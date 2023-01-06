@@ -1,0 +1,210 @@
+Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
+Prefix( rdf: = <http://www.w3.org/1999/02/22-rdf-syntax-ns#> )
+Prefix( rdfs: = <http://www.w3.org/2000/01/rdf-schema#> )
+Prefix( xsd: = <http://www.w3.org/2001/XMLSchema#> )
+Prefix( xml: = <http://www.w3.org/XML/1998/namespace> )
+Prefix( linkml: = <https://w3id.org/linkml/> )
+Prefix( recipe: = <http://w3id.org/ontogpt/recipe/> )
+Prefix( FOODON: = <http://purl.obolibrary.org/obo/FOODON_> )
+Prefix( UO: = <http://purl.obolibrary.org/obo/UO_> )
+Prefix( dcterms: = <http://purl.org/dc/terms/> )
+Prefix( HANCESTRO: = <http://purl.obolibrary.org/obo/HANCESTRO_> )
+Prefix( BFO: = <http://purl.obolibrary.org/obo/BFO_> )
+Prefix( AUTO: = <http://example.org/auto/> )
+Prefix( RO: = <http://purl.obolibrary.org/obo/RO_> )
+
+Ontology( <https://w3id.org/ontogpt/recipe>
+    EquivalentClasses(
+        <http://example.org>
+            ObjectIntersectionOf(
+        recipe:Recipe
+            ObjectSomeValuesFrom( recipe:steps     ObjectIntersectionOf(
+        AUTO:melt%3B%20saut%C3%A9
+            ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/RO_0002233>     ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000051> <http://purl.obolibrary.org/obo/FOODON_03310351> ) )
+            ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/RO_0002233>     ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000051> <http://purl.obolibrary.org/obo/FOODON_03301704> ) )
+            ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/RO_0002233>     ObjectIntersectionOf(
+            ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000051> AUTO:bell%20peppers )
+            DataHasValue( recipe:state "chopped" )
+    ) )
+            ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/RO_0002500> AUTO:pan )
+    ) )
+            ObjectSomeValuesFrom( recipe:steps     ObjectIntersectionOf(
+        AUTO:add%3B%20cook
+            ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/RO_0002233>     ObjectIntersectionOf(
+            ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000051> <http://purl.obolibrary.org/obo/FOODON_00001282> )
+            DataHasValue( recipe:state "chopped/diced" )
+    ) )
+            ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/RO_0002234>     ObjectIntersectionOf(
+            ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000051> AUTO:meat )
+            DataHasValue( recipe:state "well done" )
+    ) )
+            ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/RO_0002500> AUTO:pan )
+    ) )
+            ObjectSomeValuesFrom( recipe:steps     ObjectIntersectionOf(
+        AUTO:add%3B
+            ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/RO_0002233>     ObjectIntersectionOf(
+            ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000051> <http://purl.obolibrary.org/obo/FOODON_03000227> )
+            DataHasValue( recipe:state "sauce" )
+    ) )
+            ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/RO_0002233>     ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000051> AUTO:salt ) )
+            ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/RO_0002233>     ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000051> <http://purl.obolibrary.org/obo/FOODON_00001649> ) )
+            ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/RO_0002233>     ObjectIntersectionOf(
+            ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000051> <http://purl.obolibrary.org/obo/FOODON_00003582> )
+            DataHasValue( recipe:state "powder" )
+    ) )
+            ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/RO_0002500> <http://example.org/auto/n/a> )
+    ) )
+            ObjectSomeValuesFrom( recipe:steps     ObjectIntersectionOf(
+        AUTO:adjust%3B
+            ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/RO_0002233>     ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000051> AUTO:salt ) )
+            ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/RO_0002233>     ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000051> <http://purl.obolibrary.org/obo/FOODON_00001649> ) )
+            ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/RO_0002233>     ObjectIntersectionOf(
+            ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000051> <http://purl.obolibrary.org/obo/FOODON_00003582> )
+            DataHasValue( recipe:state "powder" )
+    ) )
+            ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/RO_0002234>     ObjectIntersectionOf(
+            ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000051> AUTO:adjusted )
+            DataHasValue( recipe:state "to own tastes" )
+    ) )
+            ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/RO_0002500> AUTO:none )
+    ) )
+            ObjectSomeValuesFrom( recipe:steps     ObjectIntersectionOf(
+        AUTO:cook
+            ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/RO_0002233>     ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000051> AUTO:noodles ) )
+            ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/RO_0002234>     ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000051> AUTO:noodles ) )
+            ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/RO_0002500> AUTO:pan )
+    ) )
+            ObjectSomeValuesFrom( recipe:steps     ObjectIntersectionOf(
+        AUTO:mix%3B
+            ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/RO_0002233>     ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000051> <http://purl.obolibrary.org/obo/FOODON_03311146> ) )
+            ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/RO_0002233>     ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000051> AUTO:noodles ) )
+            ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/RO_0002234>     ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000051> <http://purl.obolibrary.org/obo/FOODON_03311146> ) )
+            ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/RO_0002234>     ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000051> AUTO:noodles ) )
+            ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/RO_0002500> AUTO:none )
+    ) )
+            ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/FOODON_00002420>     ObjectSomeValuesFrom( recipe:food_item     ObjectIntersectionOf(
+            ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000051> AUTO:Small%20onion )
+            DataHasValue( recipe:state "chopped" )
+    ) ) )
+            ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/FOODON_00002420>     ObjectSomeValuesFrom( recipe:food_item     ObjectIntersectionOf(
+            ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000051> <http://purl.obolibrary.org/obo/FOODON_00003485> )
+            DataHasValue( recipe:state "chopped" )
+    ) ) )
+            ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/FOODON_00002420>     ObjectSomeValuesFrom( recipe:food_item     ObjectIntersectionOf(
+            ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000051> <http://purl.obolibrary.org/obo/FOODON_00003582> )
+            DataHasValue( recipe:state "powder" )
+    ) ) )
+            ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/FOODON_00002420>     ObjectSomeValuesFrom( recipe:food_item     ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000051> <http://purl.obolibrary.org/obo/FOODON_03310351> ) ) )
+            ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/FOODON_00002420>     ObjectSomeValuesFrom( recipe:food_item     ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000051> AUTO:salt ) ) )
+            ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/FOODON_00002420>     ObjectSomeValuesFrom( recipe:food_item     ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000051> <http://purl.obolibrary.org/obo/FOODON_00001649> ) ) )
+            ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/FOODON_00002420>     ObjectSomeValuesFrom( recipe:food_item     ObjectIntersectionOf(
+            ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000051> <http://purl.obolibrary.org/obo/FOODON_03301217> )
+            DataHasValue( recipe:state "canned" )
+    ) ) )
+            ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/FOODON_00002420>     ObjectSomeValuesFrom( recipe:food_item     ObjectIntersectionOf(
+            ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000051> AUTO:16-ounce%20box%20spaghetti%20noodles )
+            DataHasValue( recipe:state "chopped, diced" )
+    ) ) )
+            ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/FOODON_00002420>     ObjectSomeValuesFrom( recipe:food_item     ObjectIntersectionOf(
+            ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000051> <http://purl.obolibrary.org/obo/FOODON_00001282> )
+            DataHasValue( recipe:state "chopped/diced" )
+    ) ) )
+    )
+    )
+    Declaration( Class( <http://example.org> ) )
+    AnnotationAssertion( rdfs:label <http://example.org> "Simple Spaghetti" )
+    AnnotationAssertion( dcterms:description <http://example.org> "A classic spaghetti recipe made with onion, bell peppers, garlic powder, butter, salt, pepper, tomato sauce, and hamburger meat." )
+    AnnotationAssertion( dcterms:subject <http://example.org> AUTO:Main%20dish )
+    AnnotationAssertion( dcterms:subject <http://example.org> <http://purl.obolibrary.org/obo/HANCESTRO_0307> )
+    SubClassOf( <http://example.org>     ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/FOODON_00002420>     ObjectSomeValuesFrom( recipe:food_item     ObjectIntersectionOf(
+            ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000051> AUTO:Small%20onion )
+            DataHasValue( recipe:state "chopped" )
+    ) ) ) )
+    SubClassOf( <http://example.org>     ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/FOODON_00002420>     ObjectSomeValuesFrom( recipe:food_item     ObjectIntersectionOf(
+            ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000051> <http://purl.obolibrary.org/obo/FOODON_00003485> )
+            DataHasValue( recipe:state "chopped" )
+    ) ) ) )
+    SubClassOf( <http://example.org>     ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/FOODON_00002420>     ObjectSomeValuesFrom( recipe:food_item     ObjectIntersectionOf(
+            ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000051> <http://purl.obolibrary.org/obo/FOODON_00003582> )
+            DataHasValue( recipe:state "powder" )
+    ) ) ) )
+    SubClassOf( <http://example.org>     ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/FOODON_00002420>     ObjectSomeValuesFrom( recipe:food_item     ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000051> <http://purl.obolibrary.org/obo/FOODON_03310351> ) ) ) )
+    SubClassOf( <http://example.org>     ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/FOODON_00002420>     ObjectSomeValuesFrom( recipe:food_item     ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000051> AUTO:salt ) ) ) )
+    SubClassOf( <http://example.org>     ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/FOODON_00002420>     ObjectSomeValuesFrom( recipe:food_item     ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000051> <http://purl.obolibrary.org/obo/FOODON_00001649> ) ) ) )
+    SubClassOf( <http://example.org>     ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/FOODON_00002420>     ObjectSomeValuesFrom( recipe:food_item     ObjectIntersectionOf(
+            ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000051> <http://purl.obolibrary.org/obo/FOODON_03301217> )
+            DataHasValue( recipe:state "canned" )
+    ) ) ) )
+    SubClassOf( <http://example.org>     ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/FOODON_00002420>     ObjectSomeValuesFrom( recipe:food_item     ObjectIntersectionOf(
+            ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000051> AUTO:16-ounce%20box%20spaghetti%20noodles )
+            DataHasValue( recipe:state "chopped, diced" )
+    ) ) ) )
+    SubClassOf( <http://example.org>     ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/FOODON_00002420>     ObjectSomeValuesFrom( recipe:food_item     ObjectIntersectionOf(
+            ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000051> <http://purl.obolibrary.org/obo/FOODON_00001282> )
+            DataHasValue( recipe:state "chopped/diced" )
+    ) ) ) )
+    SubClassOf( <http://example.org>     ObjectSomeValuesFrom( recipe:steps     ObjectIntersectionOf(
+        AUTO:melt%3B%20saut%C3%A9
+            ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/RO_0002233>     ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000051> <http://purl.obolibrary.org/obo/FOODON_03310351> ) )
+            ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/RO_0002233>     ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000051> <http://purl.obolibrary.org/obo/FOODON_03301704> ) )
+            ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/RO_0002233>     ObjectIntersectionOf(
+            ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000051> AUTO:bell%20peppers )
+            DataHasValue( recipe:state "chopped" )
+    ) )
+            ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/RO_0002500> AUTO:pan )
+    ) ) )
+    SubClassOf( <http://example.org>     ObjectSomeValuesFrom( recipe:steps     ObjectIntersectionOf(
+        AUTO:add%3B%20cook
+            ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/RO_0002233>     ObjectIntersectionOf(
+            ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000051> <http://purl.obolibrary.org/obo/FOODON_00001282> )
+            DataHasValue( recipe:state "chopped/diced" )
+    ) )
+            ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/RO_0002234>     ObjectIntersectionOf(
+            ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000051> AUTO:meat )
+            DataHasValue( recipe:state "well done" )
+    ) )
+            ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/RO_0002500> AUTO:pan )
+    ) ) )
+    SubClassOf( <http://example.org>     ObjectSomeValuesFrom( recipe:steps     ObjectIntersectionOf(
+        AUTO:add%3B
+            ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/RO_0002233>     ObjectIntersectionOf(
+            ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000051> <http://purl.obolibrary.org/obo/FOODON_03000227> )
+            DataHasValue( recipe:state "sauce" )
+    ) )
+            ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/RO_0002233>     ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000051> AUTO:salt ) )
+            ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/RO_0002233>     ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000051> <http://purl.obolibrary.org/obo/FOODON_00001649> ) )
+            ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/RO_0002233>     ObjectIntersectionOf(
+            ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000051> <http://purl.obolibrary.org/obo/FOODON_00003582> )
+            DataHasValue( recipe:state "powder" )
+    ) )
+            ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/RO_0002500> <http://example.org/auto/n/a> )
+    ) ) )
+    SubClassOf( <http://example.org>     ObjectSomeValuesFrom( recipe:steps     ObjectIntersectionOf(
+        AUTO:adjust%3B
+            ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/RO_0002233>     ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000051> AUTO:salt ) )
+            ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/RO_0002233>     ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000051> <http://purl.obolibrary.org/obo/FOODON_00001649> ) )
+            ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/RO_0002233>     ObjectIntersectionOf(
+            ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000051> <http://purl.obolibrary.org/obo/FOODON_00003582> )
+            DataHasValue( recipe:state "powder" )
+    ) )
+            ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/RO_0002234>     ObjectIntersectionOf(
+            ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000051> AUTO:adjusted )
+            DataHasValue( recipe:state "to own tastes" )
+    ) )
+            ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/RO_0002500> AUTO:none )
+    ) ) )
+    SubClassOf( <http://example.org>     ObjectSomeValuesFrom( recipe:steps     ObjectIntersectionOf(
+        AUTO:cook
+            ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/RO_0002233>     ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000051> AUTO:noodles ) )
+            ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/RO_0002234>     ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000051> AUTO:noodles ) )
+            ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/RO_0002500> AUTO:pan )
+    ) ) )
+    SubClassOf( <http://example.org>     ObjectSomeValuesFrom( recipe:steps     ObjectIntersectionOf(
+        AUTO:mix%3B
+            ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/RO_0002233>     ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000051> <http://purl.obolibrary.org/obo/FOODON_03311146> ) )
+            ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/RO_0002233>     ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000051> AUTO:noodles ) )
+            ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/RO_0002234>     ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000051> <http://purl.obolibrary.org/obo/FOODON_03311146> ) )
+            ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/RO_0002234>     ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000051> AUTO:noodles ) )
+            ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/RO_0002500> AUTO:none )
+    ) ) )
+)

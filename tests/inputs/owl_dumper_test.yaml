@@ -13,6 +13,7 @@ prefixes:
   PATO: http://purl.obolibrary.org/obo/PATO_
   skos: http://www.w3.org/2004/02/skos/core#
   dcterms: http://purl.org/dc/terms/
+  schema: http://schema.org/
   x: http://example.org/
 
 default_prefix: test
@@ -299,6 +300,15 @@ classes:
           owl: ObjectSomeValuesFrom
     annotations:
       owl: Class
+  HasName:
+    is_a: NamedThing
+    description: test metaclass illustrating data has value from
+    attributes:
+      has_name:
+        required: true
+        slot_uri: schema:name
+        annotations:
+          owl: DataHasValue
   EquivGenusAndPartOf:
     is_a: NamedThing
     description: test metaclass illustrating basic simple genus-differentia style logical definition, including so-called hidden GCIs

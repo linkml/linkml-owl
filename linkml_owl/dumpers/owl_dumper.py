@@ -5,6 +5,7 @@ import logging
 
 import click
 from funowl.converters.functional_converter import to_python
+from funowl.writers.FunctionalWriter import FunctionalWriter
 from jinja2 import Template
 from linkml.generators.pythongen import PythonGenerator
 from linkml_runtime import SchemaView
@@ -233,7 +234,7 @@ class OWLDumper(Dumper):
         for fstr in self._get_inferred_class_annotations(c, 'owl.fstring'):
             self.add_axioms_from_fstring(fstr, element)
         for tmpl_str in self._get_inferred_class_annotations(c, 'owl.template'):
-            self.add_axioms_from_template(tmpl_str, element)
+            self.add_axioms_from_template(tmpl_str, element, schema=schema)
         cls_interps = self._get_class_interpretations(c)
         subj = None
         eai = EntityAxiomIndex()
@@ -271,6 +272,8 @@ class OWLDumper(Dumper):
             if slot.identifier:
                 # the role of the identifier slot is to determine the IRI for the element;
                 # it generates no axioms of its own
+                continue
+            if 'owl.ignore' in slot.annotations:
                 continue
             schema_level_slot = self._get_schema_level_slot(slot)
             # lookup OWL settings on each slot
@@ -440,18 +443,30 @@ class OWLDumper(Dumper):
         # all per-slot axioms have been processed; axioms that span
         # multiple slots are now processed
         if "IntersectionOf" in cls_interps:
+            if len(unprocessed_parents) == 0:
+                raise ValueError(f"Cannot process IntersectionOf with no parents for {element}")
+            if len(unprocessed_parents) == 1:
+                logging.debug(f"Simplifying IntersectionOf(...) to {unprocessed_parents[0]}")
+                return unprocessed_parents[0]
             expr = ObjectIntersectionOf(*unprocessed_parents)
             logging.debug(f"Returning expression {expr} // {eai.operand_list_index.items()}")
             return expr
         for op_key, operands in eai.operand_list_index.items():
             _, interp, operator = op_key
             logging.debug(f'EntityAxiomIndex {subj}: {interp} => {operator} over {operands}')
-            if len(operands) < 2:
+            if len(operands) == 0:
                 raise ValueError(f'Too few operands: {operands} for {operator} in {subj}')
-            if operator == ObjectUnionOf.__name__:
+            if len(operands) == 1:
+                logging.debug(f"Simplifying {operator}(...) to {operands[0]}")
+                return operands[0]
+            elif operator == ObjectUnionOf.__name__:
                 expr = ObjectUnionOf(*operands)
             elif operator == ObjectIntersectionOf.__name__:
-                expr = ObjectIntersectionOf(*operands)
+                if len(operands) == 1:
+                    logging.debug(f"Simplifying IntersectionOf(...) to {operands[0]}")
+                    expr = operands[0]
+                else:
+                    expr = ObjectIntersectionOf(*operands)
             else:
                 raise ValueError(f'Cannot handle operator: {operator}')
             if interp == EquivalentClasses.__name__:
@@ -652,13 +667,24 @@ class OWLDumper(Dumper):
         logging.debug(f'AXIOMS >> = {axioms}')
         self.ontology.axioms += axioms
 
-    def add_axioms_from_template(self, template_ann: Union[str, meta.Annotation], element: YAMLRoot, val: Any = None):
+    def add_axioms_from_template(self, template_ann: Union[str, meta.Annotation], element: YAMLRoot, val: Any = None, schema: SchemaDefinition = None):
         # TODO: simplify, change arg to str
         d = self._element_to_template_dict(element, val)
         if isinstance(template_ann, str):
             tstr = template_ann
         else:
             tstr = template_ann.value
+        def tr(e: YAMLRoot):
+            expr = self.transform(e, schema=schema, is_element_an_object=False)
+            fw = FunctionalWriter()
+            logging.debug(f"template.transform({e}) DIRECT = {expr}")
+            owl_str = str(expr.to_functional(fw))
+            logging.debug(f"template.transform({e}) = {owl_str}")
+            return owl_str
+        if "tr" in d:
+            d["_tr"] = tr
+        else:
+            d["tr"] = tr
         jt = Template(tstr)
         owl_str = jt.render(**d)
         axioms = self.parse_axioms_string(owl_str).ontology.axioms
@@ -750,8 +776,11 @@ def cli(inputfile: str, schema: str, target_class, module, output, format, autof
     if autofill:
         dumper.autofill = True
     doc = dumper.dumps(element, schemaview=sv)
-    with open(output, 'w') as stream:
-        stream.write(str(doc))
+    if output is None:
+        print(str(doc))
+    else:
+        with open(output, 'w') as stream:
+            stream.write(str(doc))
 
 
 if __name__ == '__main__':
