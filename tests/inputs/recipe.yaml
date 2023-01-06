@@ -1,0 +1,535 @@
+name: recipe-template
+description: A template for food recipes
+title: Food Recipe Template
+id: https://w3id.org/ontogpt/recipe
+imports:
+- linkml:types
+- recipe_core
+license: https://creativecommons.org/publicdomain/zero/1.0/
+prefixes:
+  linkml:
+    prefix_prefix: linkml
+    prefix_reference: https://w3id.org/linkml/
+  recipe:
+    prefix_prefix: recipe
+    prefix_reference: http://w3id.org/ontogpt/recipe/
+  FOODON:
+    prefix_prefix: FOODON
+    prefix_reference: http://purl.obolibrary.org/obo/FOODON_
+  UO:
+    prefix_prefix: UO
+    prefix_reference: http://purl.obolibrary.org/obo/UO_
+  dcterms:
+    prefix_prefix: dcterms
+    prefix_reference: http://purl.org/dc/terms/
+  HANCESTRO:
+    prefix_prefix: HANCESTRO
+    prefix_reference: http://purl.obolibrary.org/obo/HANCESTRO_
+  BFO:
+    prefix_prefix: BFO
+    prefix_reference: http://purl.obolibrary.org/obo/BFO_
+  AUTO:
+    prefix_prefix: AUTO
+    prefix_reference: http://example.org/auto/
+  RO:
+    prefix_prefix: RO
+    prefix_reference: http://purl.obolibrary.org/obo/RO_
+default_prefix: recipe
+default_range: string
+classes:
+  Recipe:
+    name: Recipe
+    annotations:
+      owl:
+        tag: owl
+        value: Class
+      owl.template:
+        tag: owl.template
+        value: "EquivalentClasses(\n  {{url}}\n  ObjectIntersectionOf(\n    recipe:Recipe\n\
+          \    \n    {% for step in steps %}\n    ObjectSomeValuesFrom(\n      recipe:steps\n\
+          \      {{tr(step)}}\n    )\n    {% endfor %}\n    {% for ingredient in ingredients\
+          \ %}\n    ObjectSomeValuesFrom(\n      FOODON:00002420\n      {{tr(ingredient)}}\n\
+          \    )\n    {% endfor %}\n  )\n)\n"
+    from_schema: https://w3id.org/ontogpt/recipe
+    close_mappings:
+    - FOODON:00004081
+    attributes:
+      url:
+        name: url
+        annotations:
+          prompt.ignore:
+            tag: prompt.ignore
+            value: 'True'
+        from_schema: https://w3id.org/ontogpt/recipe
+        slot_uri: rdf:Resource
+        identifier: true
+        alias: url
+        owner: Recipe
+        domain_of:
+        - Recipe
+        range: uriorcurie
+      label:
+        name: label
+        annotations:
+          owl:
+            tag: owl
+            value: AnnotationProperty, AnnotationAssertion
+        description: the name of the recipe
+        from_schema: https://w3id.org/ontogpt/recipe
+        slot_uri: rdfs:label
+        alias: label
+        owner: Recipe
+        domain_of:
+        - Recipe
+        - NamedEntity
+        range: string
+      description:
+        name: description
+        annotations:
+          owl:
+            tag: owl
+            value: AnnotationProperty, AnnotationAssertion
+        description: a brief textual description of the recipe
+        from_schema: https://w3id.org/ontogpt/recipe
+        slot_uri: dcterms:description
+        alias: description
+        owner: Recipe
+        domain_of:
+        - Recipe
+        range: string
+      categories:
+        name: categories
+        annotations:
+          owl:
+            tag: owl
+            value: AnnotationAssertion
+        description: a semicolon separated list of the categories to which this recipe
+          belongs
+        from_schema: https://w3id.org/ontogpt/recipe
+        slot_uri: dcterms:subject
+        multivalued: true
+        alias: categories
+        owner: Recipe
+        domain_of:
+        - Recipe
+        range: RecipeCategory
+      ingredients:
+        name: ingredients
+        annotations:
+          owl:
+            tag: owl
+            value: ObjectProperty, ObjectSomeValuesFrom
+        description: a semicolon separated list of the ingredients plus quantities
+          of the recipe
+        from_schema: https://w3id.org/ontogpt/recipe
+        slot_uri: FOODON:00002420
+        multivalued: true
+        alias: ingredients
+        owner: Recipe
+        domain_of:
+        - Recipe
+        range: Ingredient
+      steps:
+        name: steps
+        annotations:
+          owl:
+            tag: owl
+            value: ObjectProperty, ObjectSomeValuesFrom
+        description: a semicolon separated list of the individual steps involved in
+          this recipe
+        from_schema: https://w3id.org/ontogpt/recipe
+        multivalued: true
+        alias: steps
+        owner: Recipe
+        domain_of:
+        - Recipe
+        range: Step
+    tree_root: true
+  Ingredient:
+    name: Ingredient
+    annotations:
+      owl:
+        tag: owl
+        value: IntersectionOf
+    from_schema: https://w3id.org/ontogpt/recipe
+    is_a: CompoundExpression
+    attributes:
+      food_item:
+        name: food_item
+        annotations:
+          owl:
+            tag: owl
+            value: ObjectProperty, ObjectSomeValuesFrom
+        description: the food item
+        from_schema: https://w3id.org/ontogpt/recipe
+        alias: food_item
+        owner: Ingredient
+        domain_of:
+        - Ingredient
+        range: FoodItem
+      amount:
+        name: amount
+        annotations:
+          owl:
+            tag: owl
+            value: ObjectProperty, ObjectSomeValuesFrom
+        description: the quantity of the ingredient, e.g. 2 lbs
+        from_schema: https://w3id.org/ontogpt/recipe
+        alias: amount
+        owner: Ingredient
+        domain_of:
+        - Ingredient
+        range: Quantity
+    class_uri: FOODON:00004085
+  Quantity:
+    name: Quantity
+    from_schema: https://w3id.org/ontogpt/recipe
+    is_a: CompoundExpression
+    attributes:
+      value:
+        name: value
+        description: the value of the quantity
+        from_schema: https://w3id.org/ontogpt/recipe
+        alias: value
+        owner: Quantity
+        domain_of:
+        - Quantity
+        range: string
+      unit:
+        name: unit
+        description: the unit of the quantity, e.g. grams, cups, etc.
+        from_schema: https://w3id.org/ontogpt/recipe
+        alias: unit
+        owner: Quantity
+        domain_of:
+        - Quantity
+        range: Unit
+  Step:
+    name: Step
+    annotations:
+      owl:
+        tag: owl
+        value: IntersectionOf
+    from_schema: https://w3id.org/ontogpt/recipe
+    is_a: CompoundExpression
+    attributes:
+      action:
+        name: action
+        description: the action taken in this step (e.g. mix, add)
+        from_schema: https://w3id.org/ontogpt/recipe
+        alias: action
+        owner: Step
+        domain_of:
+        - Step
+        range: Action
+      inputs:
+        name: inputs
+        annotations:
+          owl:
+            tag: owl
+            value: ObjectProperty, ObjectSomeValuesFrom
+        description: a semicolon separated list of the inputs of this step
+        from_schema: https://w3id.org/ontogpt/recipe
+        slot_uri: RO:0002233
+        multivalued: true
+        alias: inputs
+        owner: Step
+        domain_of:
+        - Step
+        range: FoodItem
+      outputs:
+        name: outputs
+        annotations:
+          owl:
+            tag: owl
+            value: ObjectProperty, ObjectSomeValuesFrom
+        description: a semicolon separated list of the outputs of this step
+        from_schema: https://w3id.org/ontogpt/recipe
+        slot_uri: RO:0002234
+        multivalued: true
+        alias: outputs
+        owner: Step
+        domain_of:
+        - Step
+        range: FoodItem
+      utensils:
+        name: utensils
+        annotations:
+          owl:
+            tag: owl
+            value: ObjectProperty, ObjectSomeValuesFrom
+        description: the kitchen utensil used in this step (e.g. pan, bowl)
+        from_schema: https://w3id.org/ontogpt/recipe
+        slot_uri: RO:0002500
+        multivalued: true
+        alias: utensils
+        owner: Step
+        domain_of:
+        - Step
+        range: UtensilType
+    class_uri: FOODON:00004087
+  FoodItem:
+    name: FoodItem
+    annotations:
+      owl:
+        tag: owl
+        value: IntersectionOf
+    from_schema: https://w3id.org/ontogpt/recipe
+    is_a: CompoundExpression
+    attributes:
+      food:
+        name: food
+        annotations:
+          owl:
+            tag: owl
+            value: ObjectProperty, ObjectSomeValuesFrom
+        description: the food item
+        from_schema: https://w3id.org/ontogpt/recipe
+        slot_uri: BFO:0000051
+        alias: food
+        owner: FoodItem
+        domain_of:
+        - FoodItem
+        range: FoodType
+      state:
+        name: state
+        annotations:
+          owl:
+            tag: owl
+            value: DataProperty, DataHasValue
+        description: the state of the food item (e.g. chopped, diced)
+        from_schema: https://w3id.org/ontogpt/recipe
+        alias: state
+        owner: FoodItem
+        domain_of:
+        - FoodItem
+        range: string
+  FoodType:
+    name: FoodType
+    id_prefixes:
+    - dbpediaont
+    - FOODON
+    annotations:
+      annotators:
+        tag: annotators
+        value: sqlite:obo:foodon, sqlite:obo:dbpediaont
+    from_schema: https://w3id.org/ontogpt/recipe
+    is_a: NamedEntity
+    attributes:
+      id:
+        name: id
+        annotations:
+          prompt.skip:
+            tag: prompt.skip
+            value: 'true'
+        description: A unique identifier for the named entity
+        comments:
+        - this is populated during the grounding and normalization step
+        from_schema: http://w3id.org/ontogpt/core
+        identifier: true
+        alias: id
+        owner: FoodType
+        domain_of:
+        - NamedEntity
+        - Publication
+        range: string
+      label:
+        name: label
+        description: The label (name) of the named thing
+        from_schema: http://w3id.org/ontogpt/core
+        aliases:
+        - name
+        alias: label
+        owner: FoodType
+        domain_of:
+        - Recipe
+        - NamedEntity
+        range: string
+  RecipeCategory:
+    name: RecipeCategory
+    id_prefixes:
+    - dbpediaont
+    - FOODON
+    - HANCESTRO
+    annotations:
+      annotators:
+        tag: annotators
+        value: sqlite:obo:foodon, sqlite:obo:dbpediaont
+    from_schema: https://w3id.org/ontogpt/recipe
+    is_a: NamedEntity
+    attributes:
+      id:
+        name: id
+        annotations:
+          prompt.skip:
+            tag: prompt.skip
+            value: 'true'
+        description: A unique identifier for the named entity
+        comments:
+        - this is populated during the grounding and normalization step
+        from_schema: http://w3id.org/ontogpt/core
+        identifier: true
+        alias: id
+        owner: RecipeCategory
+        domain_of:
+        - FoodType
+        - NamedEntity
+        - Publication
+        range: string
+      label:
+        name: label
+        description: The label (name) of the named thing
+        from_schema: http://w3id.org/ontogpt/core
+        aliases:
+        - name
+        alias: label
+        owner: RecipeCategory
+        domain_of:
+        - Recipe
+        - FoodType
+        - NamedEntity
+        range: string
+  Action:
+    name: Action
+    id_prefixes:
+    - dbpediaont
+    - FOODON
+    annotations:
+      annotators:
+        tag: annotators
+        value: sqlite:obo:dbpediaont, sqlite:obo:foodon
+    from_schema: https://w3id.org/ontogpt/recipe
+    is_a: NamedEntity
+    attributes:
+      id:
+        name: id
+        annotations:
+          prompt.skip:
+            tag: prompt.skip
+            value: 'true'
+        description: A unique identifier for the named entity
+        comments:
+        - this is populated during the grounding and normalization step
+        from_schema: http://w3id.org/ontogpt/core
+        identifier: true
+        alias: id
+        owner: Action
+        domain_of:
+        - FoodType
+        - RecipeCategory
+        - NamedEntity
+        - Publication
+        range: string
+      label:
+        name: label
+        description: The label (name) of the named thing
+        from_schema: http://w3id.org/ontogpt/core
+        aliases:
+        - name
+        alias: label
+        owner: Action
+        domain_of:
+        - Recipe
+        - FoodType
+        - RecipeCategory
+        - NamedEntity
+        range: string
+  UtensilType:
+    name: UtensilType
+    id_prefixes:
+    - dbpediaont
+    - FOODON
+    annotations:
+      annotators:
+        tag: annotators
+        value: sqlite:obo:dbpediaont, sqlite:obo:foodon
+    from_schema: https://w3id.org/ontogpt/recipe
+    is_a: NamedEntity
+    attributes:
+      id:
+        name: id
+        annotations:
+          prompt.skip:
+            tag: prompt.skip
+            value: 'true'
+        description: A unique identifier for the named entity
+        comments:
+        - this is populated during the grounding and normalization step
+        from_schema: http://w3id.org/ontogpt/core
+        identifier: true
+        alias: id
+        owner: UtensilType
+        domain_of:
+        - FoodType
+        - RecipeCategory
+        - Action
+        - NamedEntity
+        - Publication
+        range: string
+      label:
+        name: label
+        description: The label (name) of the named thing
+        from_schema: http://w3id.org/ontogpt/core
+        aliases:
+        - name
+        alias: label
+        owner: UtensilType
+        domain_of:
+        - Recipe
+        - FoodType
+        - RecipeCategory
+        - Action
+        - NamedEntity
+        range: string
+  Unit:
+    name: Unit
+    id_prefixes:
+    - UO
+    - NCIT
+    - dbpediaont
+    annotations:
+      annotators:
+        tag: annotators
+        value: sqlite:obo:uo, sqlite:obo:dbpediaont, sqlite:obo:foodon
+    from_schema: https://w3id.org/ontogpt/recipe
+    is_a: NamedEntity
+    attributes:
+      id:
+        name: id
+        annotations:
+          prompt.skip:
+            tag: prompt.skip
+            value: 'true'
+        description: A unique identifier for the named entity
+        comments:
+        - this is populated during the grounding and normalization step
+        from_schema: http://w3id.org/ontogpt/core
+        identifier: true
+        alias: id
+        owner: Unit
+        domain_of:
+        - FoodType
+        - RecipeCategory
+        - Action
+        - UtensilType
+        - NamedEntity
+        - Publication
+        range: string
+      label:
+        name: label
+        description: The label (name) of the named thing
+        from_schema: http://w3id.org/ontogpt/core
+        aliases:
+        - name
+        alias: label
+        owner: Unit
+        domain_of:
+        - Recipe
+        - FoodType
+        - RecipeCategory
+        - Action
+        - UtensilType
+        - NamedEntity
+        range: string
+source_file: ../ontogpt/src/ontogpt/templates/recipe.yaml
+

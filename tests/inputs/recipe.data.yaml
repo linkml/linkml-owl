@@ -1,0 +1,101 @@
+url: http://example.org
+label: Simple Spaghetti
+description: A classic spaghetti recipe made with onion, bell peppers, garlic powder,
+  butter, salt, pepper, tomato sauce, and hamburger meat.
+categories:
+- AUTO:Main%20dish
+- HANCESTRO:0307
+ingredients:
+- food_item:
+    food: AUTO:Small%20onion
+    state: chopped
+  amount:
+    value: '1'
+    unit: AUTO:cup
+- food_item:
+    food: FOODON:00003485
+    state: chopped
+  amount:
+    value: chopped
+    unit: AUTO:N/A
+- food_item:
+    food: FOODON:00003582
+    state: powder
+- food_item:
+    food: FOODON:03310351
+- food_item:
+    food: AUTO:salt
+- food_item:
+    food: FOODON:00001649
+- food_item:
+    food: FOODON:03301217
+    state: canned
+  amount:
+    value: '2'
+    unit: AUTO:cans
+- food_item:
+    food: AUTO:16-ounce%20box%20spaghetti%20noodles
+    state: chopped, diced
+  amount:
+    value: '1'
+- food_item:
+    food: FOODON:00001282
+    state: chopped/diced
+  amount:
+    value: "1-1 1\u20442"
+    unit: AUTO:lb
+steps:
+- action: AUTO:melt%3B%20saut%C3%A9
+  inputs:
+  - food: FOODON:03310351
+  - food: FOODON:03301704
+  - food: AUTO:bell%20peppers
+    state: chopped
+  utensils:
+  - AUTO:pan
+- action: AUTO:add%3B%20cook
+  inputs:
+  - food: FOODON:00001282
+    state: chopped/diced
+  outputs:
+  - food: AUTO:meat
+    state: well done
+  utensils:
+  - AUTO:pan
+- action: AUTO:add%3B
+  inputs:
+  - food: FOODON:03000227
+    state: sauce
+  - food: AUTO:salt
+  - food: FOODON:00001649
+  - food: FOODON:00003582
+    state: powder
+  utensils:
+  - AUTO:n/a
+- action: AUTO:adjust%3B
+  inputs:
+  - food: AUTO:salt
+  - food: FOODON:00001649
+  - food: FOODON:00003582
+    state: powder
+  outputs:
+  - food: AUTO:adjusted
+    state: to own tastes
+  utensils:
+  - AUTO:none
+- action: AUTO:cook
+  inputs:
+  - food: AUTO:noodles
+  outputs:
+  - food: AUTO:noodles
+  utensils:
+  - AUTO:pan
+- action: AUTO:mix%3B
+  inputs:
+  - food: FOODON:03311146
+  - food: AUTO:noodles
+  outputs:
+  - food: FOODON:03311146
+  - food: AUTO:noodles
+  utensils:
+  - AUTO:none

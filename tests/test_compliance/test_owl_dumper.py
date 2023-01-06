@@ -20,7 +20,7 @@ from rdflib import RDFS
 from rdflib.namespace import Namespace, SKOS, DCTERMS
 from linkml_owl.dumpers.owl_dumper import OWLDumper
 from funowl import Axiom, AnnotationAssertion, Literal, SubClassOf, ObjectSomeValuesFrom, \
-    ObjectAllValuesFrom, ObjectUnionOf, EquivalentClasses, ObjectIntersectionOf, Annotation
+    ObjectAllValuesFrom, ObjectUnionOf, EquivalentClasses, ObjectIntersectionOf, Annotation, DataHasValue
 
 from linkml_owl.util.trim_yaml import trim_yaml
 from tests import INPUT_DIR, OUTPUT_DIR
@@ -88,6 +88,7 @@ class TestOwlDumper(unittest.TestCase):
         X = Namespace("http://example.org/")
         BFO = Namespace("http://purl.obolibrary.org/obo/BFO_")
         IAO = Namespace("http://purl.obolibrary.org/obo/IAO_")
+        SCHEMA = Namespace("http://schema.org/")
         dumper = OWLDumper()
         sv = SchemaView(SCHEMA_IN)
         schema = sv.schema
@@ -161,6 +162,11 @@ class TestOwlDumper(unittest.TestCase):
                   [py_mod.PartOnly('x:a', part_of='x:b')],
                   [SubClassOf(X.a, ObjectAllValuesFrom(BFO['0000050'], X.b))],
                   "As above, but with universal restrictions")
+        add_check("SubClassOf DataHasValue",
+                  [py_mod.HasName('x:a', has_name='Violet')],
+                  #[SubClassOf(X.a, DataHasValue(SCHEMA['has_name'], Literal('Violet')))],
+                  [],
+                  "SubClassOf DataHasValue")
         add_check("SubClassOf SomeValuesFrom plus label",
                   [py_mod.Part('x:a', label='foo', part_of='x:b')],
                   [AnnotationAssertion(RDFS.label, X.a, Literal("foo")),
@@ -189,11 +195,6 @@ class TestOwlDumper(unittest.TestCase):
                   [EquivalentClasses(X.a, ObjectIntersectionOf(X.b, X.c))],
                   """The slot is interpreted as a parent class,
                   and all slot values with a IntersectionOf annotation are collected to make a IntersectionOf expression""")
-        add_check("EquivalentTo IntersectionOf with axiom annotation",
-                  [py_mod.EquivIntersectionWithAxiomAnnotation('x:a', operands=['x:b', 'x:c'], logical_definition_source=["Me"])],
-                  [EquivalentClasses(X.a, ObjectIntersectionOf(X.b, X.c),
-                                     annotations=[Annotation(DCTERMS.source, Literal("Me"))])],
-                  """as above, with axiom annotation""")
         add_check("EquivalentTo Genus and SomeValuesFrom",
                   [py_mod.EquivGenusAndPartOf('x:a',
                                               subclass_of=['X:genus'],
@@ -212,6 +213,18 @@ class TestOwlDumper(unittest.TestCase):
                    EquivalentClasses(X.NewClass, ObjectIntersectionOf(X.IN,
                                                                       ObjectSomeValuesFrom(BFO['0000050'], X.H)))],
                   """Label auto-added using string_serialization""")
+        add_check("EquivalentTo IntersectionOf with axiom annotation",
+                  [py_mod.EquivIntersectionWithAxiomAnnotation('x:a', operands=['x:b', 'x:c'],
+                                                               logical_definition_source=["Me"])],
+                  [EquivalentClasses(X.a, ObjectIntersectionOf(X.b, X.c),
+                                     annotations=[Annotation(DCTERMS.source, Literal("Me"))])],
+                  """as above, with axiom annotation""")
+        #add_check("EquivalentTo with Singleton IntersectionOf",
+        #          [py_mod.EquivGenusAndPartOf('x:a',
+        #                                      subclass_of=['X:genus'],
+        #                                      part_of=[])],
+        #          [EquivalentClasses(X.a, X.genus)],
+        #          """An IntersectionOf with one element is converted to a singleton""")
         add_check("Hidden GCI",
                   [py_mod.EquivGenusAndPartOf('x:a',
                                               subclass_of=['X:genus'],

@@ -1,0 +1,28 @@
+papers:
+  title: >-
+    Stiff-Person Syndrome: A Treatment Update and New Directions
+  abstract: >-
+    Stiff-person syndrome (SPS) is a rare and disabling central nervous system disorder with no satisfactory treatment. Muscle rigidity, sporadic muscle spasms, and chronic muscle pain characterize SPS. SPS is strongly correlated with autoimmune diseases, and it is usual to find high titers of antibodies against acid decarboxylase (GAD65). Due to its highly disabling nature and complicated treatment, we aim to create a treatment protocol through a narrative review of currently available treatments that show efficacy. We expect to facilitate management based on treatment responses ranging from first-line medication to refractory medication. We conducted a medical subject heading (MeSH) strategy. We used the term SPS with the subheading treatment: "Stiff-Person Syndrome/Therapy" [MeSH]. An initial data gathering of 270 papers came out with the initial research. After using the inclusion criteria, we had 159 articles. We excluded 31 papers for being either systematic reviews, literature reviews, or meta-analysis. From the 128 remaining articles, we excluded another 104 papers because the extraction of the data was not possible or the study outcome did not meet our demands. There are two main treatments for SPS: GABAergic (gamma-aminobutyric acid) therapy and immunotherapy. For treatment, we suggest starting with benzodiazepines as first-line treatment. We recommend adding levetiracetam or pregabalin if symptoms persist. As second-line therapy, we recommend oral baclofen over rituximab and tacrolimus. We also suggest rituximab over tacrolimus. For patients with refractory treatment, we can use intrathecal baclofen, intravenous immunoglobulin (IVIG), or plasmapheresis. We conclude that intrathecal baclofen and IVIG are more effective than plasmapheresis in patients with refractory symptoms. Propofol may be used as a bridge - temporary therapy before initiating a permanent treatment.
+  diseases:
+    - Stiff-Person Syndrome
+  drugs:
+    - GABAergic therapy
+    - immunotherapy
+    - benzodiazepines
+    - levetiracetam
+    - pregabalin
+    - oral baclofen
+    - rituximab
+    - tacrolimus
+    - intrathecal baclofen
+    - intravenous immunoglobulin
+    - plasmapheresis
+    - propofol
+  relative_efficacy:
+    more_effective:
+      - intravenous immunoglobulin
+      - intrathecal baclofen
+    less_effective:
+      - plasmapheresis
+    symptoms:
+      - refractory symptoms
