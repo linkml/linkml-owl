@@ -284,6 +284,7 @@ class TestOwlDumper(unittest.TestCase):
             container = py_mod.Container(entities=check.records)
             dumper.object_index = ObjectIndex(container, schemaview=sv)
             dumper.autofill = True
+            print(f"RECORDS = {check.records}")
             doc = dumper.to_ontology_document(check.records, schema)
             md += '\n__Generated axioms__:\n\n'
             md += f'```\n{str(doc)}\n```\n\n'

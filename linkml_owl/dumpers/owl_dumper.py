@@ -1,3 +1,4 @@
+import sys
 from collections import defaultdict
 from typing import Optional, List, Set, Any, Union, Dict, Tuple
 from dataclasses import dataclass, field
@@ -5,6 +6,7 @@ import logging
 
 import click
 from funowl.converters.functional_converter import to_python
+from funowl.writers.FunctionalWriter import FunctionalWriter
 from jinja2 import Template
 from linkml.generators.pythongen import PythonGenerator
 from linkml_runtime import SchemaView
@@ -14,7 +16,7 @@ from linkml_runtime.utils.eval_utils import eval_expr
 from linkml_runtime.index.object_index import ObjectIndex
 from linkml_runtime.utils.inference_utils import infer_all_slot_values, infer_slot_value, Config
 
-from rdflib import URIRef
+from rdflib import URIRef, Graph
 
 from linkml_runtime.linkml_model.meta import ClassDefinition, SchemaDefinition, SlotDefinition, Definition, \
     ClassDefinitionName
@@ -167,7 +169,7 @@ class OWLDumper(Dumper):
             doc.prefixDeclarations.append(Prefix(pfx.prefix_prefix, pfx.prefix_reference))
         return doc
 
-    def dumps(self, element: YAMLRoot, schema: SchemaDefinition = None, schemaview: SchemaView = None, iri=None) -> str:
+    def dumps(self, element: YAMLRoot, schema: SchemaDefinition = None, schemaview: SchemaView = None, iri=None, output_type=None) -> str:
         """
         Dump a linkml instance tree to a function syntax OWL ontology string
 
@@ -175,12 +177,18 @@ class OWLDumper(Dumper):
         :param schema:
         :param schemaview:
         :param iri:
+        :param output_type:
         :return:
         """
         if schemaview:
             schema = schemaview.schema
         doc = self.to_ontology_document(element, schema, iri=iri)
-        return str(doc)
+        if output_type == "ttl":
+            g = Graph()
+            doc.to_rdf(g)
+            return g.serialize(format="ttl")
+        else:
+            return str(doc)
 
     def transform(self, element: YAMLRoot, schema: SchemaDefinition, is_element_an_object=True) -> Any:
         """
@@ -233,7 +241,7 @@ class OWLDumper(Dumper):
         for fstr in self._get_inferred_class_annotations(c, 'owl.fstring'):
             self.add_axioms_from_fstring(fstr, element)
         for tmpl_str in self._get_inferred_class_annotations(c, 'owl.template'):
-            self.add_axioms_from_template(tmpl_str, element)
+            self.add_axioms_from_template(tmpl_str, element, schema=schema)
         cls_interps = self._get_class_interpretations(c)
         subj = None
         eai = EntityAxiomIndex()
@@ -293,7 +301,7 @@ class OWLDumper(Dumper):
                             axiom_annotations.append(Annotation(ann_slot_iri, ann_val))
             # templates
             for tmpl in owl_templates:
-                self.add_axioms_from_template(tmpl, element)
+                self.add_axioms_from_template(tmpl, element, schema=schema)
             if schema_level_slot.slot_uri is not None:
                 slot_uri = self._get_IRI_str(schema_level_slot.slot_uri)
             else:
@@ -440,7 +448,10 @@ class OWLDumper(Dumper):
         # all per-slot axioms have been processed; axioms that span
         # multiple slots are now processed
         if "IntersectionOf" in cls_interps:
-            expr = ObjectIntersectionOf(*unprocessed_parents)
+            if len(unprocessed_parents) == 1:
+                expr = unprocessed_parents[0]
+            else:
+                expr = ObjectIntersectionOf(*unprocessed_parents)
             logging.debug(f"Returning expression {expr} // {eai.operand_list_index.items()}")
             return expr
         for op_key, operands in eai.operand_list_index.items():
@@ -509,8 +520,9 @@ class OWLDumper(Dumper):
         anc_slots = [slot]
         sv = self.schemaview
         for anc_c in sv.class_ancestors(class_name, reflexive=True):
-            induced_slot = sv.induced_slot(slot.name, anc_c)
-            anc_slots.append(induced_slot)
+            if slot.name in sv.class_slots(anc_c):
+                induced_slot = sv.induced_slot(slot.name, anc_c)
+                anc_slots.append(induced_slot)
         for a in sv.slot_ancestors(slot.name, reflexive=True):
             anc_slots.append(sv.get_slot(a))
         for s in anc_slots:
@@ -619,20 +631,20 @@ class OWLDumper(Dumper):
         for prefix, url in schemaview.namespaces().items():
             prefix_lines.append(f'Prefix( {prefix}: = <{url}> )')
         header = "\n".join(prefix_lines)
-        owl_str = f'{header}\nOntology(\n{owl_str}\n)'
+        owl_str = f'{header}\nOntology(<http://example.org>\n{owl_str}\n)'
         logging.debug(owl_str)
         try:
             doc = to_python(owl_str)
         except Exception as e:
             logging.error(f'Error parsing generated OWL: {owl_str}')
             raise e
-        from funowl.writers.FunctionalWriter import FunctionalWriter
-        from rdflib import Graph
-        g = Graph()
-        for p in doc.prefixDeclarations:
-            g.namespace_manager.bind(p.prefixName, p.fullIRI)
-        fw = FunctionalWriter(g=g)
-        owl_str_roundtrip = doc.to_functional(fw)
+        #from funowl.writers.FunctionalWriter import FunctionalWriter
+        #from rdflib import Graph
+        #g = Graph()
+        #for p in doc.prefixDeclarations:
+        #    g.namespace_manager.bind(p.prefixName, p.fullIRI)
+        #fw = FunctionalWriter(g=g)
+        #owl_str_roundtrip = doc.to_functional(fw)
         #logging.debug(f'ROUNDTRIP = {owl_str_roundtrip}')
         return doc
 
@@ -652,7 +664,7 @@ class OWLDumper(Dumper):
         logging.debug(f'AXIOMS >> = {axioms}')
         self.ontology.axioms += axioms
 
-    def add_axioms_from_template(self, template_ann: Union[str, meta.Annotation], element: YAMLRoot, val: Any = None):
+    def add_axioms_from_template(self, template_ann: Union[str, meta.Annotation], element: YAMLRoot, val: Any = None, schema: SchemaDefinition = None):
         # TODO: simplify, change arg to str
         d = self._element_to_template_dict(element, val)
         if isinstance(template_ann, str):
@@ -660,6 +672,12 @@ class OWLDumper(Dumper):
         else:
             tstr = template_ann.value
         jt = Template(tstr)
+
+        def _tr(x):
+            fw = FunctionalWriter()
+            expr = self.transform(x, schema)
+            return expr.to_functional(fw)
+        d["tr"] = _tr
         owl_str = jt.render(**d)
         axioms = self.parse_axioms_string(owl_str).ontology.axioms
         self.ontology.axioms += axioms
@@ -698,14 +716,19 @@ class OWLDumper(Dumper):
               help="Path to python datamodel module")
 @click.option("--format", "-f",
               help="Input format (will be inferred from file suffix if not specified)")
-@click.option('-o', '--output', required=True,
+@click.option('-o', '--output',
+              type=click.File(mode="w"),
+              default=sys.stdout,
               help="Path to OWL functional syntax output")
+@click.option('-O', '--output-type',
+              type=click.Choice(["ofn", "ttl"]),
+              help="Output format")
 @click.option("--autofill/--no-autofill",
               default=False,
               show_default=True,
               help="If True, fill missing data slots using string_serialization")
 @click.argument('inputfile')
-def cli(inputfile: str, schema: str, target_class, module, output, format, autofill: bool, verbose: int, quiet: bool, **args):
+def cli(inputfile: str, schema: str, target_class, module, output, output_type, format, autofill: bool, verbose: int, quiet: bool, **args):
     """
     Dump LinkML instance data as OWL
 
@@ -713,19 +736,22 @@ def cli(inputfile: str, schema: str, target_class, module, output, format, autof
 
     Convert a CSV to OWL
 
-        linkml-data2owl -s tests/inputs/owl_dumper_test.yaml tests/inputs/parts.csv -o parts.ofn
+        linkml-data2owl -s owl_dumper_test.yaml parts.csv -o parts.ofn
 
-        Note in this example, there must be a class type designator column `@type` in the CSV
+    Note in this example, there must be a class type designator column `@type` in the CSV
 
     Convert a CSV to OWL, homogeneous classes:
 
-        linkml-data2owl -C EquivGenusAndPartOf -s tests/inputs/owl_dumper_test.yaml \
-            tests/inputs/parts_implicit_type.csv -o parts.ofn
+        linkml-data2owl -C EquivGenusAndPartOf -s owl_dumper_test.yaml \
+            parts_implicit_type.csv -o parts.ofn
 
     Convert YAML or JSON to OWL:
 
-        linkml-data2owl -s tests/inputs/owl_dumper_test.yaml tests/inputs/owl_dumper_test_data.yaml -o ont.ofn
+        linkml-data2owl -s owl_dumper_test.yaml owl_dumper_test_data.yaml -o ont.ofn
 
+    More documentation:
+
+        https://linkml.io/linkml-owl/
     """
     logger = logging.getLogger()
     if verbose >= 2:
@@ -749,9 +775,8 @@ def cli(inputfile: str, schema: str, target_class, module, output, format, autof
     dumper = OWLDumper()
     if autofill:
         dumper.autofill = True
-    doc = dumper.dumps(element, schemaview=sv)
-    with open(output, 'w') as stream:
-        stream.write(str(doc))
+    doc = dumper.dumps(element, schemaview=sv, output_type=output_type)
+    output.write(str(doc))
 
 
 if __name__ == '__main__':
