@@ -1,0 +1,111 @@
+url: http://x.org
+label: Simple Spaghetti
+description: An easy to make and delicious spaghetti dish.
+categories:
+- AUTO:Main%20dishes
+- AUTO:Italian%20recipes
+ingredients:
+- food_item:
+    food: AUTO:small%20onion
+    state: chopped
+  amount:
+    value: '1'
+    unit: AUTO:%28chopped%29
+- food_item:
+    food: FOODON:00003485
+    state: chopped
+  amount:
+    value: '1'
+    unit: AUTO:%28chopped%29
+- food_item:
+    food: FOODON:00003582
+    state: powder
+  amount:
+    value: '2'
+    unit: UO:0010042
+- food_item:
+    food: FOODON:03310351
+  amount:
+    value: '3'
+    unit: UO:0010042
+- food_item:
+    food: AUTO:salt
+  amount:
+    value: '1'
+    unit: UO:0010040
+- food_item:
+    food: FOODON:00001649
+  amount:
+    value: '1'
+    unit: UO:0010040
+- food_item:
+    food: FOODON:03301217
+    state: canned
+  amount:
+    value: '2'
+- food_item:
+    food: AUTO:1%20%2816%20ounce%29%20box%20spaghetti%20noodles
+    state: uncooked
+  amount:
+    value: '1'
+- food_item:
+    food: FOODON:00001282
+    state: chopped/diced
+  amount:
+    value: "1 - 1 1\u20442"
+    unit: AUTO:lb
+steps:
+- action: AUTO:melt%3B%20saut%C3%A9
+  inputs:
+  - food: FOODON:03310351
+  - food: FOODON:03301704
+  - food: FOODON:00003485
+    state: chopped
+  utensils:
+  - AUTO:pan
+- action: AUTO:add%3B%20cook
+  inputs:
+  - food: FOODON:00001282
+    state: chopped/diced
+  outputs:
+  - food: AUTO:meat
+    state: well done
+  utensils:
+  - AUTO:pan
+- action: AUTO:add%3B
+  inputs:
+  - food: FOODON:03000227
+    state: sauce
+  - food: AUTO:salt
+  - food: FOODON:00001649
+  - food: FOODON:00003582
+    state: powder
+  outputs:
+  - food: AUTO:none
+  utensils:
+  - AUTO:none
+- action: AUTO:adjust
+  inputs:
+  - food: AUTO:salt
+  - food: FOODON:00001649
+  - food: FOODON:00003582
+    state: powder
+  outputs:
+  - food: AUTO:inputs
+    state: adjusted
+  utensils:
+  - AUTO:none
+- action: AUTO:Cook
+  inputs:
+  - food: FOODON:03306944
+  outputs:
+  - food: AUTO:as%20directed
+- action: AUTO:mix%3B
+  inputs:
+  - food: FOODON:03311146
+  - food: FOODON:03306944
+  outputs:
+  - food: FOODON:03306944
+    state: +
+  utensils:
+  - AUTO:none

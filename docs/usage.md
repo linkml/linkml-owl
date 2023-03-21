@@ -22,7 +22,7 @@ Minimally you need to specify two inputs:
 To convert:
 
 ```bash
-linkml-data2owl -s my_schema.yaml my_data.{yaml,json,tsv,rdf} -o my_ontology.owl.ttl 
+linkml-data2owl -s my_schema.yaml my_data.{yaml,json,tsv,rdf} -o my_ontology.ofn
 ```
 
 For all options, see:

@@ -11,6 +11,7 @@ prefixes:
   sh: https://w3id.org/shacl/
   owl: http://www.w3.org/2002/07/owl#
   prov: http://www.w3.org/ns/prov#
+  dcterms: http://purl.org/dc/terms/
 default_prefix: pizza
 imports:
   - linkml:types
