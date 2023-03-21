@@ -32,7 +32,7 @@ linkml-data2owl = "linkml_owl.dumpers.owl_dumper:cli"
 python = "^3.8"
 
 click = "*"
-funowl = "^0.1.12"
+funowl = "0.1.12"
 Jinja2 = "^3.0.3"
 linkml = "^1.3.0"
 linkml-runtime = "^1.3.4"
