@@ -31,10 +31,7 @@ class TestRecipe(unittest.TestCase):
         data = load_structured_file(DATA_IN, schemaview=sv, python_module=python_module)
         dumper = OWLDumper()
         dumper.schemaview = sv
-
         doc = dumper.to_ontology_document(data, schema=sv.schema)
-        for a in doc.ontology.axioms:
-            print(f'AXIOM={a}')
         with open(OWL_OUT, 'w') as stream:
             stream.write(str(doc))
         doc_rt = to_python(str(doc))
@@ -45,4 +42,3 @@ class TestRecipe(unittest.TestCase):
         #doc_expected = to_python(str(EXPECTED))
         #assert len(axioms) == len(doc_expected.ontology.axioms)
         #self.assertCountEqual(axioms, doc_expected.ontology.axioms)
-

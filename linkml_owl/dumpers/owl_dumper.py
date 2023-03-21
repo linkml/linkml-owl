@@ -280,6 +280,8 @@ class OWLDumper(Dumper):
                 # the role of the identifier slot is to determine the IRI for the element;
                 # it generates no axioms of its own
                 continue
+            if 'owl.ignore' in slot.annotations:
+                continue
             schema_level_slot = self._get_schema_level_slot(slot)
             # lookup OWL settings on each slot
             owl_templates = self._get_inferred_slot_annotations(slot, 'owl.template', linkml_class_name)
@@ -448,21 +450,30 @@ class OWLDumper(Dumper):
         # all per-slot axioms have been processed; axioms that span
         # multiple slots are now processed
         if "IntersectionOf" in cls_interps:
+            if len(unprocessed_parents) == 0:
+                raise ValueError(f"Cannot process IntersectionOf with no parents for {element}")
             if len(unprocessed_parents) == 1:
-                expr = unprocessed_parents[0]
-            else:
-                expr = ObjectIntersectionOf(*unprocessed_parents)
+                logging.debug(f"Simplifying IntersectionOf(...) to {unprocessed_parents[0]}")
+                return unprocessed_parents[0]
+            expr = ObjectIntersectionOf(*unprocessed_parents)
             logging.debug(f"Returning expression {expr} // {eai.operand_list_index.items()}")
             return expr
         for op_key, operands in eai.operand_list_index.items():
             _, interp, operator = op_key
             logging.debug(f'EntityAxiomIndex {subj}: {interp} => {operator} over {operands}')
-            if len(operands) < 2:
+            if len(operands) == 0:
                 raise ValueError(f'Too few operands: {operands} for {operator} in {subj}')
-            if operator == ObjectUnionOf.__name__:
+            if len(operands) == 1:
+                logging.debug(f"Simplifying {operator}(...) to {operands[0]}")
+                return operands[0]
+            elif operator == ObjectUnionOf.__name__:
                 expr = ObjectUnionOf(*operands)
             elif operator == ObjectIntersectionOf.__name__:
-                expr = ObjectIntersectionOf(*operands)
+                if len(operands) == 1:
+                    logging.debug(f"Simplifying IntersectionOf(...) to {operands[0]}")
+                    expr = operands[0]
+                else:
+                    expr = ObjectIntersectionOf(*operands)
             else:
                 raise ValueError(f'Cannot handle operator: {operator}')
             if interp == EquivalentClasses.__name__:
@@ -671,6 +682,17 @@ class OWLDumper(Dumper):
             tstr = template_ann
         else:
             tstr = template_ann.value
+        def tr(e: YAMLRoot):
+            expr = self.transform(e, schema=schema, is_element_an_object=False)
+            fw = FunctionalWriter()
+            logging.debug(f"template.transform({e}) DIRECT = {expr}")
+            owl_str = str(expr.to_functional(fw))
+            logging.debug(f"template.transform({e}) = {owl_str}")
+            return owl_str
+        if "tr" in d:
+            d["_tr"] = tr
+        else:
+            d["tr"] = tr
         jt = Template(tstr)
 
         def _tr(x):
