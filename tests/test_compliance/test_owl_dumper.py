@@ -20,7 +20,7 @@ from rdflib import RDFS
 from rdflib.namespace import Namespace, SKOS, DCTERMS
 from linkml_owl.dumpers.owl_dumper import OWLDumper
 from funowl import Axiom, AnnotationAssertion, Literal, SubClassOf, ObjectSomeValuesFrom, \
-    ObjectAllValuesFrom, ObjectUnionOf, EquivalentClasses, ObjectIntersectionOf, Annotation, DataHasValue
+    ObjectAllValuesFrom, ObjectUnionOf, EquivalentClasses, ObjectIntersectionOf, Annotation, DataHasValue, DisjointUnion
 
 from linkml_owl.util.trim_yaml import trim_yaml
 from tests import INPUT_DIR, OUTPUT_DIR
@@ -93,7 +93,7 @@ class TestOwlDumper(unittest.TestCase):
         sv = SchemaView(SCHEMA_IN)
         schema = sv.schema
         py_str = PythonGenerator(SCHEMA_IN).serialize()
-        #print(py_str)
+        # print(py_str)
         py_mod = compile_python(py_str)
 
         md = "# linkml-owl Test Cases\n\n"
@@ -172,9 +172,14 @@ class TestOwlDumper(unittest.TestCase):
                   [AnnotationAssertion(RDFS.label, X.a, Literal("foo")),
                    SubClassOf(X.a, ObjectSomeValuesFrom(BFO['0000050'], X.b))],
                   """Demonstrates a mix of slots, some annotation, some logical""")
-        #add_check("SubClassOf SomeValuesFrom, nested",
-        #          [py_mod.ChildOfAnon('x:a', subclass_of=py_mod.AnonPartOf(part_of='x:b'))],
+        #anon_part_of = py_mod.AnonPartOf(part_of='x:b')
+        #o = py_mod.ChildOfAnon('x:a', subclass_of_anon=[anon_part_of])
+        #add_check("SubClassOf SomeValuesFrom nested",
+        #          [o],
         #          [SubClassOf(X.a, ObjectSomeValuesFrom(BFO['0000050'], X.b))],
+        #          "")
+        #          #[SubClassOf(X.a, ObjectSomeValuesFrom(BFO['0000050'], X.b))],
+        #          [],
         #          "create a subClassOf-partOf-some using a nested structure")
         # NOTE: assumes order-preserving
         add_check("SubClassOf Union",
@@ -271,6 +276,16 @@ class TestOwlDumper(unittest.TestCase):
                   [],
                   """Demonstrates nesting
                   """)
+        p1 = py_mod.PartWithCounts2(unit='x:p1', count=2, state='ACTIVATED')
+        p2 = py_mod.PartWithCounts2(unit='x:p2', count=3, state='ACTIVATED')
+        add_check("Parts collection with counts v2",
+                  [py_mod.CollectionOfPartsWithCounts2('x:collection',
+                                                       has_part=[p1,
+                                                                 p2,
+                                                                 ])],
+                  [],
+                  """Demonstrates tr function
+                  """)
         add_check("Parts collection",
                   [py_mod.CollectionOfParts('x:collection', has_part=['x:p1', 'x:p2'])],
                   [],
@@ -282,7 +297,7 @@ class TestOwlDumper(unittest.TestCase):
                   """Things that are defined exhaustively by an arbitrary list of parts
                   """)
         for check in checks:
-            print(f'** CHECK: {check.title}')
+            #print(f'** CHECK: {check.title}')
             md += f'## {check.title}\n\n'
             md += f'\n__Description__: _{check.description}_\n\n'
             md += f'\n__Schema__:\n\n```yaml\n{check.schema_section}\n```\n\n'
@@ -297,7 +312,7 @@ class TestOwlDumper(unittest.TestCase):
             container = py_mod.Container(entities=check.records)
             dumper.object_index = ObjectIndex(container, schemaview=sv)
             dumper.autofill = True
-            print(f"RECORDS = {check.records}")
+            # print(f"RECORDS = {check.records}")
             doc = dumper.to_ontology_document(check.records, schema)
             md += '\n__Generated axioms__:\n\n'
             md += f'```\n{str(doc)}\n```\n\n'
@@ -307,15 +322,15 @@ class TestOwlDumper(unittest.TestCase):
 
             ontology_str_trimmed = str(doc).replace('\n', '')
             for axiom in check.axioms:
-                print(f'TESTING FOR: {axiom}')
+                # print(f'TESTING FOR: {axiom}')
                 if not isinstance(axiom, str):
                     if axiom not in doc.ontology.axioms:
                         logging.error(f'COULD NOT FIND: {axiom}')
                         for a in doc.ontology.axioms:
                             logging.error(f'   HAS: {a}')
-                    assert axiom in doc.ontology.axioms
+                    self.assertIn(axiom, doc.ontology.axioms)
                 else:
-                    print(f'  LOOKING IN: {ontology_str_trimmed}')
+                    # print(f'  LOOKING IN: {ontology_str_trimmed}')
                     assert axiom.replace(' ', '') in ontology_str_trimmed.replace(' ', '')
         with open(MD_OUT, 'w') as stream:
             stream.write(md)

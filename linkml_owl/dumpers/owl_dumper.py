@@ -33,7 +33,7 @@ from funowl import OntologyDocument, Ontology, IRI, ObjectSomeValuesFrom, \
     SubObjectPropertyOf, TransitiveObjectProperty, SymmetricObjectProperty, AsymmetricObjectProperty, \
     ReflexiveObjectProperty, IrreflexiveObjectProperty, Annotation, ObjectMinCardinality, ObjectHasValue, \
     NamedIndividual, DataSomeValuesFrom, DataHasValue, DataAllValuesFrom, AnnotationProperty, DataProperty, Datatype, \
-    DisjointClasses
+    DisjointClasses, DisjointUnion
 
 from linkml_runtime.dumpers.dumper_root import Dumper
 from linkml_runtime.utils.yamlutils import YAMLRoot
@@ -194,7 +194,7 @@ class OWLDumper(Dumper):
         """
         Recursively transform a LinkML element
 
-        Each field is introspected, and translated to an OWL axiom.
+        Each field is introspected, and translated to an OWL axiom or expression.
         The field value is recursively transformed
 
         :param element:
@@ -461,6 +461,7 @@ class OWLDumper(Dumper):
         for op_key, operands in eai.operand_list_index.items():
             _, interp, operator = op_key
             logging.debug(f'EntityAxiomIndex {subj}: {interp} => {operator} over {operands}')
+            # pre-process operands
             if len(operands) == 0:
                 raise ValueError(f'Too few operands: {operands} for {operator} in {subj}')
             if len(operands) == 1:
@@ -476,12 +477,15 @@ class OWLDumper(Dumper):
                     expr = ObjectIntersectionOf(*operands)
             else:
                 raise ValueError(f'Cannot handle operator: {operator}')
+            # interpret as axiom
             if interp == EquivalentClasses.__name__:
                 axiom = EquivalentClasses(subj, expr)
             elif interp == SubClassOf.__name__:
                 axiom = SubClassOf(subj, expr)
             elif interp == DisjointClasses.__name__:
                 axiom = DisjointClasses(subj, expr)
+            elif interp == DisjointUnion.__name__:
+                axiom = DisjointUnion(operands[0], operands[1:])
             else:
                 raise ValueError(f'Not handled: {interp}')
             logging.debug(f'Adding axiom: {axiom}')
@@ -698,7 +702,10 @@ class OWLDumper(Dumper):
         def _tr(x):
             fw = FunctionalWriter()
             expr = self.transform(x, schema)
-            return expr.to_functional(fw)
+            if isinstance(expr, URIRef):
+                return str(expr)
+            else:
+                return expr.to_functional(fw)
         d["tr"] = _tr
         owl_str = jt.render(**d)
         axioms = self.parse_axioms_string(owl_str).ontology.axioms
