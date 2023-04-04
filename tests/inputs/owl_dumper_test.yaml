@@ -77,6 +77,12 @@ slots:
     range: NamedThing
     multivalued: true
     description: named class this is subclass of
+  subclass_of_anon:
+    slot_uri: rdfs:subclass_of
+    range: AnonPartOf
+    multivalued: true
+    inlined: true
+    inlined_as_list: true
   operands:
     range: NamedThing
     multivalued: true
@@ -197,10 +203,10 @@ classes:
     is_a: NamedThing
     description: test metaclass illustrating classes with parents that are class expressions
     slots:
-      - subclass_of
+      - subclass_of_anon
     slot_usage:
-      subclass_of:
-        range: AnonPartOf
+      subclass_of_anon:
+        required: true
         annotations:
           owl: SubClassOf
   DirectEquivalent:
@@ -246,7 +252,7 @@ classes:
       operands:
         required: true
         annotations:
-          owl: DisjointUnionOf
+          owl: DisjointUnion
   EquivIntersection:
     is_a: NamedThing
     description: test metaclass illustrating classes defined by a simple intersection of classes
@@ -323,7 +329,7 @@ classes:
         annotations:
           owl: EquivalentClasses, IntersectionOf
       part_of:
-        required: true
+        required: false
         description: the part-of differentiae
         annotations:
           owl: EquivalentClasses, IntersectionOf, ObjectSomeValuesFrom
@@ -458,20 +464,22 @@ classes:
         range: NamedThing
         multivalued: false
         annotations:
-          owl: SomeValuesFrom
+          owl: SomeValuesFrom, ObjectProperty
       count:
         range: integer
         minimum_value: 1
         annotations:
-          owl: HasValue
+          owl: HasValue, DataProperty
       state:
         range: ActivationStateEnum
         annotations:
-          owl: SomeValuesFrom
+          owl: SomeValuesFrom, ObjectProperty
 
   CollectionOfPartsWithCounts:
     is_a: NamedThing
-    description: test metaclass that illustrates a complex nested multi-part structure, where a whole is defined by a collection of repeared parts in specified states
+    description: >-
+       test metaclass that illustrates a complex nested multi-part structure,
+       where a whole is defined by a collection of repeated parts in specified states.
     slots:
       - has_part
     slot_usage:
@@ -493,6 +501,48 @@ classes:
                                          )
                   )
         {% endfor %}
+
+  CollectionOfPartsWithCounts2:
+    is_a: NamedThing
+    description: >-
+       as CollectionOfPartsWithCounts but using tr function
+    slots:
+      - has_part
+    slot_usage:
+      has_part:
+        range: PartWithCounts2
+        inlined: true
+    annotations:
+      owl.template: |-
+        {% for p in has_part %}
+        SubClassOf( {{id}}
+                    ObjectSomeValuesFrom( BFO:0000051
+                                          {{ tr(p) }}
+
+                                         )
+                  )
+        {% endfor %}
+
+  PartWithCounts2:
+    is_a: Anonymous
+    description: test metaclass that generates anonymous classes used as part of a more complex class
+    attributes:
+      unit:
+        range: NamedThing
+        multivalued: false
+        annotations:
+          owl: ObjectSomeValuesFrom, ObjectProperty
+      count:
+        range: integer
+        minimum_value: 1
+        annotations:
+          owl: DataHasValue, DataProperty
+      state:
+        range: ActivationStateEnum
+        annotations:
+          owl: ObjectSomeValuesFrom, ObjectProperty
+    annotations:
+        owl: IntersectionOf
 
   GCIPropagationMetapattern:
     mixin: true
