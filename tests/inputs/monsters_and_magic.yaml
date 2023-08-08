@@ -15,6 +15,10 @@ prefixes:
   PATO: http://purl.obolibrary.org/obo/PATO_
   example: https://example.org/
   foaf: http://xmlns.com/foaf/0.1/
+  rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns#
+  rdfs: http://www.w3.org/2000/01/rdf-schema#
+  owl: http://www.w3.org/2002/07/owl#
+  wgs84: http://www.w3.org/2003/01/geo/wgs84_pos#
 default_prefix: mnm
 default_range: string
 
@@ -138,6 +142,8 @@ classes:
       - title
       - type
     class_uri: schema:Thing
+    annotations:
+      owl: Class
 
   Agent:
     class_uri: foaf:Agent

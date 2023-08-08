@@ -37,7 +37,7 @@ class TestROMetamodel(unittest.TestCase):
         #print(f'URI = {domain_slot.slot_uri}')
         assert domain_slot.slot_uri == 'rdfs:domain'
         anns = dumper._get_inferred_slot_annotations(domain_slot, 'owl', 'TransitiveForm')
-        print(f'Anns={anns}')
+        #print(f'Anns={anns}')
         assert 'ObjectPropertyDomain' in anns
 
         test_slot = sv.get_slot('inverse_of')

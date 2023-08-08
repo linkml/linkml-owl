@@ -20,7 +20,12 @@ EXPECTED = os.path.join(INPUT_DIR, 'monsters_and_magic.expected.ofn')
 
 
 class TestRolePlayGameExample(unittest.TestCase):
-    """Test case using a fantasy RPG example."""
+    """Test case using a fantasy RPG example.
+
+    Note: the example data here is also an experiment in co-pilot assisted
+    knowledge base generation; the majority of the content was created by
+    LLM-autocomplete.
+    """
 
     def test_build_rpg(self):
         """
@@ -40,6 +45,6 @@ class TestRolePlayGameExample(unittest.TestCase):
         assert len(axioms) > 5
         # compare with expected output
         doc_expected = to_python(str(EXPECTED))
-        assert len(axioms) == len(doc_expected.ontology.axioms)
+        self.assertEquals(len(axioms), len(doc_expected.ontology.axioms))
         self.assertCountEqual(axioms, doc_expected.ontology.axioms)
 

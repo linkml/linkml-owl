@@ -37,17 +37,17 @@ linkml-data2owl = "linkml_owl.dumpers.owl_dumper:cli"
 python = "^3.8"
 
 click = "*"
-funowl = "0.1.12"
-Jinja2 = "^3.0.3"
-linkml = "^1.3.0"
-linkml-runtime = "^1.3.4"
+funowl = ">=0.2.3"
+Jinja2 = ">=3.0.3"
+linkml = ">=1.3.0"
+linkml-runtime = ">=1.3.4"
 
 [tool.poetry.dev-dependencies]
-tox = "^3.24.5"
-pytest = "^6.2.5"
-pytest-cov = "^3.0.0"
-mkdocs = "^1.2.3"
-black = "^22.10.0"
+tox = ">=3.24.5"
+pytest = ">=6.2.5"
+pytest-cov = ">=3.0.0"
+mkdocs = ">=1.2.3"
+black = ">=22.10.0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0", "poetry-dynamic-versioning"]

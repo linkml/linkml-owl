@@ -18,6 +18,11 @@ DATA_IMPLICIT_IN = os.path.join(INPUT_DIR, 'parts_implicit_type.csv')
 OWL_OUT = os.path.join(OUTPUT_DIR, 'parts.owl.ofn')
 
 
+def _remove_prefixes_hack(s: str) -> str:
+    # with the exception of rdflib 6.2.0, rdflib introduces namespace pollution
+    lines = [line for line in s.split("\n") if not line.startswith("Prefix")]
+    return "\n".join(lines)
+
 class TestFromCSV(unittest.TestCase):
     """Test import from csv."""
 
@@ -34,7 +39,6 @@ class TestFromCSV(unittest.TestCase):
         dumper = OWLDumper()
         doc = dumper.to_ontology_document(data, schema=sv.schema)
         doc_rt = to_python(str(doc))
-        #print(doc_rt)
         axioms = doc_rt.ontology.axioms
         logging.info(f'AXIOMS={len(axioms)}')
         assert len(axioms) > 5
@@ -44,7 +48,9 @@ class TestFromCSV(unittest.TestCase):
                                     target_class='EquivGenusAndPartOf', schemaview=sv, delimiter=',', python_module=python_module)
         dumper = OWLDumper()
         doc2 = dumper.to_ontology_document(data, schema=sv.schema)
-        assert doc2 == doc
+        doc = _remove_prefixes_hack(str(doc))
+        doc2 = _remove_prefixes_hack(str(doc2))
+        self.assertEquals(doc2, doc)
 
 
 
