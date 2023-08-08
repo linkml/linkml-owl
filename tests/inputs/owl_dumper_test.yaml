@@ -143,10 +143,10 @@ classes:
     aliases:
       - blank node
     is_a: Thing
-    description: abstract grouping for anonymous expressions
+    description: abstract grouping for anonymous class expressions
     abstract: true
     annotations:
-      owl: Class
+      owl: AnonymousClassExpression
   NamedThingWithMatches:
     is_a: NamedThing
     description: test metaclass illustrating generation of skos annotation axioms

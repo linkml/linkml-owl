@@ -1,0 +1,162 @@
+ontology: behavior
+description: Multimodal behavior ontology
+roots:
+  NeuralPathway:
+    aliases:
+      - neural circuit
+    description: a series of connected neuronal activities where neurons send signals from one part of the brain to another.
+    children:
+      DopamineRewardPathway:
+        aliases: [Dopamine Pathway, Reward Pathway]
+        description: A neural pathway that, when activated, causes a reward signal to be sent to the brain, via the release of dopamine.
+      MesolimbicPathway:
+        aliases: [Mesolimbic Pathway, Mesolimbic Reward Pathway]
+        description: A neural pathway that, when activated, causes a reward signal to be sent to the brain, via the release of dopamine.
+      DrosophilaCourtshipNeuralCircuit:
+        references:
+          - PMID:23021897 # https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3563961/
+  MentalObject:
+    sources:
+      - MF
+    observable: false
+    description: A mental object is an object that exists in the mind.
+    children:
+      Memory:
+        description: A mental object that involves remembering something.
+  MentalState:
+    sources:
+      - MF
+      - MFOEM
+    observable: false
+    description: A mental state is a state of mind that an organism can be in at a given time.
+    children:
+      Perceiving:
+        description: A mental state that involves perceiving something.
+      Aggressive:
+      Hungry:
+  MentalProcess:
+    sources:
+      - MF
+    observable: false
+    description: A mental process is a process that an organism can undergo.
+    children:
+      Daydreaming:
+        description: A mental process that involves daydreaming.
+  Movement:
+    sources:
+      - NBO
+    observable: true
+    aliases:
+      - Kinesthetic Behavior
+    description: "Movement behavior of the body or its parts."
+    exact_mappings:
+      - NBO:0000338
+    children:
+      BodyPartMovement:
+        description: "A change of place or position of part of an organism that does not involve the entire organism [NBO:SMAC]"
+      WholeBodyMovement:
+        description: "A change of place or position of an entire organism"
+      CoordinatedSeriesOfMovements:
+        description: "A series of movements that are coordinated with each other"
+        children:
+          FlappingAppendanges:
+            description: "A coordinated series of movements involving repeated..."
+          Dancing:
+            description: "A coordinated series of movements that are performed in a rhythmic way"
+            defined_subclasses_by:
+              objective:
+                CourtshipDancing:
+                  description: "A coordinated series of movements that are performed in a rhythmic way that is used for courtship"
+                  differentia: Courtship
+          LocomotoryBehavior:
+            children:
+              Walking:
+              Running:
+              Swimming:
+              Flying:
+  BehavioralObjective:
+    sources:
+      - NBO but with rearrangement
+    children:
+      Playing:
+        characteristics:
+          - InvolvesOtherOrganismsOfSameSpecies
+      Communication:
+        #characteristics:
+        #  - InvolvesOtherOrganismsOfSameSpecies
+        children:
+          Gesturing:
+          Vocalizing:
+      Predation:
+        characteristics:
+          - InvolvesOtherOrganisms
+      Escape:
+        characteristics:
+          - InvolvesOtherOrganisms
+      Submission:
+      Cannibalism:
+      Suicide:
+      Grooming:
+        sources:
+          - BCIO
+        children:
+          SelfGrooming:
+            characteristics:
+              - InvolvesSelfOnly
+          GroomingOfOthers:
+            characteristics:
+              - InvolvesOthers
+      Killing:
+        children:
+          KillingOrganismOfSameSpecies:
+            children:
+              KillingOfPersonByPerson:
+                aliases:
+                  - Homicide
+                  - Murder
+      SocialObjective:
+        children:
+          FinancialObjective:
+            children:
+              Payment:
+  Learning:
+    sources:
+      - NBO
+  Memory:
+    sources:
+      - NBO
+  MultiOrganismProcess:
+    children:
+      Predation:
+  BehaviorPattern:
+    children:
+      SmokingPattern:
+  BehavioralCharacteristic:
+    children:
+      InvolvesSelfOnly:
+      InvolvesOthers:
+        children:
+          InvolvesOtherOrganismsOfSameSpecies:
+            children:
+              Interpersonal:
+defined_classes:
+  AddictiveBehavior:
+    type: BehaviorByMentalDisposition
+    genus: Behavior
+    disposition: Addiction
+  DrosophilaCourtshipBehavior:
+    description: >-
+      Drosophila males display a complex repertoire of behaviors that have evolved to achieve reproductive success. 
+      This includes following the female, tapping her with his forelegs, 
+      contacting her genitalia with his mouthparts, 
+      singing a species-specific courtship song, and bending his abdomen to copulate [3]. 
+      It is presumed that Drosophila females assess a courting male by ‘summating’ 
+      sensory cues for species type and fitness before sanctioning mating [3].
+      A virgin female has the ability to be unreceptive to and resist the courtship of 
+      a Drosophila male by exhibiting rejection behaviors, which include extruding her ovipositor, 
+      kicking, or decamping [3–6]. 
+      If she decides to accept the male, she slows down, ceases rejection behaviors and opens her vaginal plate 
+      for copulation [3]. After successful copulation, mated females become temporarily sexually unreceptive
+      to further copulatory attempts, increasing their rate of egg-laying (https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3563961/)
+    type: BehaviorByNeuralCircuit
+    genus: ...

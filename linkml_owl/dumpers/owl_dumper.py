@@ -261,9 +261,14 @@ class OWLDumper(Dumper):
         else:
             for obj_type in [ObjectProperty, DataProperty, AnnotationProperty, NamedIndividual, Class, Datatype]:
                 if obj_type.__name__ in cls_interps:
-                    decl = Declaration(obj_type(subj))
+                    if not subj:
+                        raise ValueError(f"Cannot create {obj_type} without an identifier for {element}")
+                    if not isinstance(subj, URIRef):
+                        raise ValueError(f"Cannot create {obj_type} with non-URI identifier for {element}")
+                    di = obj_type(subj)
+                    decl = Declaration(di)
                     logging.debug(f"Inferred {decl} based on {obj_type.__name__} in {cls_interps}")
-                    o.axioms.append(decl)
+                    #o.axioms.append(decl)
         logging.info(f"Subject={subj}")
         expression_termset = {"IntersectionOf", "UnionOf", "ComplementOf", "OneOf", "SomeValuesFrom", "AllValuesFrom"}
         is_returns_expression = len(expression_termset.intersection(cls_interps)) > 0
@@ -442,7 +447,7 @@ class OWLDumper(Dumper):
                     elif axiom_type == AnnotationAssertion:
                         axiom = AnnotationAssertion(slot_uri, subj, parent)
                     else:
-                        raise Exception(f'Unknown: {axiom_type}')
+                        raise ValueError(f'Unknown axiom type: {axiom_type}')
                     if axiom is not None:
                         self.add_axiom(axiom, o, axiom_annotations)
                     else:
@@ -558,8 +563,18 @@ class OWLDumper(Dumper):
         return list(vals)
 
     def _get_inferred_class_annotations(self, cls: ClassDefinition, ann_key: str) -> List[str]:
+        """
+        Retrieve owl annotations for a class, including those inherited from ancestors.
+
+        OWL annotations are specified in LinkML using the annotations slot, where the
+        key is "owl" or something in the owl namespace.
+
+        :param cls: class to query
+        :param ann_key: annotation key to query
+        :return:
+        """
         vals = set()
-        anc_classes = [cls]
+        anc_classes = []
         sv = self.schemaview
         for anc_c in sv.class_ancestors(cls.name, reflexive=True):
             anc_classes.append(sv.get_class(anc_c))
