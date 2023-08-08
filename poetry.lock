@@ -481,14 +481,14 @@ files = [
 
 [[package]]
 name = "funowl"
-version = "0.2.1"
+version = "0.2.3"
 description = "Python rendering of the OWL Functional syntax"
 category = "main"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "funowl-0.2.1-py3-none-any.whl", hash = "sha256:d69bd33ab0732797139f847a1551ad1bf0452ef6d6b9124bcb920fcfd85a003d"},
-    {file = "funowl-0.2.1.tar.gz", hash = "sha256:4b67b08c78dc233dfa81c5fddea3642f6ac2f4e599071606e6dfbc3bb4a30649"},
+    {file = "funowl-0.2.3-py3-none-any.whl", hash = "sha256:4c4328d03c7815cd61d6691f0fafc78dc9a78ec3dcab4c83afb64d125ad3660e"},
+    {file = "funowl-0.2.3.tar.gz", hash = "sha256:eecc2f58d792c714f6671a826cb2744e80cd3019fa56b3c8539ce69c8d874126"},
 ]
 
 [package.dependencies]
@@ -2325,4 +2325,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8"
-content-hash = "49f6eb464e156417b89c5cd3955d75b41162aba71f6898bff91d31f63def95c6"
+content-hash = "b86b3c3b9fbee1ec102fef19e208a60f82d2d1ad4ac2aeaa00476d915e7ff062"

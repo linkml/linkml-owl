@@ -268,7 +268,7 @@ class OWLDumper(Dumper):
                     di = obj_type(subj)
                     decl = Declaration(di)
                     logging.debug(f"Inferred {decl} based on {obj_type.__name__} in {cls_interps}")
-                    #o.axioms.append(decl)
+                    o.axioms.append(decl)
         logging.info(f"Subject={subj}")
         expression_termset = {"IntersectionOf", "UnionOf", "ComplementOf", "OneOf", "SomeValuesFrom", "AllValuesFrom"}
         is_returns_expression = len(expression_termset.intersection(cls_interps)) > 0

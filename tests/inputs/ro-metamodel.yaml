@@ -12,6 +12,7 @@ prefixes:
   GO: http://purl.obolibrary.org/obo/GO_
   BFO: http://purl.obolibrary.org/obo/BFO_
   IAO: http://purl.obolibrary.org/obo/IAO_
+  CARO: http://purl.obolibrary.org/obo/CARO_
   RO: http://purl.obolibrary.org/obo/RO_
   PATO: http://purl.obolibrary.org/obo/PATO_
   NCBITaxon: http://purl.obolibrary.org/obo/NCBITaxon_
