@@ -34,13 +34,13 @@ style = "pep440"
 linkml-data2owl = "linkml_owl.dumpers.owl_dumper:cli"
 
 [tool.poetry.dependencies]
-python = "^3.8"
+python = "^3.8.1"
 
 click = "*"
 funowl = ">=0.2.3"
 Jinja2 = ">=3.0.3"
-linkml = ">=1.3.0"
-linkml-runtime = ">=1.3.4"
+linkml = ">=1.7.0"
+linkml-runtime = ">=1.7.0"
 
 [tool.poetry.dev-dependencies]
 tox = ">=3.24.5"

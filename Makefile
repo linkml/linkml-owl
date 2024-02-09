@@ -4,8 +4,7 @@ RUN = poetry run
 all: docs/examples.md test
 
 test:
-	$(RUN) python -m unittest discover
-#	$(RUN) pytest
+	$(RUN) pytest tests
 
 tests/model/%.py: tests/model/%.yaml
 	$(RUN) gen-python $< > $@.tmp && mv $@.tmp $@
