@@ -39,7 +39,7 @@ python = "^3.8.1"
 click = "*"
 funowl = ">=0.2.3"
 Jinja2 = ">=3.0.3"
-linkml = ">=1.7.0"
+linkml = ">=1.7.4"
 linkml-runtime = ">=1.7.0"
 
 [tool.poetry.dev-dependencies]

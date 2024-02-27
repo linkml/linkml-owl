@@ -30,7 +30,7 @@ class TestFromDosdp(unittest.TestCase):
         Test creation of OWL metamodel
         """
         yd = YAMLGenerator(SCHEMA_IN)
-        schema = yd.schema
+        # schema = yd.schema
         with open(OWLSCHEMA_OUT, 'w') as stream:
             stream.write(OwlSchemaGenerator(SCHEMA_IN).serialize())
 
