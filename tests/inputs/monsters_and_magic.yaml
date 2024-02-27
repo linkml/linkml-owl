@@ -404,7 +404,7 @@ slots:
       owl: AnnotationProperty
 
   type:
-    designates_type: true
+    #designates_type: true
     #range: Grouping
     description: >-
       The type of a thing
