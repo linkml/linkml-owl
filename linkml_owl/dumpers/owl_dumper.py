@@ -48,6 +48,9 @@ LEVEL = int
 OP_KEY = Tuple[LEVEL, OPERAND, AXIOM_TYPE_NAME]
 
 
+def _skip_key_in_element(k: str, element: YAMLRoot) -> bool:
+    return k.startswith("unknown_") and k.replace("unknown_", "") in vars(element)
+
 @dataclass
 class EntityAxiomIndex:
     """
@@ -248,10 +251,12 @@ class OWLDumper(Dumper):
         unprocessed_parents = []
         # set subj = IRI for element
         for k, v in vars(element).items():
+            if _skip_key_in_element(k, element):
+                continue
             slot: SlotDefinition
             slot = self._lookup_slot(c, k)
             if slot is None:
-                raise ValueError(f'Lookup slot in {c.name} failed for {k} // element={element}')
+                raise ValueError(f'Cannot find slot {c.name}.{k} // {vars(element)} element={element}')
             if slot.identifier:
                 subj = URIRef(self._get_IRI_str(v))
                 logging.debug(f"set subj from {slot.name}={v} asURI: {subj}")
@@ -275,6 +280,8 @@ class OWLDumper(Dumper):
         # iterate through all slot-value assignments for element;
         # generate axioms or add axioms to EntityAxiomIndex for each
         for k, v in vars(element).items():
+            if _skip_key_in_element(k, element):
+                continue
             slot: SlotDefinition
             # TODO: unify slot/schema_level_slot
             slot = self._lookup_slot(c, k)
@@ -518,6 +525,9 @@ class OWLDumper(Dumper):
             return False
 
     def _lookup_slot(self, cls: ClassDefinition, field: str) -> SlotDefinition:
+        """
+        Lookup a slot in a class by name
+        """
         matching_slot = None
         for s in self.schemaview.class_induced_slots(cls.name):
             if underscore(s.name) == field:
@@ -798,6 +808,13 @@ def cli(inputfile: str, schema: str, target_class, module, output, output_type, 
         https://linkml.io/linkml-owl/
     """
     logger = logging.getLogger()
+    # Set handler for the root logger to output to the console
+    console_handler = logging.StreamHandler()
+    console_handler.setFormatter(logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s"))
+    # Clear existing handlers to avoid duplicate messages if function runs multiple times
+    logger.handlers = []
+    # Add the newly created console handler to the logger
+    logger.addHandler(console_handler)
     if verbose >= 2:
         logger.setLevel(level=logging.DEBUG)
     elif verbose == 1:
@@ -806,6 +823,7 @@ def cli(inputfile: str, schema: str, target_class, module, output, output_type, 
         logger.setLevel(level=logging.WARNING)
     if quiet:
         logger.setLevel(level=logging.ERROR)
+    logger.info(f"Loading and compiling schema {schema}")
     if module is None:
         if schema is None:
             raise Exception('must pass one of module OR schema')
@@ -814,6 +832,7 @@ def cli(inputfile: str, schema: str, target_class, module, output, output_type, 
     else:
         python_module = compile_python(module)
     sv = SchemaView(schema)
+    logger.info(f"Loading {inputfile} into schema {sv.schema.name}")
     element = load_structured_file(inputfile, target_class=target_class, python_module=python_module, schemaview=sv, fmt=format)
 
     dumper = OWLDumper()
