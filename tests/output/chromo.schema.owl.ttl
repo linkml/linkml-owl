@@ -14,32 +14,32 @@ chromoschema:ChromosomePartCollection a owl:Class,
         linkml:ClassDefinition ;
     rdfs:label "ChromosomePartCollection" ;
     rdfs:subClassOf [ a owl:Restriction ;
-            owl:allValuesFrom chromoschema:Genome ;
-            owl:onProperty chromoschema:genomes ],
-        [ a owl:Restriction ;
-            owl:minCardinality 0 ;
-            owl:onProperty chromoschema:taxons ],
-        [ a owl:Restriction ;
             owl:maxCardinality 1 ;
             owl:onProperty chromoschema:name ],
         [ a owl:Restriction ;
             owl:minCardinality 0 ;
-            owl:onProperty chromoschema:genomes ],
+            owl:onProperty chromoschema:taxons ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom owl:Thing ;
+            owl:onProperty chromoschema:name ],
+        [ a owl:Restriction ;
+            owl:minCardinality 0 ;
+            owl:onProperty chromoschema:has ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom chromoschema:ChromosomePart ;
+            owl:onProperty chromoschema:has ],
         [ a owl:Restriction ;
             owl:allValuesFrom chromoschema:OrganismTaxon ;
             owl:onProperty chromoschema:taxons ],
         [ a owl:Restriction ;
             owl:minCardinality 0 ;
-            owl:onProperty chromoschema:has ],
+            owl:onProperty chromoschema:name ],
         [ a owl:Restriction ;
             owl:minCardinality 0 ;
-            owl:onProperty chromoschema:name ],
+            owl:onProperty chromoschema:genomes ],
         [ a owl:Restriction ;
-            owl:allValuesFrom owl:Thing ;
-            owl:onProperty chromoschema:name ],
-        [ a owl:Restriction ;
-            owl:allValuesFrom chromoschema:ChromosomePart ;
-            owl:onProperty chromoschema:has ] ;
+            owl:allValuesFrom chromoschema:Genome ;
+            owl:onProperty chromoschema:genomes ] ;
     skos:inScheme <https://w3id.org/biodatamodels/chromoschema> .
 
 chromoschema:download_url a owl:ObjectProperty,
@@ -59,6 +59,15 @@ chromoschema:Genome a owl:Class,
         linkml:ClassDefinition ;
     rdfs:label "Genome" ;
     rdfs:subClassOf [ a owl:Restriction ;
+            owl:minCardinality 1 ;
+            owl:onProperty chromoschema:name ],
+        [ a owl:Restriction ;
+            owl:minCardinality 1 ;
+            owl:onProperty chromoschema:id ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty chromoschema:build ],
+        [ a owl:Restriction ;
             owl:allValuesFrom chromoschema:GenomeBuild ;
             owl:onProperty chromoschema:previous_builds ],
         [ a owl:Restriction ;
@@ -70,38 +79,29 @@ chromoschema:Genome a owl:Class,
                     owl:withRestrictions ( [ xsd:pattern "^\\\\w+$" ] ) ] ;
             owl:onProperty chromoschema:id ],
         [ a owl:Restriction ;
-            owl:minCardinality 0 ;
-            owl:onProperty chromoschema:taxon ],
-        [ a owl:Restriction ;
-            owl:minCardinality 0 ;
-            owl:onProperty chromoschema:build ],
-        [ a owl:Restriction ;
-            owl:allValuesFrom chromoschema:GenomeBuild ;
-            owl:onProperty chromoschema:build ],
-        [ a owl:Restriction ;
-            owl:allValuesFrom chromoschema:TaxonIdentifier ;
-            owl:onProperty chromoschema:taxon ],
-        [ a owl:Restriction ;
-            owl:maxCardinality 1 ;
-            owl:onProperty chromoschema:name ],
-        [ a owl:Restriction ;
-            owl:minCardinality 1 ;
-            owl:onProperty chromoschema:id ],
-        [ a owl:Restriction ;
-            owl:minCardinality 1 ;
-            owl:onProperty chromoschema:name ],
-        [ a owl:Restriction ;
-            owl:maxCardinality 1 ;
-            owl:onProperty chromoschema:build ],
-        [ a owl:Restriction ;
-            owl:maxCardinality 1 ;
-            owl:onProperty chromoschema:taxon ],
-        [ a owl:Restriction ;
             owl:allValuesFrom chromoschema:LabelType ;
             owl:onProperty chromoschema:name ],
         [ a owl:Restriction ;
             owl:maxCardinality 1 ;
-            owl:onProperty chromoschema:id ] ;
+            owl:onProperty chromoschema:name ],
+        [ a owl:Restriction ;
+            owl:minCardinality 0 ;
+            owl:onProperty chromoschema:taxon ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom chromoschema:GenomeBuild ;
+            owl:onProperty chromoschema:build ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty chromoschema:taxon ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty chromoschema:id ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom chromoschema:TaxonIdentifier ;
+            owl:onProperty chromoschema:taxon ],
+        [ a owl:Restriction ;
+            owl:minCardinality 0 ;
+            owl:onProperty chromoschema:build ] ;
     skos:definition """Represents a sequenced genome, one per species.
 Each genome can be associated with one or more builds""" ;
     skos:inScheme <https://w3id.org/biodatamodels/chromoschema> .
@@ -115,11 +115,17 @@ chromoschema:OrganismTaxon a owl:Class,
                     owl:withRestrictions ( [ xsd:pattern "^CHR:\\\\S+$" ] ) ] ;
             owl:onProperty chromoschema:id ],
         [ a owl:Restriction ;
+            owl:minCardinality 0 ;
+            owl:onProperty chromoschema:name ],
+        [ a owl:Restriction ;
+            owl:minCardinality 1 ;
+            owl:onProperty chromoschema:id ],
+        [ a owl:Restriction ;
             owl:maxCardinality 1 ;
             owl:onProperty chromoschema:id ],
         [ a owl:Restriction ;
             owl:minCardinality 0 ;
-            owl:onProperty chromoschema:name ],
+            owl:onProperty chromoschema:common_name ],
         [ a owl:Restriction ;
             owl:allValuesFrom chromoschema:LabelType ;
             owl:onProperty chromoschema:name ],
@@ -131,13 +137,7 @@ chromoschema:OrganismTaxon a owl:Class,
             owl:onProperty chromoschema:common_name ],
         [ a owl:Restriction ;
             owl:maxCardinality 1 ;
-            owl:onProperty chromoschema:name ],
-        [ a owl:Restriction ;
-            owl:minCardinality 0 ;
-            owl:onProperty chromoschema:common_name ],
-        [ a owl:Restriction ;
-            owl:minCardinality 1 ;
-            owl:onProperty chromoschema:id ] ;
+            owl:onProperty chromoschema:name ] ;
     skos:definition "Represents a species, e.g. Homo sapiens" ;
     skos:exactMatch biolink:OrganismTaxon ;
     skos:inScheme <https://w3id.org/biodatamodels/chromoschema> .
@@ -349,8 +349,65 @@ chromoschema:ChromosomePart a owl:Class,
         linkml:ClassDefinition ;
     rdfs:label "ChromosomePart" ;
     rdfs:subClassOf [ a owl:Restriction ;
+            owl:allValuesFrom chromoschema:LocationType ;
+            owl:onProperty chromoschema:cell_location ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom chromoschema:BandDescriptor ;
+            owl:onProperty chromoschema:band_descriptor ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom owl:Thing ;
+            owl:onProperty chromoschema:exact_synonyms ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom owl:Thing ;
+            owl:onProperty chromoschema:broad_synonyms ],
+        [ a owl:Restriction ;
             owl:allValuesFrom chromoschema:ChromosomeNameType ;
             owl:onProperty chromoschema:chromosome_name ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom linkml:Uriorcurie ;
+            owl:onProperty chromoschema:exact_mappings ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom linkml:Integer ;
+            owl:onProperty chromoschema:end ],
+        [ a owl:Restriction ;
+            owl:minCardinality 0 ;
+            owl:onProperty chromoschema:chromosome_name ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty chromoschema:build ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty chromoschema:end ],
+        [ a owl:Restriction ;
+            owl:minCardinality 0 ;
+            owl:onProperty chromoschema:sex_chromosome_type ],
+        [ a owl:Restriction ;
+            owl:minCardinality 0 ;
+            owl:onProperty chromoschema:broad_synonyms ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom chromoschema:TaxonIdentifier ;
+            owl:onProperty chromoschema:taxon ],
+        [ a owl:Restriction ;
+            owl:minCardinality 0 ;
+            owl:onProperty chromoschema:cell_location ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty chromoschema:start ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty chromoschema:parent ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty chromoschema:somal_type ],
+        [ a owl:Restriction ;
+            owl:maxCardinality 1 ;
+            owl:onProperty chromoschema:id ],
+        [ a owl:Restriction ;
+            owl:minCardinality 0 ;
+            owl:onProperty chromoschema:exact_mappings ],
+        [ a owl:Restriction ;
+            owl:minCardinality 1 ;
+            owl:onProperty chromoschema:id ],
         [ a owl:Restriction ;
             owl:allValuesFrom chromoschema:EntityType ;
             owl:onProperty chromoschema:type ],
@@ -359,39 +416,13 @@ chromoschema:ChromosomePart a owl:Class,
             owl:onProperty chromoschema:cell_location ],
         [ a owl:Restriction ;
             owl:minCardinality 0 ;
-            owl:onProperty chromoschema:type ],
-        [ a owl:Restriction ;
-            owl:allValuesFrom chromoschema:BandDescriptor ;
-            owl:onProperty chromoschema:band_descriptor ],
+            owl:onProperty chromoschema:somal_type ],
         [ a owl:Restriction ;
             owl:minCardinality 0 ;
-            owl:onProperty chromoschema:name ],
-        [ a owl:Restriction ;
-            owl:maxCardinality 1 ;
-            owl:onProperty chromoschema:name ],
-        [ a owl:Restriction ;
-            owl:allValuesFrom linkml:Integer ;
             owl:onProperty chromoschema:end ],
         [ a owl:Restriction ;
-            owl:allValuesFrom [ a rdfs:Datatype ;
-                    owl:onDatatype xsd:string ;
-                    owl:withRestrictions ( [ xsd:pattern "^CHR:\\\\S+$" ] ) ] ;
-            owl:onProperty chromoschema:id ],
-        [ a owl:Restriction ;
             owl:maxCardinality 1 ;
-            owl:onProperty chromoschema:start ],
-        [ a owl:Restriction ;
-            owl:minCardinality 0 ;
-            owl:onProperty chromoschema:cell_location ],
-        [ a owl:Restriction ;
-            owl:allValuesFrom chromoschema:SexChromosomeType ;
-            owl:onProperty chromoschema:sex_chromosome_type ],
-        [ a owl:Restriction ;
-            owl:maxCardinality 1 ;
-            owl:onProperty chromoschema:parent ],
-        [ a owl:Restriction ;
-            owl:minCardinality 0 ;
-            owl:onProperty chromoschema:broad_synonyms ],
+            owl:onProperty chromoschema:taxon ],
         [ a owl:Restriction ;
             owl:allValuesFrom chromoschema:AutosomeVsSexChromosome ;
             owl:onProperty chromoschema:somal_type ],
@@ -399,98 +430,67 @@ chromoschema:ChromosomePart a owl:Class,
             owl:allValuesFrom linkml:Integer ;
             owl:onProperty chromoschema:start ],
         [ a owl:Restriction ;
-            owl:maxCardinality 1 ;
-            owl:onProperty chromoschema:taxon ],
-        [ a owl:Restriction ;
             owl:allValuesFrom chromoschema:LabelType ;
             owl:onProperty chromoschema:name ],
         [ a owl:Restriction ;
             owl:minCardinality 0 ;
-            owl:onProperty chromoschema:chromosome_name ],
+            owl:onProperty chromoschema:type ],
         [ a owl:Restriction ;
             owl:minCardinality 0 ;
-            owl:onProperty chromoschema:exact_mappings ],
+            owl:onProperty chromoschema:name ],
         [ a owl:Restriction ;
-            owl:maxCardinality 1 ;
+            owl:minCardinality 0 ;
             owl:onProperty chromoschema:build ],
         [ a owl:Restriction ;
-            owl:allValuesFrom chromoschema:TaxonIdentifier ;
-            owl:onProperty chromoschema:taxon ],
-        [ a owl:Restriction ;
-            owl:allValuesFrom owl:Thing ;
-            owl:onProperty chromoschema:broad_synonyms ],
+            owl:maxCardinality 1 ;
+            owl:onProperty chromoschema:band_descriptor ],
         [ a owl:Restriction ;
             owl:maxCardinality 1 ;
-            owl:onProperty chromoschema:somal_type ],
-        [ a owl:Restriction ;
-            owl:allValuesFrom chromoschema:LocationType ;
-            owl:onProperty chromoschema:cell_location ],
-        [ a owl:Restriction ;
-            owl:minCardinality 0 ;
-            owl:onProperty chromoschema:exact_synonyms ],
+            owl:onProperty chromoschema:name ],
         [ a owl:Restriction ;
             owl:maxCardinality 1 ;
-            owl:onProperty chromoschema:end ],
+            owl:onProperty chromoschema:chromosome_name ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom chromoschema:ChromosomePart ;
+            owl:onProperty chromoschema:parent ],
+        [ a owl:Restriction ;
+            owl:allValuesFrom chromoschema:ChromosomePart ;
+            owl:onProperty chromoschema:children ],
         [ a owl:Restriction ;
             owl:maxCardinality 1 ;
             owl:onProperty chromoschema:sex_chromosome_type ],
         [ a owl:Restriction ;
             owl:minCardinality 0 ;
-            owl:onProperty chromoschema:parent ],
-        [ a owl:Restriction ;
-            owl:minCardinality 0 ;
             owl:onProperty chromoschema:children ],
         [ a owl:Restriction ;
-            owl:minCardinality 0 ;
+            owl:allValuesFrom chromoschema:GenomeBuild ;
             owl:onProperty chromoschema:build ],
-        [ a owl:Restriction ;
-            owl:minCardinality 0 ;
-            owl:onProperty chromoschema:band_descriptor ],
-        [ a owl:Restriction ;
-            owl:allValuesFrom linkml:Uriorcurie ;
-            owl:onProperty chromoschema:exact_mappings ],
-        [ a owl:Restriction ;
-            owl:maxCardinality 1 ;
-            owl:onProperty chromoschema:type ],
         [ a owl:Restriction ;
             owl:minCardinality 0 ;
             owl:onProperty chromoschema:start ],
         [ a owl:Restriction ;
-            owl:minCardinality 1 ;
+            owl:allValuesFrom [ a rdfs:Datatype ;
+                    owl:onDatatype xsd:string ;
+                    owl:withRestrictions ( [ xsd:pattern "^CHR:\\\\S+$" ] ) ] ;
             owl:onProperty chromoschema:id ],
         [ a owl:Restriction ;
-            owl:maxCardinality 1 ;
-            owl:onProperty chromoschema:id ],
-        [ a owl:Restriction ;
-            owl:allValuesFrom owl:Thing ;
+            owl:minCardinality 0 ;
             owl:onProperty chromoschema:exact_synonyms ],
         [ a owl:Restriction ;
             owl:minCardinality 0 ;
-            owl:onProperty chromoschema:somal_type ],
-        [ a owl:Restriction ;
-            owl:maxCardinality 1 ;
-            owl:onProperty chromoschema:band_descriptor ],
-        [ a owl:Restriction ;
-            owl:maxCardinality 1 ;
-            owl:onProperty chromoschema:chromosome_name ],
+            owl:onProperty chromoschema:parent ],
         [ a owl:Restriction ;
             owl:minCardinality 0 ;
             owl:onProperty chromoschema:taxon ],
         [ a owl:Restriction ;
             owl:minCardinality 0 ;
-            owl:onProperty chromoschema:end ],
+            owl:onProperty chromoschema:band_descriptor ],
         [ a owl:Restriction ;
-            owl:allValuesFrom chromoschema:ChromosomePart ;
-            owl:onProperty chromoschema:parent ],
-        [ a owl:Restriction ;
-            owl:minCardinality 0 ;
+            owl:allValuesFrom chromoschema:SexChromosomeType ;
             owl:onProperty chromoschema:sex_chromosome_type ],
         [ a owl:Restriction ;
-            owl:allValuesFrom chromoschema:ChromosomePart ;
-            owl:onProperty chromoschema:children ],
-        [ a owl:Restriction ;
-            owl:allValuesFrom chromoschema:GenomeBuild ;
-            owl:onProperty chromoschema:build ] ;
+            owl:maxCardinality 1 ;
+            owl:onProperty chromoschema:type ] ;
     skos:definition "A Chromosome or a part of a chromosome (includes whole chromosomes, arms, and bands)" ;
     skos:inScheme <https://w3id.org/biodatamodels/chromoschema> ;
     skos:note """OWL Notes: when translated to OWL, instances of this class will be treated as
@@ -504,13 +504,13 @@ chromoschema:GenomeBuild a owl:Class,
             owl:allValuesFrom chromoschema:LabelType ;
             owl:onProperty chromoschema:name ],
         [ a owl:Restriction ;
-            owl:minCardinality 0 ;
+            owl:maxCardinality 1 ;
             owl:onProperty chromoschema:name ],
         [ a owl:Restriction ;
-            owl:maxCardinality 1 ;
+            owl:minCardinality 1 ;
             owl:onProperty chromoschema:id ],
         [ a owl:Restriction ;
-            owl:minCardinality 1 ;
+            owl:maxCardinality 1 ;
             owl:onProperty chromoschema:id ],
         [ a owl:Restriction ;
             owl:allValuesFrom [ a rdfs:Datatype ;
@@ -518,7 +518,7 @@ chromoschema:GenomeBuild a owl:Class,
                     owl:withRestrictions ( [ xsd:pattern "^CHR:\\\\S+$" ] ) ] ;
             owl:onProperty chromoschema:id ],
         [ a owl:Restriction ;
-            owl:maxCardinality 1 ;
+            owl:minCardinality 0 ;
             owl:onProperty chromoschema:name ] ;
     skos:closeMatch edam:operation_0525 ;
     skos:definition "Represents a specific build of a sequenced genome" ;

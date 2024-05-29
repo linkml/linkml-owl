@@ -1,0 +1,42 @@
+id: http://example.org/enum-test
+name: enum-test
+imports:
+  - linkml:types
+prefixes:
+  linkml: https://w3id.org/linkml/
+  ex: http://example.org/enum-test/
+  BFO: http://purl.obolibrary.org/obo/BFO_
+
+default_prefix: ex
+default_curi_maps:
+  - semweb_context
+
+slots:
+  id:
+    identifier: true
+    range: uriorcurie
+  job:
+    range: JobEnum
+    annotations:
+      owl: ObjectPropertyAssertion
+
+  job_str:
+    range: JobEnum
+    annotations:
+      owl: DataPropertyAssertion
+
+classes:
+
+  Person:
+    slots:
+      - id
+      - job
+      - job_str
+
+enums:
+  JobEnum:
+    permissible_values:
+      Bricklayer:
+      Chimney Sweep:
+      Welder:
+        meaning: ex:Welder
