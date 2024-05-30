@@ -27,6 +27,7 @@ classes:
         slot_uri: rdfs:label
       conforms_to:
         name: conforms_to
+        range: string
         annotations:
           owl.fstring: AnnotationAssertion( dcterms:conformsTo {id} pizza:{V} )
         slot_uri: dcterms:conformsTo

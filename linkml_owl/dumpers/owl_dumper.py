@@ -33,7 +33,7 @@ from funowl import OntologyDocument, Ontology, IRI, ObjectSomeValuesFrom, \
     SubObjectPropertyOf, TransitiveObjectProperty, SymmetricObjectProperty, AsymmetricObjectProperty, \
     ReflexiveObjectProperty, IrreflexiveObjectProperty, Annotation, ObjectMinCardinality, ObjectHasValue, \
     NamedIndividual, DataSomeValuesFrom, DataHasValue, DataAllValuesFrom, AnnotationProperty, DataProperty, Datatype, \
-    DisjointClasses, DisjointUnion
+    DisjointClasses, DisjointUnion, DataPropertyAssertion
 
 from linkml_runtime.dumpers.dumper_root import Dumper
 from linkml_runtime.utils.yamlutils import YAMLRoot
@@ -210,10 +210,23 @@ class OWLDumper(Dumper):
         if element is None:
             return None
         try:
-            # translate Enum
+            # naive method to test if an object is an enum:
+            # try accessing the `meaning` field. If this fails,
+            # an exception is thrown, and we carry on.
+            # (when owl_duper is refactored to not be dependent on
+            #  python dataclasses this will no longer be necessary)
             meaning = element.meaning
-            return self._get_IRI_str(meaning)
+            if is_element_an_object:
+                # enum is used in an object context: translate to URI
+                if not meaning:
+                    enum_uri = schema.default_prefix + ":" + type(element).__name__
+                    meaning = enum_uri + "#" + str(element).replace(" ", "+")
+                return self._get_IRI_str(meaning)
+            else:
+                # enum is used in a data context - stringify
+                return str(element)
         except AttributeError:
+            # not an enum - carry on
             pass
         if not self._instance_of_linkml_class(element):
             # TODO: better way of detecting atoms
@@ -324,6 +337,8 @@ class OWLDumper(Dumper):
             slot_interps = self._get_slot_interpretations(slot, linkml_class_name)
             logging.debug(f'OWL interpretations for {k}={slot_interps}')
             is_object_ref = slot.range in self.schema.classes
+            if "ObjectPropertyAssertion" in slot_interps or "ObjectProperty" in slot_interps:
+                is_object_ref = True
             # normalize input_vals to a list, then recursively transform
             if isinstance(v, list):
                 input_vals = v
@@ -390,7 +405,7 @@ class OWLDumper(Dumper):
             #    eai.add_operands((0, SubClassOf.__name__, ObjectUnionOf.__name__), parents, axiom_annotations)
             axiom_type = None
             # TODO: make this more generic / less repetitive
-            axiom_types = [SubClassOf, SubObjectPropertyOf, ClassAssertion, ObjectPropertyAssertion, EquivalentClasses, InverseObjectProperties,ObjectPropertyDomain, ObjectPropertyRange, AnnotationAssertion]
+            axiom_types = [SubClassOf, SubObjectPropertyOf, ClassAssertion, ObjectPropertyAssertion, DataPropertyAssertion, EquivalentClasses, InverseObjectProperties,ObjectPropertyDomain, ObjectPropertyRange, AnnotationAssertion]
             for candidate_axiom_type in axiom_types:
                 if candidate_axiom_type.__name__ in slot_interps:
                     axiom_type = candidate_axiom_type
@@ -445,6 +460,8 @@ class OWLDumper(Dumper):
                         axiom = ClassAssertion(parent, subj)
                     elif axiom_type == ObjectPropertyAssertion:
                         axiom = ObjectPropertyAssertion(slot_uri, subj, parent)
+                    elif axiom_type == DataPropertyAssertion:
+                        axiom = DataPropertyAssertion(slot_uri, subj, parent)
                     elif axiom_type == InverseObjectProperties:
                         axiom = InverseObjectProperties(subj, parent)
                     elif axiom_type == ObjectPropertyDomain:
