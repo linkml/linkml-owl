@@ -210,16 +210,23 @@ class OWLDumper(Dumper):
         if element is None:
             return None
         try:
+            # naive method to test if an object is an enum:
+            # try accessing the `meaning` field. If this fails,
+            # an exception is thrown, and we carry on.
+            # (when owl_duper is refactored to not be dependent on
+            #  python dataclasses this will no longer be necessary)
             meaning = element.meaning
-            # translate Enum
-            if is_element_an_object or True:
+            if is_element_an_object:
+                # enum is used in an object context: translate to URI
                 if not meaning:
                     enum_uri = schema.default_prefix + ":" + type(element).__name__
                     meaning = enum_uri + "#" + str(element).replace(" ", "+")
                 return self._get_IRI_str(meaning)
             else:
+                # enum is used in a data context - stringify
                 return str(element)
         except AttributeError:
+            # not an enum - carry on
             pass
         if not self._instance_of_linkml_class(element):
             # TODO: better way of detecting atoms
@@ -330,8 +337,8 @@ class OWLDumper(Dumper):
             slot_interps = self._get_slot_interpretations(slot, linkml_class_name)
             logging.debug(f'OWL interpretations for {k}={slot_interps}')
             is_object_ref = slot.range in self.schema.classes
-            #if "ObjectPropertyAssertion" in slot_interps or "ObjectProperty" in slot_interps:
-            #    is_object_ref = True
+            if "ObjectPropertyAssertion" in slot_interps or "ObjectProperty" in slot_interps:
+                is_object_ref = True
             # normalize input_vals to a list, then recursively transform
             if isinstance(v, list):
                 input_vals = v

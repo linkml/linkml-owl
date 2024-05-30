@@ -26,10 +26,18 @@ SCHEMA_IN = os.path.join(INPUT_DIR, 'enum_model.yaml')
     ("2", {"id": "ex:2", "job": "Bricklayer"}, {"job":  EX["JobEnum#Bricklayer"]}),
     ("3", {"id": "ex:3", "job": "Chimney Sweep"}, {"job": EX["JobEnum#Chimney+Sweep"]}),
     ("4", {"id": "ex:4", "job_str": "Welder"}, {"job_str": Literal("Welder")}),
+    ("5", {"id": "ex:5", "job_str": "Bricklayer"}, {"job_str": Literal("Bricklayer")}),
+    ("6", {"id": "ex:6", "job_str": "Chimney Sweep"}, {"job_str": Literal("Chimney Sweep")}),
 ])
 def test_enums(data_name, data, expected):
     """
-    Test varieties of enums
+    Test mapping of permissible values in enums.
+
+    If the enum slot is an object slot, then a URI is generated
+    (using ``meaning`` if present, otherwise construct a URI by appending a hash url encoding
+    of the PV to the enum)
+
+    If the enum slot is a data slot, then a literal is created from the PV string
     """
     sv = SchemaView(SCHEMA_IN)
     python_module = PythonGenerator(SCHEMA_IN).compile_module()
