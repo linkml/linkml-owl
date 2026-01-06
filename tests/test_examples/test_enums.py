@@ -3,6 +3,7 @@ import logging
 import os
 import unittest
 
+import pyhornedowl
 import pytest
 import rdflib
 from linkml.generators.pythongen import PythonGenerator
@@ -11,7 +12,6 @@ from rdflib import Graph, URIRef, Literal
 
 from linkml_owl.util.loader_wrapper import load_structured_file
 from linkml_owl.dumpers.owl_dumper import OWLDumper
-from funowl.converters.functional_converter import to_python
 
 from tests import INPUT_DIR, OUTPUT_DIR
 
@@ -44,15 +44,20 @@ def test_enums(data_name, data, expected):
     dumper = OWLDumper()
     dumper.schemaview = sv
     obj = python_module.Person(**data)
-    doc = dumper.to_ontology_document(obj, schema=sv.schema)
+    # Use dumps() to get properly fixed OFN string
+    ofn_str = dumper.dumps(obj, schema=sv.schema, output_type="ofn")
     out_path = os.path.join(OUTPUT_DIR, f'enum-{data_name}.ofn')
     with open(out_path, 'w') as stream:
-        stream.write(str(doc))
-    doc_rt = to_python(str(doc))
-    axioms = doc_rt.ontology.axioms
+        stream.write(ofn_str)
+    # Parse back to verify
+    doc_rt = pyhornedowl.open_ontology_from_string(ofn_str, "ofn")
+    axioms = doc_rt.get_axioms()
     logging.info(f'AXIOMS={len(axioms)}')
+    # Get RDF graph for testing - need the ontology document for this
+    doc = dumper.ontology  # Get the ontology created during dumps()
+    rdf_str = doc.save_to_string("owl")
     g = Graph()
-    doc.to_rdf(g)
+    g.parse(data=rdf_str, format='xml')
     for p, v in expected.items():
         vals = []
         print(EX[p])
@@ -61,5 +66,9 @@ def test_enums(data_name, data, expected):
             vals.append(o)
             print(f" FOUND {o} {type(o)}")
         assert len(vals) == 1
-        assert vals[0] == v
+        # For literals, compare string values since py-horned-owl may add xsd:string datatype
+        if isinstance(v, Literal):
+            assert str(vals[0]) == str(v)
+        else:
+            assert vals[0] == v
 

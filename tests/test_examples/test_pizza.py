@@ -2,12 +2,13 @@
 import logging
 import os
 import unittest
+
+import pyhornedowl
 from linkml.generators.pythongen import PythonGenerator
 from linkml_runtime import SchemaView
 
 from linkml_owl.util.loader_wrapper import load_structured_file
 from linkml_owl.dumpers.owl_dumper import OWLDumper
-from funowl.converters.functional_converter import to_python
 
 from tests import INPUT_DIR, OUTPUT_DIR
 
@@ -32,17 +33,13 @@ class TestPizza(unittest.TestCase):
         dumper = OWLDumper()
         dumper.schemaview = sv
 
-        doc = dumper.to_ontology_document(data, schema=sv.schema)
-        for a in doc.ontology.axioms:
+        ofn_str = dumper.dumps(data, schema=sv.schema, output_type="ofn")
+        axioms = dumper.ontology.get_axioms()
+        for a in axioms:
             print(f'AXIOM={a}')
         with open(OWL_OUT, 'w') as stream:
-            stream.write(str(doc))
-        doc_rt = to_python(str(doc))
-        axioms = doc_rt.ontology.axioms
-        logging.info(f'AXIOMS={len(axioms)}')
-        #assert len(axioms) > 5
-        # compare with expected output
-        #doc_expected = to_python(str(EXPECTED))
-        #assert len(axioms) == len(doc_expected.ontology.axioms)
-        #self.assertCountEqual(axioms, doc_expected.ontology.axioms)
+            stream.write(ofn_str)
+        doc_rt = pyhornedowl.open_ontology_from_string(ofn_str, "ofn")
+        rt_axioms = doc_rt.get_axioms()
+        logging.info(f'AXIOMS={len(rt_axioms)}')
 

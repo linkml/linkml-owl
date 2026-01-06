@@ -37,10 +37,10 @@ linkml-data2owl = "linkml_owl.dumpers.owl_dumper:cli"
 python = "^3.8.1"
 
 click = "*"
-funowl = ">=0.2.3"
 Jinja2 = ">=3.0.3"
 linkml = "^1.7.10"
 linkml-runtime = ">=1.7.0"
+py-horned-owl = ">=1.1.0"
 
 [tool.poetry.dev-dependencies]
 tox = ">=3.24.5"

@@ -1,12 +1,13 @@
 import sys
 from collections import defaultdict
+from enum import Enum, auto
 from typing import Optional, List, Set, Any, Union, Dict, Tuple
 from dataclasses import dataclass, field
 import logging
+import re
 
 import click
-from funowl.converters.functional_converter import to_python
-from funowl.writers.FunctionalWriter import FunctionalWriter
+import pyhornedowl
 from jinja2 import Template
 from linkml.generators.pythongen import PythonGenerator
 from linkml_runtime import SchemaView
@@ -16,33 +17,61 @@ from linkml_runtime.utils.eval_utils import eval_expr
 from linkml_runtime.index.object_index import ObjectIndex
 from linkml_runtime.utils.inference_utils import infer_all_slot_values, infer_slot_value, Config
 
-from rdflib import URIRef, Graph
-
 from linkml_runtime.linkml_model.meta import ClassDefinition, SchemaDefinition, SlotDefinition, Definition, \
     ClassDefinitionName
 from linkml_runtime.utils.formatutils import underscore, camelcase
 from linkml_runtime.linkml_model.types import Uri, Uriorcurie
 
-from funowl import OntologyDocument, Ontology, IRI, ObjectSomeValuesFrom, \
+from pyhornedowl import PyIndexedOntology
+from pyhornedowl.model import IRI, ObjectSomeValuesFrom, \
     Literal, \
     ObjectUnionOf, SubClassOf, ClassAssertion, \
     Class, \
     AnnotationAssertion, ObjectPropertyAssertion, \
-    Prefix, AnonymousIndividual, ObjectAllValuesFrom, EquivalentClasses, ObjectIntersectionOf, ClassExpression, Axiom, \
-    ObjectProperty, Declaration, InverseObjectProperties, ObjectPropertyDomain, ObjectPropertyRange, \
+    AnonymousIndividual, ObjectAllValuesFrom, EquivalentClasses, ObjectIntersectionOf, ClassExpression, \
+    ObjectProperty, InverseObjectProperties, ObjectPropertyDomain, ObjectPropertyRange, \
     SubObjectPropertyOf, TransitiveObjectProperty, SymmetricObjectProperty, AsymmetricObjectProperty, \
     ReflexiveObjectProperty, IrreflexiveObjectProperty, Annotation, ObjectMinCardinality, ObjectHasValue, \
     NamedIndividual, DataSomeValuesFrom, DataHasValue, DataAllValuesFrom, AnnotationProperty, DataProperty, Datatype, \
-    DisjointClasses, DisjointUnion, DataPropertyAssertion
+    DisjointClasses, DisjointUnion, DataPropertyAssertion, Component, SimpleLiteral, DatatypeLiteral, DeclareClass, \
+    DeclareObjectProperty, DeclareDataProperty, DeclareAnnotationProperty, DeclareNamedIndividual, DeclareDatatype, \
+    AnnotatedComponent
 
 from linkml_runtime.dumpers.dumper_root import Dumper
 from linkml_runtime.utils.yamlutils import YAMLRoot
 
 from linkml_owl.util.loader_wrapper import load_structured_file
+from linkml_owl.util.owl_util import get_declarations, as_class_expression, as_class_expression_list, Axiom, Ontology, \
+    add_axiom, instantiate_restriction
+
+
+class IRIRepairPolicy(Enum):
+    """
+    Policy for handling IRIs in OWL Functional Syntax output.
+
+    In OFN syntax, full IRIs must be wrapped in angle brackets (<http://...>),
+    while CURIEs (prefix:local) do not need brackets. When templates produce
+    mixed output (some CURIEs, some expanded IRIs), this policy controls behavior.
+    """
+    REPAIR = auto()
+    """Silently repair malformed IRIs by wrapping full IRIs in angle brackets."""
+
+    WARN = auto()
+    """Repair malformed IRIs but emit a warning for each repair."""
+
+    STRICT = auto()
+    """Raise an error if a malformed IRI is detected."""
+
+
+# Regex to detect full IRIs that need wrapping (has scheme://, not already wrapped)
+_FULL_IRI_PATTERN = re.compile(r'(?<![<"\'])(\b\w+://[^\s<>"\')]+)')
+
 
 INTERPRETATION = str
 AXIOM_TYPE_NAME = str
 OPERAND = str  ## e.g IntersectionOf, UnionOf
+
+
 
 LEVEL = int
 OP_KEY = Tuple[LEVEL, OPERAND, AXIOM_TYPE_NAME]
@@ -50,6 +79,7 @@ OP_KEY = Tuple[LEVEL, OPERAND, AXIOM_TYPE_NAME]
 
 def _skip_key_in_element(k: str, element: YAMLRoot) -> bool:
     return k.startswith("unknown_") and k.replace("unknown_", "") in vars(element)
+
 
 @dataclass
 class EntityAxiomIndex:
@@ -59,10 +89,12 @@ class EntityAxiomIndex:
     Motivation: any entity (such as a class) might have an arbitrary number of equivalence, disjointness, etc axioms
     associated with it; e.g.
 
-    >>> A = B or C
-    >>> A = D and E
-    >>> A SubClassOf F or G
-    >>>       ...
+    .. code-block:: python
+
+         A = B or C
+         A = D and E
+         A SubClassOf F or G
+                ...
 
     This index allows these axioms to be incrementally constructed
 
@@ -143,17 +175,30 @@ class OWLDumper(Dumper):
     autofill: bool = False
     """If True, infer missing values in data."""
 
+    iri_policy: IRIRepairPolicy = IRIRepairPolicy.REPAIR
+    """Policy for handling full IRIs in OFN template output."""
+
+    _blank_node_counter: int = 0
+    """Counter for generating unique blank node IDs."""
+
+    def _next_blank_node_id(self) -> str:
+        """Generate a unique blank node ID."""
+        self._blank_node_counter += 1
+        return f"_:b{self._blank_node_counter}"
+
     def to_ontology_document(self, element: Union[YAMLRoot, List[YAMLRoot]], schema: Union[SchemaDefinition, str],
-                             iri: str = None) -> OntologyDocument:
+                             iri: str = None) -> PyIndexedOntology:
         """
-        Recursively convert a linkml instance tree to an OWL Ontology Document
+        Recursively convert a linkml instance tree to an OWL Ontology Document.
 
         :param element: element to convert
         :param schema:
         :param iri:
         :return:
         """
-        o = Ontology(schema.id)
+        # TODO: Figure how to set ontology IRI
+        # o = PyIndexedOntology(schema.id)
+        o = PyIndexedOntology()
         self.ontology = o
         if isinstance(schema, SchemaDefinition):
             self.schema = schema
@@ -162,14 +207,15 @@ class OWLDumper(Dumper):
             self.schemaview = SchemaView(schema)
             self.schema = self.schemaview.schema
             schema = self.schema
-        doc = OntologyDocument(iri, o)
+        # TODO: remove vestiges of funowl
+        doc =o
         if isinstance(element, list):
             for e1 in element:
                 self.transform(e1, schema)
         else:
             self.transform(element, schema)
         for pfx in schema.prefixes.values():
-            doc.prefixDeclarations.append(Prefix(pfx.prefix_prefix, pfx.prefix_reference))
+            doc.add_prefix_mapping(pfx.prefix_prefix, pfx.prefix_reference)
         return doc
 
     def dumps(self, element: YAMLRoot, schema: SchemaDefinition = None, schemaview: SchemaView = None, iri=None, output_type=None) -> str:
@@ -180,18 +226,21 @@ class OWLDumper(Dumper):
         :param schema:
         :param schemaview:
         :param iri:
-        :param output_type:
+        :param output_type: Output format - "ofn" (default), "owl" (RDF/XML), "owx" (OWL/XML)
         :return:
         """
         if schemaview:
             schema = schemaview.schema
         doc = self.to_ontology_document(element, schema, iri=iri)
-        if output_type == "ttl":
-            g = Graph()
-            doc.to_rdf(g)
-            return g.serialize(format="ttl")
-        else:
-            return str(doc)
+        # Map output types to py-horned-owl serialization formats
+        format_map = {"ttl": "owl", "ofn": "ofn", "owl": "owl", "owx": "owx", None: "ofn"}
+        serialization = format_map.get(output_type, "ofn")
+        result = doc.save_to_string(serialization)
+        # For OFN output, fix invalid CURIEs that contain '#' in the local part
+        if serialization == "ofn" and self.schema:
+            prefix_map = {pfx.prefix_prefix: pfx.prefix_reference for pfx in self.schema.prefixes.values()}
+            result = self._fix_invalid_curies(result, prefix_map)
+        return result
 
     def transform(self, element: YAMLRoot, schema: SchemaDefinition, is_element_an_object=True) -> Any:
         """
@@ -229,19 +278,40 @@ class OWLDumper(Dumper):
             # not an enum - carry on
             pass
         if not self._instance_of_linkml_class(element):
+            ont = self.ontology
             # TODO: better way of detecting atoms
             if is_element_an_object:
                 # foreign key
-                return URIRef(self._get_IRI_str(element))
+                return ont.iri(self._get_IRI_str(element))
             elif isinstance(element, Uriorcurie):
-                return URIRef(self._get_IRI_str(element))
+                return ont.iri(self._get_IRI_str(element))
             elif isinstance(element, Uri):
-                return URIRef(element)
+                return ont.iri(self._get_IRI_str(element))
+            elif isinstance(element, str):
+                return SimpleLiteral(element)
+            elif isinstance(element, bool):
+                # bool must come before int since bool is a subclass of int
+                datatype = ont.iri("http://www.w3.org/2001/XMLSchema#boolean")
+                return DatatypeLiteral(str(element).lower(), datatype)
+            elif isinstance(element, int):
+                datatype = ont.iri("http://www.w3.org/2001/XMLSchema#integer")
+                return DatatypeLiteral(str(element), datatype)
+            elif isinstance(element, float):
+                datatype = ont.iri("http://www.w3.org/2001/XMLSchema#double")
+                return DatatypeLiteral(str(element), datatype)
             else:
-                # literal
-                return Literal(element)
+                # Fallback: convert to string literal
+                return SimpleLiteral(str(element))
         o = self.ontology
+
+        def _as_class_expression(x: Union[ClassExpression, IRI, str]) -> Union[ClassExpression, Class]:
+            return as_class_expression(o, x)
+
+        def _as_class_expression_list(*x: Union[ClassExpression, IRI, str]) -> List[Union[ClassExpression, Class]]:
+            return as_class_expression_list(o, *x)
+
         python_type = type(element)
+        # TODO: allow for pydantic
         linkml_class_name = python_type.class_name
         if self.autofill:
             if not self.object_index:
@@ -271,22 +341,14 @@ class OWLDumper(Dumper):
             if slot is None:
                 raise ValueError(f'Cannot find slot {c.name}.{k} // {vars(element)} element={element}')
             if slot.identifier:
-                subj = URIRef(self._get_IRI_str(v))
+                subj = o.iri(self._get_IRI_str(v))
                 logging.debug(f"set subj from {slot.name}={v} asURI: {subj}")
         if AnonymousIndividual.__name__ in cls_interps or (subj is None and "Individual" in cls_interps):
-            subj = AnonymousIndividual()
+            subj = AnonymousIndividual(self._next_blank_node_id())
             logging.debug(f"No identifier slot; Creating anon individual for element = {subj}")
         else:
-            for obj_type in [ObjectProperty, DataProperty, AnnotationProperty, NamedIndividual, Class, Datatype]:
-                if obj_type.__name__ in cls_interps:
-                    if not subj:
-                        raise ValueError(f"Cannot create {obj_type} without an identifier for {element}")
-                    if not isinstance(subj, URIRef):
-                        raise ValueError(f"Cannot create {obj_type} with non-URI identifier for {element}")
-                    di = obj_type(subj)
-                    decl = Declaration(di)
-                    logging.debug(f"Inferred {decl} based on {obj_type.__name__} in {cls_interps}")
-                    o.axioms.append(decl)
+            for declaration in get_declarations(o, subj, interpretations=cls_interps):
+                o.add_axiom(declaration)
         logging.info(f"Subject={subj}")
         expression_termset = {"IntersectionOf", "UnionOf", "ComplementOf", "OneOf", "SomeValuesFrom", "AllValuesFrom"}
         is_returns_expression = len(expression_termset.intersection(cls_interps)) > 0
@@ -324,8 +386,8 @@ class OWLDumper(Dumper):
                             ann_vals = [ann_vals]
                         for ann_val in ann_vals:
                             ann_val = self.transform(ann_val, schema, is_element_an_object=ann_slot.range in self.schema.classes)
-                            ann_slot_iri = self._get_IRI_str(ann_slot.slot_uri)
-                            axiom_annotations.append(Annotation(ann_slot_iri, ann_val))
+                            ann_slot_iri = o.iri(self._get_IRI_str(ann_slot.slot_uri))
+                            axiom_annotations.append(Annotation(AnnotationProperty(ann_slot_iri), ann_val))
             # templates
             for tmpl in owl_templates:
                 self.add_axioms_from_template(tmpl, element, schema=schema)
@@ -369,18 +431,26 @@ class OWLDumper(Dumper):
                 parent = tr_val
                 if boolean_form_of:
                     # owl.boolean_form_of allows mapping between boolean slots and an owl object type
-                    if parent and parent == Literal(True):
+                    # Check if parent is a True boolean literal
+                    is_true_literal = (
+                        (isinstance(parent, SimpleLiteral) and parent.literal == "true") or
+                        (isinstance(parent, DatatypeLiteral) and parent.literal == "true") or
+                        parent is True
+                    )
+                    if parent and is_true_literal:
                         for owl_uri in boolean_form_of:
+                            # TODO: genericize this
+                            op = o.object_property(str(slot_uri))
                             if owl_uri == 'owl:TransitiveProperty':
-                                o.axioms.append(TransitiveObjectProperty(subj))
+                                o.add_axiom(TransitiveObjectProperty(op))
                             elif owl_uri == 'owl:SymmetricProperty':
-                                o.axioms.append(SymmetricObjectProperty(subj))
+                                o.add_axiom(SymmetricObjectProperty(op))
                             elif owl_uri == 'owl:AsymmetricProperty':
-                                o.axioms.append(AsymmetricObjectProperty(subj))
+                                o.add_axiom(AsymmetricObjectProperty(op))
                             elif owl_uri == 'owl:ReflexiveProperty':
-                                o.axioms.append(ReflexiveObjectProperty(subj))
+                                o.add_axiom(ReflexiveObjectProperty(op))
                             elif owl_uri == 'owl:IrreflexiveProperty':
-                                o.axioms.append(IrreflexiveObjectProperty(subj))
+                                o.add_axiom(IrreflexiveObjectProperty(op))
                             else:
                                 raise ValueError(f'Cannot interpret {owl_uri}')
                 # transform parents if an expression type is specified
@@ -388,20 +458,24 @@ class OWLDumper(Dumper):
                 simple_expression_types = [ObjectSomeValuesFrom, DataSomeValuesFrom, ObjectHasValue, DataHasValue, ObjectAllValuesFrom, DataAllValuesFrom]
                 for expression_type in simple_expression_types:
                     if expression_type.__name__ in slot_interps:
-                        parent = expression_type(slot_uri, tr_val)
+                        parent = instantiate_restriction(expression_type, slot_uri, tr_val, o)
+                        #parent = expression_type(slot_uri, tr_val)
                         is_class_logical_axiom = True
                 for logical_axiom_type in [SubClassOf, EquivalentClasses, DisjointClasses]:
                     if logical_axiom_type.__name__ in slot_interps:
                         is_class_logical_axiom = True
                 parents.append(parent)
                 if 'Closed' in slot_interps:
-                    closure_axiom_parents.append(ObjectAllValuesFrom(slot_uri, tr_val))
+                    # Create proper ObjectProperty and ClassExpression for ObjectAllValuesFrom
+                    prop = o.object_property(slot_uri)
+                    filler = _as_class_expression(tr_val)
+                    closure_axiom_parents.append(ObjectAllValuesFrom(prop, filler))
             if closure_axiom_parents:
                 if len(closure_axiom_parents) == 1:
                     closure_axiom_parent_expr = closure_axiom_parents[0]
                 else:
-                    closure_axiom_parent_expr = ObjectUnionOf(*closure_axiom_parents)
-                self.add_axiom(SubClassOf(subj, closure_axiom_parent_expr), o, [])
+                    closure_axiom_parent_expr = ObjectUnionOf(_as_class_expression_list(*closure_axiom_parents))
+                self.add_axiom(SubClassOf(_as_class_expression(subj), closure_axiom_parent_expr), o, [])
             #    eai.add_operands((0, SubClassOf.__name__, ObjectUnionOf.__name__), parents, axiom_annotations)
             axiom_type = None
             # TODO: make this more generic / less repetitive
@@ -443,6 +517,7 @@ class OWLDumper(Dumper):
                     #eai.annotations += axiom_annotations
                     parents = []
                 for parent in parents:
+
                     # Note: when considering making this more generic,
                     # bear in mind that order or number of arguments may vary
                     if axiom_type == SubClassOf:
@@ -450,26 +525,66 @@ class OWLDumper(Dumper):
                         if isinstance(subj, AnonymousIndividual):
                             axiom = None
                         else:
-                            axiom = SubClassOf(subj, parent)
+                            axiom = SubClassOf(_as_class_expression(subj), _as_class_expression(parent))
                     elif axiom_type == SubObjectPropertyOf:
-                        axiom = SubObjectPropertyOf(subj, parent)
+                        # Convert IRIs to ObjectProperty if needed
+                        sub_prop = o.object_property(str(subj)) if isinstance(subj, IRI) else subj
+                        super_prop = o.object_property(str(parent)) if isinstance(parent, IRI) else parent
+                        axiom = SubObjectPropertyOf(sub_prop, super_prop)
                     elif axiom_type == EquivalentClasses:
-                        axiom = EquivalentClasses(subj, parent)
+                        axiom = EquivalentClasses(_as_class_expression_list(subj, parent))
                     elif axiom_type == ClassAssertion:
                         # Note: ClassAssertion axioms are "inverted"
-                        axiom = ClassAssertion(parent, subj)
+                        # subj can be AnonymousIndividual or needs conversion to NamedIndividual
+                        if isinstance(subj, AnonymousIndividual):
+                            ind = subj
+                        else:
+                            ind = o.named_individual(str(subj))
+                        # parent must be a ClassExpression
+                        class_expr = _as_class_expression(parent)
+                        axiom = ClassAssertion(class_expr, ind)
                     elif axiom_type == ObjectPropertyAssertion:
-                        axiom = ObjectPropertyAssertion(slot_uri, subj, parent)
+                        op = o.object_property(slot_uri)
+                        # Subject can be AnonymousIndividual or needs conversion
+                        if isinstance(subj, AnonymousIndividual):
+                            subj_ind = subj
+                        else:
+                            subj_ind = o.named_individual(str(subj))
+                        # Object can also be AnonymousIndividual
+                        if isinstance(parent, AnonymousIndividual):
+                            obj_ind = parent
+                        else:
+                            obj_ind = o.named_individual(str(parent))
+                        axiom = ObjectPropertyAssertion(op, subj_ind, obj_ind)
                     elif axiom_type == DataPropertyAssertion:
-                        axiom = DataPropertyAssertion(slot_uri, subj, parent)
+                        dp = o.data_property(slot_uri)
+                        # Subject can be AnonymousIndividual or needs conversion
+                        if isinstance(subj, AnonymousIndividual):
+                            ind = subj
+                        else:
+                            ind = o.named_individual(str(subj))
+                        # Value must be a proper Literal
+                        if isinstance(parent, str):
+                            literal_val = SimpleLiteral(parent)
+                        elif isinstance(parent, (SimpleLiteral, DatatypeLiteral)):
+                            literal_val = parent
+                        else:
+                            # Fallback: convert to string literal
+                            literal_val = SimpleLiteral(str(parent))
+                        axiom = DataPropertyAssertion(dp, ind, literal_val)
                     elif axiom_type == InverseObjectProperties:
-                        axiom = InverseObjectProperties(subj, parent)
+                        sub_prop = o.object_property(str(subj)) if isinstance(subj, IRI) else subj
+                        inv_prop = o.object_property(str(parent)) if isinstance(parent, IRI) else parent
+                        axiom = InverseObjectProperties(sub_prop, inv_prop)
                     elif axiom_type == ObjectPropertyDomain:
-                        axiom = ObjectPropertyDomain(subj, parent)
+                        prop = o.object_property(str(subj)) if isinstance(subj, IRI) else subj
+                        axiom = ObjectPropertyDomain(prop, _as_class_expression(parent))
                     elif axiom_type == ObjectPropertyRange:
-                        axiom = ObjectPropertyRange(subj, parent)
+                        prop = o.object_property(str(subj)) if isinstance(subj, IRI) else subj
+                        axiom = ObjectPropertyRange(prop, _as_class_expression(parent))
                     elif axiom_type == AnnotationAssertion:
-                        axiom = AnnotationAssertion(slot_uri, subj, parent)
+                        ap = AnnotationProperty(o.iri(slot_uri))
+                        axiom = AnnotationAssertion(subj, Annotation(ap, parent))
                     else:
                         raise ValueError(f'Unknown axiom type: {axiom_type}')
                     if axiom is not None:
@@ -484,7 +599,7 @@ class OWLDumper(Dumper):
             if len(unprocessed_parents) == 1:
                 logging.debug(f"Simplifying IntersectionOf(...) to {unprocessed_parents[0]}")
                 return unprocessed_parents[0]
-            expr = ObjectIntersectionOf(*unprocessed_parents)
+            expr = ObjectIntersectionOf(_as_class_expression_list(*unprocessed_parents))
             logging.debug(f"Returning expression {expr} // {eai.operand_list_index.items()}")
             return expr
         for op_key, operands in eai.operand_list_index.items():
@@ -497,20 +612,20 @@ class OWLDumper(Dumper):
                 logging.debug(f"Simplifying {operator}(...) to {operands[0]}")
                 return operands[0]
             elif operator == ObjectUnionOf.__name__:
-                expr = ObjectUnionOf(*operands)
+                expr = ObjectUnionOf(_as_class_expression_list(*operands))
             elif operator == ObjectIntersectionOf.__name__:
                 if len(operands) == 1:
                     logging.debug(f"Simplifying IntersectionOf(...) to {operands[0]}")
                     expr = operands[0]
                 else:
-                    expr = ObjectIntersectionOf(*operands)
+                    expr = ObjectIntersectionOf(_as_class_expression_list(*operands))
             else:
                 raise ValueError(f'Cannot handle operator: {operator}')
             # interpret as axiom
             if interp == EquivalentClasses.__name__:
-                axiom = EquivalentClasses(subj, expr)
+                axiom = EquivalentClasses(_as_class_expression_list(subj, expr))
             elif interp == SubClassOf.__name__:
-                axiom = SubClassOf(subj, expr)
+                axiom = SubClassOf(_as_class_expression(subj), _as_class_expression(expr))
             elif interp == DisjointClasses.__name__:
                 axiom = DisjointClasses(subj, expr)
             elif interp == DisjointUnion.__name__:
@@ -531,8 +646,7 @@ class OWLDumper(Dumper):
         :param axiom_annotations:
         :return:
         """
-        axiom.annotations = axiom_annotations
-        ontology.axioms.append(axiom)
+        ontology.add_axiom(axiom, set(axiom_annotations))
 
     def _instance_of_linkml_class(self, v) -> bool:
         try:
@@ -630,14 +744,7 @@ class OWLDumper(Dumper):
         else:
             raise ValueError(f'Not supported: {type(x)}')
         interps = set()
-        #OWL_MARKER = 'OWL>>'
         for x in ancs:
-            #for c in x.comments:
-            #    logging.warning('Use of OWL>> is deprecated - replace with an annotation')
-            #    # TODO: deprecated comment-based way of doing this
-            #    if c.startswith(OWL_MARKER) and False:
-            #        n = c.replace(OWL_MARKER, '').strip()
-            #        interps.add(n)
             if 'owl' in x.annotations:
                 interps.update([s.strip() for s in x.annotations['owl'].value.split(',')])
             # TODO: make this more declarative/generic; use a mapping of URIs => OWL types
@@ -659,7 +766,6 @@ class OWLDumper(Dumper):
             id = str(id)
         if ':' not in id:
             # TODO: https://github.com/linkml/linkml/issues/576
-            #id = f'{self.ontology.iri}#{id}'
             id = f'{self.schema.default_prefix}:{id}'
         uri = self.schemaview.expand_curie(id)
         if uri:
@@ -681,35 +787,138 @@ class OWLDumper(Dumper):
             logging.warning(f'Using actual slot uri: {schema_level_slot.name} >> {slot.name}')
         return schema_level_slot
 
-    def parse_axioms_string(self, owl_str: str, schemaview: SchemaView = None) -> OntologyDocument:
-        if schemaview is None:
-            schemaview = self.schemaview
+    def _repair_ofn_iris(self, owl_str: str) -> str:
+        """
+        Repair OWL Functional Syntax strings by wrapping bare full IRIs in angle brackets.
+
+        In OFN syntax:
+        - CURIEs like `ex:Foo` do not need brackets
+        - Full IRIs like `http://example.org/Foo` MUST be wrapped: `<http://example.org/Foo>`
+
+        This method detects bare full IRIs and wraps them according to the configured iri_policy.
+
+        Example:
+            >>> dumper = OWLDumper()
+            >>> dumper._repair_ofn_iris('SubClassOf(ex:A http://example.org/B)')
+            'SubClassOf(ex:A <http://example.org/B>)'
+
+        :param owl_str: OWL Functional Syntax string potentially containing bare IRIs
+        :return: Repaired string with full IRIs wrapped in angle brackets
+        :raises ValueError: If iri_policy is STRICT and bare IRIs are found
+        """
+        def replace_iri(match):
+            iri = match.group(1)
+            if self.iri_policy == IRIRepairPolicy.STRICT:
+                raise ValueError(
+                    f"Bare IRI found in OFN string (iri_policy=STRICT): {iri}\n"
+                    f"Full IRIs must be wrapped in angle brackets: <{iri}>"
+                )
+            if self.iri_policy == IRIRepairPolicy.WARN:
+                logging.warning(f"Repairing bare IRI in OFN string: {iri} -> <{iri}>")
+            return f'<{iri}>'
+
+        return _FULL_IRI_PATTERN.sub(replace_iri, owl_str)
+
+    def _fix_invalid_curies(self, owl_str: str, prefix_map: Dict[str, str]) -> str:
+        """
+        Fix invalid CURIEs in OFN output that contain special characters in the local part.
+
+        py-horned-owl may serialize IRIs with special characters as CURIEs, but this is
+        invalid in OFN syntax because the CURIE local part has restrictions.
+
+        Invalid characters include:
+        - '#' (fragment delimiter)
+        - '%' (percent-encoding)
+        - '[', ']' (brackets)
+        - spaces and other special characters
+
+        This method finds such patterns and expands them to full IRI form.
+
+        Example:
+            >>> dumper = OWLDumper()
+            >>> prefix_map = {'ex': 'http://example.org/'}
+            >>> dumper._fix_invalid_curies('ex:Foo#Bar', prefix_map)
+            '<http://example.org/Foo#Bar>'
+
+        :param owl_str: OFN string to fix
+        :param prefix_map: Dict mapping prefix names to IRI bases
+        :return: Fixed OFN string with invalid CURIEs expanded
+        """
+        result = owl_str
+        for prefix, base in prefix_map.items():
+            # Pattern: prefix:localpart with invalid characters (#, %, [, ], etc.)
+            # We need to match the CURIE but NOT if it's inside angle brackets
+            # Invalid characters in CURIE local parts: #, %, [, ]
+            pattern = rf'(?<!<)({re.escape(prefix)}:)([^\s\(\)<>]+[#%\[\]][^\s\(\)<>]*)'
+
+            def replace_curie(match):
+                full_local = match.group(2)
+                full_iri = base + full_local
+                return f'<{full_iri}>'
+
+            result = re.sub(pattern, replace_curie, result)
+        return result
+
+    def parse_axioms_string(self, owl_str: str, schemaview: SchemaView = None, prefix_map = None) -> List[AnnotatedComponent]:
+        """
+        Parse an OWL string into an ontology.
+
+        Example:
+
+            >>> dumper = OWLDumper()
+            >>> axiom_components = dumper.parse_axioms_string('SubClassOf(ex:A ex:B)', prefix_map={'ex': 'http://example.org/'})
+            >>> assert len(axiom_components) == 1
+            >>> axiom_component = axiom_components[0]
+            >>> axiom = axiom_component.component
+            >>> assert isinstance(axiom, SubClassOf)
+
+        :param owl_str:
+        :param schemaview:
+        :return:
+        """
         prefix_lines = []
-        for prefix, url in schemaview.namespaces().items():
-            prefix_lines.append(f'Prefix( {prefix}: = <{url}> )')
+        if not schemaview:
+            schemaview = self.schemaview
+        if schemaview:
+            for prefix, url in schemaview.namespaces().items():
+                prefix_lines.append(f'Prefix( {prefix}: = <{url}> )')
+        if prefix_map:
+            for prefix, url in prefix_map.items():
+                prefix_lines.append(f'Prefix( {prefix}: = <{url}> )')
+        # Note: py-horned-owl does not yet supporting parsing of axioms. Our hack is to
+        # create a single-axiom ontology and parse that, and extract the axioms
         header = "\n".join(prefix_lines)
+        # Repair bare IRIs before constructing the full document
+        owl_str = self._repair_ofn_iris(owl_str)
         owl_str = f'{header}\nOntology(<http://example.org>\n{owl_str}\n)'
         logging.debug(owl_str)
-        try:
-            doc = to_python(owl_str)
-        except Exception as e:
-            logging.error(f'Error parsing generated OWL: {owl_str}')
-            raise e
-        #from funowl.writers.FunctionalWriter import FunctionalWriter
-        #from rdflib import Graph
-        #g = Graph()
-        #for p in doc.prefixDeclarations:
-        #    g.namespace_manager.bind(p.prefixName, p.fullIRI)
-        #fw = FunctionalWriter(g=g)
-        #owl_str_roundtrip = doc.to_functional(fw)
-        #logging.debug(f'ROUNDTRIP = {owl_str_roundtrip}')
-        return doc
+        ont = pyhornedowl.open_ontology_from_string(owl_str, "ofn")
+        # TODO: unlike the owlapi, pyhornedowl does not treat some elements
+        # as axioms; we may need to broaden this.
+        return ont.get_axioms()
 
     def _element_to_template_dict(self, element: YAMLRoot, val: Any = None):
-        d = {'this': element, 'V': val}
+        def _to_template_value(v):
+            """Convert py-horned-owl types to strings for template rendering."""
+            if isinstance(v, SimpleLiteral):
+                return v.literal
+            elif isinstance(v, DatatypeLiteral):
+                return v.literal
+            elif isinstance(v, IRI):
+                iri_str = str(v)
+                if '://' in iri_str:
+                    return f'<{iri_str}>'
+                return iri_str
+            return v
+
+        d = {'this': element, 'V': _to_template_value(val)}
         for k, v in vars(element).items():
-            d[k] = v
+            d[k] = _to_template_value(v)
         return d
+
+    def add_axioms(self, axioms: List[Union[Axiom, AnnotatedComponent]]):
+        for ax in axioms:
+            add_axiom(self.ontology, ax)
 
     def add_axioms_from_fstring(self, fstring: Union[str, meta.Annotation], element: YAMLRoot, val: Any = None):
         if isinstance(fstring, meta.Annotation):
@@ -717,9 +926,9 @@ class OWLDumper(Dumper):
         d = self._element_to_template_dict(element, val)
         owl_str = fstring.format(**d)
         logging.debug(f'FSTRING = {owl_str}')
-        axioms = self.parse_axioms_string(owl_str).ontology.axioms
+        axioms = self.parse_axioms_string(owl_str)
         logging.debug(f'AXIOMS >> = {axioms}')
-        self.ontology.axioms += axioms
+        self.add_axioms(axioms)
 
     def add_axioms_from_template(self, template_ann: Union[str, meta.Annotation], element: YAMLRoot, val: Any = None, schema: SchemaDefinition = None):
         # TODO: simplify, change arg to str
@@ -728,30 +937,99 @@ class OWLDumper(Dumper):
             tstr = template_ann
         else:
             tstr = template_ann.value
-        def tr(e: YAMLRoot):
-            expr = self.transform(e, schema=schema, is_element_an_object=False)
-            fw = FunctionalWriter()
-            logging.debug(f"template.transform({e}) DIRECT = {expr}")
-            owl_str = str(expr.to_functional(fw))
-            logging.debug(f"template.transform({e}) = {owl_str}")
-            return owl_str
-        if "tr" in d:
-            d["_tr"] = tr
-        else:
-            d["tr"] = tr
-        jt = Template(tstr)
+        def _element_to_ofn_str(x) -> str:
+            """Transform an element to its OFN string representation for use in templates."""
+            expr = self.transform(x, schema=schema, is_element_an_object=False)
+            logging.debug(f"template.transform({x}) = {expr}")
+            return _serialize_to_ofn(expr)
 
-        def _tr(x):
-            fw = FunctionalWriter()
-            expr = self.transform(x, schema)
-            if isinstance(expr, URIRef):
-                return str(expr)
+        def _serialize_to_ofn(expr) -> str:
+            """Serialize a py-horned-owl expression to OFN string."""
+            if expr is None:
+                return ""
+            if isinstance(expr, IRI):
+                # Wrap full IRIs in angle brackets, leave CURIEs as-is
+                iri_str = str(expr)
+                if '://' in iri_str:
+                    return f'<{iri_str}>'
+                return iri_str
+            elif isinstance(expr, Class):
+                # Class.first is the IRI
+                return _serialize_to_ofn(expr.first)
+            elif isinstance(expr, ObjectProperty):
+                # ObjectProperty.first is the IRI
+                return _serialize_to_ofn(expr.first)
+            elif isinstance(expr, SimpleLiteral):
+                # OFN literal: "value"
+                return f'"{expr.literal}"'
+            elif isinstance(expr, DatatypeLiteral):
+                # OFN typed literal: "value"^^<datatype>
+                return f'"{expr.literal}"^^{_serialize_to_ofn(expr.datatype_iri)}'
+            elif isinstance(expr, ObjectSomeValuesFrom):
+                # ObjectSomeValuesFrom has ope (property) and bce (class expression)
+                prop = _serialize_to_ofn(expr.ope)
+                filler = _serialize_to_ofn(expr.bce)
+                return f'ObjectSomeValuesFrom({prop} {filler})'
+            elif isinstance(expr, ObjectAllValuesFrom):
+                prop = _serialize_to_ofn(expr.ope)
+                filler = _serialize_to_ofn(expr.bce)
+                return f'ObjectAllValuesFrom({prop} {filler})'
+            elif isinstance(expr, ObjectIntersectionOf):
+                # ObjectIntersectionOf.first is a list of class expressions
+                operands = ' '.join(_serialize_to_ofn(op) for op in expr.first)
+                return f'ObjectIntersectionOf({operands})'
+            elif isinstance(expr, ObjectUnionOf):
+                operands = ' '.join(_serialize_to_ofn(op) for op in expr.first)
+                return f'ObjectUnionOf({operands})'
+            elif isinstance(expr, ObjectMinCardinality):
+                # Check attribute names for cardinality
+                prop = _serialize_to_ofn(expr.ope)
+                n = expr.n
+                if hasattr(expr, 'bce') and expr.bce:
+                    filler = _serialize_to_ofn(expr.bce)
+                    return f'ObjectMinCardinality({n} {prop} {filler})'
+                return f'ObjectMinCardinality({n} {prop})'
+            elif isinstance(expr, DataHasValue):
+                # DataHasValue has dp (data property) and l (literal)
+                prop = _serialize_to_ofn(expr.dp)
+                lit = _serialize_to_ofn(expr.l)
+                return f'DataHasValue({prop} {lit})'
+            elif isinstance(expr, DataSomeValuesFrom):
+                prop = _serialize_to_ofn(expr.dp)
+                dr = _serialize_to_ofn(expr.dr)
+                return f'DataSomeValuesFrom({prop} {dr})'
+            elif isinstance(expr, DataAllValuesFrom):
+                prop = _serialize_to_ofn(expr.dp)
+                dr = _serialize_to_ofn(expr.dr)
+                return f'DataAllValuesFrom({prop} {dr})'
+            elif isinstance(expr, DataProperty):
+                return _serialize_to_ofn(expr.first)
+            elif isinstance(expr, Datatype):
+                return _serialize_to_ofn(expr.first)
+            elif isinstance(expr, str):
+                # Already a string (e.g., from earlier processing)
+                if '://' in expr:
+                    return f'<{expr}>'
+                return expr
             else:
-                return expr.to_functional(fw)
-        d["tr"] = _tr
+                # Fallback: try str(), but log a warning
+                logging.warning(f"Unknown expression type in template serialization: {type(expr)}")
+                result = str(expr)
+                # Check if it looks like a Python repr
+                if 'object at 0x' in result:
+                    raise ValueError(f"Cannot serialize {type(expr)} to OFN: {result}")
+                return result
+
+        # Register the transform function under both names for compatibility
+        if "tr" in d:
+            d["_tr"] = _element_to_ofn_str
+        else:
+            d["tr"] = _element_to_ofn_str
+        jt = Template(tstr)
+        d["tr"] = _element_to_ofn_str
         owl_str = jt.render(**d)
-        axioms = self.parse_axioms_string(owl_str).ontology.axioms
-        self.ontology.axioms += axioms
+        axioms = self.parse_axioms_string(owl_str)
+        self.add_axioms(axioms)
 
     def populate_missing_values(self, element: YAMLRoot):
         """
@@ -798,8 +1076,13 @@ class OWLDumper(Dumper):
               default=False,
               show_default=True,
               help="If True, fill missing data slots using string_serialization")
+@click.option("--iri-policy",
+              type=click.Choice(["repair", "warn", "strict"], case_sensitive=False),
+              default="repair",
+              show_default=True,
+              help="Policy for handling bare IRIs in OFN output: repair (silently fix), warn (fix with warning), strict (error)")
 @click.argument('inputfile')
-def cli(inputfile: str, schema: str, target_class, module, output, output_type, format, autofill: bool, verbose: int, quiet: bool, **args):
+def cli(inputfile: str, schema: str, target_class, module, output, output_type, format, autofill: bool, iri_policy: str, verbose: int, quiet: bool, **args):
     """
     Dump LinkML instance data as OWL
 
@@ -855,6 +1138,9 @@ def cli(inputfile: str, schema: str, target_class, module, output, output_type, 
     dumper = OWLDumper()
     if autofill:
         dumper.autofill = True
+    # Map CLI string to enum
+    policy_map = {"repair": IRIRepairPolicy.REPAIR, "warn": IRIRepairPolicy.WARN, "strict": IRIRepairPolicy.STRICT}
+    dumper.iri_policy = policy_map[iri_policy.lower()]
     doc = dumper.dumps(element, schemaview=sv, output_type=output_type)
     output.write(str(doc))
 

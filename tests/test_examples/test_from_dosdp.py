@@ -2,6 +2,7 @@
 import os
 import unittest
 
+import pyhornedowl
 from linkml_runtime.utils.schemaview import SchemaView
 
 from linkml_owl.util.csv_converter import csv_to_objects
@@ -9,8 +10,6 @@ from tests.model.mondo_dps import *
 from linkml_owl.dumpers.owl_dumper import OWLDumper
 from linkml.generators.yamlgen import YAMLGenerator
 from linkml.generators.owlgen import OwlSchemaGenerator
-from funowl.converters.functional_converter import to_python
-from funowl import OntologyDocument
 
 from tests import MODEL_DIR, INPUT_DIR, OUTPUT_DIR
 
@@ -42,13 +41,14 @@ class TestFromDosdp(unittest.TestCase):
         collection = csv_to_objects(DATA_IN, target_class=VectorBorneDiseaseTemplate, schemaview=sv)
         for obj in collection:
             print(obj)
-        #collection = csv_loader.load(DATA_IN, target_class=VectorBorneDiseaseTemplate, schema=schema)
         dumper = OWLDumper()
-        doc = dumper.to_ontology_document(collection, sv.schema)
-        print(len(doc.ontology.axioms))
+        dumper.schemaview = sv
+        ofn_str = dumper.dumps(collection, schema=sv.schema, output_type="ofn")
+        axioms = dumper.ontology.get_axioms()
+        print(len(axioms))
         with open(OWL_OUT, 'w') as stream:
-            stream.write(str(doc))
-        doc2: OntologyDocument
-        doc2 = to_python(OWL_OUT)
-        print(len(doc2.ontology.axioms))
-        assert len(doc.ontology.axioms) == len(doc2.ontology.axioms)
+            stream.write(ofn_str)
+        # Verify roundtrip
+        doc2 = pyhornedowl.open_ontology_from_string(ofn_str, "ofn")
+        print(len(doc2.get_axioms()))
+        assert len(axioms) == len(doc2.get_axioms())
