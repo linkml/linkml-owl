@@ -20,25 +20,25 @@ jobs:
       #       check-out repo and set-up python     
       #----------------------------------------------
       - name: Check out repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
-      
-      #----------------------------------------------
-      #          install & configure poetry         
-      #----------------------------------------------
-      - name: Install Poetry
-        uses: snok/install-poetry@v1.3.1
 
       #----------------------------------------------
-      #       load cached venv if cache exists      
+      #          install & configure poetry
+      #----------------------------------------------
+      - name: Install Poetry
+        uses: snok/install-poetry@v1
+
+      #----------------------------------------------
+      #       load cached venv if cache exists
       #----------------------------------------------
       - name: Load cached venv
         id: cached-poetry-dependencies
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
           path: .venv
           key: venv-${{ runner.os }}-${{ hashFiles('**/poetry.lock') }}
@@ -66,9 +66,9 @@ jobs:
       #           upload coverage results
       #----------------------------------------------
       - name: Upload pytest test results
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
-          name: pytest-results
+          name: pytest-results-${{ matrix.python-version }}
           path: htmlcov
         # Use always() to always run this step to publish test results when there are test failures
         if: ${{ always() }}
