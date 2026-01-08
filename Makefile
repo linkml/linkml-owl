@@ -1,4 +1,3 @@
-# Note: this Makefile is aimed primarily at developers of linkml-owl
 RUN = poetry run
 
 all: docs/examples.md test
@@ -8,6 +7,15 @@ test:
 
 tests/model/%.py: tests/model/%.yaml
 	$(RUN) gen-python $< > $@.tmp && mv $@.tmp $@
+
+
+DOCTEST_DIR = linkml_owl
+doctest:
+	find $(DOCTEST_DIR) -type f \( -name "*.rst" -o -name "*.md" -o -name "*.py" \) -print0 | xargs -0 $(RUN) python -m doctest --option ELLIPSIS --option NORMALIZE_WHITESPACE
+
+%-doctest: %
+	$(RUN) python -m doctest --option ELLIPSIS --option NORMALIZE_WHITESPACE $<
+
 
 # the examples.md file displayed on the site is generated
 # from test_owl_dumper.py
@@ -23,3 +31,5 @@ serve:
 
 gh-deploy:
 	$(RUN) mkdocs gh-deploy
+
+

@@ -2,12 +2,11 @@
 import os
 import unittest
 
+import pyhornedowl
 from tests.model.chromschema import *
 from linkml_owl.dumpers.owl_dumper import OWLDumper
 from linkml.generators.yamlgen import YAMLGenerator
 from linkml.generators.owlgen import OwlSchemaGenerator
-from funowl.converters.functional_converter import to_python
-from funowl import OntologyDocument
 
 from linkml_runtime.loaders import yaml_loader
 
@@ -35,15 +34,12 @@ class TestCreate(unittest.TestCase):
         with open(OWLSCHEMA_OUT, 'w') as stream:
             stream.write(OwlSchemaGenerator(SCHEMA_IN).serialize())
         collection = yaml_loader.load(DATA_IN, ChromosomePartCollection)
-        #collection = ChromosomePartCollection()
-        #c1 = ChromosomePart(id='chr1')
-        #collection.has = [c1]
         dumper = OWLDumper()
-        doc = dumper.to_ontology_document(collection, schema)
-        print(len(doc.ontology.axioms))
+        ofn_str = dumper.dumps(collection, schema=schema, output_type="ofn")
+        axioms = dumper.ontology.get_axioms()
+        print(len(axioms))
         with open(OWL_OUT, 'w') as stream:
-            stream.write(str(doc))
-        doc2: OntologyDocument
-        doc2 = to_python(OWL_OUT)
-        print(len(doc2.ontology.axioms))
-        assert len(doc.ontology.axioms) == len(doc2.ontology.axioms)
+            stream.write(ofn_str)
+        doc2 = pyhornedowl.open_ontology_from_string(ofn_str, "ofn")
+        print(len(doc2.get_axioms()))
+        assert len(axioms) == len(doc2.get_axioms())

@@ -20,9 +20,10 @@ classifiers = [
     "Intended Audience :: Healthcare Industry",
     "License :: CC0 1.0 Universal (CC0 1.0) Public Domain Dedication",
     "Programming Language :: Python :: 3 :: Only",
-    "Programming Language :: Python :: 3.7",
-    "Programming Language :: Python :: 3.8",
-    "Programming Language :: Python :: 3.9"
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13"
 ]
 
 [tool.poetry-dynamic-versioning]
@@ -34,13 +35,13 @@ style = "pep440"
 linkml-data2owl = "linkml_owl.dumpers.owl_dumper:cli"
 
 [tool.poetry.dependencies]
-python = "^3.8.1"
+python = "^3.10"
 
 click = "*"
-funowl = ">=0.2.3"
 Jinja2 = ">=3.0.3"
-linkml = "^1.7.10"
-linkml-runtime = ">=1.7.0"
+linkml = "^1.9.0"
+linkml-runtime = ">=1.9.0"
+py-horned-owl = ">=1.1.0"
 
 [tool.poetry.dev-dependencies]
 tox = ">=3.24.5"

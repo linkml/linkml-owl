@@ -1,12 +1,14 @@
 # -*- coding: utf-8 -*-
 import logging
 import os
+
+import pyhornedowl
 import yaml
 import unittest
 
 from copy import deepcopy
 from dataclasses import dataclass
-from typing import List, Optional
+from typing import List, Optional, Union
 
 from linkml.generators.pythongen import PythonGenerator
 from linkml_runtime import SchemaView
@@ -16,11 +18,12 @@ from linkml_runtime.linkml_model import SchemaDefinition
 from linkml_runtime.utils.compile_python import compile_python
 from linkml_runtime.utils.schema_as_dict import schema_as_dict
 from linkml_runtime.utils.yamlutils import YAMLRoot
-from rdflib import RDFS
+from rdflib import RDFS, URIRef
 from rdflib.namespace import Namespace, SKOS, DCTERMS
-from linkml_owl.dumpers.owl_dumper import OWLDumper
-from funowl import Axiom, AnnotationAssertion, Literal, SubClassOf, ObjectSomeValuesFrom, \
-    ObjectAllValuesFrom, ObjectUnionOf, EquivalentClasses, ObjectIntersectionOf, Annotation, DataHasValue, DisjointUnion
+from linkml_owl.dumpers.owl_dumper import OWLDumper, Axiom
+from pyhornedowl.model import AnnotationAssertion, Literal, SubClassOf, ObjectSomeValuesFrom, \
+    ObjectAllValuesFrom, ObjectUnionOf, EquivalentClasses, ObjectIntersectionOf, Annotation, SimpleLiteral, \
+    AnnotationProperty, IRI, AnnotatedComponent, ObjectProperty
 
 from linkml_owl.util.trim_yaml import trim_yaml
 from tests import INPUT_DIR, OUTPUT_DIR
@@ -96,6 +99,10 @@ class TestOwlDumper(unittest.TestCase):
         # print(py_str)
         py_mod = compile_python(py_str)
 
+        ont = pyhornedowl.PyIndexedOntology()
+        for ns in [X, BFO, IAO, SCHEMA]:
+            ont.add_prefix_mapping(ns.prefix, str(ns))
+
         md = "# linkml-owl Test Cases\n\n"
         md += 'These examples are generated automatically from test_owl_dumper\n\n'
         md += 'For the complete schema, see [owl_dumper_test.yaml](https://github.com/linkml/linkml-owl/blob/main/tests/inputs/owl_dumper_test.yaml)\n\n'
@@ -106,48 +113,68 @@ class TestOwlDumper(unittest.TestCase):
             ch.set_schema_section(sv)
             checks.append(ch)
 
+        def ann(prop: URIRef, value: Union[SimpleLiteral, IRI]) -> Annotation:
+            ap = AnnotationProperty(ont.iri(str(prop)))
+            return Annotation(ap, value)
+
+        x_a = ont.iri(X.a)
+        assert str(x_a) == "http://example.org/a"
+        assert isinstance(x_a, IRI)
+        #assert x_a == IRI.parse("http://example.org/a")
+        x_b = ont.iri(X.b)
+        x_c = ont.iri(X.c)
+        x_new = ont.iri(X.NewClass)
+        x_src = ont.iri(X.src)
+        x_src1 = ont.iri(X.src1)
+        x_src2 = ont.iri(X.src2)
+        part_of = ObjectProperty(ont.iri(BFO['0000050']))
+        x_a_cls = ont.clazz(str(x_a))
+        x_b_cls = ont.clazz(str(x_b))
+        x_c_cls = ont.clazz(str(x_c))
+        x_genus_cls = ont.clazz(str(ont.iri(X.genus)))
+        x_new_cls = ont.clazz(str(ont.iri(X.NewClass)))
+        x_in_cls = ont.clazz(str(ont.iri(X.IN)))
+        x_h_cls = ont.clazz(str(ont.iri(X.H)))
+
         add_check("Annotation using literals",
                   [py_mod.NamedThing('x:a', label='foo')],
-                  [AnnotationAssertion(RDFS.label, X.a, Literal("foo"))],
+                  [AnnotationAssertion(x_a, ann(RDFS.label, SimpleLiteral("foo")))],
                   """Default is to use an annotation assertion,
                   and if the range is a string then this is literal""")
         add_check("Annotation using IRIs",
                   [py_mod.NamedThingWithMatches('x:a', exactMatch='x:b')],
-                  [AnnotationAssertion(SKOS.exactMatch, X.a, X.b)],
+                  [AnnotationAssertion(x_a, ann(SKOS.exactMatch, x_b))],
                   "As above, but if the range is an instance of a LinkML class then use a literal")
         add_check("Annotation using forced literals",
                   [py_mod.NamedThingWithMatchesAsLiterals('x:a', exactMatch='x:b')],
-                  [AnnotationAssertion(SKOS.exactMatch, X.a, Literal("x:b"))],
+                  [AnnotationAssertion(x_a, ann(SKOS.exactMatch, SimpleLiteral("x:b")))],
                   "We can force a literal by imposing a range")
         add_check("Axiom annotation with Literal value on annotation axiom",
                   [py_mod.DefinitionWithAxiomAnnotation('x:a', label='foo', definition='a foo is a foo',
                                                         definition_source=['Me'])],
-                  [AnnotationAssertion(IAO['0000115'], X.a, Literal("a foo is a foo"), [
-                      Annotation(DCTERMS.source, Literal("Me"))
-                  ])],
+                  [AnnotatedComponent(AnnotationAssertion(x_a, ann(IAO['0000115'], SimpleLiteral("a foo is a foo"))),
+                                      {ann(DCTERMS.source, SimpleLiteral("Me"))})],
                   """Axiom annotations (literals) can be driven by a separate slot""")
         add_check("Axiom annotation with IRI val on annotation axiom",
                   [py_mod.DefinitionWithIRIAxiomAnnotation('x:a', label='foo', definition='a foo is a foo',
                                                            definition_source=['x:src'])],
-                  [AnnotationAssertion(IAO['0000115'], X.a, Literal("a foo is a foo"), [
-                      Annotation(DCTERMS.source, X.src)
-                  ])],
+                  [AnnotatedComponent(AnnotationAssertion(x_a, ann(IAO['0000115'], SimpleLiteral("a foo is a foo"))),
+                                      {ann(DCTERMS.source, x_src)})],
                   """Axiom annotations (IRIs) can be driven by a separate slot""")
         add_check("Axiom annotations with IRI val on annotation axiom",
                   [py_mod.DefinitionWithIRIAxiomAnnotation('x:a', label='foo', definition='a foo is a foo',
                                                            definition_source=['x:src1', 'x:src2'])],
-                  [AnnotationAssertion(IAO['0000115'], X.a, Literal("a foo is a foo"), [
-                      Annotation(DCTERMS.source, X.src1),
-                      Annotation(DCTERMS.source, X.src2)
-                  ])],
+                    [AnnotatedComponent(AnnotationAssertion(x_a, ann(IAO['0000115'], SimpleLiteral("a foo is a foo"))),
+                                        {ann(DCTERMS.source, x_src1),
+                                         ann(DCTERMS.source, x_src2)})],
                   """Multiple axiom annotations""")
         add_check("Basic SubClassOf between named classes",
                   [py_mod.Child('x:a', subclass_of='x:b')],
-                  [SubClassOf(X.a, X.b)],
+                  [SubClassOf(x_a_cls, x_b_cls)],
                   """Adding SubClassOf annotation to the linkml class forces a SubClass axiom""")
         add_check("basic direct equivalence between named classes",
                   [py_mod.DirectEquivalent('x:a', equivalent_to='x:b')],
-                  [EquivalentClasses(X.a, X.b)],
+                  [EquivalentClasses([x_a_cls, x_b_cls])],
                   "Adding EquivalentTo annotation to the linkml class forces an EquivalentClass axiom")
         #add_check("n-ary equivalence between named classes",
         #           [py_mod.DirectEquivalent('x:a', equivalent_to=['x:b', 'x:c'])],
@@ -155,12 +182,12 @@ class TestOwlDumper(unittest.TestCase):
         #          "n-ary equivalence between named classes")
         add_check("SubClassOf SomeValuesFrom",
                   [py_mod.Part('x:a', part_of='x:b')],
-                  [SubClassOf(X.a, ObjectSomeValuesFrom(BFO['0000050'], X.b))],
+                  [SubClassOf(x_a_cls, ObjectSomeValuesFrom(part_of, x_b_cls))],
                   """A SubClassOf annotation makes the annotation type be subclass,
                   a SomeValuesFrom annotation makes the slot interpreted as an existential""")
         add_check("SubClassOf AllValuesFrom",
                   [py_mod.PartOnly('x:a', part_of='x:b')],
-                  [SubClassOf(X.a, ObjectAllValuesFrom(BFO['0000050'], X.b))],
+                  [SubClassOf(x_a_cls, ObjectAllValuesFrom(part_of, x_b_cls))],
                   "As above, but with universal restrictions")
         add_check("SubClassOf DataHasValue",
                   [py_mod.HasName('x:a', has_name='Violet')],
@@ -169,8 +196,8 @@ class TestOwlDumper(unittest.TestCase):
                   "SubClassOf DataHasValue")
         add_check("SubClassOf SomeValuesFrom plus label",
                   [py_mod.Part('x:a', label='foo', part_of='x:b')],
-                  [AnnotationAssertion(RDFS.label, X.a, Literal("foo")),
-                   SubClassOf(X.a, ObjectSomeValuesFrom(BFO['0000050'], X.b))],
+                  [AnnotationAssertion(x_a, ann(RDFS.label, SimpleLiteral("foo"))),
+                   SubClassOf(x_a_cls, ObjectSomeValuesFrom(part_of, x_b_cls))],
                   """Demonstrates a mix of slots, some annotation, some logical""")
         #anon_part_of = py_mod.AnonPartOf(part_of='x:b')
         #o = py_mod.ChildOfAnon('x:a', subclass_of_anon=[anon_part_of])
@@ -184,12 +211,12 @@ class TestOwlDumper(unittest.TestCase):
         # NOTE: assumes order-preserving
         add_check("SubClassOf Union",
                   [py_mod.ChildOfUnion('x:a', subclass_of=['x:b', 'x:c'])],
-                  [SubClassOf(X.a, ObjectUnionOf(X.b, X.c))],
+                  [SubClassOf(x_a_cls, ObjectUnionOf([x_b_cls, x_c_cls]))],
                   """The slot is interpreted as a parent class,
                   and all slot values with a UnionOf annotation are collected to make a UnionOf expression""")
         add_check("EquivalentTo Union",
                   [py_mod.EquivUnion('x:a', operands=['x:b', 'x:c'])],
-                  [EquivalentClasses(X.a, ObjectUnionOf(X.b, X.c))],
+                  [EquivalentClasses([x_a_cls, ObjectUnionOf([x_b_cls, x_c_cls])])],
                   "As above, but with equivalence")
         #add_check("DisjointUnion",
         #          [py_mod.DisjointUnion('x:a', operands=['x:b', 'x:c'])],
@@ -197,16 +224,16 @@ class TestOwlDumper(unittest.TestCase):
         #          "As above, combining equivalence and disjointness into a single axiom")
         add_check("EquivalentTo IntersectionOf",
                   [py_mod.EquivIntersection('x:a', operands=['x:b', 'x:c'])],
-                  [EquivalentClasses(X.a, ObjectIntersectionOf(X.b, X.c))],
+                  [EquivalentClasses([x_a_cls, ObjectIntersectionOf([x_b_cls, x_c_cls])])],
                   """The slot is interpreted as a parent class,
                   and all slot values with a IntersectionOf annotation are collected to make a IntersectionOf expression""")
         add_check("EquivalentTo Genus and SomeValuesFrom",
                   [py_mod.EquivGenusAndPartOf('x:a',
                                               subclass_of=['X:genus'],
                                               part_of=['x:b', 'x:c'])],
-                  [EquivalentClasses(X.a, ObjectIntersectionOf(X.genus,
-                                                               ObjectSomeValuesFrom(BFO['0000050'],X.b),
-                                                               ObjectSomeValuesFrom(BFO['0000050'],X.c)))],
+                  [EquivalentClasses([x_a_cls, ObjectIntersectionOf([x_genus_cls,
+                                                                     ObjectSomeValuesFrom(part_of, x_b_cls),
+                                                                     ObjectSomeValuesFrom(part_of, x_c_cls)])])],
                   """All slot value interpretations are collected into a single IntersectionOf""")
         add_check("EquivalentTo Genus and SomeValuesFrom with AutoLabel",
                   [py_mod.EquivGenusAndPartOfWithAutoLabel('x:NewClass',
@@ -214,15 +241,15 @@ class TestOwlDumper(unittest.TestCase):
                                                            whole='x:H'),
                    py_mod.NamedThing('x:IN', label='interneuron'),
                    py_mod.NamedThing('x:H', label='hippocampus')],
-                  [AnnotationAssertion(RDFS.label, X.NewClass, Literal('interneuron of hippocampus')),
-                   EquivalentClasses(X.NewClass, ObjectIntersectionOf(X.IN,
-                                                                      ObjectSomeValuesFrom(BFO['0000050'], X.H)))],
+                  [AnnotationAssertion(x_new, ann(RDFS.label, SimpleLiteral('interneuron of hippocampus'))),
+                   EquivalentClasses([x_new_cls, ObjectIntersectionOf([x_in_cls,
+                                                                       ObjectSomeValuesFrom(part_of, x_h_cls)])])],
                   """Label auto-added using string_serialization""")
         add_check("EquivalentTo IntersectionOf with axiom annotation",
                   [py_mod.EquivIntersectionWithAxiomAnnotation('x:a', operands=['x:b', 'x:c'],
                                                                logical_definition_source=["Me"])],
-                  [EquivalentClasses(X.a, ObjectIntersectionOf(X.b, X.c),
-                                     annotations=[Annotation(DCTERMS.source, Literal("Me"))])],
+                  [AnnotatedComponent(EquivalentClasses([x_a_cls, ObjectIntersectionOf([x_b_cls, x_c_cls])]),
+                                {ann(DCTERMS.source, SimpleLiteral("Me"))})],
                   """as above, with axiom annotation""")
         #add_check("EquivalentTo with Singleton IntersectionOf",
         #          [py_mod.EquivGenusAndPartOf('x:a',
@@ -235,9 +262,9 @@ class TestOwlDumper(unittest.TestCase):
                                               subclass_of=['X:genus'],
                                               part_of=['x:b'],
                                               other_part_ofs=['x:c'])],
-                  [EquivalentClasses(X.a, ObjectIntersectionOf(X.genus,
-                                                               ObjectSomeValuesFrom(BFO['0000050'],X.b))),
-                   SubClassOf(X.a, ObjectSomeValuesFrom(BFO['0000050'], X.c))],
+                  [EquivalentClasses([x_a_cls, ObjectIntersectionOf([x_genus_cls,
+                                                                     ObjectSomeValuesFrom(part_of, x_b_cls)])]),
+                   SubClassOf(x_a_cls, ObjectSomeValuesFrom(part_of, x_c_cls))],
                   """Demonstrates a case where some slots contribute to a logical definition (equiv axiom),
                      and other contribute to additional axioms (so called hidden GCIs)""")
         add_check("Hidden GCI with axiom annotations",
@@ -314,21 +341,29 @@ class TestOwlDumper(unittest.TestCase):
             dumper.autofill = True
             # print(f"RECORDS = {check.records}")
             doc = dumper.to_ontology_document(check.records, schema)
+            doc.save_to_file("/tmp/tmp.owl", "ofn")
+            ontology_str = doc.save_to_string("ofn")
             md += '\n__Generated axioms__:\n\n'
-            md += f'```\n{str(doc)}\n```\n\n'
-            for axiom in doc.ontology.axioms:
+            md += f'```\n{ontology_str}\n```\n\n'
+            for axiom in doc.get_axioms():
                 logging.info(f'GENERATED: {axiom}')
-                #md += f'* {to_python(axiom)}\n'
 
-            ontology_str_trimmed = str(doc).replace('\n', '')
+            ontology_str_trimmed = ontology_str.replace('\n', '')
+            generated_axioms = doc.get_axioms()
+            for axiom in doc.get_axioms():
+                if isinstance(axiom, AnnotatedComponent):
+                    if len(axiom.ann) == 0:
+                        generated_axioms.append(axiom.component)
             for axiom in check.axioms:
                 # print(f'TESTING FOR: {axiom}')
                 if not isinstance(axiom, str):
-                    if axiom not in doc.ontology.axioms:
+                    s = ""
+                    if axiom not in generated_axioms:
                         logging.error(f'COULD NOT FIND: {axiom}')
-                        for a in doc.ontology.axioms:
+                        for a in generated_axioms:
                             logging.error(f'   HAS: {a}')
-                    self.assertIn(axiom, doc.ontology.axioms)
+                            s += f'{a}\n'
+                    self.assertIn(axiom, generated_axioms, f"Could not find among {len(generated_axioms)} axioms // {s}")
                 else:
                     # print(f'  LOOKING IN: {ontology_str_trimmed}')
                     assert axiom.replace(' ', '') in ontology_str_trimmed.replace(' ', '')
