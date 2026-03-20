@@ -1,0 +1,138 @@
+id: https://w3id.org/linkml-owl/examples/anatomy
+name: anatomy-example
+description: >-
+  Example schema demonstrating linkml-owl features for generating
+  an anatomy ontology with class hierarchies, existential restrictions,
+  universal restrictions, equivalent classes, disjointness, and annotations.
+
+imports:
+  - linkml:types
+
+prefixes:
+  linkml: https://w3id.org/linkml/
+  anat: https://w3id.org/linkml-owl/examples/anatomy/
+  BFO: http://purl.obolibrary.org/obo/BFO_
+  RO: http://purl.obolibrary.org/obo/RO_
+  IAO: http://purl.obolibrary.org/obo/IAO_
+  UBERON: http://purl.obolibrary.org/obo/UBERON_
+  CL: http://purl.obolibrary.org/obo/CL_
+  PATO: http://purl.obolibrary.org/obo/PATO_
+  skos: http://www.w3.org/2004/02/skos/core#
+  dcterms: http://purl.org/dc/terms/
+
+default_prefix: anat
+default_curi_maps:
+  - semweb_context
+
+# ── Enums ────────────────────────────────────────────────────────────────
+
+enums:
+  LateralityEnum:
+    description: Anatomical laterality
+    permissible_values:
+      LEFT:
+        meaning: PATO:0000346
+      RIGHT:
+        meaning: PATO:0000344
+      BILATERAL:
+        meaning: PATO:0000618
+
+# ── Slots (shared across metaclasses) ───────────────────────────────────
+
+slots:
+  id:
+    identifier: true
+    range: uriorcurie
+    required: true
+  label:
+    slot_uri: rdfs:label
+    annotations:
+      owl: AnnotationProperty, AnnotationAssertion
+  definition:
+    slot_uri: IAO:0000115
+    annotations:
+      owl: AnnotationProperty, AnnotationAssertion
+  synonym:
+    slot_uri: skos:altLabel
+    multivalued: true
+    annotations:
+      owl: AnnotationProperty, AnnotationAssertion
+  part_of:
+    slot_uri: BFO:0000050
+    range: AnatomicalStructure
+    multivalued: true
+  has_part:
+    slot_uri: BFO:0000051
+    range: AnatomicalStructure
+    multivalued: true
+  develops_from:
+    slot_uri: RO:0002202
+    range: AnatomicalStructure
+    multivalued: true
+  genus:
+    slot_uri: rdfs:subClassOf
+    range: AnatomicalStructure
+  differentia_part_of:
+    slot_uri: BFO:0000050
+    range: AnatomicalStructure
+
+# ── Classes (metaclasses) ───────────────────────────────────────────────
+
+classes:
+
+  # -- Basic class with annotations and existential restrictions --
+  AnatomicalStructure:
+    description: >-
+      An anatomical entity. Instances in data become OWL classes
+      with SubClassOf axioms.
+    slots:
+      - id
+      - label
+      - definition
+      - synonym
+      - part_of
+      - develops_from
+    slot_usage:
+      part_of:
+        annotations:
+          owl: ObjectSomeValuesFrom
+      develops_from:
+        annotations:
+          owl: ObjectSomeValuesFrom
+
+  # -- Equivalent class definitions (genus + differentia) --
+  DefinedAnatomicalStructure:
+    is_a: AnatomicalStructure
+    description: >-
+      An anatomical structure defined by a genus and part-of differentia,
+      generating an EquivalentClasses axiom.
+    slots:
+      - genus
+      - differentia_part_of
+    slot_usage:
+      genus:
+        required: true
+        annotations:
+          owl: EquivalentClasses, IntersectionOf
+      differentia_part_of:
+        annotations:
+          owl: EquivalentClasses, IntersectionOf, ObjectSomeValuesFrom
+
+  # -- Template-based complex axiom generation --
+  OrganWithParts:
+    is_a: AnatomicalStructure
+    description: >-
+      An organ defined as having specific parts. Uses a Jinja template
+      to generate both SubClassOf existential axioms and part-disjointness.
+    slots:
+      - has_part
+    annotations:
+      owl.template: |-
+        {% for p in has_part %}
+        SubClassOf( {{id}} ObjectSomeValuesFrom( BFO:0000051 {{p}} ) )
+        {% endfor %}
+        DisjointClasses(
+          {% for p in has_part %}
+          ObjectSomeValuesFrom( BFO:0000050 {{p}} )
+          {% endfor %}
+        )

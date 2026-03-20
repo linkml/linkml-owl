@@ -1,0 +1,5 @@
+- id: UBERON:0004801
+  label: lens of camera-type eye
+  definition: The transparent structure in the eye that focuses light.
+  genus: UBERON:0000389
+  differentia_part_of: UBERON:0000019

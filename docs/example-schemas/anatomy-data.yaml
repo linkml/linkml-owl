@@ -1,0 +1,29 @@
+- id: UBERON:0000468
+  label: organism
+  definition: A biological entity that is an individual living system.
+
+- id: UBERON:0000033
+  label: head
+  definition: The upper part of the body.
+  part_of:
+    - UBERON:0000468
+
+- id: UBERON:0000970
+  label: eye
+  definition: An organ of sight.
+  synonym:
+    - oculus
+  part_of:
+    - UBERON:0000033
+
+- id: UBERON:0000019
+  label: camera-type eye
+  definition: An eye that forms an image through a single lens.
+  part_of:
+    - UBERON:0000033
+  develops_from:
+    - UBERON:0003072
+
+- id: UBERON:0003072
+  label: optic cup
+  definition: An embryonic structure that develops into the eye.
