@@ -1,0 +1,126 @@
+id: https://w3id.org/linkml-owl/examples/phenotype
+name: phenotype-example
+description: >-
+  Example schema demonstrating HPO/Upheno-style phenotype ontology patterns:
+  entity-quality (EQ) decomposition with genus-differentia definitions,
+  enums for qualities, and auto-generated labels via string_serialization.
+
+imports:
+  - linkml:types
+
+prefixes:
+  linkml: https://w3id.org/linkml/
+  pheno: https://w3id.org/linkml-owl/examples/phenotype/
+  HP: http://purl.obolibrary.org/obo/HP_
+  UBERON: http://purl.obolibrary.org/obo/UBERON_
+  PATO: http://purl.obolibrary.org/obo/PATO_
+  GO: http://purl.obolibrary.org/obo/GO_
+  RO: http://purl.obolibrary.org/obo/RO_
+  BFO: http://purl.obolibrary.org/obo/BFO_
+  IAO: http://purl.obolibrary.org/obo/IAO_
+
+default_prefix: pheno
+default_curi_maps:
+  - semweb_context
+
+# ── Enums ────────────────────────────────────────────────────────────────
+
+enums:
+  QualityModifierEnum:
+    description: >-
+      Common quality modifiers from PATO used as differentiae
+      in phenotype definitions.
+    permissible_values:
+      INCREASED:
+        meaning: PATO:0000462
+        description: increased size, rate, or amount
+      DECREASED:
+        meaning: PATO:0000463
+        description: decreased size, rate, or amount
+      ABNORMAL:
+        meaning: PATO:0000460
+        description: abnormal quality
+
+# ── Slots ────────────────────────────────────────────────────────────────
+
+slots:
+  id:
+    identifier: true
+    range: uriorcurie
+    required: true
+  label:
+    slot_uri: rdfs:label
+    annotations:
+      owl: AnnotationProperty, AnnotationAssertion
+  definition:
+    slot_uri: IAO:0000115
+    annotations:
+      owl: AnnotationProperty, AnnotationAssertion
+
+# ── Classes (metaclasses) ────────────────────────────────────────────────
+
+classes:
+
+  # -- Entity-Quality phenotype (classic EQ decomposition) --
+  #
+  # This follows the Upheno pattern:
+  #   'has part' some ('quality' and 'inheres in part of' some 'entity')
+  #
+  EntityQualityPhenotype:
+    description: >-
+      A phenotype defined by the EQ (entity-quality) pattern.
+      Generates an EquivalentClasses axiom composing an entity
+      bearer with a quality modifier.
+    slots:
+      - id
+      - label
+      - definition
+    attributes:
+      entity:
+        range: EntityQualityPhenotype
+        required: true
+        description: the anatomical entity or biological process affected
+      quality:
+        range: QualityModifierEnum
+        required: true
+        description: the quality (e.g. increased, decreased, abnormal)
+      genus:
+        range: EntityQualityPhenotype
+        required: true
+        description: the parent phenotype class
+        slot_uri: rdfs:subClassOf
+    slot_usage:
+      label:
+        string_serialization: "{quality} {entity}"
+    annotations:
+      owl.template: |-
+        EquivalentClasses(
+          {{id}}
+          ObjectIntersectionOf(
+            {{genus}}
+            ObjectSomeValuesFrom( BFO:0000051
+              ObjectIntersectionOf(
+                {{quality.meaning}}
+                ObjectSomeValuesFrom( RO:0000052
+                  ObjectSomeValuesFrom( BFO:0000050 {{entity}} )
+                )
+              )
+            )
+          )
+        )
+
+  # -- Simple phenotype with named superclass --
+  Phenotype:
+    description: >-
+      A basic phenotype class for simple hierarchy entries.
+    slots:
+      - id
+      - label
+      - definition
+    attributes:
+      subclass_of:
+        range: Phenotype
+        multivalued: true
+        slot_uri: rdfs:subClassOf
+        annotations:
+          owl: SubClassOf

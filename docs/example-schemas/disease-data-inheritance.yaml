@@ -1,0 +1,6 @@
+- id: MONDO:0007915
+  label: Marfan syndrome
+  definition: A connective tissue disorder with autosomal dominant inheritance.
+  subclass_of:
+    - MONDO:0003900
+  inheritance: AUTOSOMAL_DOMINANT

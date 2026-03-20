@@ -169,6 +169,112 @@ linkml-data2owl -s anatomy-schema.yaml -C DefinedAnatomicalStructure data.yaml -
 - Semantic enums map directly to ontology terms
 - OWL mapping is declarative (annotation keywords), not string-based
 
+## Side-by-side: disease by location (Mondo-style pattern)
+
+DOSDP was originally designed for Mondo disease patterns. This comparison
+shows the same "disease by anatomical location" pattern across all approaches.
+
+### Goal
+
+Define "brain disease" as equivalent to "nervous system disorder AND disease-has-location some brain."
+
+### ROBOT template
+
+| ID | LABEL | DEFINITION | EquivalentTo |
+|---|---|---|---|
+| ID | LABEL | A IAO:0000115 | EC % |
+| MONDO:0005560 | brain disease | A disease affecting the brain. | MONDO:0005071 and (RO:0004026 some UBERON:0000955) |
+
+One row per class. The Manchester Syntax in `EquivalentTo` is a raw string — a typo
+(e.g. misspelling a CURIE) is only caught when ROBOT tries to parse it.
+
+### DOSDP
+
+**Pattern:**
+
+```yaml
+pattern_name: disease_by_location
+classes:
+  disease: MONDO:0000001
+  location: UBERON:0000061
+relations:
+  disease_has_location: RO:0004026
+
+vars:
+  disease: "'disease'"
+  location: "'location'"
+
+name:
+  text: "%s disease"
+  vars:
+    - location
+
+equivalentTo:
+  text: "'disease' and 'disease_has_location' some 'location'"
+  vars:
+    - disease
+    - location
+```
+
+**Data (TSV):**
+
+| defined_class | disease | location |
+|---|---|---|
+| MONDO:0005560 | MONDO:0005071 | UBERON:0000955 |
+
+This is the system DOSDP was designed for, and it works well for flat, single-pattern
+TSVs. However:
+
+- Each pattern requires its own YAML + TSV pair
+- No type checking on the TSV columns — UBERON vs MONDO CURIEs are just strings
+- Adding a second differentia (e.g. + cause) requires a new pattern file
+- The OWL expression is still embedded as a string template
+
+### LinkML-OWL
+
+**Schema:**
+
+```yaml
+classes:
+  DiseaseByLocation:
+    slots:
+      - id
+      - label
+      - definition
+      - subclass_of
+      - location
+    slot_usage:
+      subclass_of:
+        required: true
+        annotations:
+          owl: EquivalentClasses, IntersectionOf
+      location:
+        required: true
+        slot_uri: RO:0004026
+        range: Disease
+        annotations:
+          owl: EquivalentClasses, IntersectionOf, ObjectSomeValuesFrom
+```
+
+**Data:**
+
+```yaml
+- id: MONDO:0005560
+  label: brain disease
+  definition: A disease affecting the brain.
+  subclass_of:
+    - MONDO:0005071
+  location: UBERON:0000955
+```
+
+**Advantages over DOSDP here:**
+
+- `location` has a declared `range` — the schema enforces that this slot takes anatomy CURIEs
+- Adding a second differentia is just adding another slot to the same class — no new pattern file
+- The same schema can generate JSON-Schema for validating the data TSV/YAML before OWL generation
+- Multiple metaclasses (DiseaseByLocation, DiseaseByAgent, DiseaseWithInheritance) coexist in one schema
+  with shared slots, inheritance, and consistent validation
+
 ## Where other tools may be better
 
 LinkML-OWL is not always the right choice:

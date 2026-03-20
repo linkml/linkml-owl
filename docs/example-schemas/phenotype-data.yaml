@@ -1,0 +1,6 @@
+- id: HP:0001263
+  label: Abnormal brain morphology
+  definition: An abnormality of the brain.
+  genus: HP:0000118
+  entity: UBERON:0000955
+  quality: ABNORMAL

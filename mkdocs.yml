@@ -6,6 +6,7 @@ theme:
 nav:
   - Introduction:
       What is it?: index.md
+      Quick Start: quickstart.md
       Usage: usage.md
       Basics: basics.md
       Templates: templates.md

@@ -732,6 +732,221 @@ This generates GCI axioms of the form: if something is a *genus* that has
 then it also has *inferred_predicate* to a *genus* with *differentia_relation*
 to *differentia_filler*.
 
+## Real-world example: Disease ontology (Mondo-style)
+
+Disease ontologies like [Mondo](https://mondo.monarchinitiative.org/) use genus-differentia
+patterns extensively. Here we show how linkml-owl models the "disease by anatomical location"
+pattern that accounts for hundreds of Mondo classes.
+
+**Schema** (see [disease-schema.yaml](https://github.com/linkml/linkml-owl/blob/main/docs/example-schemas/disease-schema.yaml)):
+
+```yaml
+prefixes:
+  MONDO: http://purl.obolibrary.org/obo/MONDO_
+  UBERON: http://purl.obolibrary.org/obo/UBERON_
+  RO: http://purl.obolibrary.org/obo/RO_
+  IAO: http://purl.obolibrary.org/obo/IAO_
+
+slots:
+  subclass_of:
+    slot_uri: rdfs:subClassOf
+    range: Disease
+    multivalued: true
+  location:
+    slot_uri: RO:0004026
+    range: Disease
+    description: anatomical location of the disease
+
+classes:
+  DiseaseByLocation:
+    description: >-
+      A disease defined by its anatomical location (genus + differentia).
+    slots:
+      - id
+      - label
+      - definition
+      - subclass_of
+      - location
+    slot_usage:
+      subclass_of:
+        required: true
+        annotations:
+          owl: EquivalentClasses, IntersectionOf
+      location:
+        required: true
+        annotations:
+          owl: EquivalentClasses, IntersectionOf, ObjectSomeValuesFrom
+```
+
+**Input:**
+
+```yaml
+- id: MONDO:0005560
+  label: brain disease
+  definition: A disease affecting the brain.
+  subclass_of:
+    - MONDO:0005071
+  location: UBERON:0000955
+```
+
+**Generated OWL:**
+
+```owl
+EquivalentClasses(
+  MONDO:0005560
+  ObjectIntersectionOf(
+    MONDO:0005071
+    ObjectSomeValuesFrom( RO:0004026 UBERON:0000955 )
+  )
+)
+AnnotationAssertion( rdfs:label MONDO:0005560 "brain disease" )
+AnnotationAssertion( IAO:0000115 MONDO:0005560 "A disease affecting the brain." )
+```
+
+In English: "brain disease is equivalent to a nervous system disorder that has disease location some brain."
+
+### Disease with inheritance (template-based)
+
+When you need conditional logic — e.g. only adding an inheritance axiom when the
+field is populated — use a Jinja template:
+
+```yaml
+classes:
+  DiseaseWithInheritance:
+    slots:
+      - id
+      - subclass_of
+    attributes:
+      inheritance:
+        range: InheritanceEnum
+    annotations:
+      owl.template: |-
+        {% for sc in subclass_of %}
+        SubClassOf( {{id}} {{sc}} )
+        {% endfor %}
+        {% if inheritance %}
+        SubClassOf( {{id}} ObjectSomeValuesFrom( RO:0000053 {{inheritance.meaning}} ) )
+        {% endif %}
+
+enums:
+  InheritanceEnum:
+    permissible_values:
+      AUTOSOMAL_DOMINANT:
+        meaning: HP:0000006
+      AUTOSOMAL_RECESSIVE:
+        meaning: HP:0000007
+```
+
+**Input:**
+
+```yaml
+- id: MONDO:0007915
+  label: Marfan syndrome
+  subclass_of:
+    - MONDO:0003900
+  inheritance: AUTOSOMAL_DOMINANT
+```
+
+**Generated OWL:**
+
+```owl
+SubClassOf( MONDO:0007915 MONDO:0003900 )
+SubClassOf( MONDO:0007915 ObjectSomeValuesFrom( RO:0000053 HP:0000006 ) )
+```
+
+## Real-world example: Phenotype ontology (EQ decomposition)
+
+Phenotype ontologies like [HPO](https://hpo.jax.org/) and [uPheno](https://obophenotype.github.io/upheno/)
+define phenotypes using an Entity-Quality (EQ) decomposition: a phenotype is a
+quality that inheres in an anatomical entity.
+
+**Schema** (see [phenotype-schema.yaml](https://github.com/linkml/linkml-owl/blob/main/docs/example-schemas/phenotype-schema.yaml)):
+
+```yaml
+prefixes:
+  HP: http://purl.obolibrary.org/obo/HP_
+  UBERON: http://purl.obolibrary.org/obo/UBERON_
+  PATO: http://purl.obolibrary.org/obo/PATO_
+
+enums:
+  QualityModifierEnum:
+    permissible_values:
+      INCREASED:
+        meaning: PATO:0000462
+      DECREASED:
+        meaning: PATO:0000463
+      ABNORMAL:
+        meaning: PATO:0000460
+
+classes:
+  EntityQualityPhenotype:
+    attributes:
+      entity:
+        range: EntityQualityPhenotype
+        required: true
+        description: the anatomical entity affected
+      quality:
+        range: QualityModifierEnum
+        required: true
+        description: the quality modifier
+      genus:
+        range: EntityQualityPhenotype
+        required: true
+        slot_uri: rdfs:subClassOf
+    annotations:
+      owl.template: |-
+        EquivalentClasses(
+          {{id}}
+          ObjectIntersectionOf(
+            {{genus}}
+            ObjectSomeValuesFrom( BFO:0000051
+              ObjectIntersectionOf(
+                {{quality.meaning}}
+                ObjectSomeValuesFrom( RO:0000052
+                  ObjectSomeValuesFrom( BFO:0000050 {{entity}} )
+                )
+              )
+            )
+          )
+        )
+```
+
+**Input:**
+
+```yaml
+- id: HP:0001263
+  label: Abnormal brain morphology
+  definition: An abnormality of the brain.
+  genus: HP:0000118
+  entity: UBERON:0000955
+  quality: ABNORMAL
+```
+
+**Generated OWL:**
+
+```owl
+EquivalentClasses(
+  HP:0001263
+  ObjectIntersectionOf(
+    HP:0000118
+    ObjectSomeValuesFrom( BFO:0000051
+      ObjectIntersectionOf(
+        PATO:0000460
+        ObjectSomeValuesFrom( RO:0000052
+          ObjectSomeValuesFrom( BFO:0000050 UBERON:0000955 )
+        )
+      )
+    )
+  )
+)
+```
+
+In English: "Abnormal brain morphology is equivalent to a phenotypic abnormality
+that has-part some (abnormal quality that inheres-in something part-of some brain)."
+
+The enum `ABNORMAL` is automatically resolved to `PATO:0000460` via its `meaning` field.
+This pattern scales to hundreds of phenotype terms by adding rows to the data file.
+
 ## Integration with existing ontologies
 
 LinkML-OWL uses CURIEs and prefix maps to integrate with existing OWL ontologies.
