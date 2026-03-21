@@ -1,1022 +1,2176 @@
-# Examples
+# linkml-owl Test Cases
 
-This page showcases the range of OWL constructs that linkml-owl can generate,
-from simple annotations to complex axiom patterns. Each example includes the
-relevant schema fragment, input data, and generated OWL (in OWL Functional Syntax).
+These examples are generated automatically from test_owl_dumper
 
-For a full working schema, see [anatomy-schema.yaml](https://github.com/linkml/linkml-owl/blob/main/docs/example-schemas/anatomy-schema.yaml)
-and for the complete conformance suite, see [owl_dumper_test.yaml](https://github.com/linkml/linkml-owl/blob/main/tests/inputs/owl_dumper_test.yaml).
+For the complete schema, see [owl_dumper_test.yaml](https://github.com/linkml/linkml-owl/blob/main/tests/inputs/owl_dumper_test.yaml)
 
-## Annotations (labels, definitions, synonyms)
+## Annotation using literals
 
-The default behavior maps string-valued slots to `AnnotationAssertion` axioms.
-Use `slot_uri` to control which annotation property is used.
 
-**Schema:**
+__Description__: _Default is to use an annotation assertion,
+                  and if the range is a string then this is literal_
 
-```yaml
-slots:
-  label:
-    slot_uri: rdfs:label
-    annotations:
-      owl: AnnotationProperty, AnnotationAssertion
-  definition:
-    slot_uri: IAO:0000115
-    annotations:
-      owl: AnnotationProperty, AnnotationAssertion
-  synonym:
-    slot_uri: skos:altLabel
-    multivalued: true
-    annotations:
-      owl: AnnotationProperty, AnnotationAssertion
-```
 
-**Input:**
+__Schema__:
 
 ```yaml
-- id: UBERON:0000970
-  label: eye
-  definition: An organ of sight.
-  synonym:
-    - oculus
+id: http//example.org/Annotation-using-literals
+classes:
+  NamedThing:
+    description: generic grouping for classes, relations, individuals, and other named
+      entities
+    is_a: Thing
+    abstract: true
+    attributes:
+      id:
+        description: the CURIE or IRI of the focal element
+        identifier: true
+        range: uriorcurie
+        required: true
+      label:
+        annotations:
+          owl: AnnotationProperty, AnnotationAssertion
+        description: a descriptive name/label for an element
+        slot_uri: rdfs:label
+        recommended: true
+      definition:
+        annotations:
+          owl: AnnotationProperty, AnnotationAssertion
+        description: a human-readable definition of an element
+        slot_uri: IAO:0000115
+        recommended: true
+
 ```
 
-**Generated OWL:**
 
-```owl
-AnnotationAssertion( rdfs:label UBERON:0000970 "eye" )
-AnnotationAssertion( IAO:0000115 UBERON:0000970 "An organ of sight." )
-AnnotationAssertion( skos:altLabel UBERON:0000970 "oculus" )
-```
-
-## Annotations using IRIs
-
-When the range of a slot is another LinkML class (not a string), the annotation
-value is an IRI rather than a literal.
-
-**Schema:**
+__Input__:
 
 ```yaml
-slots:
-  exactMatch:
-    slot_uri: skos:exactMatch
-    range: NamedThing
-    annotations:
-      owl: AnnotationAssertion
+-
+  id: x:a
+  label: foo
+  
 ```
 
-**Input:**
+__Generated axioms__:
+
+```
+Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
+Prefix( rdf: = <http://www.w3.org/1999/02/22-rdf-syntax-ns#> )
+Prefix( rdfs: = <http://www.w3.org/2000/01/rdf-schema#> )
+Prefix( xsd: = <http://www.w3.org/2001/XMLSchema#> )
+Prefix( xml: = <http://www.w3.org/XML/1998/namespace> )
+Prefix( linkml: = <https://w3id.org/linkml/> )
+Prefix( test: = <https://w3id.org/linkml/owl/tests/> )
+Prefix( BFO: = <http://purl.obolibrary.org/obo/BFO_> )
+Prefix( IAO: = <http://purl.obolibrary.org/obo/IAO_> )
+Prefix( RO: = <http://purl.obolibrary.org/obo/RO_> )
+Prefix( PATO: = <http://purl.obolibrary.org/obo/PATO_> )
+Prefix( skos: = <http://www.w3.org/2004/02/skos/core#> )
+Prefix( dcterms: = <http://purl.org/dc/terms/> )
+Prefix( x: = <http://example.org/> )
+
+Ontology( <https://w3id.org/linkml/owl/tests>
+    AnnotationAssertion( rdfs:label x:a "foo" )
+)
+```
+
+## Annotation using IRIs
+
+
+__Description__: _As above, but if the range is an instance of a LinkML class then use a literal_
+
+
+__Schema__:
 
 ```yaml
-- id: x:a
+id: http//example.org/Annotation-using-IRIs
+classes:
+  NamedThingWithMatches:
+    description: test metaclass illustrating generation of skos annotation axioms
+    is_a: NamedThing
+    attributes:
+      exactMatch:
+        annotations:
+          owl: AnnotationAssertion
+        description: a concept that is the object of a match triple
+        slot_uri: skos:exactMatch
+        range: NamedThing
+        required: true
+      id:
+        description: the CURIE or IRI of the focal element
+        identifier: true
+        range: uriorcurie
+        required: true
+      label:
+        annotations:
+          owl: AnnotationProperty, AnnotationAssertion
+        description: a descriptive name/label for an element
+        slot_uri: rdfs:label
+        recommended: true
+      definition:
+        annotations:
+          owl: AnnotationProperty, AnnotationAssertion
+        description: a human-readable definition of an element
+        slot_uri: IAO:0000115
+        recommended: true
+
+```
+
+
+__Input__:
+
+```yaml
+-
+  id: x:a
   exactMatch: x:b
+  
 ```
 
-**Generated OWL:**
+__Generated axioms__:
 
-```owl
-AnnotationAssertion( skos:exactMatch x:a x:b )
+```
+Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
+Prefix( rdf: = <http://www.w3.org/1999/02/22-rdf-syntax-ns#> )
+Prefix( rdfs: = <http://www.w3.org/2000/01/rdf-schema#> )
+Prefix( xsd: = <http://www.w3.org/2001/XMLSchema#> )
+Prefix( xml: = <http://www.w3.org/XML/1998/namespace> )
+Prefix( linkml: = <https://w3id.org/linkml/> )
+Prefix( test: = <https://w3id.org/linkml/owl/tests/> )
+Prefix( BFO: = <http://purl.obolibrary.org/obo/BFO_> )
+Prefix( IAO: = <http://purl.obolibrary.org/obo/IAO_> )
+Prefix( RO: = <http://purl.obolibrary.org/obo/RO_> )
+Prefix( PATO: = <http://purl.obolibrary.org/obo/PATO_> )
+Prefix( skos: = <http://www.w3.org/2004/02/skos/core#> )
+Prefix( dcterms: = <http://purl.org/dc/terms/> )
+Prefix( x: = <http://example.org/> )
+
+Ontology( <https://w3id.org/linkml/owl/tests>
+    AnnotationAssertion( skos:exactMatch x:a x:b )
+)
 ```
 
-To force a literal value instead, override the range to `string`.
+## Annotation using forced literals
 
-## Existential restrictions (SomeValuesFrom)
 
-The most common pattern in biomedical ontologies: "every X is related to some Y."
+__Description__: _We can force a literal by imposing a range_
 
-**Schema:**
+
+__Schema__:
 
 ```yaml
-slots:
-  part_of:
-    slot_uri: BFO:0000050
-    range: AnatomicalStructure
-    multivalued: true
-
+id: http//example.org/Annotation-using-forced-literals
 classes:
-  AnatomicalStructure:
-    slots:
-      - id
-      - label
-      - part_of
-    slot_usage:
-      part_of:
+  NamedThingWithMatchesAsLiterals:
+    description: test metaclass illustrating generation of skos annotation axioms,
+      forcing use of literals
+    is_a: NamedThing
+    attributes:
+      exactMatch:
         annotations:
-          owl: ObjectSomeValuesFrom
+          owl: AnnotationAssertion
+        description: we override the range to be a string
+        slot_uri: skos:exactMatch
+        range: string
+        required: true
+      id:
+        description: the CURIE or IRI of the focal element
+        identifier: true
+        range: uriorcurie
+        required: true
+      label:
+        annotations:
+          owl: AnnotationProperty, AnnotationAssertion
+        description: a descriptive name/label for an element
+        slot_uri: rdfs:label
+        recommended: true
+      definition:
+        annotations:
+          owl: AnnotationProperty, AnnotationAssertion
+        description: a human-readable definition of an element
+        slot_uri: IAO:0000115
+        recommended: true
+
 ```
 
-**Input:**
+
+__Input__:
 
 ```yaml
-- id: UBERON:0000970
-  label: eye
-  part_of:
-    - UBERON:0000033
-
-- id: UBERON:0000033
-  label: head
-  part_of:
-    - UBERON:0000468
+-
+  id: x:a
+  exactMatch: x:b
+  
 ```
 
-**Generated OWL:**
+__Generated axioms__:
 
-```owl
-SubClassOf( UBERON:0000970 ObjectSomeValuesFrom( BFO:0000050 UBERON:0000033 ) )
-SubClassOf( UBERON:0000033 ObjectSomeValuesFrom( BFO:0000050 UBERON:0000468 ) )
-AnnotationAssertion( rdfs:label UBERON:0000970 "eye" )
-AnnotationAssertion( rdfs:label UBERON:0000033 "head" )
+```
+Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
+Prefix( rdf: = <http://www.w3.org/1999/02/22-rdf-syntax-ns#> )
+Prefix( rdfs: = <http://www.w3.org/2000/01/rdf-schema#> )
+Prefix( xsd: = <http://www.w3.org/2001/XMLSchema#> )
+Prefix( xml: = <http://www.w3.org/XML/1998/namespace> )
+Prefix( linkml: = <https://w3id.org/linkml/> )
+Prefix( test: = <https://w3id.org/linkml/owl/tests/> )
+Prefix( BFO: = <http://purl.obolibrary.org/obo/BFO_> )
+Prefix( IAO: = <http://purl.obolibrary.org/obo/IAO_> )
+Prefix( RO: = <http://purl.obolibrary.org/obo/RO_> )
+Prefix( PATO: = <http://purl.obolibrary.org/obo/PATO_> )
+Prefix( skos: = <http://www.w3.org/2004/02/skos/core#> )
+Prefix( dcterms: = <http://purl.org/dc/terms/> )
+Prefix( x: = <http://example.org/> )
+
+Ontology( <https://w3id.org/linkml/owl/tests>
+    AnnotationAssertion( skos:exactMatch x:a "x:b" )
+)
 ```
 
-In English: "every eye is part of some head" and "every head is part of some organism."
+## Axiom annotation with Literal value on annotation axiom
 
-## Universal restrictions (AllValuesFrom)
 
-To express that *all* fillers of a relationship must be of a given type:
+__Description__: _Axiom annotations (literals) can be driven by a separate slot_
 
-**Schema:**
+
+__Schema__:
 
 ```yaml
+id: http//example.org/Axiom-annotation-with-Literal-value-on-annotation-axiom
 classes:
-  PartOnly:
-    slots:
-      - id
-      - part_of
-    slot_usage:
-      part_of:
+  DefinitionWithAxiomAnnotation:
+    description: test metaclass illustrating how a text definition can be adorned
+      with annotation axioms, where values are literals
+    is_a: NamedThing
+    attributes:
+      definition_source:
+        description: origin of textual definition
+        slot_uri: dcterms:source
+        multivalued: true
+      id:
+        description: the CURIE or IRI of the focal element
+        identifier: true
+        range: uriorcurie
+        required: true
+      label:
         annotations:
-          owl: ObjectAllValuesFrom
+          owl: AnnotationProperty, AnnotationAssertion
+        description: a descriptive name/label for an element
+        slot_uri: rdfs:label
+        recommended: true
+      definition:
+        annotations:
+          owl.axiom_annotation.slots:
+            tag: owl.axiom_annotation.slots
+            value: definition_source
+        description: a human-readable definition of an element
+        slot_uri: IAO:0000115
+        recommended: true
+
 ```
 
-**Input:**
+
+__Input__:
 
 ```yaml
-- id: x:finger
-  part_of:
-    - x:hand
+-
+  id: x:a
+  label: foo
+  definition: a foo is a foo
+  definition_source:
+  - Me
+  
 ```
 
-**Generated OWL:**
+__Generated axioms__:
 
-```owl
-SubClassOf( x:finger ObjectAllValuesFrom( BFO:0000050 x:hand ) )
+```
+Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
+Prefix( rdf: = <http://www.w3.org/1999/02/22-rdf-syntax-ns#> )
+Prefix( rdfs: = <http://www.w3.org/2000/01/rdf-schema#> )
+Prefix( xsd: = <http://www.w3.org/2001/XMLSchema#> )
+Prefix( xml: = <http://www.w3.org/XML/1998/namespace> )
+Prefix( linkml: = <https://w3id.org/linkml/> )
+Prefix( test: = <https://w3id.org/linkml/owl/tests/> )
+Prefix( BFO: = <http://purl.obolibrary.org/obo/BFO_> )
+Prefix( IAO: = <http://purl.obolibrary.org/obo/IAO_> )
+Prefix( RO: = <http://purl.obolibrary.org/obo/RO_> )
+Prefix( PATO: = <http://purl.obolibrary.org/obo/PATO_> )
+Prefix( skos: = <http://www.w3.org/2004/02/skos/core#> )
+Prefix( dcterms: = <http://purl.org/dc/terms/> )
+Prefix( x: = <http://example.org/> )
+
+Ontology( <https://w3id.org/linkml/owl/tests>
+    AnnotationAssertion( rdfs:label x:a "foo" )
+    AnnotationAssertion(
+        Annotation( dcterms:source "Me" )
+        <http://purl.obolibrary.org/obo/IAO_0000115> x:a "a foo is a foo"
+    )
+)
 ```
 
-In English: "everything a finger is part of is a hand."
+## Axiom annotation with IRI val on annotation axiom
 
-## SubClassOf (named superclasses)
 
-Direct named superclass axioms, without any restriction:
+__Description__: _Axiom annotations (IRIs) can be driven by a separate slot_
 
-**Schema:**
+
+__Schema__:
 
 ```yaml
-slots:
-  subclass_of:
-    slot_uri: rdfs:subClassOf
-    range: NamedThing
-    multivalued: true
+id: http//example.org/Axiom-annotation-with-IRI-val-on-annotation-axiom
+classes:
+  DefinitionWithIRIAxiomAnnotation:
+    description: test metaclass illustrating how a text definition can be adorned
+      with annotation axioms, where the values are IRIs
+    is_a: NamedThing
+    attributes:
+      definition_source:
+        description: origin of textual definition
+        slot_uri: dcterms:source
+        multivalued: true
+        range: NamedThing
+      id:
+        description: the CURIE or IRI of the focal element
+        identifier: true
+        range: uriorcurie
+        required: true
+      label:
+        annotations:
+          owl: AnnotationProperty, AnnotationAssertion
+        description: a descriptive name/label for an element
+        slot_uri: rdfs:label
+        recommended: true
+      definition:
+        annotations:
+          owl.axiom_annotation.slots:
+            tag: owl.axiom_annotation.slots
+            value: definition_source
+        description: a human-readable definition of an element
+        slot_uri: IAO:0000115
+        recommended: true
 
+```
+
+
+__Input__:
+
+```yaml
+-
+  id: x:a
+  label: foo
+  definition: a foo is a foo
+  definition_source:
+  - x:src
+  
+```
+
+__Generated axioms__:
+
+```
+Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
+Prefix( rdf: = <http://www.w3.org/1999/02/22-rdf-syntax-ns#> )
+Prefix( rdfs: = <http://www.w3.org/2000/01/rdf-schema#> )
+Prefix( xsd: = <http://www.w3.org/2001/XMLSchema#> )
+Prefix( xml: = <http://www.w3.org/XML/1998/namespace> )
+Prefix( linkml: = <https://w3id.org/linkml/> )
+Prefix( test: = <https://w3id.org/linkml/owl/tests/> )
+Prefix( BFO: = <http://purl.obolibrary.org/obo/BFO_> )
+Prefix( IAO: = <http://purl.obolibrary.org/obo/IAO_> )
+Prefix( RO: = <http://purl.obolibrary.org/obo/RO_> )
+Prefix( PATO: = <http://purl.obolibrary.org/obo/PATO_> )
+Prefix( skos: = <http://www.w3.org/2004/02/skos/core#> )
+Prefix( dcterms: = <http://purl.org/dc/terms/> )
+Prefix( x: = <http://example.org/> )
+
+Ontology( <https://w3id.org/linkml/owl/tests>
+    AnnotationAssertion( rdfs:label x:a "foo" )
+    AnnotationAssertion(
+        Annotation( dcterms:source x:src )
+        <http://purl.obolibrary.org/obo/IAO_0000115> x:a "a foo is a foo"
+    )
+)
+```
+
+## Axiom annotations with IRI val on annotation axiom
+
+
+__Description__: _Multiple axiom annotations_
+
+
+__Schema__:
+
+```yaml
+id: http//example.org/Axiom-annotations-with-IRI-val-on-annotation-axiom
+classes:
+  DefinitionWithIRIAxiomAnnotation:
+    description: test metaclass illustrating how a text definition can be adorned
+      with annotation axioms, where the values are IRIs
+    is_a: NamedThing
+    attributes:
+      definition_source:
+        description: origin of textual definition
+        slot_uri: dcterms:source
+        multivalued: true
+        range: NamedThing
+      id:
+        description: the CURIE or IRI of the focal element
+        identifier: true
+        range: uriorcurie
+        required: true
+      label:
+        annotations:
+          owl: AnnotationProperty, AnnotationAssertion
+        description: a descriptive name/label for an element
+        slot_uri: rdfs:label
+        recommended: true
+      definition:
+        annotations:
+          owl.axiom_annotation.slots:
+            tag: owl.axiom_annotation.slots
+            value: definition_source
+        description: a human-readable definition of an element
+        slot_uri: IAO:0000115
+        recommended: true
+
+```
+
+
+__Input__:
+
+```yaml
+-
+  id: x:a
+  label: foo
+  definition: a foo is a foo
+  definition_source:
+  - x:src1
+  - x:src2
+  
+```
+
+__Generated axioms__:
+
+```
+Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
+Prefix( rdf: = <http://www.w3.org/1999/02/22-rdf-syntax-ns#> )
+Prefix( rdfs: = <http://www.w3.org/2000/01/rdf-schema#> )
+Prefix( xsd: = <http://www.w3.org/2001/XMLSchema#> )
+Prefix( xml: = <http://www.w3.org/XML/1998/namespace> )
+Prefix( linkml: = <https://w3id.org/linkml/> )
+Prefix( test: = <https://w3id.org/linkml/owl/tests/> )
+Prefix( BFO: = <http://purl.obolibrary.org/obo/BFO_> )
+Prefix( IAO: = <http://purl.obolibrary.org/obo/IAO_> )
+Prefix( RO: = <http://purl.obolibrary.org/obo/RO_> )
+Prefix( PATO: = <http://purl.obolibrary.org/obo/PATO_> )
+Prefix( skos: = <http://www.w3.org/2004/02/skos/core#> )
+Prefix( dcterms: = <http://purl.org/dc/terms/> )
+Prefix( x: = <http://example.org/> )
+
+Ontology( <https://w3id.org/linkml/owl/tests>
+    AnnotationAssertion( rdfs:label x:a "foo" )
+    AnnotationAssertion(
+        Annotation( dcterms:source x:src1 )
+        Annotation( dcterms:source x:src2 )
+        <http://purl.obolibrary.org/obo/IAO_0000115> x:a "a foo is a foo"
+    )
+)
+```
+
+## Basic SubClassOf between named classes
+
+
+__Description__: _Adding SubClassOf annotation to the linkml class forces a SubClass axiom_
+
+
+__Schema__:
+
+```yaml
+id: http//example.org/Basic-SubClassOf-between-named-classes
 classes:
   Child:
-    slots:
-      - id
-      - subclass_of
-    slot_usage:
+    description: test metaclass illustrating classes with basic superclass parents
+    is_a: NamedThing
+    attributes:
       subclass_of:
         annotations:
           owl: SubClassOf
-```
-
-**Input:**
-
-```yaml
-- id: x:cat
-  subclass_of:
-    - x:mammal
-    - x:carnivore
-```
-
-**Generated OWL:**
-
-```owl
-SubClassOf( x:cat x:mammal )
-SubClassOf( x:cat x:carnivore )
-```
-
-## Equivalent class definitions (genus-differentia)
-
-The hallmark of OBO-style ontologies: define a class as the intersection of
-a genus (broad category) and one or more differentiae (distinguishing relationships).
-
-**Schema:**
-
-```yaml
-classes:
-  DefinedAnatomicalStructure:
-    slots:
-      - id
-      - label
-      - genus
-      - differentia_part_of
-    slot_usage:
-      genus:
-        slot_uri: rdfs:subClassOf
-        range: AnatomicalStructure
+        description: named class this is subclass of
+        slot_uri: rdfs:subclass_of
+        multivalued: true
+        range: NamedThing
         required: true
+      id:
+        description: the CURIE or IRI of the focal element
+        identifier: true
+        range: uriorcurie
+        required: true
+      label:
         annotations:
-          owl: EquivalentClasses, IntersectionOf
-      differentia_part_of:
-        slot_uri: BFO:0000050
-        range: AnatomicalStructure
+          owl: AnnotationProperty, AnnotationAssertion
+        description: a descriptive name/label for an element
+        slot_uri: rdfs:label
+        recommended: true
+      definition:
         annotations:
-          owl: EquivalentClasses, IntersectionOf, ObjectSomeValuesFrom
+          owl: AnnotationProperty, AnnotationAssertion
+        description: a human-readable definition of an element
+        slot_uri: IAO:0000115
+        recommended: true
+
 ```
 
-**Input:**
+
+__Input__:
 
 ```yaml
-- id: UBERON:0004801
-  label: lens of camera-type eye
-  genus: UBERON:0000389
-  differentia_part_of: UBERON:0000019
+-
+  id: x:a
+  subclass_of:
+  - x:b
+  
 ```
 
-**Generated OWL:**
+__Generated axioms__:
 
-```owl
-EquivalentClasses(
-  UBERON:0004801
-  ObjectIntersectionOf(
-    UBERON:0000389
-    ObjectSomeValuesFrom( BFO:0000050 UBERON:0000019 )
-  )
+```
+Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
+Prefix( rdf: = <http://www.w3.org/1999/02/22-rdf-syntax-ns#> )
+Prefix( rdfs: = <http://www.w3.org/2000/01/rdf-schema#> )
+Prefix( xsd: = <http://www.w3.org/2001/XMLSchema#> )
+Prefix( xml: = <http://www.w3.org/XML/1998/namespace> )
+Prefix( linkml: = <https://w3id.org/linkml/> )
+Prefix( test: = <https://w3id.org/linkml/owl/tests/> )
+Prefix( BFO: = <http://purl.obolibrary.org/obo/BFO_> )
+Prefix( IAO: = <http://purl.obolibrary.org/obo/IAO_> )
+Prefix( RO: = <http://purl.obolibrary.org/obo/RO_> )
+Prefix( PATO: = <http://purl.obolibrary.org/obo/PATO_> )
+Prefix( skos: = <http://www.w3.org/2004/02/skos/core#> )
+Prefix( dcterms: = <http://purl.org/dc/terms/> )
+Prefix( x: = <http://example.org/> )
+
+Ontology( <https://w3id.org/linkml/owl/tests>
+    SubClassOf( x:a x:b )
 )
 ```
 
-In English: "a lens of camera-type eye is equivalent to a lens that is part of some camera-type eye."
+## basic direct equivalence between named classes
 
-## Hidden GCIs (additional necessary conditions)
 
-Sometimes a class has both a logical definition (EquivalentClasses) and
-additional SubClassOf axioms that go beyond the definition. These are often
-called "hidden GCIs" (General Class Inclusions).
+__Description__: _Adding EquivalentTo annotation to the linkml class forces an EquivalentClass axiom_
 
-**Schema:**
+
+__Schema__:
 
 ```yaml
+id: http//example.org/basic-direct-equivalence-between-named-classes
 classes:
-  EquivGenusAndPartOf:
-    slots:
-      - id
-      - subclass_of
-      - part_of
-      - other_part_ofs
-    slot_usage:
-      subclass_of:
-        description: the genus of the definition
+  DirectEquivalent:
+    description: test metaclass illustrating simple equivalence between two named
+      classes
+    is_a: NamedThing
+    attributes:
+      equivalent_to:
         annotations:
-          owl: EquivalentClasses, IntersectionOf
+          owl: EquivalentClasses
+        description: named class this is equivalent to
+        slot_uri: owl:equivalentClasses
+        multivalued: true
+        range: NamedThing
+        required: true
+      id:
+        description: the CURIE or IRI of the focal element
+        identifier: true
+        range: uriorcurie
+        required: true
+      label:
+        annotations:
+          owl: AnnotationProperty, AnnotationAssertion
+        description: a descriptive name/label for an element
+        slot_uri: rdfs:label
+        recommended: true
+      definition:
+        annotations:
+          owl: AnnotationProperty, AnnotationAssertion
+        description: a human-readable definition of an element
+        slot_uri: IAO:0000115
+        recommended: true
+
+```
+
+
+__Input__:
+
+```yaml
+-
+  id: x:a
+  equivalent_to:
+  - x:b
+  
+```
+
+__Generated axioms__:
+
+```
+Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
+Prefix( rdf: = <http://www.w3.org/1999/02/22-rdf-syntax-ns#> )
+Prefix( rdfs: = <http://www.w3.org/2000/01/rdf-schema#> )
+Prefix( xsd: = <http://www.w3.org/2001/XMLSchema#> )
+Prefix( xml: = <http://www.w3.org/XML/1998/namespace> )
+Prefix( linkml: = <https://w3id.org/linkml/> )
+Prefix( test: = <https://w3id.org/linkml/owl/tests/> )
+Prefix( BFO: = <http://purl.obolibrary.org/obo/BFO_> )
+Prefix( IAO: = <http://purl.obolibrary.org/obo/IAO_> )
+Prefix( RO: = <http://purl.obolibrary.org/obo/RO_> )
+Prefix( PATO: = <http://purl.obolibrary.org/obo/PATO_> )
+Prefix( skos: = <http://www.w3.org/2004/02/skos/core#> )
+Prefix( dcterms: = <http://purl.org/dc/terms/> )
+Prefix( x: = <http://example.org/> )
+
+Ontology( <https://w3id.org/linkml/owl/tests>
+    EquivalentClasses(
+        x:a
+        x:b
+    )
+)
+```
+
+## SubClassOf SomeValuesFrom
+
+
+__Description__: _A SubClassOf annotation makes the annotation type be subclass,
+                  a SomeValuesFrom annotation makes the slot interpreted as an existential_
+
+
+__Schema__:
+
+```yaml
+id: http//example.org/SubClassOf-SomeValuesFrom
+classes:
+  Part:
+    description: test metaclass illustrating classes with basic heirarchical existential
+      parents
+    is_a: NamedThing
+    attributes:
       part_of:
-        description: differentia in the equivalence axiom
-        annotations:
-          owl: EquivalentClasses, IntersectionOf, ObjectSomeValuesFrom
-      other_part_ofs:
-        description: additional SubClassOf conditions (hidden GCIs)
         annotations:
           owl: ObjectSomeValuesFrom
+        description: element this is a part of
+        slot_uri: BFO:0000050
+        multivalued: true
+        range: NamedThing
+        required: true
+      id:
+        description: the CURIE or IRI of the focal element
+        identifier: true
+        range: uriorcurie
+        required: true
+      label:
+        annotations:
+          owl: AnnotationProperty, AnnotationAssertion
+        description: a descriptive name/label for an element
+        slot_uri: rdfs:label
+        recommended: true
+      definition:
+        annotations:
+          owl: AnnotationProperty, AnnotationAssertion
+        description: a human-readable definition of an element
+        slot_uri: IAO:0000115
+        recommended: true
+
 ```
 
-**Input:**
+
+__Input__:
 
 ```yaml
-- id: x:finger-of-hand
-  subclass_of:
-    - x:finger
+-
+  id: x:a
   part_of:
-    - x:hand
-  other_part_ofs:
-    - x:forelimb
+  - x:b
+  
 ```
 
-**Generated OWL:**
+__Generated axioms__:
 
-```owl
-EquivalentClasses(
-  x:finger-of-hand
-  ObjectIntersectionOf(
-    x:finger
-    ObjectSomeValuesFrom( BFO:0000050 x:hand )
-  )
+```
+Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
+Prefix( rdf: = <http://www.w3.org/1999/02/22-rdf-syntax-ns#> )
+Prefix( rdfs: = <http://www.w3.org/2000/01/rdf-schema#> )
+Prefix( xsd: = <http://www.w3.org/2001/XMLSchema#> )
+Prefix( xml: = <http://www.w3.org/XML/1998/namespace> )
+Prefix( linkml: = <https://w3id.org/linkml/> )
+Prefix( test: = <https://w3id.org/linkml/owl/tests/> )
+Prefix( BFO: = <http://purl.obolibrary.org/obo/BFO_> )
+Prefix( IAO: = <http://purl.obolibrary.org/obo/IAO_> )
+Prefix( RO: = <http://purl.obolibrary.org/obo/RO_> )
+Prefix( PATO: = <http://purl.obolibrary.org/obo/PATO_> )
+Prefix( skos: = <http://www.w3.org/2004/02/skos/core#> )
+Prefix( dcterms: = <http://purl.org/dc/terms/> )
+Prefix( x: = <http://example.org/> )
+
+Ontology( <https://w3id.org/linkml/owl/tests>
+    SubClassOf( x:a     ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000050> x:b ) )
 )
-SubClassOf( x:finger-of-hand ObjectSomeValuesFrom( BFO:0000050 x:forelimb ) )
 ```
 
-## Union classes
+## SubClassOf AllValuesFrom
 
-Use `UnionOf` to define a class as the union of its members:
 
-**Schema:**
+__Description__: _As above, but with universal restrictions_
+
+
+__Schema__:
 
 ```yaml
+id: http//example.org/SubClassOf-AllValuesFrom
+classes:
+  PartOnly:
+    description: test metaclass illustrating classes with basic part-of-allValues
+      pattern
+    is_a: NamedThing
+    attributes:
+      part_of:
+        annotations:
+          owl: ObjectAllValuesFrom
+        description: element this is a part of
+        slot_uri: BFO:0000050
+        multivalued: true
+        range: NamedThing
+        required: true
+      id:
+        description: the CURIE or IRI of the focal element
+        identifier: true
+        range: uriorcurie
+        required: true
+      label:
+        annotations:
+          owl: AnnotationProperty, AnnotationAssertion
+        description: a descriptive name/label for an element
+        slot_uri: rdfs:label
+        recommended: true
+      definition:
+        annotations:
+          owl: AnnotationProperty, AnnotationAssertion
+        description: a human-readable definition of an element
+        slot_uri: IAO:0000115
+        recommended: true
+
+```
+
+
+__Input__:
+
+```yaml
+-
+  id: x:a
+  part_of:
+  - x:b
+  
+```
+
+__Generated axioms__:
+
+```
+Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
+Prefix( rdf: = <http://www.w3.org/1999/02/22-rdf-syntax-ns#> )
+Prefix( rdfs: = <http://www.w3.org/2000/01/rdf-schema#> )
+Prefix( xsd: = <http://www.w3.org/2001/XMLSchema#> )
+Prefix( xml: = <http://www.w3.org/XML/1998/namespace> )
+Prefix( linkml: = <https://w3id.org/linkml/> )
+Prefix( test: = <https://w3id.org/linkml/owl/tests/> )
+Prefix( BFO: = <http://purl.obolibrary.org/obo/BFO_> )
+Prefix( IAO: = <http://purl.obolibrary.org/obo/IAO_> )
+Prefix( RO: = <http://purl.obolibrary.org/obo/RO_> )
+Prefix( PATO: = <http://purl.obolibrary.org/obo/PATO_> )
+Prefix( skos: = <http://www.w3.org/2004/02/skos/core#> )
+Prefix( dcterms: = <http://purl.org/dc/terms/> )
+Prefix( x: = <http://example.org/> )
+
+Ontology( <https://w3id.org/linkml/owl/tests>
+    SubClassOf( x:a     ObjectAllValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000050> x:b ) )
+)
+```
+
+## SubClassOf SomeValuesFrom plus label
+
+
+__Description__: _Demonstrates a mix of slots, some annotation, some logical_
+
+
+__Schema__:
+
+```yaml
+id: http//example.org/SubClassOf-SomeValuesFrom-plus-label
+classes:
+  Part:
+    description: test metaclass illustrating classes with basic heirarchical existential
+      parents
+    is_a: NamedThing
+    attributes:
+      part_of:
+        annotations:
+          owl: ObjectSomeValuesFrom
+        description: element this is a part of
+        slot_uri: BFO:0000050
+        multivalued: true
+        range: NamedThing
+        required: true
+      id:
+        description: the CURIE or IRI of the focal element
+        identifier: true
+        range: uriorcurie
+        required: true
+      label:
+        annotations:
+          owl: AnnotationProperty, AnnotationAssertion
+        description: a descriptive name/label for an element
+        slot_uri: rdfs:label
+        recommended: true
+      definition:
+        annotations:
+          owl: AnnotationProperty, AnnotationAssertion
+        description: a human-readable definition of an element
+        slot_uri: IAO:0000115
+        recommended: true
+
+```
+
+
+__Input__:
+
+```yaml
+-
+  id: x:a
+  label: foo
+  part_of:
+  - x:b
+  
+```
+
+__Generated axioms__:
+
+```
+Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
+Prefix( rdf: = <http://www.w3.org/1999/02/22-rdf-syntax-ns#> )
+Prefix( rdfs: = <http://www.w3.org/2000/01/rdf-schema#> )
+Prefix( xsd: = <http://www.w3.org/2001/XMLSchema#> )
+Prefix( xml: = <http://www.w3.org/XML/1998/namespace> )
+Prefix( linkml: = <https://w3id.org/linkml/> )
+Prefix( test: = <https://w3id.org/linkml/owl/tests/> )
+Prefix( BFO: = <http://purl.obolibrary.org/obo/BFO_> )
+Prefix( IAO: = <http://purl.obolibrary.org/obo/IAO_> )
+Prefix( RO: = <http://purl.obolibrary.org/obo/RO_> )
+Prefix( PATO: = <http://purl.obolibrary.org/obo/PATO_> )
+Prefix( skos: = <http://www.w3.org/2004/02/skos/core#> )
+Prefix( dcterms: = <http://purl.org/dc/terms/> )
+Prefix( x: = <http://example.org/> )
+
+Ontology( <https://w3id.org/linkml/owl/tests>
+    AnnotationAssertion( rdfs:label x:a "foo" )
+    SubClassOf( x:a     ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000050> x:b ) )
+)
+```
+
+## SubClassOf Union
+
+
+__Description__: _The slot is interpreted as a parent class,
+                  and all slot values with a UnionOf annotation are collected to make a UnionOf expression_
+
+
+__Schema__:
+
+```yaml
+id: http//example.org/SubClassOf-Union
+classes:
+  ChildOfUnion:
+    description: test metaclass illustrating classes whose parents are a union
+    is_a: NamedThing
+    attributes:
+      subclass_of:
+        annotations:
+          owl: SubClassOf, UnionOf
+        description: named class this is subclass of
+        slot_uri: rdfs:subclass_of
+        multivalued: true
+        range: NamedThing
+        required: true
+      id:
+        description: the CURIE or IRI of the focal element
+        identifier: true
+        range: uriorcurie
+        required: true
+      label:
+        annotations:
+          owl: AnnotationProperty, AnnotationAssertion
+        description: a descriptive name/label for an element
+        slot_uri: rdfs:label
+        recommended: true
+      definition:
+        annotations:
+          owl: AnnotationProperty, AnnotationAssertion
+        description: a human-readable definition of an element
+        slot_uri: IAO:0000115
+        recommended: true
+
+```
+
+
+__Input__:
+
+```yaml
+-
+  id: x:a
+  subclass_of:
+  - x:b
+  - x:c
+  
+```
+
+__Generated axioms__:
+
+```
+Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
+Prefix( rdf: = <http://www.w3.org/1999/02/22-rdf-syntax-ns#> )
+Prefix( rdfs: = <http://www.w3.org/2000/01/rdf-schema#> )
+Prefix( xsd: = <http://www.w3.org/2001/XMLSchema#> )
+Prefix( xml: = <http://www.w3.org/XML/1998/namespace> )
+Prefix( linkml: = <https://w3id.org/linkml/> )
+Prefix( test: = <https://w3id.org/linkml/owl/tests/> )
+Prefix( BFO: = <http://purl.obolibrary.org/obo/BFO_> )
+Prefix( IAO: = <http://purl.obolibrary.org/obo/IAO_> )
+Prefix( RO: = <http://purl.obolibrary.org/obo/RO_> )
+Prefix( PATO: = <http://purl.obolibrary.org/obo/PATO_> )
+Prefix( skos: = <http://www.w3.org/2004/02/skos/core#> )
+Prefix( dcterms: = <http://purl.org/dc/terms/> )
+Prefix( x: = <http://example.org/> )
+
+Ontology( <https://w3id.org/linkml/owl/tests>
+    SubClassOf( x:a     ObjectUnionOf(
+        x:b
+        x:c
+    ) )
+)
+```
+
+## EquivalentTo Union
+
+
+__Description__: _As above, but with equivalence_
+
+
+__Schema__:
+
+```yaml
+id: http//example.org/EquivalentTo-Union
 classes:
   EquivUnion:
-    slots:
-      - id
-      - operands
-    slot_usage:
+    description: test metaclass illustrating classes defined by a union
+    examples:
+    - value: prokaryote
+      description: a prokaryote is equivalent to a bacteria or an archaea
+    is_a: NamedThing
+    attributes:
       operands:
         annotations:
           owl: EquivalentClasses, UnionOf
-```
-
-**Input:**
-
-```yaml
-- id: x:prokaryote
-  operands:
-    - x:bacteria
-    - x:archaea
-```
-
-**Generated OWL:**
-
-```owl
-EquivalentClasses(
-  x:prokaryote
-  ObjectUnionOf( x:bacteria x:archaea )
-)
-```
-
-## Disjoint unions
-
-Declare that a set of classes is both a union and pairwise disjoint:
-
-**Schema:**
-
-```yaml
-classes:
-  DisjointUnion:
-    slots:
-      - id
-      - operands
-    slot_usage:
-      operands:
+        description: elements of the union expression
+        multivalued: true
+        range: NamedThing
+        required: true
+      id:
+        description: the CURIE or IRI of the focal element
+        identifier: true
+        range: uriorcurie
+        required: true
+      label:
         annotations:
-          owl: DisjointUnion
-```
-
-**Input:**
-
-```yaml
-- id: x:cell
-  operands:
-    - x:neuron
-    - x:epithelial_cell
-    - x:muscle_cell
-```
-
-**Generated OWL:**
-
-```owl
-DisjointUnion( x:cell x:neuron x:epithelial_cell x:muscle_cell )
-```
-
-## Data properties
-
-Map slots to OWL DataPropertyAssertion or DataHasValue axioms:
-
-**Schema:**
-
-```yaml
-slots:
-  has_name:
-    slot_uri: schema:name
-    annotations:
-      owl: DataHasValue
-```
-
-**Input:**
-
-```yaml
-- id: x:bob
-  has_name: Robert
-```
-
-**Generated OWL:**
-
-```owl
-SubClassOf( x:bob DataHasValue( schema:name "Robert" ) )
-```
-
-For individual-level data property assertions, use `DataPropertyAssertion`:
-
-```yaml
-slots:
-  weight:
-    range: float
-    annotations:
-      owl: DatatypeProperty, DataPropertyAssertion
-```
-
-## Enums mapped to ontology terms
-
-LinkML enums with `meaning` annotations map enum values to OWL named entities.
-When used with `ObjectSomeValuesFrom`, enum values become class fillers:
-
-**Schema:**
-
-```yaml
-enums:
-  LateralityEnum:
-    permissible_values:
-      LEFT:
-        meaning: PATO:0000346
-      RIGHT:
-        meaning: PATO:0000344
-
-slots:
-  has_laterality:
-    range: LateralityEnum
-    annotations:
-      owl: EquivalentClasses, IntersectionOf, ObjectSomeValuesFrom
-```
-
-**Input:**
-
-```yaml
-- id: x:left-eye
-  parent: x:eye
-  has_laterality: LEFT
-```
-
-**Generated OWL:**
-
-```owl
-EquivalentClasses(
-  x:left-eye
-  ObjectIntersectionOf(
-    x:eye
-    ObjectSomeValuesFrom( RO:0000053 PATO:0000346 )
-  )
-)
-```
-
-The `LEFT` enum value is resolved to its `meaning` IRI (`PATO:0000346`).
-
-## Individuals and class assertions
-
-To generate OWL individuals (ABox) instead of classes (TBox), set the
-class-level `owl` annotation to `NamedIndividual`:
-
-**Schema:**
-
-```yaml
-classes:
-  CreatureInstance:
-    annotations:
-      owl: NamedIndividual
-    slot_usage:
-      instance_of:
-        slot_uri: rdf:type
-        annotations:
-          owl: ClassAssertion
-      has_location:
-        annotations:
-          owl: ObjectPropertyAssertion
-```
-
-**Input:**
-
-```yaml
-- id: mnm:goblin-1
-  instance_of:
-    - mnm:Goblin
-  has_location: mnm:dark-cave
-```
-
-**Generated OWL:**
-
-```owl
-ClassAssertion( mnm:Goblin mnm:goblin-1 )
-ObjectPropertyAssertion( mnm:has_location mnm:goblin-1 mnm:dark-cave )
-```
-
-## Axiom annotations
-
-Annotate axioms themselves (not just entities). For example, attach a source
-to a definition:
-
-**Schema:**
-
-```yaml
-classes:
-  DefinitionWithAxiomAnnotation:
-    slots:
-      - id
-      - definition
-      - definition_source
-    slot_usage:
+          owl: AnnotationProperty, AnnotationAssertion
+        description: a descriptive name/label for an element
+        slot_uri: rdfs:label
+        recommended: true
       definition:
         annotations:
-          owl.axiom_annotation.slots: definition_source
+          owl: AnnotationProperty, AnnotationAssertion
+        description: a human-readable definition of an element
+        slot_uri: IAO:0000115
+        recommended: true
+
 ```
 
-**Input:**
+
+__Input__:
 
 ```yaml
-- id: x:a
-  definition: a foo is a foo
-  definition_source:
-    - Me
+-
+  id: x:a
+  operands:
+  - x:b
+  - x:c
+  
 ```
 
-**Generated OWL:**
+__Generated axioms__:
 
-```owl
-AnnotationAssertion(
-  Annotation( dcterms:source "Me" )
-  IAO:0000115 x:a "a foo is a foo"
-)
 ```
+Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
+Prefix( rdf: = <http://www.w3.org/1999/02/22-rdf-syntax-ns#> )
+Prefix( rdfs: = <http://www.w3.org/2000/01/rdf-schema#> )
+Prefix( xsd: = <http://www.w3.org/2001/XMLSchema#> )
+Prefix( xml: = <http://www.w3.org/XML/1998/namespace> )
+Prefix( linkml: = <https://w3id.org/linkml/> )
+Prefix( test: = <https://w3id.org/linkml/owl/tests/> )
+Prefix( BFO: = <http://purl.obolibrary.org/obo/BFO_> )
+Prefix( IAO: = <http://purl.obolibrary.org/obo/IAO_> )
+Prefix( RO: = <http://purl.obolibrary.org/obo/RO_> )
+Prefix( PATO: = <http://purl.obolibrary.org/obo/PATO_> )
+Prefix( skos: = <http://www.w3.org/2004/02/skos/core#> )
+Prefix( dcterms: = <http://purl.org/dc/terms/> )
+Prefix( x: = <http://example.org/> )
 
-The `definition_source` value becomes an annotation on the definition axiom itself.
-
-## Jinja templates for complex axioms
-
-For axiom patterns that go beyond what annotations can express, use Jinja2 templates.
-
-### Parts with disjointness
-
-**Schema:**
-
-```yaml
-classes:
-  OrganWithParts:
-    slots:
-      - id
-      - has_part
-    annotations:
-      owl.template: |-
-        {% for p in has_part %}
-        SubClassOf( {{id}} ObjectSomeValuesFrom( BFO:0000051 {{p}} ) )
-        {% endfor %}
-        DisjointClasses(
-          {% for p in has_part %}
-          ObjectSomeValuesFrom( BFO:0000050 {{p}} )
-          {% endfor %}
-        )
-```
-
-**Input:**
-
-```yaml
-- id: UBERON:0015228
-  label: limb
-  has_part:
-    - UBERON:0003821
-    - UBERON:0003822
-    - UBERON:0003823
-```
-
-**Generated OWL:**
-
-```owl
-SubClassOf( UBERON:0015228 ObjectSomeValuesFrom( BFO:0000051 UBERON:0003821 ) )
-SubClassOf( UBERON:0015228 ObjectSomeValuesFrom( BFO:0000051 UBERON:0003822 ) )
-SubClassOf( UBERON:0015228 ObjectSomeValuesFrom( BFO:0000051 UBERON:0003823 ) )
-DisjointClasses(
-  ObjectSomeValuesFrom( BFO:0000050 UBERON:0003821 )
-  ObjectSomeValuesFrom( BFO:0000050 UBERON:0003822 )
-  ObjectSomeValuesFrom( BFO:0000050 UBERON:0003823 )
-)
-```
-
-### Nested structures with counts
-
-Templates can iterate over nested/inlined objects. This example models
-parts of a complex with stoichiometry and activation states:
-
-**Schema:**
-
-```yaml
-classes:
-  PartWithCounts:
-    annotations:
-      owl: AnonymousClassExpression
-    attributes:
-      unit:
-        range: NamedThing
-        annotations:
-          owl: SomeValuesFrom
-      count:
-        range: integer
-        annotations:
-          owl: HasValue
-      state:
-        range: ActivationStateEnum
-        annotations:
-          owl: SomeValuesFrom
-
-  CollectionOfPartsWithCounts:
-    slots:
-      - has_part
-    slot_usage:
-      has_part:
-        range: PartWithCounts
-        inlined: true
-    annotations:
-      owl.template: |-
-        {% for p in has_part %}
-        SubClassOf( {{id}}
-          ObjectSomeValuesFrom( BFO:0000051
-            ObjectIntersectionOf( {{p.unit}}
-              ObjectSomeValuesFrom( RO:0000053 {{p.state.meaning}} )
-              {% if p.count %}
-              DataHasValue( PATO:0001555 "{{p.count}}"^^xsd:integer )
-              {% endif %}
-            )
-          )
-        )
-        {% endfor %}
-```
-
-**Input:**
-
-```yaml
-- id: x:complex-p1-p2
-  has_part:
-    - unit: x:p1
-      count: 2
-      state: ACTIVATED
-    - unit: x:p2
-      count: 3
-      state: ACTIVATED
-```
-
-**Generated OWL:**
-
-```owl
-SubClassOf( x:complex-p1-p2
-  ObjectSomeValuesFrom( BFO:0000051
-    ObjectIntersectionOf( x:p1
-      ObjectSomeValuesFrom( RO:0000053 PATO:0002354 )
-      DataHasValue( PATO:0001555 "2"^^xsd:integer )
+Ontology( <https://w3id.org/linkml/owl/tests>
+    EquivalentClasses(
+        x:a
+            ObjectUnionOf(
+        x:b
+        x:c
     )
-  )
-)
-SubClassOf( x:complex-p1-p2
-  ObjectSomeValuesFrom( BFO:0000051
-    ObjectIntersectionOf( x:p2
-      ObjectSomeValuesFrom( RO:0000053 PATO:0002354 )
-      DataHasValue( PATO:0001555 "3"^^xsd:integer )
     )
-  )
 )
 ```
 
-### F-string shorthand
+## EquivalentTo IntersectionOf
 
-For simple one-line axiom patterns, use `owl.fstring` instead of a full Jinja template:
 
-```yaml
-slot_usage:
-  subclass_of:
-    annotations:
-      owl.fstring: SubClassOf({id} {V})
-```
+__Description__: _The slot is interpreted as a parent class,
+                  and all slot values with a IntersectionOf annotation are collected to make a IntersectionOf expression_
 
-Here `{id}` refers to the identifier of the focal element, and `{V}` to the slot value.
 
-## GCI propagation meta-patterns
-
-Templates can express *meta-patterns* for ontology design, such as propagation
-rules for General Class Inclusions (GCIs):
-
-**Schema:**
+__Schema__:
 
 ```yaml
+id: http//example.org/EquivalentTo-IntersectionOf
 classes:
-  GCIPropagationMetapattern:
-    mixin: true
+  EquivIntersection:
+    description: test metaclass illustrating classes defined by a simple intersection
+      of classes
+    is_a: NamedThing
     attributes:
-      genus:
-        range: NamedThing
-      differentia_relation:
-        range: NamedThing
-      differentia_filler:
-        range: NamedThing
-      inferred_predicate:
-        range: NamedThing
-      propagation_relation:
-        range: NamedThing
-    annotations:
-      owl.template: |-
-        SubClassOf(
-          ObjectSomeValuesFrom(
-            ObjectIntersectionOf( {{genus}}
-              ObjectSomeValuesFrom(
-                {{differentia_relation}}
-                ObjectSomeValuesFrom( {{propagation_relation}}
-                                      {{differentia_filler}} ))))
-          ObjectSomeValuesFrom(
-            {{inferred_predicate}}
-            ObjectIntersectionOf( {{genus}}
-              ObjectSomeValuesFrom(
-                {{differentia_relation}}
-                {{differentia_filler}} )))
-```
-
-This generates GCI axioms of the form: if something is a *genus* that has
-*differentia_relation* to something that *propagation_relation* to *differentia_filler*,
-then it also has *inferred_predicate* to a *genus* with *differentia_relation*
-to *differentia_filler*.
-
-## Real-world example: Disease ontology (Mondo-style)
-
-Disease ontologies like [Mondo](https://mondo.monarchinitiative.org/) use genus-differentia
-patterns extensively. Here we show how linkml-owl models the "disease by anatomical location"
-pattern that accounts for hundreds of Mondo classes.
-
-**Schema** (see [disease-schema.yaml](https://github.com/linkml/linkml-owl/blob/main/docs/example-schemas/disease-schema.yaml)):
-
-```yaml
-prefixes:
-  MONDO: http://purl.obolibrary.org/obo/MONDO_
-  UBERON: http://purl.obolibrary.org/obo/UBERON_
-  RO: http://purl.obolibrary.org/obo/RO_
-  IAO: http://purl.obolibrary.org/obo/IAO_
-
-slots:
-  subclass_of:
-    slot_uri: rdfs:subClassOf
-    range: Disease
-    multivalued: true
-  location:
-    slot_uri: RO:0004026
-    range: Disease
-    description: anatomical location of the disease
-
-classes:
-  DiseaseByLocation:
-    description: >-
-      A disease defined by its anatomical location (genus + differentia).
-    slots:
-      - id
-      - label
-      - definition
-      - subclass_of
-      - location
-    slot_usage:
-      subclass_of:
-        required: true
+      operands:
         annotations:
           owl: EquivalentClasses, IntersectionOf
-      location:
+        multivalued: true
+        range: NamedThing
         required: true
+      id:
+        description: the CURIE or IRI of the focal element
+        identifier: true
+        range: uriorcurie
+        required: true
+      label:
+        annotations:
+          owl: AnnotationProperty, AnnotationAssertion
+        description: a descriptive name/label for an element
+        slot_uri: rdfs:label
+        recommended: true
+      definition:
+        annotations:
+          owl: AnnotationProperty, AnnotationAssertion
+        description: a human-readable definition of an element
+        slot_uri: IAO:0000115
+        recommended: true
+
+```
+
+
+__Input__:
+
+```yaml
+-
+  id: x:a
+  operands:
+  - x:b
+  - x:c
+  
+```
+
+__Generated axioms__:
+
+```
+Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
+Prefix( rdf: = <http://www.w3.org/1999/02/22-rdf-syntax-ns#> )
+Prefix( rdfs: = <http://www.w3.org/2000/01/rdf-schema#> )
+Prefix( xsd: = <http://www.w3.org/2001/XMLSchema#> )
+Prefix( xml: = <http://www.w3.org/XML/1998/namespace> )
+Prefix( linkml: = <https://w3id.org/linkml/> )
+Prefix( test: = <https://w3id.org/linkml/owl/tests/> )
+Prefix( BFO: = <http://purl.obolibrary.org/obo/BFO_> )
+Prefix( IAO: = <http://purl.obolibrary.org/obo/IAO_> )
+Prefix( RO: = <http://purl.obolibrary.org/obo/RO_> )
+Prefix( PATO: = <http://purl.obolibrary.org/obo/PATO_> )
+Prefix( skos: = <http://www.w3.org/2004/02/skos/core#> )
+Prefix( dcterms: = <http://purl.org/dc/terms/> )
+Prefix( x: = <http://example.org/> )
+
+Ontology( <https://w3id.org/linkml/owl/tests>
+    EquivalentClasses(
+        x:a
+            ObjectIntersectionOf(
+        x:b
+        x:c
+    )
+    )
+)
+```
+
+## EquivalentTo IntersectionOf with axiom annotation
+
+
+__Description__: _as above, with axiom annotation_
+
+
+__Schema__:
+
+```yaml
+id: http//example.org/EquivalentTo-IntersectionOf-with-axiom-annotation
+classes:
+  EquivIntersectionWithAxiomAnnotation:
+    description: test metaclass illustrating classes defined by a simple intersection
+      of classes, including an axion annotation
+    is_a: NamedThing
+    attributes:
+      operands:
+        annotations:
+          owl: EquivalentClasses, IntersectionOf
+          owl.axiom_annotation.slots:
+            tag: owl.axiom_annotation.slots
+            value: logical_definition_source
+        multivalued: true
+        range: NamedThing
+        required: true
+      logical_definition_source:
+        description: origin of logical definition
+        slot_uri: dcterms:source
+        multivalued: true
+      id:
+        description: the CURIE or IRI of the focal element
+        identifier: true
+        range: uriorcurie
+        required: true
+      label:
+        annotations:
+          owl: AnnotationProperty, AnnotationAssertion
+        description: a descriptive name/label for an element
+        slot_uri: rdfs:label
+        recommended: true
+      definition:
+        annotations:
+          owl: AnnotationProperty, AnnotationAssertion
+        description: a human-readable definition of an element
+        slot_uri: IAO:0000115
+        recommended: true
+
+```
+
+
+__Input__:
+
+```yaml
+-
+  id: x:a
+  operands:
+  - x:b
+  - x:c
+  logical_definition_source:
+  - Me
+  
+```
+
+__Generated axioms__:
+
+```
+Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
+Prefix( rdf: = <http://www.w3.org/1999/02/22-rdf-syntax-ns#> )
+Prefix( rdfs: = <http://www.w3.org/2000/01/rdf-schema#> )
+Prefix( xsd: = <http://www.w3.org/2001/XMLSchema#> )
+Prefix( xml: = <http://www.w3.org/XML/1998/namespace> )
+Prefix( linkml: = <https://w3id.org/linkml/> )
+Prefix( test: = <https://w3id.org/linkml/owl/tests/> )
+Prefix( BFO: = <http://purl.obolibrary.org/obo/BFO_> )
+Prefix( IAO: = <http://purl.obolibrary.org/obo/IAO_> )
+Prefix( RO: = <http://purl.obolibrary.org/obo/RO_> )
+Prefix( PATO: = <http://purl.obolibrary.org/obo/PATO_> )
+Prefix( skos: = <http://www.w3.org/2004/02/skos/core#> )
+Prefix( dcterms: = <http://purl.org/dc/terms/> )
+Prefix( x: = <http://example.org/> )
+
+Ontology( <https://w3id.org/linkml/owl/tests>
+    EquivalentClasses(
+        Annotation( dcterms:source "Me" )
+            x:a
+                ObjectIntersectionOf(
+        x:b
+        x:c
+    )
+    )
+)
+```
+
+## EquivalentTo Genus and SomeValuesFrom
+
+
+__Description__: _All slot value interpretations are collected into a single IntersectionOf_
+
+
+__Schema__:
+
+```yaml
+id: http//example.org/EquivalentTo-Genus-and-SomeValuesFrom
+classes:
+  EquivGenusAndPartOf:
+    description: test metaclass illustrating basic simple genus-differentia style
+      logical definition, including so-called hidden GCIs
+    is_a: NamedThing
+    attributes:
+      subclass_of:
+        annotations:
+          owl: EquivalentClasses, IntersectionOf
+        description: the genus of the definition
+        slot_uri: rdfs:subclass_of
+        multivalued: true
+        range: NamedThing
+        required: true
+      part_of:
         annotations:
           owl: EquivalentClasses, IntersectionOf, ObjectSomeValuesFrom
+        description: the part-of differentiae
+        slot_uri: BFO:0000050
+        multivalued: true
+        range: NamedThing
+        required: true
+      other_part_ofs:
+        annotations:
+          owl: ObjectSomeValuesFrom
+        description: other parts ofs not in the differntating conditions (sometimes
+          called hidden GCIs)
+        slot_uri: BFO:0000050
+        multivalued: true
+        range: NamedThing
+        required: false
+      id:
+        description: the CURIE or IRI of the focal element
+        identifier: true
+        range: uriorcurie
+        required: true
+      label:
+        annotations:
+          owl: AnnotationProperty, AnnotationAssertion
+        description: a descriptive name/label for an element
+        slot_uri: rdfs:label
+        recommended: true
+      definition:
+        annotations:
+          owl: AnnotationProperty, AnnotationAssertion
+        description: a human-readable definition of an element
+        slot_uri: IAO:0000115
+        recommended: true
+
 ```
 
-**Input:**
+
+__Input__:
 
 ```yaml
-- id: MONDO:0005560
-  label: brain disease
-  definition: A disease affecting the brain.
+-
+  id: x:a
   subclass_of:
-    - MONDO:0005071
-  location: UBERON:0000955
-```
-
-**Generated OWL:**
-
-```owl
-EquivalentClasses(
-  MONDO:0005560
-  ObjectIntersectionOf(
-    MONDO:0005071
-    ObjectSomeValuesFrom( RO:0004026 UBERON:0000955 )
-  )
-)
-AnnotationAssertion( rdfs:label MONDO:0005560 "brain disease" )
-AnnotationAssertion( IAO:0000115 MONDO:0005560 "A disease affecting the brain." )
-```
-
-In English: "brain disease is equivalent to a nervous system disorder that has disease location some brain."
-
-### Disease with inheritance (template-based)
-
-When you need conditional logic — e.g. only adding an inheritance axiom when the
-field is populated — use a Jinja template:
-
-```yaml
-classes:
-  DiseaseWithInheritance:
-    slots:
-      - id
-      - subclass_of
-    attributes:
-      inheritance:
-        range: InheritanceEnum
-    annotations:
-      owl.template: |-
-        {% for sc in subclass_of %}
-        SubClassOf( {{id}} {{sc}} )
-        {% endfor %}
-        {% if inheritance %}
-        SubClassOf( {{id}} ObjectSomeValuesFrom( RO:0000053 {{inheritance.meaning}} ) )
-        {% endif %}
-
-enums:
-  InheritanceEnum:
-    permissible_values:
-      AUTOSOMAL_DOMINANT:
-        meaning: HP:0000006
-      AUTOSOMAL_RECESSIVE:
-        meaning: HP:0000007
-```
-
-**Input:**
-
-```yaml
-- id: MONDO:0007915
-  label: Marfan syndrome
-  subclass_of:
-    - MONDO:0003900
-  inheritance: AUTOSOMAL_DOMINANT
-```
-
-**Generated OWL:**
-
-```owl
-SubClassOf( MONDO:0007915 MONDO:0003900 )
-SubClassOf( MONDO:0007915 ObjectSomeValuesFrom( RO:0000053 HP:0000006 ) )
-```
-
-## Real-world example: Phenotype ontology (EQ decomposition)
-
-Phenotype ontologies like [HPO](https://hpo.jax.org/) and [uPheno](https://obophenotype.github.io/upheno/)
-define phenotypes using an Entity-Quality (EQ) decomposition: a phenotype is a
-quality that inheres in an anatomical entity.
-
-**Schema** (see [phenotype-schema.yaml](https://github.com/linkml/linkml-owl/blob/main/docs/example-schemas/phenotype-schema.yaml)):
-
-```yaml
-prefixes:
-  HP: http://purl.obolibrary.org/obo/HP_
-  UBERON: http://purl.obolibrary.org/obo/UBERON_
-  PATO: http://purl.obolibrary.org/obo/PATO_
-
-enums:
-  QualityModifierEnum:
-    permissible_values:
-      INCREASED:
-        meaning: PATO:0000462
-      DECREASED:
-        meaning: PATO:0000463
-      ABNORMAL:
-        meaning: PATO:0000460
-
-classes:
-  EntityQualityPhenotype:
-    attributes:
-      entity:
-        range: EntityQualityPhenotype
-        required: true
-        description: the anatomical entity affected
-      quality:
-        range: QualityModifierEnum
-        required: true
-        description: the quality modifier
-      genus:
-        range: EntityQualityPhenotype
-        required: true
-        slot_uri: rdfs:subClassOf
-    annotations:
-      owl.template: |-
-        EquivalentClasses(
-          {{id}}
-          ObjectIntersectionOf(
-            {{genus}}
-            ObjectSomeValuesFrom( BFO:0000051
-              ObjectIntersectionOf(
-                {{quality.meaning}}
-                ObjectSomeValuesFrom( RO:0000052
-                  ObjectSomeValuesFrom( BFO:0000050 {{entity}} )
-                )
-              )
-            )
-          )
-        )
-```
-
-**Input:**
-
-```yaml
-- id: HP:0001263
-  label: Abnormal brain morphology
-  definition: An abnormality of the brain.
-  genus: HP:0000118
-  entity: UBERON:0000955
-  quality: ABNORMAL
-```
-
-**Generated OWL:**
-
-```owl
-EquivalentClasses(
-  HP:0001263
-  ObjectIntersectionOf(
-    HP:0000118
-    ObjectSomeValuesFrom( BFO:0000051
-      ObjectIntersectionOf(
-        PATO:0000460
-        ObjectSomeValuesFrom( RO:0000052
-          ObjectSomeValuesFrom( BFO:0000050 UBERON:0000955 )
-        )
-      )
-    )
-  )
-)
-```
-
-In English: "Abnormal brain morphology is equivalent to a phenotypic abnormality
-that has-part some (abnormal quality that inheres-in something part-of some brain)."
-
-The enum `ABNORMAL` is automatically resolved to `PATO:0000460` via its `meaning` field.
-This pattern scales to hundreds of phenotype terms by adding rows to the data file.
-
-## Integration with existing ontologies
-
-LinkML-OWL uses CURIEs and prefix maps to integrate with existing OWL ontologies.
-Declare prefixes for the ontologies you reference:
-
-```yaml
-prefixes:
-  UBERON: http://purl.obolibrary.org/obo/UBERON_
-  CL: http://purl.obolibrary.org/obo/CL_
-  GO: http://purl.obolibrary.org/obo/GO_
-  BFO: http://purl.obolibrary.org/obo/BFO_
-  RO: http://purl.obolibrary.org/obo/RO_
-  CHEBI: http://purl.obolibrary.org/obo/CHEBI_
-```
-
-Then use CURIEs freely in both schemas and data:
-
-```yaml
-- id: GO:0006915
-  label: apoptotic process
+  - X:genus
   part_of:
-    - GO:0012501
-  has_participant:
-    - CHEBI:18243
+  - x:b
+  - x:c
+  
 ```
 
-This generates axioms using the full IRIs:
+__Generated axioms__:
 
-```owl
-SubClassOf(
-  <http://purl.obolibrary.org/obo/GO_0006915>
-  ObjectSomeValuesFrom(
-    <http://purl.obolibrary.org/obo/BFO_0000050>
-    <http://purl.obolibrary.org/obo/GO_0012501>
-  )
+```
+Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
+Prefix( rdf: = <http://www.w3.org/1999/02/22-rdf-syntax-ns#> )
+Prefix( rdfs: = <http://www.w3.org/2000/01/rdf-schema#> )
+Prefix( xsd: = <http://www.w3.org/2001/XMLSchema#> )
+Prefix( xml: = <http://www.w3.org/XML/1998/namespace> )
+Prefix( linkml: = <https://w3id.org/linkml/> )
+Prefix( test: = <https://w3id.org/linkml/owl/tests/> )
+Prefix( BFO: = <http://purl.obolibrary.org/obo/BFO_> )
+Prefix( IAO: = <http://purl.obolibrary.org/obo/IAO_> )
+Prefix( RO: = <http://purl.obolibrary.org/obo/RO_> )
+Prefix( PATO: = <http://purl.obolibrary.org/obo/PATO_> )
+Prefix( skos: = <http://www.w3.org/2004/02/skos/core#> )
+Prefix( dcterms: = <http://purl.org/dc/terms/> )
+Prefix( x: = <http://example.org/> )
+
+Ontology( <https://w3id.org/linkml/owl/tests>
+    EquivalentClasses(
+        x:a
+            ObjectIntersectionOf(
+        x:genus
+            ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000050> x:b )
+            ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000050> x:c )
+    )
+    )
 )
 ```
 
-## Running the examples
+## EquivalentTo Genus and SomeValuesFrom with AutoLabel
 
-Convert data to OWL using the command line:
 
-```bash
-# Specify the metaclass explicitly
-linkml-data2owl -s anatomy-schema.yaml -C AnatomicalStructure anatomy-data.yaml -o anatomy.ofn
+__Description__: _Label auto-added_
 
-# Use @type in the data to auto-detect the metaclass
-linkml-data2owl -s anatomy-schema.yaml anatomy-data.yaml -o anatomy.ofn
 
-# Output as Turtle instead of OWL Functional Syntax
-linkml-data2owl -s anatomy-schema.yaml -C AnatomicalStructure anatomy-data.yaml -O ttl -o anatomy.ttl
+__Schema__:
+
+```yaml
+id: http//example.org/EquivalentTo-Genus-and-SomeValuesFrom-with-AutoLabel
+classes:
+  EquivGenusAndPartOfWithAutoLabel:
+    description: As EquivGenusAndPartOf, demonstrating string serialization
+    is_a: NamedThing
+    attributes:
+      label:
+        string_serialization: '{part.label} of {whole.label}'
+        slot_uri: rdfs:label
+        recommended: true
+      part:
+        annotations:
+          owl: EquivalentClasses, IntersectionOf
+        description: the genus of the definition
+        slot_uri: rdfs:subClassOf
+        range: NamedThing
+        required: true
+      whole:
+        annotations:
+          owl: EquivalentClasses, IntersectionOf, ObjectSomeValuesFrom
+        description: the part-of differentia
+        slot_uri: BFO:0000050
+        range: NamedThing
+        required: true
+      id:
+        description: the CURIE or IRI of the focal element
+        identifier: true
+        range: uriorcurie
+        required: true
+      definition:
+        annotations:
+          owl: AnnotationProperty, AnnotationAssertion
+        description: a human-readable definition of an element
+        slot_uri: IAO:0000115
+        recommended: true
+  NamedThing:
+    description: generic grouping for classes, relations, individuals, and other named
+      entities
+    is_a: Thing
+    abstract: true
+    attributes:
+      id:
+        description: the CURIE or IRI of the focal element
+        identifier: true
+        range: uriorcurie
+        required: true
+      label:
+        annotations:
+          owl: AnnotationProperty, AnnotationAssertion
+        description: a descriptive name/label for an element
+        slot_uri: rdfs:label
+        recommended: true
+      definition:
+        annotations:
+          owl: AnnotationProperty, AnnotationAssertion
+        description: a human-readable definition of an element
+        slot_uri: IAO:0000115
+        recommended: true
+
 ```
 
-## Summary of OWL annotation keywords
 
-| Annotation keyword | OWL construct generated |
-|---|---|
-| `AnnotationAssertion` | AnnotationAssertion axiom |
-| `AnnotationProperty` | Declares the slot as an annotation property |
-| `SubClassOf` | SubClassOf axiom (named superclass) |
-| `EquivalentClasses` | EquivalentClasses axiom |
-| `ObjectSomeValuesFrom` | Existential restriction (SubClassOf by default) |
-| `ObjectAllValuesFrom` | Universal restriction |
-| `IntersectionOf` | ObjectIntersectionOf (combine with EquivalentClasses) |
-| `UnionOf` | ObjectUnionOf |
-| `DisjointUnion` | DisjointUnion axiom |
-| `DataHasValue` | Data has-value restriction |
-| `DataPropertyAssertion` | Data property assertion (ABox) |
-| `ObjectPropertyAssertion` | Object property assertion (ABox) |
-| `ClassAssertion` | Class assertion (rdf:type for individuals) |
-| `NamedIndividual` | Declares instances as OWL individuals |
+__Input__:
 
-Multiple keywords can be combined with commas, e.g. `owl: EquivalentClasses, IntersectionOf, ObjectSomeValuesFrom`.
+```yaml
+-
+  id: x:NewClass
+  part: x:IN
+  whole: x:H
+  
+-
+  id: x:IN
+  label: interneuron
+  
+-
+  id: x:H
+  label: hippocampus
+  
+```
+
+__Generated axioms__:
+
+```
+Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
+Prefix( rdf: = <http://www.w3.org/1999/02/22-rdf-syntax-ns#> )
+Prefix( rdfs: = <http://www.w3.org/2000/01/rdf-schema#> )
+Prefix( xsd: = <http://www.w3.org/2001/XMLSchema#> )
+Prefix( xml: = <http://www.w3.org/XML/1998/namespace> )
+Prefix( linkml: = <https://w3id.org/linkml/> )
+Prefix( test: = <https://w3id.org/linkml/owl/tests/> )
+Prefix( BFO: = <http://purl.obolibrary.org/obo/BFO_> )
+Prefix( IAO: = <http://purl.obolibrary.org/obo/IAO_> )
+Prefix( RO: = <http://purl.obolibrary.org/obo/RO_> )
+Prefix( PATO: = <http://purl.obolibrary.org/obo/PATO_> )
+Prefix( skos: = <http://www.w3.org/2004/02/skos/core#> )
+Prefix( dcterms: = <http://purl.org/dc/terms/> )
+Prefix( x: = <http://example.org/> )
+
+Ontology( <https://w3id.org/linkml/owl/tests>
+    AnnotationAssertion( rdfs:label x:NewClass "interneuron of hippocampus" )
+    EquivalentClasses(
+        x:NewClass
+            ObjectIntersectionOf(
+        x:IN
+            ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000050> x:H )
+    )
+    )
+    AnnotationAssertion( rdfs:label x:IN "interneuron" )
+    AnnotationAssertion( rdfs:label x:H "hippocampus" )
+)
+```
+
+## Hidden GCI
+
+
+__Description__: _Demonstrates a case where some slots contribute to a logical definition (equiv axiom),
+                     and other contribute to additional axioms (so called hidden GCIs)_
+
+
+__Schema__:
+
+```yaml
+id: http//example.org/Hidden-GCI
+classes:
+  EquivGenusAndPartOf:
+    description: test metaclass illustrating basic simple genus-differentia style
+      logical definition, including so-called hidden GCIs
+    is_a: NamedThing
+    attributes:
+      subclass_of:
+        annotations:
+          owl: EquivalentClasses, IntersectionOf
+        description: the genus of the definition
+        slot_uri: rdfs:subclass_of
+        multivalued: true
+        range: NamedThing
+        required: true
+      part_of:
+        annotations:
+          owl: EquivalentClasses, IntersectionOf, ObjectSomeValuesFrom
+        description: the part-of differentiae
+        slot_uri: BFO:0000050
+        multivalued: true
+        range: NamedThing
+        required: true
+      other_part_ofs:
+        annotations:
+          owl: ObjectSomeValuesFrom
+        description: other parts ofs not in the differntating conditions (sometimes
+          called hidden GCIs)
+        slot_uri: BFO:0000050
+        multivalued: true
+        range: NamedThing
+        required: false
+      id:
+        description: the CURIE or IRI of the focal element
+        identifier: true
+        range: uriorcurie
+        required: true
+      label:
+        annotations:
+          owl: AnnotationProperty, AnnotationAssertion
+        description: a descriptive name/label for an element
+        slot_uri: rdfs:label
+        recommended: true
+      definition:
+        annotations:
+          owl: AnnotationProperty, AnnotationAssertion
+        description: a human-readable definition of an element
+        slot_uri: IAO:0000115
+        recommended: true
+
+```
+
+
+__Input__:
+
+```yaml
+-
+  id: x:a
+  subclass_of:
+  - X:genus
+  part_of:
+  - x:b
+  other_part_ofs:
+  - x:c
+  
+```
+
+__Generated axioms__:
+
+```
+Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
+Prefix( rdf: = <http://www.w3.org/1999/02/22-rdf-syntax-ns#> )
+Prefix( rdfs: = <http://www.w3.org/2000/01/rdf-schema#> )
+Prefix( xsd: = <http://www.w3.org/2001/XMLSchema#> )
+Prefix( xml: = <http://www.w3.org/XML/1998/namespace> )
+Prefix( linkml: = <https://w3id.org/linkml/> )
+Prefix( test: = <https://w3id.org/linkml/owl/tests/> )
+Prefix( BFO: = <http://purl.obolibrary.org/obo/BFO_> )
+Prefix( IAO: = <http://purl.obolibrary.org/obo/IAO_> )
+Prefix( RO: = <http://purl.obolibrary.org/obo/RO_> )
+Prefix( PATO: = <http://purl.obolibrary.org/obo/PATO_> )
+Prefix( skos: = <http://www.w3.org/2004/02/skos/core#> )
+Prefix( dcterms: = <http://purl.org/dc/terms/> )
+Prefix( x: = <http://example.org/> )
+
+Ontology( <https://w3id.org/linkml/owl/tests>
+    SubClassOf( x:a     ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000050> x:c ) )
+    EquivalentClasses(
+        x:a
+            ObjectIntersectionOf(
+        x:genus
+            ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000050> x:b )
+    )
+    )
+)
+```
+
+## Hidden GCI with axiom annotations
+
+
+__Description__: _End-to-end example with hidden GCIs and different axiom annotations_
+
+
+__Schema__:
+
+```yaml
+id: http//example.org/Hidden-GCI-with-axiom-annotations
+classes:
+  EquivGenusAndPartOfWithAxiomAnnotation:
+    description: test metaclass illustrating basic simple genus-differentia style
+      logical definition, including axiom annotation
+    is_a: NamedThing
+    attributes:
+      subclass_of:
+        annotations:
+          owl: EquivalentClasses, IntersectionOf
+          owl.axiom_annotation.slots:
+            tag: owl.axiom_annotation.slots
+            value: logical_definition_source
+        description: named class this is subclass of
+        slot_uri: rdfs:subclass_of
+        multivalued: true
+        range: NamedThing
+        required: true
+      part_of:
+        annotations:
+          owl: EquivalentClasses, IntersectionOf, ObjectSomeValuesFrom
+          owl.axiom_annotation.slots:
+            tag: owl.axiom_annotation.slots
+            value: logical_definition_source
+        description: element this is a part of
+        slot_uri: BFO:0000050
+        multivalued: true
+        range: NamedThing
+        required: true
+      other_part_ofs:
+        annotations:
+          owl: ObjectSomeValuesFrom
+          owl.axiom_annotation.slots:
+            tag: owl.axiom_annotation.slots
+            value: axiom_source
+        description: for hidden GCIs
+        slot_uri: BFO:0000050
+        multivalued: true
+        range: NamedThing
+        required: false
+      definition_source:
+        description: origin of textual definition
+        slot_uri: dcterms:source
+        multivalued: true
+      logical_definition_source:
+        description: origin of logical definition
+        slot_uri: dcterms:source
+        multivalued: true
+      axiom_source:
+        description: origin of axiom
+        slot_uri: dcterms:source
+        multivalued: true
+      id:
+        description: the CURIE or IRI of the focal element
+        identifier: true
+        range: uriorcurie
+        required: true
+      label:
+        annotations:
+          owl: AnnotationProperty, AnnotationAssertion
+        description: a descriptive name/label for an element
+        slot_uri: rdfs:label
+        recommended: true
+      definition:
+        annotations:
+          owl.axiom_annotation.slots:
+            tag: owl.axiom_annotation.slots
+            value: definition_source
+        description: a human-readable definition of an element
+        slot_uri: IAO:0000115
+        recommended: true
+
+```
+
+
+__Input__:
+
+```yaml
+-
+  id: x:a
+  label: a
+  definition: A X:genus that part_of some x:b
+  subclass_of:
+  - X:genus
+  part_of:
+  - x:b
+  other_part_ofs:
+  - x:c
+  definition_source:
+  - Auto
+  logical_definition_source:
+  - Me
+  axiom_source:
+  - Auto
+  
+```
+
+__Generated axioms__:
+
+```
+Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
+Prefix( rdf: = <http://www.w3.org/1999/02/22-rdf-syntax-ns#> )
+Prefix( rdfs: = <http://www.w3.org/2000/01/rdf-schema#> )
+Prefix( xsd: = <http://www.w3.org/2001/XMLSchema#> )
+Prefix( xml: = <http://www.w3.org/XML/1998/namespace> )
+Prefix( linkml: = <https://w3id.org/linkml/> )
+Prefix( test: = <https://w3id.org/linkml/owl/tests/> )
+Prefix( BFO: = <http://purl.obolibrary.org/obo/BFO_> )
+Prefix( IAO: = <http://purl.obolibrary.org/obo/IAO_> )
+Prefix( RO: = <http://purl.obolibrary.org/obo/RO_> )
+Prefix( PATO: = <http://purl.obolibrary.org/obo/PATO_> )
+Prefix( skos: = <http://www.w3.org/2004/02/skos/core#> )
+Prefix( dcterms: = <http://purl.org/dc/terms/> )
+Prefix( x: = <http://example.org/> )
+
+Ontology( <https://w3id.org/linkml/owl/tests>
+    AnnotationAssertion( rdfs:label x:a "a" )
+    AnnotationAssertion(
+        Annotation( dcterms:source "Auto" )
+        <http://purl.obolibrary.org/obo/IAO_0000115> x:a "A X:genus that part_of some x:b"
+    )
+    SubClassOf(
+        Annotation( dcterms:source "Auto" )
+        x:a     ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000050> x:c )
+    )
+    EquivalentClasses(
+        Annotation( dcterms:source "Me" )
+            x:a
+                ObjectIntersectionOf(
+        x:genus
+            ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000050> x:b )
+    )
+    )
+)
+```
+
+## slot-value level fstring template
+
+
+__Description__: _Axiom generation per slot-value assignment.
+                     (Note that currently non-identifier fields have their URIs expanded,
+                      but the OWL is the same)_
+
+
+__Schema__:
+
+```yaml
+id: http//example.org/slot-value-level-fstring-template
+classes:
+  ClassTemplateExample1:
+    description: test metaclass illustrating a trivial example of generating an axiom
+      by a simple templated string
+    is_a: NamedThing
+    attributes:
+      subclass_of:
+        annotations:
+          owl.fstring:
+            tag: owl.fstring
+            value: SubClassOf({id} {V})
+        description: named class this is subclass of
+        slot_uri: rdfs:subclass_of
+        multivalued: true
+        range: NamedThing
+      part_of:
+        description: element this is a part of
+        slot_uri: BFO:0000050
+        multivalued: true
+        range: NamedThing
+      other_part_ofs:
+        description: this slot is used to indicate other part-of relationships that
+          are not in the logical definition
+        slot_uri: BFO:0000050
+        multivalued: true
+        range: NamedThing
+      id:
+        description: the CURIE or IRI of the focal element
+        identifier: true
+        range: uriorcurie
+        required: true
+      label:
+        annotations:
+          owl: AnnotationProperty, AnnotationAssertion
+        description: a descriptive name/label for an element
+        slot_uri: rdfs:label
+        recommended: true
+      definition:
+        annotations:
+          owl: AnnotationProperty, AnnotationAssertion
+        description: a human-readable definition of an element
+        slot_uri: IAO:0000115
+        recommended: true
+
+```
+
+
+__Input__:
+
+```yaml
+-
+  id: x:a
+  subclass_of:
+  - x:b
+  
+```
+
+__Generated axioms__:
+
+```
+Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
+Prefix( rdf: = <http://www.w3.org/1999/02/22-rdf-syntax-ns#> )
+Prefix( rdfs: = <http://www.w3.org/2000/01/rdf-schema#> )
+Prefix( xsd: = <http://www.w3.org/2001/XMLSchema#> )
+Prefix( xml: = <http://www.w3.org/XML/1998/namespace> )
+Prefix( linkml: = <https://w3id.org/linkml/> )
+Prefix( test: = <https://w3id.org/linkml/owl/tests/> )
+Prefix( BFO: = <http://purl.obolibrary.org/obo/BFO_> )
+Prefix( IAO: = <http://purl.obolibrary.org/obo/IAO_> )
+Prefix( RO: = <http://purl.obolibrary.org/obo/RO_> )
+Prefix( PATO: = <http://purl.obolibrary.org/obo/PATO_> )
+Prefix( skos: = <http://www.w3.org/2004/02/skos/core#> )
+Prefix( dcterms: = <http://purl.org/dc/terms/> )
+Prefix( x: = <http://example.org/> )
+
+Ontology( <https://w3id.org/linkml/owl/tests>
+    SubClassOf( x:a x:b )
+)
+```
+
+## slot-value level jinja template
+
+
+__Description__: _Axiom generation per slot-value assignment.
+                     (Note that currently non-identifier fields have their URIs expanded,
+                      but the OWL is the same)_
+
+
+__Schema__:
+
+```yaml
+id: http//example.org/slot-value-level-jinja-template
+classes:
+  ClassTemplateExample2:
+    description: test metaclass illustrating an example of generating multiple axioms
+      by a jinja template
+    is_a: NamedThing
+    attributes:
+      subclass_of:
+        annotations:
+          owl.template:
+            tag: owl.template
+            value: '{% for p in subclass_of %}SubClassOf({{id}} {{p}}){% endfor %}'
+        description: named class this is subclass of
+        slot_uri: rdfs:subclass_of
+        multivalued: true
+        range: NamedThing
+      part_of:
+        description: element this is a part of
+        slot_uri: BFO:0000050
+        multivalued: true
+        range: NamedThing
+      other_part_ofs:
+        description: this slot is used to indicate other part-of relationships that
+          are not in the logical definition
+        slot_uri: BFO:0000050
+        multivalued: true
+        range: NamedThing
+      id:
+        description: the CURIE or IRI of the focal element
+        identifier: true
+        range: uriorcurie
+        required: true
+      label:
+        annotations:
+          owl: AnnotationProperty, AnnotationAssertion
+        description: a descriptive name/label for an element
+        slot_uri: rdfs:label
+        recommended: true
+      definition:
+        annotations:
+          owl: AnnotationProperty, AnnotationAssertion
+        description: a human-readable definition of an element
+        slot_uri: IAO:0000115
+        recommended: true
+
+```
+
+
+__Input__:
+
+```yaml
+-
+  id: x:a
+  subclass_of:
+  - x:b
+  
+```
+
+__Generated axioms__:
+
+```
+Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
+Prefix( rdf: = <http://www.w3.org/1999/02/22-rdf-syntax-ns#> )
+Prefix( rdfs: = <http://www.w3.org/2000/01/rdf-schema#> )
+Prefix( xsd: = <http://www.w3.org/2001/XMLSchema#> )
+Prefix( xml: = <http://www.w3.org/XML/1998/namespace> )
+Prefix( linkml: = <https://w3id.org/linkml/> )
+Prefix( test: = <https://w3id.org/linkml/owl/tests/> )
+Prefix( BFO: = <http://purl.obolibrary.org/obo/BFO_> )
+Prefix( IAO: = <http://purl.obolibrary.org/obo/IAO_> )
+Prefix( RO: = <http://purl.obolibrary.org/obo/RO_> )
+Prefix( PATO: = <http://purl.obolibrary.org/obo/PATO_> )
+Prefix( skos: = <http://www.w3.org/2004/02/skos/core#> )
+Prefix( dcterms: = <http://purl.org/dc/terms/> )
+Prefix( x: = <http://example.org/> )
+
+Ontology( <https://w3id.org/linkml/owl/tests>
+    SubClassOf( x:a x:b )
+)
+```
+
+## Parts collection with counts
+
+
+__Description__: _Demonstrates nesting
+                  _
+
+
+__Schema__:
+
+```yaml
+id: http//example.org/Parts-collection-with-counts
+classes:
+  CollectionOfPartsWithCounts:
+    annotations:
+      owl.template:
+        tag: owl.template
+        value: "{% for p in has_part %}\nSubClassOf( {{id}}\n            ObjectSomeValuesFrom(\
+          \ BFO:0000051\n                                  ObjectIntersectionOf( {{p.unit\
+          \ }}\n                                                        ObjectSomeValuesFrom(RO:0000053\
+          \ {{p.state.meaning}})\n                                               \
+          \         {% if p.count %}\n                                           \
+          \             DataHasValue(PATO:0001555 \"{{p.count}}\"^^xsd:integer )\n\
+          \                                                        {% endif %}\n \
+          \                                                     )\n\n            \
+          \                     )\n          )\n{% endfor %}"
+    description: test metaclass that illustrates a complex nested multi-part structure,
+      where a whole is defined by a collection of repeared parts in specified states
+    is_a: NamedThing
+    attributes:
+      has_part:
+        description: sub-elements
+        slot_uri: BFO:0000051
+        multivalued: true
+        inverse: part_of
+        range: PartWithCounts
+        inlined: true
+      id:
+        description: the CURIE or IRI of the focal element
+        identifier: true
+        range: uriorcurie
+        required: true
+      label:
+        annotations:
+          owl: AnnotationProperty, AnnotationAssertion
+        description: a descriptive name/label for an element
+        slot_uri: rdfs:label
+        recommended: true
+      definition:
+        annotations:
+          owl: AnnotationProperty, AnnotationAssertion
+        description: a human-readable definition of an element
+        slot_uri: IAO:0000115
+        recommended: true
+
+```
+
+
+__Input__:
+
+```yaml
+-
+  id: x:collection
+  has_part:
+  - unit: x:p1
+    count: 2
+    state: ACTIVATED
+  - unit: x:p2
+    count: 3
+    state: ACTIVATED
+  
+```
+
+__Generated axioms__:
+
+```
+Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
+Prefix( rdf: = <http://www.w3.org/1999/02/22-rdf-syntax-ns#> )
+Prefix( rdfs: = <http://www.w3.org/2000/01/rdf-schema#> )
+Prefix( xsd: = <http://www.w3.org/2001/XMLSchema#> )
+Prefix( xml: = <http://www.w3.org/XML/1998/namespace> )
+Prefix( linkml: = <https://w3id.org/linkml/> )
+Prefix( test: = <https://w3id.org/linkml/owl/tests/> )
+Prefix( BFO: = <http://purl.obolibrary.org/obo/BFO_> )
+Prefix( IAO: = <http://purl.obolibrary.org/obo/IAO_> )
+Prefix( RO: = <http://purl.obolibrary.org/obo/RO_> )
+Prefix( PATO: = <http://purl.obolibrary.org/obo/PATO_> )
+Prefix( skos: = <http://www.w3.org/2004/02/skos/core#> )
+Prefix( dcterms: = <http://purl.org/dc/terms/> )
+Prefix( x: = <http://example.org/> )
+
+Ontology( <https://w3id.org/linkml/owl/tests>
+    SubClassOf( x:collection     ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000051>     ObjectIntersectionOf(
+        x:p1
+            ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/RO_0000053> <http://purl.obolibrary.org/obo/PATO_0002354> )
+            DataHasValue( <http://purl.obolibrary.org/obo/PATO_0001555> "2"^^xsd:integer )
+    ) ) )
+    SubClassOf( x:collection     ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000051>     ObjectIntersectionOf(
+        x:p2
+            ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/RO_0000053> <http://purl.obolibrary.org/obo/PATO_0002354> )
+            DataHasValue( <http://purl.obolibrary.org/obo/PATO_0001555> "3"^^xsd:integer )
+    ) ) )
+)
+```
+
+## Parts collection
+
+
+__Description__: _Things that are made of an arbitrary list of parts
+                  _
+
+
+__Schema__:
+
+```yaml
+id: http//example.org/Parts-collection
+classes:
+  CollectionOfParts:
+    annotations:
+      owl.template:
+        tag: owl.template
+        value: "{% for p in has_part %}\nSubClassOf( {{id}} ObjectSomeValuesFrom(\
+          \ BFO:0000051 {{p}} ) )\n{% endfor %}\nDisjointClasses(\n   Annotation(\
+          \ rdfs:label \"all parts of {{id}} are part-disjoint\")\n  {% for p in has_part\
+          \ %}\n  ObjectSomeValuesFrom( BFO:0000050 {{p}} )\n  {% endfor %}\n)"
+    description: test metaclass illustrating a whole which has a collection of non-overlapping
+      parts
+    is_a: NamedThing
+    attributes:
+      has_part:
+        description: sub-elements
+        slot_uri: BFO:0000051
+        multivalued: true
+        inverse: part_of
+        range: NamedThing
+      id:
+        description: the CURIE or IRI of the focal element
+        identifier: true
+        range: uriorcurie
+        required: true
+      label:
+        annotations:
+          owl: AnnotationProperty, AnnotationAssertion
+        description: a descriptive name/label for an element
+        slot_uri: rdfs:label
+        recommended: true
+      definition:
+        annotations:
+          owl: AnnotationProperty, AnnotationAssertion
+        description: a human-readable definition of an element
+        slot_uri: IAO:0000115
+        recommended: true
+
+```
+
+
+__Input__:
+
+```yaml
+-
+  id: x:collection
+  has_part:
+  - x:p1
+  - x:p2
+  
+```
+
+__Generated axioms__:
+
+```
+Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
+Prefix( rdf: = <http://www.w3.org/1999/02/22-rdf-syntax-ns#> )
+Prefix( rdfs: = <http://www.w3.org/2000/01/rdf-schema#> )
+Prefix( xsd: = <http://www.w3.org/2001/XMLSchema#> )
+Prefix( xml: = <http://www.w3.org/XML/1998/namespace> )
+Prefix( linkml: = <https://w3id.org/linkml/> )
+Prefix( test: = <https://w3id.org/linkml/owl/tests/> )
+Prefix( BFO: = <http://purl.obolibrary.org/obo/BFO_> )
+Prefix( IAO: = <http://purl.obolibrary.org/obo/IAO_> )
+Prefix( RO: = <http://purl.obolibrary.org/obo/RO_> )
+Prefix( PATO: = <http://purl.obolibrary.org/obo/PATO_> )
+Prefix( skos: = <http://www.w3.org/2004/02/skos/core#> )
+Prefix( dcterms: = <http://purl.org/dc/terms/> )
+Prefix( x: = <http://example.org/> )
+
+Ontology( <https://w3id.org/linkml/owl/tests>
+    SubClassOf( x:collection     ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000051> x:p1 ) )
+    SubClassOf( x:collection     ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000051> x:p2 ) )
+    DisjointClasses(
+        Annotation( rdfs:label "all parts of x:collection are part-disjoint" )
+            ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000050> x:p1 )     ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000050> x:p2 )
+    )
+)
+```
+
+## Defined parts collection
+
+
+__Description__: _Things that are defined exhaustively by an arbitrary list of parts
+                  _
+
+
+__Schema__:
+
+```yaml
+id: http//example.org/Defined-parts-collection
+classes:
+  DefinedCollectionOfParts:
+    annotations:
+      owl.template:
+        tag: owl.template
+        value: "EquivalentClasses( {{id}}\n                   ObjectIntersectionOf(\n\
+          \                     {% for p in has_part %}\n                       ObjectSomeValuesFrom(\
+          \ BFO:0000051 {{p}} )\n                     {% endfor %}\n             \
+          \        ObjectAllValuesFrom( BFO:0000051\n                            \
+          \              ObjectSomeValuesFrom( BFO:0000050\n                     \
+          \                       ObjectUnionOf(\n                               \
+          \             {% for p in has_part %}\n                                \
+          \              ObjectSomeValuesFrom( BFO:0000051 {{p}} )\n             \
+          \                               {% endfor %} )\n                       \
+          \                   )\n                                        )\n     \
+          \              )\n                 )"
+    description: test metaclass illustrating a whole which is defined by a collection
+      of non-overlapping parts
+    is_a: NamedThing
+    attributes:
+      has_part:
+        description: sub-elements
+        slot_uri: BFO:0000051
+        multivalued: true
+        inverse: part_of
+        range: NamedThing
+      id:
+        description: the CURIE or IRI of the focal element
+        identifier: true
+        range: uriorcurie
+        required: true
+      label:
+        annotations:
+          owl: AnnotationProperty, AnnotationAssertion
+        description: a descriptive name/label for an element
+        slot_uri: rdfs:label
+        recommended: true
+      definition:
+        annotations:
+          owl: AnnotationProperty, AnnotationAssertion
+        description: a human-readable definition of an element
+        slot_uri: IAO:0000115
+        recommended: true
+
+```
+
+
+__Input__:
+
+```yaml
+-
+  id: x:collection
+  has_part:
+  - x:dp1
+  - x:dp2
+  
+```
+
+__Generated axioms__:
+
+```
+Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
+Prefix( rdf: = <http://www.w3.org/1999/02/22-rdf-syntax-ns#> )
+Prefix( rdfs: = <http://www.w3.org/2000/01/rdf-schema#> )
+Prefix( xsd: = <http://www.w3.org/2001/XMLSchema#> )
+Prefix( xml: = <http://www.w3.org/XML/1998/namespace> )
+Prefix( linkml: = <https://w3id.org/linkml/> )
+Prefix( test: = <https://w3id.org/linkml/owl/tests/> )
+Prefix( BFO: = <http://purl.obolibrary.org/obo/BFO_> )
+Prefix( IAO: = <http://purl.obolibrary.org/obo/IAO_> )
+Prefix( RO: = <http://purl.obolibrary.org/obo/RO_> )
+Prefix( PATO: = <http://purl.obolibrary.org/obo/PATO_> )
+Prefix( skos: = <http://www.w3.org/2004/02/skos/core#> )
+Prefix( dcterms: = <http://purl.org/dc/terms/> )
+Prefix( x: = <http://example.org/> )
+
+Ontology( <https://w3id.org/linkml/owl/tests>
+    EquivalentClasses(
+        x:collection
+            ObjectIntersectionOf(
+            ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000051> x:dp1 )
+            ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000051> x:dp2 )
+            ObjectAllValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000051>     ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000050>     ObjectUnionOf(
+            ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000051> x:dp1 )
+            ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000051> x:dp2 )
+    ) ) )
+    )
+    )
+)
+```
+
