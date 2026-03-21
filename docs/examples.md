@@ -55,24 +55,22 @@ __Input__:
 __Generated axioms__:
 
 ```
-Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
-Prefix( rdf: = <http://www.w3.org/1999/02/22-rdf-syntax-ns#> )
-Prefix( rdfs: = <http://www.w3.org/2000/01/rdf-schema#> )
-Prefix( xsd: = <http://www.w3.org/2001/XMLSchema#> )
-Prefix( xml: = <http://www.w3.org/XML/1998/namespace> )
-Prefix( linkml: = <https://w3id.org/linkml/> )
-Prefix( test: = <https://w3id.org/linkml/owl/tests/> )
-Prefix( BFO: = <http://purl.obolibrary.org/obo/BFO_> )
-Prefix( IAO: = <http://purl.obolibrary.org/obo/IAO_> )
-Prefix( RO: = <http://purl.obolibrary.org/obo/RO_> )
-Prefix( PATO: = <http://purl.obolibrary.org/obo/PATO_> )
-Prefix( skos: = <http://www.w3.org/2004/02/skos/core#> )
-Prefix( dcterms: = <http://purl.org/dc/terms/> )
-Prefix( x: = <http://example.org/> )
-
-Ontology( <https://w3id.org/linkml/owl/tests>
-    AnnotationAssertion( rdfs:label x:a "foo" )
+Prefix(linkml:=<https://w3id.org/linkml/>)
+Prefix(test:=<https://w3id.org/linkml/owl/tests/>)
+Prefix(BFO:=<http://purl.obolibrary.org/obo/BFO_>)
+Prefix(IAO:=<http://purl.obolibrary.org/obo/IAO_>)
+Prefix(RO:=<http://purl.obolibrary.org/obo/RO_>)
+Prefix(PATO:=<http://purl.obolibrary.org/obo/PATO_>)
+Prefix(MONDO:=<http://purl.obolibrary.org/obo/MONDO_>)
+Prefix(HP:=<http://purl.obolibrary.org/obo/HP_>)
+Prefix(UBERON:=<http://purl.obolibrary.org/obo/UBERON_>)
+Prefix(skos:=<http://www.w3.org/2004/02/skos/core#>)
+Prefix(dcterms:=<http://purl.org/dc/terms/>)
+Prefix(schema:=<http://schema.org/>)
+Prefix(x:=<http://example.org/>)
+Ontology(    AnnotationAssertion(<http://www.w3.org/2000/01/rdf-schema#label> x:a "foo")
 )
+
 ```
 
 ## Annotation using IRIs
@@ -130,24 +128,22 @@ __Input__:
 __Generated axioms__:
 
 ```
-Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
-Prefix( rdf: = <http://www.w3.org/1999/02/22-rdf-syntax-ns#> )
-Prefix( rdfs: = <http://www.w3.org/2000/01/rdf-schema#> )
-Prefix( xsd: = <http://www.w3.org/2001/XMLSchema#> )
-Prefix( xml: = <http://www.w3.org/XML/1998/namespace> )
-Prefix( linkml: = <https://w3id.org/linkml/> )
-Prefix( test: = <https://w3id.org/linkml/owl/tests/> )
-Prefix( BFO: = <http://purl.obolibrary.org/obo/BFO_> )
-Prefix( IAO: = <http://purl.obolibrary.org/obo/IAO_> )
-Prefix( RO: = <http://purl.obolibrary.org/obo/RO_> )
-Prefix( PATO: = <http://purl.obolibrary.org/obo/PATO_> )
-Prefix( skos: = <http://www.w3.org/2004/02/skos/core#> )
-Prefix( dcterms: = <http://purl.org/dc/terms/> )
-Prefix( x: = <http://example.org/> )
-
-Ontology( <https://w3id.org/linkml/owl/tests>
-    AnnotationAssertion( skos:exactMatch x:a x:b )
+Prefix(linkml:=<https://w3id.org/linkml/>)
+Prefix(test:=<https://w3id.org/linkml/owl/tests/>)
+Prefix(BFO:=<http://purl.obolibrary.org/obo/BFO_>)
+Prefix(IAO:=<http://purl.obolibrary.org/obo/IAO_>)
+Prefix(RO:=<http://purl.obolibrary.org/obo/RO_>)
+Prefix(PATO:=<http://purl.obolibrary.org/obo/PATO_>)
+Prefix(MONDO:=<http://purl.obolibrary.org/obo/MONDO_>)
+Prefix(HP:=<http://purl.obolibrary.org/obo/HP_>)
+Prefix(UBERON:=<http://purl.obolibrary.org/obo/UBERON_>)
+Prefix(skos:=<http://www.w3.org/2004/02/skos/core#>)
+Prefix(dcterms:=<http://purl.org/dc/terms/>)
+Prefix(schema:=<http://schema.org/>)
+Prefix(x:=<http://example.org/>)
+Ontology(    AnnotationAssertion(skos:exactMatch x:a x:b)
 )
+
 ```
 
 ## Annotation using forced literals
@@ -206,24 +202,22 @@ __Input__:
 __Generated axioms__:
 
 ```
-Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
-Prefix( rdf: = <http://www.w3.org/1999/02/22-rdf-syntax-ns#> )
-Prefix( rdfs: = <http://www.w3.org/2000/01/rdf-schema#> )
-Prefix( xsd: = <http://www.w3.org/2001/XMLSchema#> )
-Prefix( xml: = <http://www.w3.org/XML/1998/namespace> )
-Prefix( linkml: = <https://w3id.org/linkml/> )
-Prefix( test: = <https://w3id.org/linkml/owl/tests/> )
-Prefix( BFO: = <http://purl.obolibrary.org/obo/BFO_> )
-Prefix( IAO: = <http://purl.obolibrary.org/obo/IAO_> )
-Prefix( RO: = <http://purl.obolibrary.org/obo/RO_> )
-Prefix( PATO: = <http://purl.obolibrary.org/obo/PATO_> )
-Prefix( skos: = <http://www.w3.org/2004/02/skos/core#> )
-Prefix( dcterms: = <http://purl.org/dc/terms/> )
-Prefix( x: = <http://example.org/> )
-
-Ontology( <https://w3id.org/linkml/owl/tests>
-    AnnotationAssertion( skos:exactMatch x:a "x:b" )
+Prefix(linkml:=<https://w3id.org/linkml/>)
+Prefix(test:=<https://w3id.org/linkml/owl/tests/>)
+Prefix(BFO:=<http://purl.obolibrary.org/obo/BFO_>)
+Prefix(IAO:=<http://purl.obolibrary.org/obo/IAO_>)
+Prefix(RO:=<http://purl.obolibrary.org/obo/RO_>)
+Prefix(PATO:=<http://purl.obolibrary.org/obo/PATO_>)
+Prefix(MONDO:=<http://purl.obolibrary.org/obo/MONDO_>)
+Prefix(HP:=<http://purl.obolibrary.org/obo/HP_>)
+Prefix(UBERON:=<http://purl.obolibrary.org/obo/UBERON_>)
+Prefix(skos:=<http://www.w3.org/2004/02/skos/core#>)
+Prefix(dcterms:=<http://purl.org/dc/terms/>)
+Prefix(schema:=<http://schema.org/>)
+Prefix(x:=<http://example.org/>)
+Ontology(    AnnotationAssertion(skos:exactMatch x:a "x:b")
 )
+
 ```
 
 ## Axiom annotation with Literal value on annotation axiom
@@ -284,28 +278,23 @@ __Input__:
 __Generated axioms__:
 
 ```
-Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
-Prefix( rdf: = <http://www.w3.org/1999/02/22-rdf-syntax-ns#> )
-Prefix( rdfs: = <http://www.w3.org/2000/01/rdf-schema#> )
-Prefix( xsd: = <http://www.w3.org/2001/XMLSchema#> )
-Prefix( xml: = <http://www.w3.org/XML/1998/namespace> )
-Prefix( linkml: = <https://w3id.org/linkml/> )
-Prefix( test: = <https://w3id.org/linkml/owl/tests/> )
-Prefix( BFO: = <http://purl.obolibrary.org/obo/BFO_> )
-Prefix( IAO: = <http://purl.obolibrary.org/obo/IAO_> )
-Prefix( RO: = <http://purl.obolibrary.org/obo/RO_> )
-Prefix( PATO: = <http://purl.obolibrary.org/obo/PATO_> )
-Prefix( skos: = <http://www.w3.org/2004/02/skos/core#> )
-Prefix( dcterms: = <http://purl.org/dc/terms/> )
-Prefix( x: = <http://example.org/> )
-
-Ontology( <https://w3id.org/linkml/owl/tests>
-    AnnotationAssertion( rdfs:label x:a "foo" )
-    AnnotationAssertion(
-        Annotation( dcterms:source "Me" )
-        <http://purl.obolibrary.org/obo/IAO_0000115> x:a "a foo is a foo"
-    )
+Prefix(linkml:=<https://w3id.org/linkml/>)
+Prefix(test:=<https://w3id.org/linkml/owl/tests/>)
+Prefix(BFO:=<http://purl.obolibrary.org/obo/BFO_>)
+Prefix(IAO:=<http://purl.obolibrary.org/obo/IAO_>)
+Prefix(RO:=<http://purl.obolibrary.org/obo/RO_>)
+Prefix(PATO:=<http://purl.obolibrary.org/obo/PATO_>)
+Prefix(MONDO:=<http://purl.obolibrary.org/obo/MONDO_>)
+Prefix(HP:=<http://purl.obolibrary.org/obo/HP_>)
+Prefix(UBERON:=<http://purl.obolibrary.org/obo/UBERON_>)
+Prefix(skos:=<http://www.w3.org/2004/02/skos/core#>)
+Prefix(dcterms:=<http://purl.org/dc/terms/>)
+Prefix(schema:=<http://schema.org/>)
+Prefix(x:=<http://example.org/>)
+Ontology(    AnnotationAssertion(Annotation(dcterms:source "Me") IAO:0000115 x:a "a foo is a foo")
+    AnnotationAssertion(<http://www.w3.org/2000/01/rdf-schema#label> x:a "foo")
 )
+
 ```
 
 ## Axiom annotation with IRI val on annotation axiom
@@ -327,8 +316,8 @@ classes:
       definition_source:
         description: origin of textual definition
         slot_uri: dcterms:source
-        multivalued: true
         range: NamedThing
+        multivalued: true
       id:
         description: the CURIE or IRI of the focal element
         identifier: true
@@ -367,28 +356,23 @@ __Input__:
 __Generated axioms__:
 
 ```
-Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
-Prefix( rdf: = <http://www.w3.org/1999/02/22-rdf-syntax-ns#> )
-Prefix( rdfs: = <http://www.w3.org/2000/01/rdf-schema#> )
-Prefix( xsd: = <http://www.w3.org/2001/XMLSchema#> )
-Prefix( xml: = <http://www.w3.org/XML/1998/namespace> )
-Prefix( linkml: = <https://w3id.org/linkml/> )
-Prefix( test: = <https://w3id.org/linkml/owl/tests/> )
-Prefix( BFO: = <http://purl.obolibrary.org/obo/BFO_> )
-Prefix( IAO: = <http://purl.obolibrary.org/obo/IAO_> )
-Prefix( RO: = <http://purl.obolibrary.org/obo/RO_> )
-Prefix( PATO: = <http://purl.obolibrary.org/obo/PATO_> )
-Prefix( skos: = <http://www.w3.org/2004/02/skos/core#> )
-Prefix( dcterms: = <http://purl.org/dc/terms/> )
-Prefix( x: = <http://example.org/> )
-
-Ontology( <https://w3id.org/linkml/owl/tests>
-    AnnotationAssertion( rdfs:label x:a "foo" )
-    AnnotationAssertion(
-        Annotation( dcterms:source x:src )
-        <http://purl.obolibrary.org/obo/IAO_0000115> x:a "a foo is a foo"
-    )
+Prefix(linkml:=<https://w3id.org/linkml/>)
+Prefix(test:=<https://w3id.org/linkml/owl/tests/>)
+Prefix(BFO:=<http://purl.obolibrary.org/obo/BFO_>)
+Prefix(IAO:=<http://purl.obolibrary.org/obo/IAO_>)
+Prefix(RO:=<http://purl.obolibrary.org/obo/RO_>)
+Prefix(PATO:=<http://purl.obolibrary.org/obo/PATO_>)
+Prefix(MONDO:=<http://purl.obolibrary.org/obo/MONDO_>)
+Prefix(HP:=<http://purl.obolibrary.org/obo/HP_>)
+Prefix(UBERON:=<http://purl.obolibrary.org/obo/UBERON_>)
+Prefix(skos:=<http://www.w3.org/2004/02/skos/core#>)
+Prefix(dcterms:=<http://purl.org/dc/terms/>)
+Prefix(schema:=<http://schema.org/>)
+Prefix(x:=<http://example.org/>)
+Ontology(    AnnotationAssertion(Annotation(dcterms:source x:src) IAO:0000115 x:a "a foo is a foo")
+    AnnotationAssertion(<http://www.w3.org/2000/01/rdf-schema#label> x:a "foo")
 )
+
 ```
 
 ## Axiom annotations with IRI val on annotation axiom
@@ -410,8 +394,8 @@ classes:
       definition_source:
         description: origin of textual definition
         slot_uri: dcterms:source
-        multivalued: true
         range: NamedThing
+        multivalued: true
       id:
         description: the CURIE or IRI of the focal element
         identifier: true
@@ -451,29 +435,23 @@ __Input__:
 __Generated axioms__:
 
 ```
-Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
-Prefix( rdf: = <http://www.w3.org/1999/02/22-rdf-syntax-ns#> )
-Prefix( rdfs: = <http://www.w3.org/2000/01/rdf-schema#> )
-Prefix( xsd: = <http://www.w3.org/2001/XMLSchema#> )
-Prefix( xml: = <http://www.w3.org/XML/1998/namespace> )
-Prefix( linkml: = <https://w3id.org/linkml/> )
-Prefix( test: = <https://w3id.org/linkml/owl/tests/> )
-Prefix( BFO: = <http://purl.obolibrary.org/obo/BFO_> )
-Prefix( IAO: = <http://purl.obolibrary.org/obo/IAO_> )
-Prefix( RO: = <http://purl.obolibrary.org/obo/RO_> )
-Prefix( PATO: = <http://purl.obolibrary.org/obo/PATO_> )
-Prefix( skos: = <http://www.w3.org/2004/02/skos/core#> )
-Prefix( dcterms: = <http://purl.org/dc/terms/> )
-Prefix( x: = <http://example.org/> )
-
-Ontology( <https://w3id.org/linkml/owl/tests>
-    AnnotationAssertion( rdfs:label x:a "foo" )
-    AnnotationAssertion(
-        Annotation( dcterms:source x:src1 )
-        Annotation( dcterms:source x:src2 )
-        <http://purl.obolibrary.org/obo/IAO_0000115> x:a "a foo is a foo"
-    )
+Prefix(linkml:=<https://w3id.org/linkml/>)
+Prefix(test:=<https://w3id.org/linkml/owl/tests/>)
+Prefix(BFO:=<http://purl.obolibrary.org/obo/BFO_>)
+Prefix(IAO:=<http://purl.obolibrary.org/obo/IAO_>)
+Prefix(RO:=<http://purl.obolibrary.org/obo/RO_>)
+Prefix(PATO:=<http://purl.obolibrary.org/obo/PATO_>)
+Prefix(MONDO:=<http://purl.obolibrary.org/obo/MONDO_>)
+Prefix(HP:=<http://purl.obolibrary.org/obo/HP_>)
+Prefix(UBERON:=<http://purl.obolibrary.org/obo/UBERON_>)
+Prefix(skos:=<http://www.w3.org/2004/02/skos/core#>)
+Prefix(dcterms:=<http://purl.org/dc/terms/>)
+Prefix(schema:=<http://schema.org/>)
+Prefix(x:=<http://example.org/>)
+Ontology(    AnnotationAssertion(Annotation(dcterms:source x:src1) Annotation(dcterms:source x:src2) IAO:0000115 x:a "a foo is a foo")
+    AnnotationAssertion(<http://www.w3.org/2000/01/rdf-schema#label> x:a "foo")
 )
+
 ```
 
 ## Basic SubClassOf between named classes
@@ -496,9 +474,9 @@ classes:
           owl: SubClassOf
         description: named class this is subclass of
         slot_uri: rdfs:subclass_of
-        multivalued: true
         range: NamedThing
         required: true
+        multivalued: true
       id:
         description: the CURIE or IRI of the focal element
         identifier: true
@@ -533,24 +511,22 @@ __Input__:
 __Generated axioms__:
 
 ```
-Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
-Prefix( rdf: = <http://www.w3.org/1999/02/22-rdf-syntax-ns#> )
-Prefix( rdfs: = <http://www.w3.org/2000/01/rdf-schema#> )
-Prefix( xsd: = <http://www.w3.org/2001/XMLSchema#> )
-Prefix( xml: = <http://www.w3.org/XML/1998/namespace> )
-Prefix( linkml: = <https://w3id.org/linkml/> )
-Prefix( test: = <https://w3id.org/linkml/owl/tests/> )
-Prefix( BFO: = <http://purl.obolibrary.org/obo/BFO_> )
-Prefix( IAO: = <http://purl.obolibrary.org/obo/IAO_> )
-Prefix( RO: = <http://purl.obolibrary.org/obo/RO_> )
-Prefix( PATO: = <http://purl.obolibrary.org/obo/PATO_> )
-Prefix( skos: = <http://www.w3.org/2004/02/skos/core#> )
-Prefix( dcterms: = <http://purl.org/dc/terms/> )
-Prefix( x: = <http://example.org/> )
-
-Ontology( <https://w3id.org/linkml/owl/tests>
-    SubClassOf( x:a x:b )
+Prefix(linkml:=<https://w3id.org/linkml/>)
+Prefix(test:=<https://w3id.org/linkml/owl/tests/>)
+Prefix(BFO:=<http://purl.obolibrary.org/obo/BFO_>)
+Prefix(IAO:=<http://purl.obolibrary.org/obo/IAO_>)
+Prefix(RO:=<http://purl.obolibrary.org/obo/RO_>)
+Prefix(PATO:=<http://purl.obolibrary.org/obo/PATO_>)
+Prefix(MONDO:=<http://purl.obolibrary.org/obo/MONDO_>)
+Prefix(HP:=<http://purl.obolibrary.org/obo/HP_>)
+Prefix(UBERON:=<http://purl.obolibrary.org/obo/UBERON_>)
+Prefix(skos:=<http://www.w3.org/2004/02/skos/core#>)
+Prefix(dcterms:=<http://purl.org/dc/terms/>)
+Prefix(schema:=<http://schema.org/>)
+Prefix(x:=<http://example.org/>)
+Ontology(    SubClassOf(x:a x:b)
 )
+
 ```
 
 ## basic direct equivalence between named classes
@@ -574,9 +550,9 @@ classes:
           owl: EquivalentClasses
         description: named class this is equivalent to
         slot_uri: owl:equivalentClasses
-        multivalued: true
         range: NamedThing
         required: true
+        multivalued: true
       id:
         description: the CURIE or IRI of the focal element
         identifier: true
@@ -611,27 +587,22 @@ __Input__:
 __Generated axioms__:
 
 ```
-Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
-Prefix( rdf: = <http://www.w3.org/1999/02/22-rdf-syntax-ns#> )
-Prefix( rdfs: = <http://www.w3.org/2000/01/rdf-schema#> )
-Prefix( xsd: = <http://www.w3.org/2001/XMLSchema#> )
-Prefix( xml: = <http://www.w3.org/XML/1998/namespace> )
-Prefix( linkml: = <https://w3id.org/linkml/> )
-Prefix( test: = <https://w3id.org/linkml/owl/tests/> )
-Prefix( BFO: = <http://purl.obolibrary.org/obo/BFO_> )
-Prefix( IAO: = <http://purl.obolibrary.org/obo/IAO_> )
-Prefix( RO: = <http://purl.obolibrary.org/obo/RO_> )
-Prefix( PATO: = <http://purl.obolibrary.org/obo/PATO_> )
-Prefix( skos: = <http://www.w3.org/2004/02/skos/core#> )
-Prefix( dcterms: = <http://purl.org/dc/terms/> )
-Prefix( x: = <http://example.org/> )
-
-Ontology( <https://w3id.org/linkml/owl/tests>
-    EquivalentClasses(
-        x:a
-        x:b
-    )
+Prefix(linkml:=<https://w3id.org/linkml/>)
+Prefix(test:=<https://w3id.org/linkml/owl/tests/>)
+Prefix(BFO:=<http://purl.obolibrary.org/obo/BFO_>)
+Prefix(IAO:=<http://purl.obolibrary.org/obo/IAO_>)
+Prefix(RO:=<http://purl.obolibrary.org/obo/RO_>)
+Prefix(PATO:=<http://purl.obolibrary.org/obo/PATO_>)
+Prefix(MONDO:=<http://purl.obolibrary.org/obo/MONDO_>)
+Prefix(HP:=<http://purl.obolibrary.org/obo/HP_>)
+Prefix(UBERON:=<http://purl.obolibrary.org/obo/UBERON_>)
+Prefix(skos:=<http://www.w3.org/2004/02/skos/core#>)
+Prefix(dcterms:=<http://purl.org/dc/terms/>)
+Prefix(schema:=<http://schema.org/>)
+Prefix(x:=<http://example.org/>)
+Ontology(    EquivalentClasses(x:a x:b)
 )
+
 ```
 
 ## SubClassOf SomeValuesFrom
@@ -656,9 +627,9 @@ classes:
           owl: ObjectSomeValuesFrom
         description: element this is a part of
         slot_uri: BFO:0000050
-        multivalued: true
         range: NamedThing
         required: true
+        multivalued: true
       id:
         description: the CURIE or IRI of the focal element
         identifier: true
@@ -693,24 +664,22 @@ __Input__:
 __Generated axioms__:
 
 ```
-Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
-Prefix( rdf: = <http://www.w3.org/1999/02/22-rdf-syntax-ns#> )
-Prefix( rdfs: = <http://www.w3.org/2000/01/rdf-schema#> )
-Prefix( xsd: = <http://www.w3.org/2001/XMLSchema#> )
-Prefix( xml: = <http://www.w3.org/XML/1998/namespace> )
-Prefix( linkml: = <https://w3id.org/linkml/> )
-Prefix( test: = <https://w3id.org/linkml/owl/tests/> )
-Prefix( BFO: = <http://purl.obolibrary.org/obo/BFO_> )
-Prefix( IAO: = <http://purl.obolibrary.org/obo/IAO_> )
-Prefix( RO: = <http://purl.obolibrary.org/obo/RO_> )
-Prefix( PATO: = <http://purl.obolibrary.org/obo/PATO_> )
-Prefix( skos: = <http://www.w3.org/2004/02/skos/core#> )
-Prefix( dcterms: = <http://purl.org/dc/terms/> )
-Prefix( x: = <http://example.org/> )
-
-Ontology( <https://w3id.org/linkml/owl/tests>
-    SubClassOf( x:a     ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000050> x:b ) )
+Prefix(linkml:=<https://w3id.org/linkml/>)
+Prefix(test:=<https://w3id.org/linkml/owl/tests/>)
+Prefix(BFO:=<http://purl.obolibrary.org/obo/BFO_>)
+Prefix(IAO:=<http://purl.obolibrary.org/obo/IAO_>)
+Prefix(RO:=<http://purl.obolibrary.org/obo/RO_>)
+Prefix(PATO:=<http://purl.obolibrary.org/obo/PATO_>)
+Prefix(MONDO:=<http://purl.obolibrary.org/obo/MONDO_>)
+Prefix(HP:=<http://purl.obolibrary.org/obo/HP_>)
+Prefix(UBERON:=<http://purl.obolibrary.org/obo/UBERON_>)
+Prefix(skos:=<http://www.w3.org/2004/02/skos/core#>)
+Prefix(dcterms:=<http://purl.org/dc/terms/>)
+Prefix(schema:=<http://schema.org/>)
+Prefix(x:=<http://example.org/>)
+Ontology(    SubClassOf(x:a ObjectSomeValuesFrom(BFO:0000050 x:b))
 )
+
 ```
 
 ## SubClassOf AllValuesFrom
@@ -734,9 +703,9 @@ classes:
           owl: ObjectAllValuesFrom
         description: element this is a part of
         slot_uri: BFO:0000050
-        multivalued: true
         range: NamedThing
         required: true
+        multivalued: true
       id:
         description: the CURIE or IRI of the focal element
         identifier: true
@@ -771,24 +740,93 @@ __Input__:
 __Generated axioms__:
 
 ```
-Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
-Prefix( rdf: = <http://www.w3.org/1999/02/22-rdf-syntax-ns#> )
-Prefix( rdfs: = <http://www.w3.org/2000/01/rdf-schema#> )
-Prefix( xsd: = <http://www.w3.org/2001/XMLSchema#> )
-Prefix( xml: = <http://www.w3.org/XML/1998/namespace> )
-Prefix( linkml: = <https://w3id.org/linkml/> )
-Prefix( test: = <https://w3id.org/linkml/owl/tests/> )
-Prefix( BFO: = <http://purl.obolibrary.org/obo/BFO_> )
-Prefix( IAO: = <http://purl.obolibrary.org/obo/IAO_> )
-Prefix( RO: = <http://purl.obolibrary.org/obo/RO_> )
-Prefix( PATO: = <http://purl.obolibrary.org/obo/PATO_> )
-Prefix( skos: = <http://www.w3.org/2004/02/skos/core#> )
-Prefix( dcterms: = <http://purl.org/dc/terms/> )
-Prefix( x: = <http://example.org/> )
-
-Ontology( <https://w3id.org/linkml/owl/tests>
-    SubClassOf( x:a     ObjectAllValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000050> x:b ) )
+Prefix(linkml:=<https://w3id.org/linkml/>)
+Prefix(test:=<https://w3id.org/linkml/owl/tests/>)
+Prefix(BFO:=<http://purl.obolibrary.org/obo/BFO_>)
+Prefix(IAO:=<http://purl.obolibrary.org/obo/IAO_>)
+Prefix(RO:=<http://purl.obolibrary.org/obo/RO_>)
+Prefix(PATO:=<http://purl.obolibrary.org/obo/PATO_>)
+Prefix(MONDO:=<http://purl.obolibrary.org/obo/MONDO_>)
+Prefix(HP:=<http://purl.obolibrary.org/obo/HP_>)
+Prefix(UBERON:=<http://purl.obolibrary.org/obo/UBERON_>)
+Prefix(skos:=<http://www.w3.org/2004/02/skos/core#>)
+Prefix(dcterms:=<http://purl.org/dc/terms/>)
+Prefix(schema:=<http://schema.org/>)
+Prefix(x:=<http://example.org/>)
+Ontology(    SubClassOf(x:a ObjectAllValuesFrom(BFO:0000050 x:b))
 )
+
+```
+
+## SubClassOf DataHasValue
+
+
+__Description__: _SubClassOf DataHasValue_
+
+
+__Schema__:
+
+```yaml
+id: http//example.org/SubClassOf-DataHasValue
+classes:
+  HasName:
+    description: test metaclass illustrating data has value from
+    is_a: NamedThing
+    attributes:
+      has_name:
+        annotations:
+          owl: DataHasValue
+        slot_uri: schema:name
+        required: true
+      id:
+        description: the CURIE or IRI of the focal element
+        identifier: true
+        range: uriorcurie
+        required: true
+      label:
+        annotations:
+          owl: AnnotationProperty, AnnotationAssertion
+        description: a descriptive name/label for an element
+        slot_uri: rdfs:label
+        recommended: true
+      definition:
+        annotations:
+          owl: AnnotationProperty, AnnotationAssertion
+        description: a human-readable definition of an element
+        slot_uri: IAO:0000115
+        recommended: true
+
+```
+
+
+__Input__:
+
+```yaml
+-
+  id: x:a
+  has_name: Violet
+  
+```
+
+__Generated axioms__:
+
+```
+Prefix(linkml:=<https://w3id.org/linkml/>)
+Prefix(test:=<https://w3id.org/linkml/owl/tests/>)
+Prefix(BFO:=<http://purl.obolibrary.org/obo/BFO_>)
+Prefix(IAO:=<http://purl.obolibrary.org/obo/IAO_>)
+Prefix(RO:=<http://purl.obolibrary.org/obo/RO_>)
+Prefix(PATO:=<http://purl.obolibrary.org/obo/PATO_>)
+Prefix(MONDO:=<http://purl.obolibrary.org/obo/MONDO_>)
+Prefix(HP:=<http://purl.obolibrary.org/obo/HP_>)
+Prefix(UBERON:=<http://purl.obolibrary.org/obo/UBERON_>)
+Prefix(skos:=<http://www.w3.org/2004/02/skos/core#>)
+Prefix(dcterms:=<http://purl.org/dc/terms/>)
+Prefix(schema:=<http://schema.org/>)
+Prefix(x:=<http://example.org/>)
+Ontology(    SubClassOf(x:a DataHasValue(schema:name "Violet"))
+)
+
 ```
 
 ## SubClassOf SomeValuesFrom plus label
@@ -812,9 +850,9 @@ classes:
           owl: ObjectSomeValuesFrom
         description: element this is a part of
         slot_uri: BFO:0000050
-        multivalued: true
         range: NamedThing
         required: true
+        multivalued: true
       id:
         description: the CURIE or IRI of the focal element
         identifier: true
@@ -850,25 +888,23 @@ __Input__:
 __Generated axioms__:
 
 ```
-Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
-Prefix( rdf: = <http://www.w3.org/1999/02/22-rdf-syntax-ns#> )
-Prefix( rdfs: = <http://www.w3.org/2000/01/rdf-schema#> )
-Prefix( xsd: = <http://www.w3.org/2001/XMLSchema#> )
-Prefix( xml: = <http://www.w3.org/XML/1998/namespace> )
-Prefix( linkml: = <https://w3id.org/linkml/> )
-Prefix( test: = <https://w3id.org/linkml/owl/tests/> )
-Prefix( BFO: = <http://purl.obolibrary.org/obo/BFO_> )
-Prefix( IAO: = <http://purl.obolibrary.org/obo/IAO_> )
-Prefix( RO: = <http://purl.obolibrary.org/obo/RO_> )
-Prefix( PATO: = <http://purl.obolibrary.org/obo/PATO_> )
-Prefix( skos: = <http://www.w3.org/2004/02/skos/core#> )
-Prefix( dcterms: = <http://purl.org/dc/terms/> )
-Prefix( x: = <http://example.org/> )
-
-Ontology( <https://w3id.org/linkml/owl/tests>
-    AnnotationAssertion( rdfs:label x:a "foo" )
-    SubClassOf( x:a     ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000050> x:b ) )
+Prefix(linkml:=<https://w3id.org/linkml/>)
+Prefix(test:=<https://w3id.org/linkml/owl/tests/>)
+Prefix(BFO:=<http://purl.obolibrary.org/obo/BFO_>)
+Prefix(IAO:=<http://purl.obolibrary.org/obo/IAO_>)
+Prefix(RO:=<http://purl.obolibrary.org/obo/RO_>)
+Prefix(PATO:=<http://purl.obolibrary.org/obo/PATO_>)
+Prefix(MONDO:=<http://purl.obolibrary.org/obo/MONDO_>)
+Prefix(HP:=<http://purl.obolibrary.org/obo/HP_>)
+Prefix(UBERON:=<http://purl.obolibrary.org/obo/UBERON_>)
+Prefix(skos:=<http://www.w3.org/2004/02/skos/core#>)
+Prefix(dcterms:=<http://purl.org/dc/terms/>)
+Prefix(schema:=<http://schema.org/>)
+Prefix(x:=<http://example.org/>)
+Ontology(    SubClassOf(x:a ObjectSomeValuesFrom(BFO:0000050 x:b))
+    AnnotationAssertion(<http://www.w3.org/2000/01/rdf-schema#label> x:a "foo")
 )
+
 ```
 
 ## SubClassOf Union
@@ -892,9 +928,9 @@ classes:
           owl: SubClassOf, UnionOf
         description: named class this is subclass of
         slot_uri: rdfs:subclass_of
-        multivalued: true
         range: NamedThing
         required: true
+        multivalued: true
       id:
         description: the CURIE or IRI of the focal element
         identifier: true
@@ -930,27 +966,22 @@ __Input__:
 __Generated axioms__:
 
 ```
-Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
-Prefix( rdf: = <http://www.w3.org/1999/02/22-rdf-syntax-ns#> )
-Prefix( rdfs: = <http://www.w3.org/2000/01/rdf-schema#> )
-Prefix( xsd: = <http://www.w3.org/2001/XMLSchema#> )
-Prefix( xml: = <http://www.w3.org/XML/1998/namespace> )
-Prefix( linkml: = <https://w3id.org/linkml/> )
-Prefix( test: = <https://w3id.org/linkml/owl/tests/> )
-Prefix( BFO: = <http://purl.obolibrary.org/obo/BFO_> )
-Prefix( IAO: = <http://purl.obolibrary.org/obo/IAO_> )
-Prefix( RO: = <http://purl.obolibrary.org/obo/RO_> )
-Prefix( PATO: = <http://purl.obolibrary.org/obo/PATO_> )
-Prefix( skos: = <http://www.w3.org/2004/02/skos/core#> )
-Prefix( dcterms: = <http://purl.org/dc/terms/> )
-Prefix( x: = <http://example.org/> )
-
-Ontology( <https://w3id.org/linkml/owl/tests>
-    SubClassOf( x:a     ObjectUnionOf(
-        x:b
-        x:c
-    ) )
+Prefix(linkml:=<https://w3id.org/linkml/>)
+Prefix(test:=<https://w3id.org/linkml/owl/tests/>)
+Prefix(BFO:=<http://purl.obolibrary.org/obo/BFO_>)
+Prefix(IAO:=<http://purl.obolibrary.org/obo/IAO_>)
+Prefix(RO:=<http://purl.obolibrary.org/obo/RO_>)
+Prefix(PATO:=<http://purl.obolibrary.org/obo/PATO_>)
+Prefix(MONDO:=<http://purl.obolibrary.org/obo/MONDO_>)
+Prefix(HP:=<http://purl.obolibrary.org/obo/HP_>)
+Prefix(UBERON:=<http://purl.obolibrary.org/obo/UBERON_>)
+Prefix(skos:=<http://www.w3.org/2004/02/skos/core#>)
+Prefix(dcterms:=<http://purl.org/dc/terms/>)
+Prefix(schema:=<http://schema.org/>)
+Prefix(x:=<http://example.org/>)
+Ontology(    SubClassOf(x:a ObjectUnionOf(x:b x:c))
 )
+
 ```
 
 ## EquivalentTo Union
@@ -975,9 +1006,9 @@ classes:
         annotations:
           owl: EquivalentClasses, UnionOf
         description: elements of the union expression
-        multivalued: true
         range: NamedThing
         required: true
+        multivalued: true
       id:
         description: the CURIE or IRI of the focal element
         identifier: true
@@ -1013,30 +1044,22 @@ __Input__:
 __Generated axioms__:
 
 ```
-Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
-Prefix( rdf: = <http://www.w3.org/1999/02/22-rdf-syntax-ns#> )
-Prefix( rdfs: = <http://www.w3.org/2000/01/rdf-schema#> )
-Prefix( xsd: = <http://www.w3.org/2001/XMLSchema#> )
-Prefix( xml: = <http://www.w3.org/XML/1998/namespace> )
-Prefix( linkml: = <https://w3id.org/linkml/> )
-Prefix( test: = <https://w3id.org/linkml/owl/tests/> )
-Prefix( BFO: = <http://purl.obolibrary.org/obo/BFO_> )
-Prefix( IAO: = <http://purl.obolibrary.org/obo/IAO_> )
-Prefix( RO: = <http://purl.obolibrary.org/obo/RO_> )
-Prefix( PATO: = <http://purl.obolibrary.org/obo/PATO_> )
-Prefix( skos: = <http://www.w3.org/2004/02/skos/core#> )
-Prefix( dcterms: = <http://purl.org/dc/terms/> )
-Prefix( x: = <http://example.org/> )
-
-Ontology( <https://w3id.org/linkml/owl/tests>
-    EquivalentClasses(
-        x:a
-            ObjectUnionOf(
-        x:b
-        x:c
-    )
-    )
+Prefix(linkml:=<https://w3id.org/linkml/>)
+Prefix(test:=<https://w3id.org/linkml/owl/tests/>)
+Prefix(BFO:=<http://purl.obolibrary.org/obo/BFO_>)
+Prefix(IAO:=<http://purl.obolibrary.org/obo/IAO_>)
+Prefix(RO:=<http://purl.obolibrary.org/obo/RO_>)
+Prefix(PATO:=<http://purl.obolibrary.org/obo/PATO_>)
+Prefix(MONDO:=<http://purl.obolibrary.org/obo/MONDO_>)
+Prefix(HP:=<http://purl.obolibrary.org/obo/HP_>)
+Prefix(UBERON:=<http://purl.obolibrary.org/obo/UBERON_>)
+Prefix(skos:=<http://www.w3.org/2004/02/skos/core#>)
+Prefix(dcterms:=<http://purl.org/dc/terms/>)
+Prefix(schema:=<http://schema.org/>)
+Prefix(x:=<http://example.org/>)
+Ontology(    EquivalentClasses(x:a ObjectUnionOf(x:b x:c))
 )
+
 ```
 
 ## EquivalentTo IntersectionOf
@@ -1059,9 +1082,9 @@ classes:
       operands:
         annotations:
           owl: EquivalentClasses, IntersectionOf
-        multivalued: true
         range: NamedThing
         required: true
+        multivalued: true
       id:
         description: the CURIE or IRI of the focal element
         identifier: true
@@ -1097,123 +1120,22 @@ __Input__:
 __Generated axioms__:
 
 ```
-Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
-Prefix( rdf: = <http://www.w3.org/1999/02/22-rdf-syntax-ns#> )
-Prefix( rdfs: = <http://www.w3.org/2000/01/rdf-schema#> )
-Prefix( xsd: = <http://www.w3.org/2001/XMLSchema#> )
-Prefix( xml: = <http://www.w3.org/XML/1998/namespace> )
-Prefix( linkml: = <https://w3id.org/linkml/> )
-Prefix( test: = <https://w3id.org/linkml/owl/tests/> )
-Prefix( BFO: = <http://purl.obolibrary.org/obo/BFO_> )
-Prefix( IAO: = <http://purl.obolibrary.org/obo/IAO_> )
-Prefix( RO: = <http://purl.obolibrary.org/obo/RO_> )
-Prefix( PATO: = <http://purl.obolibrary.org/obo/PATO_> )
-Prefix( skos: = <http://www.w3.org/2004/02/skos/core#> )
-Prefix( dcterms: = <http://purl.org/dc/terms/> )
-Prefix( x: = <http://example.org/> )
-
-Ontology( <https://w3id.org/linkml/owl/tests>
-    EquivalentClasses(
-        x:a
-            ObjectIntersectionOf(
-        x:b
-        x:c
-    )
-    )
+Prefix(linkml:=<https://w3id.org/linkml/>)
+Prefix(test:=<https://w3id.org/linkml/owl/tests/>)
+Prefix(BFO:=<http://purl.obolibrary.org/obo/BFO_>)
+Prefix(IAO:=<http://purl.obolibrary.org/obo/IAO_>)
+Prefix(RO:=<http://purl.obolibrary.org/obo/RO_>)
+Prefix(PATO:=<http://purl.obolibrary.org/obo/PATO_>)
+Prefix(MONDO:=<http://purl.obolibrary.org/obo/MONDO_>)
+Prefix(HP:=<http://purl.obolibrary.org/obo/HP_>)
+Prefix(UBERON:=<http://purl.obolibrary.org/obo/UBERON_>)
+Prefix(skos:=<http://www.w3.org/2004/02/skos/core#>)
+Prefix(dcterms:=<http://purl.org/dc/terms/>)
+Prefix(schema:=<http://schema.org/>)
+Prefix(x:=<http://example.org/>)
+Ontology(    EquivalentClasses(x:a ObjectIntersectionOf(x:b x:c))
 )
-```
 
-## EquivalentTo IntersectionOf with axiom annotation
-
-
-__Description__: _as above, with axiom annotation_
-
-
-__Schema__:
-
-```yaml
-id: http//example.org/EquivalentTo-IntersectionOf-with-axiom-annotation
-classes:
-  EquivIntersectionWithAxiomAnnotation:
-    description: test metaclass illustrating classes defined by a simple intersection
-      of classes, including an axion annotation
-    is_a: NamedThing
-    attributes:
-      operands:
-        annotations:
-          owl: EquivalentClasses, IntersectionOf
-          owl.axiom_annotation.slots:
-            tag: owl.axiom_annotation.slots
-            value: logical_definition_source
-        multivalued: true
-        range: NamedThing
-        required: true
-      logical_definition_source:
-        description: origin of logical definition
-        slot_uri: dcterms:source
-        multivalued: true
-      id:
-        description: the CURIE or IRI of the focal element
-        identifier: true
-        range: uriorcurie
-        required: true
-      label:
-        annotations:
-          owl: AnnotationProperty, AnnotationAssertion
-        description: a descriptive name/label for an element
-        slot_uri: rdfs:label
-        recommended: true
-      definition:
-        annotations:
-          owl: AnnotationProperty, AnnotationAssertion
-        description: a human-readable definition of an element
-        slot_uri: IAO:0000115
-        recommended: true
-
-```
-
-
-__Input__:
-
-```yaml
--
-  id: x:a
-  operands:
-  - x:b
-  - x:c
-  logical_definition_source:
-  - Me
-  
-```
-
-__Generated axioms__:
-
-```
-Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
-Prefix( rdf: = <http://www.w3.org/1999/02/22-rdf-syntax-ns#> )
-Prefix( rdfs: = <http://www.w3.org/2000/01/rdf-schema#> )
-Prefix( xsd: = <http://www.w3.org/2001/XMLSchema#> )
-Prefix( xml: = <http://www.w3.org/XML/1998/namespace> )
-Prefix( linkml: = <https://w3id.org/linkml/> )
-Prefix( test: = <https://w3id.org/linkml/owl/tests/> )
-Prefix( BFO: = <http://purl.obolibrary.org/obo/BFO_> )
-Prefix( IAO: = <http://purl.obolibrary.org/obo/IAO_> )
-Prefix( RO: = <http://purl.obolibrary.org/obo/RO_> )
-Prefix( PATO: = <http://purl.obolibrary.org/obo/PATO_> )
-Prefix( skos: = <http://www.w3.org/2004/02/skos/core#> )
-Prefix( dcterms: = <http://purl.org/dc/terms/> )
-Prefix( x: = <http://example.org/> )
-
-Ontology( <https://w3id.org/linkml/owl/tests>
-    EquivalentClasses(
-        Annotation( dcterms:source "Me" )
-            x:a
-                ObjectIntersectionOf(
-        x:b
-        x:c
-    )
-    )
-)
 ```
 
 ## EquivalentTo Genus and SomeValuesFrom
@@ -1237,26 +1159,26 @@ classes:
           owl: EquivalentClasses, IntersectionOf
         description: the genus of the definition
         slot_uri: rdfs:subclass_of
-        multivalued: true
         range: NamedThing
         required: true
+        multivalued: true
       part_of:
         annotations:
           owl: EquivalentClasses, IntersectionOf, ObjectSomeValuesFrom
         description: the part-of differentiae
         slot_uri: BFO:0000050
-        multivalued: true
         range: NamedThing
-        required: true
+        required: false
+        multivalued: true
       other_part_ofs:
         annotations:
           owl: ObjectSomeValuesFrom
         description: other parts ofs not in the differntating conditions (sometimes
           called hidden GCIs)
         slot_uri: BFO:0000050
-        multivalued: true
         range: NamedThing
         required: false
+        multivalued: true
       id:
         description: the CURIE or IRI of the focal element
         identifier: true
@@ -1294,37 +1216,28 @@ __Input__:
 __Generated axioms__:
 
 ```
-Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
-Prefix( rdf: = <http://www.w3.org/1999/02/22-rdf-syntax-ns#> )
-Prefix( rdfs: = <http://www.w3.org/2000/01/rdf-schema#> )
-Prefix( xsd: = <http://www.w3.org/2001/XMLSchema#> )
-Prefix( xml: = <http://www.w3.org/XML/1998/namespace> )
-Prefix( linkml: = <https://w3id.org/linkml/> )
-Prefix( test: = <https://w3id.org/linkml/owl/tests/> )
-Prefix( BFO: = <http://purl.obolibrary.org/obo/BFO_> )
-Prefix( IAO: = <http://purl.obolibrary.org/obo/IAO_> )
-Prefix( RO: = <http://purl.obolibrary.org/obo/RO_> )
-Prefix( PATO: = <http://purl.obolibrary.org/obo/PATO_> )
-Prefix( skos: = <http://www.w3.org/2004/02/skos/core#> )
-Prefix( dcterms: = <http://purl.org/dc/terms/> )
-Prefix( x: = <http://example.org/> )
-
-Ontology( <https://w3id.org/linkml/owl/tests>
-    EquivalentClasses(
-        x:a
-            ObjectIntersectionOf(
-        x:genus
-            ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000050> x:b )
-            ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000050> x:c )
-    )
-    )
+Prefix(linkml:=<https://w3id.org/linkml/>)
+Prefix(test:=<https://w3id.org/linkml/owl/tests/>)
+Prefix(BFO:=<http://purl.obolibrary.org/obo/BFO_>)
+Prefix(IAO:=<http://purl.obolibrary.org/obo/IAO_>)
+Prefix(RO:=<http://purl.obolibrary.org/obo/RO_>)
+Prefix(PATO:=<http://purl.obolibrary.org/obo/PATO_>)
+Prefix(MONDO:=<http://purl.obolibrary.org/obo/MONDO_>)
+Prefix(HP:=<http://purl.obolibrary.org/obo/HP_>)
+Prefix(UBERON:=<http://purl.obolibrary.org/obo/UBERON_>)
+Prefix(skos:=<http://www.w3.org/2004/02/skos/core#>)
+Prefix(dcterms:=<http://purl.org/dc/terms/>)
+Prefix(schema:=<http://schema.org/>)
+Prefix(x:=<http://example.org/>)
+Ontology(    EquivalentClasses(x:a ObjectIntersectionOf(x:genus ObjectSomeValuesFrom(BFO:0000050 x:b) ObjectSomeValuesFrom(BFO:0000050 x:c)))
 )
+
 ```
 
 ## EquivalentTo Genus and SomeValuesFrom with AutoLabel
 
 
-__Description__: _Label auto-added_
+__Description__: _Label auto-added using string_serialization_
 
 
 __Schema__:
@@ -1339,7 +1252,6 @@ classes:
       label:
         string_serialization: '{part.label} of {whole.label}'
         slot_uri: rdfs:label
-        recommended: true
       part:
         annotations:
           owl: EquivalentClasses, IntersectionOf
@@ -1413,33 +1325,109 @@ __Input__:
 __Generated axioms__:
 
 ```
-Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
-Prefix( rdf: = <http://www.w3.org/1999/02/22-rdf-syntax-ns#> )
-Prefix( rdfs: = <http://www.w3.org/2000/01/rdf-schema#> )
-Prefix( xsd: = <http://www.w3.org/2001/XMLSchema#> )
-Prefix( xml: = <http://www.w3.org/XML/1998/namespace> )
-Prefix( linkml: = <https://w3id.org/linkml/> )
-Prefix( test: = <https://w3id.org/linkml/owl/tests/> )
-Prefix( BFO: = <http://purl.obolibrary.org/obo/BFO_> )
-Prefix( IAO: = <http://purl.obolibrary.org/obo/IAO_> )
-Prefix( RO: = <http://purl.obolibrary.org/obo/RO_> )
-Prefix( PATO: = <http://purl.obolibrary.org/obo/PATO_> )
-Prefix( skos: = <http://www.w3.org/2004/02/skos/core#> )
-Prefix( dcterms: = <http://purl.org/dc/terms/> )
-Prefix( x: = <http://example.org/> )
-
-Ontology( <https://w3id.org/linkml/owl/tests>
-    AnnotationAssertion( rdfs:label x:NewClass "interneuron of hippocampus" )
-    EquivalentClasses(
-        x:NewClass
-            ObjectIntersectionOf(
-        x:IN
-            ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000050> x:H )
-    )
-    )
-    AnnotationAssertion( rdfs:label x:IN "interneuron" )
-    AnnotationAssertion( rdfs:label x:H "hippocampus" )
+Prefix(linkml:=<https://w3id.org/linkml/>)
+Prefix(test:=<https://w3id.org/linkml/owl/tests/>)
+Prefix(BFO:=<http://purl.obolibrary.org/obo/BFO_>)
+Prefix(IAO:=<http://purl.obolibrary.org/obo/IAO_>)
+Prefix(RO:=<http://purl.obolibrary.org/obo/RO_>)
+Prefix(PATO:=<http://purl.obolibrary.org/obo/PATO_>)
+Prefix(MONDO:=<http://purl.obolibrary.org/obo/MONDO_>)
+Prefix(HP:=<http://purl.obolibrary.org/obo/HP_>)
+Prefix(UBERON:=<http://purl.obolibrary.org/obo/UBERON_>)
+Prefix(skos:=<http://www.w3.org/2004/02/skos/core#>)
+Prefix(dcterms:=<http://purl.org/dc/terms/>)
+Prefix(schema:=<http://schema.org/>)
+Prefix(x:=<http://example.org/>)
+Ontology(    EquivalentClasses(x:NewClass ObjectIntersectionOf(x:IN ObjectSomeValuesFrom(BFO:0000050 x:H)))
+    AnnotationAssertion(<http://www.w3.org/2000/01/rdf-schema#label> x:H "hippocampus")
+    AnnotationAssertion(<http://www.w3.org/2000/01/rdf-schema#label> x:IN "interneuron")
+    AnnotationAssertion(<http://www.w3.org/2000/01/rdf-schema#label> x:NewClass "interneuron of hippocampus")
 )
+
+```
+
+## EquivalentTo IntersectionOf with axiom annotation
+
+
+__Description__: _as above, with axiom annotation_
+
+
+__Schema__:
+
+```yaml
+id: http//example.org/EquivalentTo-IntersectionOf-with-axiom-annotation
+classes:
+  EquivIntersectionWithAxiomAnnotation:
+    description: test metaclass illustrating classes defined by a simple intersection
+      of classes, including an axion annotation
+    is_a: NamedThing
+    attributes:
+      operands:
+        annotations:
+          owl: EquivalentClasses, IntersectionOf
+          owl.axiom_annotation.slots:
+            tag: owl.axiom_annotation.slots
+            value: logical_definition_source
+        range: NamedThing
+        required: true
+        multivalued: true
+      logical_definition_source:
+        description: origin of logical definition
+        slot_uri: dcterms:source
+        multivalued: true
+      id:
+        description: the CURIE or IRI of the focal element
+        identifier: true
+        range: uriorcurie
+        required: true
+      label:
+        annotations:
+          owl: AnnotationProperty, AnnotationAssertion
+        description: a descriptive name/label for an element
+        slot_uri: rdfs:label
+        recommended: true
+      definition:
+        annotations:
+          owl: AnnotationProperty, AnnotationAssertion
+        description: a human-readable definition of an element
+        slot_uri: IAO:0000115
+        recommended: true
+
+```
+
+
+__Input__:
+
+```yaml
+-
+  id: x:a
+  operands:
+  - x:b
+  - x:c
+  logical_definition_source:
+  - Me
+  
+```
+
+__Generated axioms__:
+
+```
+Prefix(linkml:=<https://w3id.org/linkml/>)
+Prefix(test:=<https://w3id.org/linkml/owl/tests/>)
+Prefix(BFO:=<http://purl.obolibrary.org/obo/BFO_>)
+Prefix(IAO:=<http://purl.obolibrary.org/obo/IAO_>)
+Prefix(RO:=<http://purl.obolibrary.org/obo/RO_>)
+Prefix(PATO:=<http://purl.obolibrary.org/obo/PATO_>)
+Prefix(MONDO:=<http://purl.obolibrary.org/obo/MONDO_>)
+Prefix(HP:=<http://purl.obolibrary.org/obo/HP_>)
+Prefix(UBERON:=<http://purl.obolibrary.org/obo/UBERON_>)
+Prefix(skos:=<http://www.w3.org/2004/02/skos/core#>)
+Prefix(dcterms:=<http://purl.org/dc/terms/>)
+Prefix(schema:=<http://schema.org/>)
+Prefix(x:=<http://example.org/>)
+Ontology(    EquivalentClasses(Annotation(dcterms:source "Me") x:a ObjectIntersectionOf(x:b x:c))
+)
+
 ```
 
 ## Hidden GCI
@@ -1464,26 +1452,26 @@ classes:
           owl: EquivalentClasses, IntersectionOf
         description: the genus of the definition
         slot_uri: rdfs:subclass_of
-        multivalued: true
         range: NamedThing
         required: true
+        multivalued: true
       part_of:
         annotations:
           owl: EquivalentClasses, IntersectionOf, ObjectSomeValuesFrom
         description: the part-of differentiae
         slot_uri: BFO:0000050
-        multivalued: true
         range: NamedThing
-        required: true
+        required: false
+        multivalued: true
       other_part_ofs:
         annotations:
           owl: ObjectSomeValuesFrom
         description: other parts ofs not in the differntating conditions (sometimes
           called hidden GCIs)
         slot_uri: BFO:0000050
-        multivalued: true
         range: NamedThing
         required: false
+        multivalued: true
       id:
         description: the CURIE or IRI of the focal element
         identifier: true
@@ -1522,31 +1510,23 @@ __Input__:
 __Generated axioms__:
 
 ```
-Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
-Prefix( rdf: = <http://www.w3.org/1999/02/22-rdf-syntax-ns#> )
-Prefix( rdfs: = <http://www.w3.org/2000/01/rdf-schema#> )
-Prefix( xsd: = <http://www.w3.org/2001/XMLSchema#> )
-Prefix( xml: = <http://www.w3.org/XML/1998/namespace> )
-Prefix( linkml: = <https://w3id.org/linkml/> )
-Prefix( test: = <https://w3id.org/linkml/owl/tests/> )
-Prefix( BFO: = <http://purl.obolibrary.org/obo/BFO_> )
-Prefix( IAO: = <http://purl.obolibrary.org/obo/IAO_> )
-Prefix( RO: = <http://purl.obolibrary.org/obo/RO_> )
-Prefix( PATO: = <http://purl.obolibrary.org/obo/PATO_> )
-Prefix( skos: = <http://www.w3.org/2004/02/skos/core#> )
-Prefix( dcterms: = <http://purl.org/dc/terms/> )
-Prefix( x: = <http://example.org/> )
-
-Ontology( <https://w3id.org/linkml/owl/tests>
-    SubClassOf( x:a     ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000050> x:c ) )
-    EquivalentClasses(
-        x:a
-            ObjectIntersectionOf(
-        x:genus
-            ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000050> x:b )
-    )
-    )
+Prefix(linkml:=<https://w3id.org/linkml/>)
+Prefix(test:=<https://w3id.org/linkml/owl/tests/>)
+Prefix(BFO:=<http://purl.obolibrary.org/obo/BFO_>)
+Prefix(IAO:=<http://purl.obolibrary.org/obo/IAO_>)
+Prefix(RO:=<http://purl.obolibrary.org/obo/RO_>)
+Prefix(PATO:=<http://purl.obolibrary.org/obo/PATO_>)
+Prefix(MONDO:=<http://purl.obolibrary.org/obo/MONDO_>)
+Prefix(HP:=<http://purl.obolibrary.org/obo/HP_>)
+Prefix(UBERON:=<http://purl.obolibrary.org/obo/UBERON_>)
+Prefix(skos:=<http://www.w3.org/2004/02/skos/core#>)
+Prefix(dcterms:=<http://purl.org/dc/terms/>)
+Prefix(schema:=<http://schema.org/>)
+Prefix(x:=<http://example.org/>)
+Ontology(    SubClassOf(x:a ObjectSomeValuesFrom(BFO:0000050 x:c))
+    EquivalentClasses(x:a ObjectIntersectionOf(x:genus ObjectSomeValuesFrom(BFO:0000050 x:b)))
 )
+
 ```
 
 ## Hidden GCI with axiom annotations
@@ -1573,9 +1553,9 @@ classes:
             value: logical_definition_source
         description: named class this is subclass of
         slot_uri: rdfs:subclass_of
-        multivalued: true
         range: NamedThing
         required: true
+        multivalued: true
       part_of:
         annotations:
           owl: EquivalentClasses, IntersectionOf, ObjectSomeValuesFrom
@@ -1584,9 +1564,9 @@ classes:
             value: logical_definition_source
         description: element this is a part of
         slot_uri: BFO:0000050
-        multivalued: true
         range: NamedThing
         required: true
+        multivalued: true
       other_part_ofs:
         annotations:
           owl: ObjectSomeValuesFrom
@@ -1595,9 +1575,9 @@ classes:
             value: axiom_source
         description: for hidden GCIs
         slot_uri: BFO:0000050
-        multivalued: true
         range: NamedThing
         required: false
+        multivalued: true
       definition_source:
         description: origin of textual definition
         slot_uri: dcterms:source
@@ -1658,40 +1638,25 @@ __Input__:
 __Generated axioms__:
 
 ```
-Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
-Prefix( rdf: = <http://www.w3.org/1999/02/22-rdf-syntax-ns#> )
-Prefix( rdfs: = <http://www.w3.org/2000/01/rdf-schema#> )
-Prefix( xsd: = <http://www.w3.org/2001/XMLSchema#> )
-Prefix( xml: = <http://www.w3.org/XML/1998/namespace> )
-Prefix( linkml: = <https://w3id.org/linkml/> )
-Prefix( test: = <https://w3id.org/linkml/owl/tests/> )
-Prefix( BFO: = <http://purl.obolibrary.org/obo/BFO_> )
-Prefix( IAO: = <http://purl.obolibrary.org/obo/IAO_> )
-Prefix( RO: = <http://purl.obolibrary.org/obo/RO_> )
-Prefix( PATO: = <http://purl.obolibrary.org/obo/PATO_> )
-Prefix( skos: = <http://www.w3.org/2004/02/skos/core#> )
-Prefix( dcterms: = <http://purl.org/dc/terms/> )
-Prefix( x: = <http://example.org/> )
-
-Ontology( <https://w3id.org/linkml/owl/tests>
-    AnnotationAssertion( rdfs:label x:a "a" )
-    AnnotationAssertion(
-        Annotation( dcterms:source "Auto" )
-        <http://purl.obolibrary.org/obo/IAO_0000115> x:a "A X:genus that part_of some x:b"
-    )
-    SubClassOf(
-        Annotation( dcterms:source "Auto" )
-        x:a     ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000050> x:c )
-    )
-    EquivalentClasses(
-        Annotation( dcterms:source "Me" )
-            x:a
-                ObjectIntersectionOf(
-        x:genus
-            ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000050> x:b )
-    )
-    )
+Prefix(linkml:=<https://w3id.org/linkml/>)
+Prefix(test:=<https://w3id.org/linkml/owl/tests/>)
+Prefix(BFO:=<http://purl.obolibrary.org/obo/BFO_>)
+Prefix(IAO:=<http://purl.obolibrary.org/obo/IAO_>)
+Prefix(RO:=<http://purl.obolibrary.org/obo/RO_>)
+Prefix(PATO:=<http://purl.obolibrary.org/obo/PATO_>)
+Prefix(MONDO:=<http://purl.obolibrary.org/obo/MONDO_>)
+Prefix(HP:=<http://purl.obolibrary.org/obo/HP_>)
+Prefix(UBERON:=<http://purl.obolibrary.org/obo/UBERON_>)
+Prefix(skos:=<http://www.w3.org/2004/02/skos/core#>)
+Prefix(dcterms:=<http://purl.org/dc/terms/>)
+Prefix(schema:=<http://schema.org/>)
+Prefix(x:=<http://example.org/>)
+Ontology(    SubClassOf(Annotation(dcterms:source "Auto") x:a ObjectSomeValuesFrom(BFO:0000050 x:c))
+    EquivalentClasses(Annotation(dcterms:source "Me") x:a ObjectIntersectionOf(x:genus ObjectSomeValuesFrom(BFO:0000050 x:b)))
+    AnnotationAssertion(Annotation(dcterms:source "Auto") IAO:0000115 x:a "A X:genus that part_of some x:b")
+    AnnotationAssertion(<http://www.w3.org/2000/01/rdf-schema#label> x:a "a")
 )
+
 ```
 
 ## slot-value level fstring template
@@ -1719,19 +1684,19 @@ classes:
             value: SubClassOf({id} {V})
         description: named class this is subclass of
         slot_uri: rdfs:subclass_of
-        multivalued: true
         range: NamedThing
+        multivalued: true
       part_of:
         description: element this is a part of
         slot_uri: BFO:0000050
-        multivalued: true
         range: NamedThing
+        multivalued: true
       other_part_ofs:
         description: this slot is used to indicate other part-of relationships that
           are not in the logical definition
         slot_uri: BFO:0000050
-        multivalued: true
         range: NamedThing
+        multivalued: true
       id:
         description: the CURIE or IRI of the focal element
         identifier: true
@@ -1766,24 +1731,22 @@ __Input__:
 __Generated axioms__:
 
 ```
-Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
-Prefix( rdf: = <http://www.w3.org/1999/02/22-rdf-syntax-ns#> )
-Prefix( rdfs: = <http://www.w3.org/2000/01/rdf-schema#> )
-Prefix( xsd: = <http://www.w3.org/2001/XMLSchema#> )
-Prefix( xml: = <http://www.w3.org/XML/1998/namespace> )
-Prefix( linkml: = <https://w3id.org/linkml/> )
-Prefix( test: = <https://w3id.org/linkml/owl/tests/> )
-Prefix( BFO: = <http://purl.obolibrary.org/obo/BFO_> )
-Prefix( IAO: = <http://purl.obolibrary.org/obo/IAO_> )
-Prefix( RO: = <http://purl.obolibrary.org/obo/RO_> )
-Prefix( PATO: = <http://purl.obolibrary.org/obo/PATO_> )
-Prefix( skos: = <http://www.w3.org/2004/02/skos/core#> )
-Prefix( dcterms: = <http://purl.org/dc/terms/> )
-Prefix( x: = <http://example.org/> )
-
-Ontology( <https://w3id.org/linkml/owl/tests>
-    SubClassOf( x:a x:b )
+Prefix(linkml:=<https://w3id.org/linkml/>)
+Prefix(test:=<https://w3id.org/linkml/owl/tests/>)
+Prefix(BFO:=<http://purl.obolibrary.org/obo/BFO_>)
+Prefix(IAO:=<http://purl.obolibrary.org/obo/IAO_>)
+Prefix(RO:=<http://purl.obolibrary.org/obo/RO_>)
+Prefix(PATO:=<http://purl.obolibrary.org/obo/PATO_>)
+Prefix(MONDO:=<http://purl.obolibrary.org/obo/MONDO_>)
+Prefix(HP:=<http://purl.obolibrary.org/obo/HP_>)
+Prefix(UBERON:=<http://purl.obolibrary.org/obo/UBERON_>)
+Prefix(skos:=<http://www.w3.org/2004/02/skos/core#>)
+Prefix(dcterms:=<http://purl.org/dc/terms/>)
+Prefix(schema:=<http://schema.org/>)
+Prefix(x:=<http://example.org/>)
+Ontology(    SubClassOf(x:a x:b)
 )
+
 ```
 
 ## slot-value level jinja template
@@ -1811,19 +1774,19 @@ classes:
             value: '{% for p in subclass_of %}SubClassOf({{id}} {{p}}){% endfor %}'
         description: named class this is subclass of
         slot_uri: rdfs:subclass_of
-        multivalued: true
         range: NamedThing
+        multivalued: true
       part_of:
         description: element this is a part of
         slot_uri: BFO:0000050
-        multivalued: true
         range: NamedThing
+        multivalued: true
       other_part_ofs:
         description: this slot is used to indicate other part-of relationships that
           are not in the logical definition
         slot_uri: BFO:0000050
-        multivalued: true
         range: NamedThing
+        multivalued: true
       id:
         description: the CURIE or IRI of the focal element
         identifier: true
@@ -1858,24 +1821,22 @@ __Input__:
 __Generated axioms__:
 
 ```
-Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
-Prefix( rdf: = <http://www.w3.org/1999/02/22-rdf-syntax-ns#> )
-Prefix( rdfs: = <http://www.w3.org/2000/01/rdf-schema#> )
-Prefix( xsd: = <http://www.w3.org/2001/XMLSchema#> )
-Prefix( xml: = <http://www.w3.org/XML/1998/namespace> )
-Prefix( linkml: = <https://w3id.org/linkml/> )
-Prefix( test: = <https://w3id.org/linkml/owl/tests/> )
-Prefix( BFO: = <http://purl.obolibrary.org/obo/BFO_> )
-Prefix( IAO: = <http://purl.obolibrary.org/obo/IAO_> )
-Prefix( RO: = <http://purl.obolibrary.org/obo/RO_> )
-Prefix( PATO: = <http://purl.obolibrary.org/obo/PATO_> )
-Prefix( skos: = <http://www.w3.org/2004/02/skos/core#> )
-Prefix( dcterms: = <http://purl.org/dc/terms/> )
-Prefix( x: = <http://example.org/> )
-
-Ontology( <https://w3id.org/linkml/owl/tests>
-    SubClassOf( x:a x:b )
+Prefix(linkml:=<https://w3id.org/linkml/>)
+Prefix(test:=<https://w3id.org/linkml/owl/tests/>)
+Prefix(BFO:=<http://purl.obolibrary.org/obo/BFO_>)
+Prefix(IAO:=<http://purl.obolibrary.org/obo/IAO_>)
+Prefix(RO:=<http://purl.obolibrary.org/obo/RO_>)
+Prefix(PATO:=<http://purl.obolibrary.org/obo/PATO_>)
+Prefix(MONDO:=<http://purl.obolibrary.org/obo/MONDO_>)
+Prefix(HP:=<http://purl.obolibrary.org/obo/HP_>)
+Prefix(UBERON:=<http://purl.obolibrary.org/obo/UBERON_>)
+Prefix(skos:=<http://www.w3.org/2004/02/skos/core#>)
+Prefix(dcterms:=<http://purl.org/dc/terms/>)
+Prefix(schema:=<http://schema.org/>)
+Prefix(x:=<http://example.org/>)
+Ontology(    SubClassOf(x:a x:b)
 )
+
 ```
 
 ## Parts collection with counts
@@ -1904,15 +1865,15 @@ classes:
           \                                                     )\n\n            \
           \                     )\n          )\n{% endfor %}"
     description: test metaclass that illustrates a complex nested multi-part structure,
-      where a whole is defined by a collection of repeared parts in specified states
+      where a whole is defined by a collection of repeated parts in specified states.
     is_a: NamedThing
     attributes:
       has_part:
         description: sub-elements
         slot_uri: BFO:0000051
-        multivalued: true
         inverse: part_of
         range: PartWithCounts
+        multivalued: true
         inlined: true
       id:
         description: the CURIE or IRI of the focal element
@@ -1953,33 +1914,110 @@ __Input__:
 __Generated axioms__:
 
 ```
-Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
-Prefix( rdf: = <http://www.w3.org/1999/02/22-rdf-syntax-ns#> )
-Prefix( rdfs: = <http://www.w3.org/2000/01/rdf-schema#> )
-Prefix( xsd: = <http://www.w3.org/2001/XMLSchema#> )
-Prefix( xml: = <http://www.w3.org/XML/1998/namespace> )
-Prefix( linkml: = <https://w3id.org/linkml/> )
-Prefix( test: = <https://w3id.org/linkml/owl/tests/> )
-Prefix( BFO: = <http://purl.obolibrary.org/obo/BFO_> )
-Prefix( IAO: = <http://purl.obolibrary.org/obo/IAO_> )
-Prefix( RO: = <http://purl.obolibrary.org/obo/RO_> )
-Prefix( PATO: = <http://purl.obolibrary.org/obo/PATO_> )
-Prefix( skos: = <http://www.w3.org/2004/02/skos/core#> )
-Prefix( dcterms: = <http://purl.org/dc/terms/> )
-Prefix( x: = <http://example.org/> )
-
-Ontology( <https://w3id.org/linkml/owl/tests>
-    SubClassOf( x:collection     ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000051>     ObjectIntersectionOf(
-        x:p1
-            ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/RO_0000053> <http://purl.obolibrary.org/obo/PATO_0002354> )
-            DataHasValue( <http://purl.obolibrary.org/obo/PATO_0001555> "2"^^xsd:integer )
-    ) ) )
-    SubClassOf( x:collection     ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000051>     ObjectIntersectionOf(
-        x:p2
-            ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/RO_0000053> <http://purl.obolibrary.org/obo/PATO_0002354> )
-            DataHasValue( <http://purl.obolibrary.org/obo/PATO_0001555> "3"^^xsd:integer )
-    ) ) )
+Prefix(linkml:=<https://w3id.org/linkml/>)
+Prefix(test:=<https://w3id.org/linkml/owl/tests/>)
+Prefix(BFO:=<http://purl.obolibrary.org/obo/BFO_>)
+Prefix(IAO:=<http://purl.obolibrary.org/obo/IAO_>)
+Prefix(RO:=<http://purl.obolibrary.org/obo/RO_>)
+Prefix(PATO:=<http://purl.obolibrary.org/obo/PATO_>)
+Prefix(MONDO:=<http://purl.obolibrary.org/obo/MONDO_>)
+Prefix(HP:=<http://purl.obolibrary.org/obo/HP_>)
+Prefix(UBERON:=<http://purl.obolibrary.org/obo/UBERON_>)
+Prefix(skos:=<http://www.w3.org/2004/02/skos/core#>)
+Prefix(dcterms:=<http://purl.org/dc/terms/>)
+Prefix(schema:=<http://schema.org/>)
+Prefix(x:=<http://example.org/>)
+Ontology(    SubClassOf(x:collection ObjectSomeValuesFrom(BFO:0000051 ObjectIntersectionOf(x:p1 ObjectSomeValuesFrom(RO:0000053 PATO:0002354) DataHasValue(PATO:0001555 "2"^^<http://www.w3.org/2001/XMLSchema#integer>))))
+    SubClassOf(x:collection ObjectSomeValuesFrom(BFO:0000051 ObjectIntersectionOf(x:p2 ObjectSomeValuesFrom(RO:0000053 PATO:0002354) DataHasValue(PATO:0001555 "3"^^<http://www.w3.org/2001/XMLSchema#integer>))))
 )
+
+```
+
+## Parts collection with counts v2
+
+
+__Description__: _Demonstrates tr function
+                  _
+
+
+__Schema__:
+
+```yaml
+id: http//example.org/Parts-collection-with-counts-v2
+classes:
+  CollectionOfPartsWithCounts2:
+    annotations:
+      owl.template:
+        tag: owl.template
+        value: "{% for p in has_part %}\nSubClassOf( {{id}}\n            ObjectSomeValuesFrom(\
+          \ BFO:0000051\n                                  {{ tr(p) }}\n\n       \
+          \                          )\n          )\n{% endfor %}"
+    description: as CollectionOfPartsWithCounts but using tr function
+    is_a: NamedThing
+    attributes:
+      has_part:
+        description: sub-elements
+        slot_uri: BFO:0000051
+        inverse: part_of
+        range: PartWithCounts2
+        multivalued: true
+        inlined: true
+      id:
+        description: the CURIE or IRI of the focal element
+        identifier: true
+        range: uriorcurie
+        required: true
+      label:
+        annotations:
+          owl: AnnotationProperty, AnnotationAssertion
+        description: a descriptive name/label for an element
+        slot_uri: rdfs:label
+        recommended: true
+      definition:
+        annotations:
+          owl: AnnotationProperty, AnnotationAssertion
+        description: a human-readable definition of an element
+        slot_uri: IAO:0000115
+        recommended: true
+
+```
+
+
+__Input__:
+
+```yaml
+-
+  id: x:collection
+  has_part:
+  - unit: x:p1
+    count: 2
+    state: ACTIVATED
+  - unit: x:p2
+    count: 3
+    state: ACTIVATED
+  
+```
+
+__Generated axioms__:
+
+```
+Prefix(linkml:=<https://w3id.org/linkml/>)
+Prefix(test:=<https://w3id.org/linkml/owl/tests/>)
+Prefix(BFO:=<http://purl.obolibrary.org/obo/BFO_>)
+Prefix(IAO:=<http://purl.obolibrary.org/obo/IAO_>)
+Prefix(RO:=<http://purl.obolibrary.org/obo/RO_>)
+Prefix(PATO:=<http://purl.obolibrary.org/obo/PATO_>)
+Prefix(MONDO:=<http://purl.obolibrary.org/obo/MONDO_>)
+Prefix(HP:=<http://purl.obolibrary.org/obo/HP_>)
+Prefix(UBERON:=<http://purl.obolibrary.org/obo/UBERON_>)
+Prefix(skos:=<http://www.w3.org/2004/02/skos/core#>)
+Prefix(dcterms:=<http://purl.org/dc/terms/>)
+Prefix(schema:=<http://schema.org/>)
+Prefix(x:=<http://example.org/>)
+Ontology(    SubClassOf(x:collection ObjectSomeValuesFrom(BFO:0000051 ObjectIntersectionOf(ObjectSomeValuesFrom(linkml:owl/tests/unit x:p1) DataHasValue(linkml:owl/tests/count "2"^^<http://www.w3.org/2001/XMLSchema#integer>) ObjectSomeValuesFrom(linkml:owl/tests/state PATO:0002354))))
+    SubClassOf(x:collection ObjectSomeValuesFrom(BFO:0000051 ObjectIntersectionOf(ObjectSomeValuesFrom(linkml:owl/tests/unit x:p2) DataHasValue(linkml:owl/tests/count "3"^^<http://www.w3.org/2001/XMLSchema#integer>) ObjectSomeValuesFrom(linkml:owl/tests/state PATO:0002354))))
+)
+
 ```
 
 ## Parts collection
@@ -2009,9 +2047,9 @@ classes:
       has_part:
         description: sub-elements
         slot_uri: BFO:0000051
-        multivalued: true
         inverse: part_of
         range: NamedThing
+        multivalued: true
       id:
         description: the CURIE or IRI of the focal element
         identifier: true
@@ -2047,29 +2085,24 @@ __Input__:
 __Generated axioms__:
 
 ```
-Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
-Prefix( rdf: = <http://www.w3.org/1999/02/22-rdf-syntax-ns#> )
-Prefix( rdfs: = <http://www.w3.org/2000/01/rdf-schema#> )
-Prefix( xsd: = <http://www.w3.org/2001/XMLSchema#> )
-Prefix( xml: = <http://www.w3.org/XML/1998/namespace> )
-Prefix( linkml: = <https://w3id.org/linkml/> )
-Prefix( test: = <https://w3id.org/linkml/owl/tests/> )
-Prefix( BFO: = <http://purl.obolibrary.org/obo/BFO_> )
-Prefix( IAO: = <http://purl.obolibrary.org/obo/IAO_> )
-Prefix( RO: = <http://purl.obolibrary.org/obo/RO_> )
-Prefix( PATO: = <http://purl.obolibrary.org/obo/PATO_> )
-Prefix( skos: = <http://www.w3.org/2004/02/skos/core#> )
-Prefix( dcterms: = <http://purl.org/dc/terms/> )
-Prefix( x: = <http://example.org/> )
-
-Ontology( <https://w3id.org/linkml/owl/tests>
-    SubClassOf( x:collection     ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000051> x:p1 ) )
-    SubClassOf( x:collection     ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000051> x:p2 ) )
-    DisjointClasses(
-        Annotation( rdfs:label "all parts of x:collection are part-disjoint" )
-            ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000050> x:p1 )     ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000050> x:p2 )
-    )
+Prefix(linkml:=<https://w3id.org/linkml/>)
+Prefix(test:=<https://w3id.org/linkml/owl/tests/>)
+Prefix(BFO:=<http://purl.obolibrary.org/obo/BFO_>)
+Prefix(IAO:=<http://purl.obolibrary.org/obo/IAO_>)
+Prefix(RO:=<http://purl.obolibrary.org/obo/RO_>)
+Prefix(PATO:=<http://purl.obolibrary.org/obo/PATO_>)
+Prefix(MONDO:=<http://purl.obolibrary.org/obo/MONDO_>)
+Prefix(HP:=<http://purl.obolibrary.org/obo/HP_>)
+Prefix(UBERON:=<http://purl.obolibrary.org/obo/UBERON_>)
+Prefix(skos:=<http://www.w3.org/2004/02/skos/core#>)
+Prefix(dcterms:=<http://purl.org/dc/terms/>)
+Prefix(schema:=<http://schema.org/>)
+Prefix(x:=<http://example.org/>)
+Ontology(    SubClassOf(x:collection ObjectSomeValuesFrom(BFO:0000051 x:p1))
+    SubClassOf(x:collection ObjectSomeValuesFrom(BFO:0000051 x:p2))
+    DisjointClasses(Annotation(<http://www.w3.org/2000/01/rdf-schema#label> "all parts of x:collection are part-disjoint") ObjectSomeValuesFrom(BFO:0000050 x:p1) ObjectSomeValuesFrom(BFO:0000050 x:p2))
 )
+
 ```
 
 ## Defined parts collection
@@ -2106,9 +2139,9 @@ classes:
       has_part:
         description: sub-elements
         slot_uri: BFO:0000051
-        multivalued: true
         inverse: part_of
         range: NamedThing
+        multivalued: true
       id:
         description: the CURIE or IRI of the focal element
         identifier: true
@@ -2144,33 +2177,400 @@ __Input__:
 __Generated axioms__:
 
 ```
-Prefix( owl: = <http://www.w3.org/2002/07/owl#> )
-Prefix( rdf: = <http://www.w3.org/1999/02/22-rdf-syntax-ns#> )
-Prefix( rdfs: = <http://www.w3.org/2000/01/rdf-schema#> )
-Prefix( xsd: = <http://www.w3.org/2001/XMLSchema#> )
-Prefix( xml: = <http://www.w3.org/XML/1998/namespace> )
-Prefix( linkml: = <https://w3id.org/linkml/> )
-Prefix( test: = <https://w3id.org/linkml/owl/tests/> )
-Prefix( BFO: = <http://purl.obolibrary.org/obo/BFO_> )
-Prefix( IAO: = <http://purl.obolibrary.org/obo/IAO_> )
-Prefix( RO: = <http://purl.obolibrary.org/obo/RO_> )
-Prefix( PATO: = <http://purl.obolibrary.org/obo/PATO_> )
-Prefix( skos: = <http://www.w3.org/2004/02/skos/core#> )
-Prefix( dcterms: = <http://purl.org/dc/terms/> )
-Prefix( x: = <http://example.org/> )
-
-Ontology( <https://w3id.org/linkml/owl/tests>
-    EquivalentClasses(
-        x:collection
-            ObjectIntersectionOf(
-            ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000051> x:dp1 )
-            ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000051> x:dp2 )
-            ObjectAllValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000051>     ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000050>     ObjectUnionOf(
-            ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000051> x:dp1 )
-            ObjectSomeValuesFrom( <http://purl.obolibrary.org/obo/BFO_0000051> x:dp2 )
-    ) ) )
-    )
-    )
+Prefix(linkml:=<https://w3id.org/linkml/>)
+Prefix(test:=<https://w3id.org/linkml/owl/tests/>)
+Prefix(BFO:=<http://purl.obolibrary.org/obo/BFO_>)
+Prefix(IAO:=<http://purl.obolibrary.org/obo/IAO_>)
+Prefix(RO:=<http://purl.obolibrary.org/obo/RO_>)
+Prefix(PATO:=<http://purl.obolibrary.org/obo/PATO_>)
+Prefix(MONDO:=<http://purl.obolibrary.org/obo/MONDO_>)
+Prefix(HP:=<http://purl.obolibrary.org/obo/HP_>)
+Prefix(UBERON:=<http://purl.obolibrary.org/obo/UBERON_>)
+Prefix(skos:=<http://www.w3.org/2004/02/skos/core#>)
+Prefix(dcterms:=<http://purl.org/dc/terms/>)
+Prefix(schema:=<http://schema.org/>)
+Prefix(x:=<http://example.org/>)
+Ontology(    EquivalentClasses(x:collection ObjectIntersectionOf(ObjectSomeValuesFrom(BFO:0000051 x:dp1) ObjectSomeValuesFrom(BFO:0000051 x:dp2) ObjectAllValuesFrom(BFO:0000051 ObjectSomeValuesFrom(BFO:0000050 ObjectUnionOf(ObjectSomeValuesFrom(BFO:0000051 x:dp1) ObjectSomeValuesFrom(BFO:0000051 x:dp2))))))
 )
+
+```
+
+## Disease SubClassOf hierarchy
+
+
+__Description__: _A simple disease hierarchy using named SubClassOf parents,
+                     e.g. 'lung cancer SubClassOf cancer'_
+
+
+__Schema__:
+
+```yaml
+id: http//example.org/Disease-SubClassOf-hierarchy
+classes:
+  NamedThing:
+    description: generic grouping for classes, relations, individuals, and other named
+      entities
+    is_a: Thing
+    abstract: true
+    attributes:
+      id:
+        description: the CURIE or IRI of the focal element
+        identifier: true
+        range: uriorcurie
+        required: true
+      label:
+        annotations:
+          owl: AnnotationProperty, AnnotationAssertion
+        description: a descriptive name/label for an element
+        slot_uri: rdfs:label
+        recommended: true
+      definition:
+        annotations:
+          owl: AnnotationProperty, AnnotationAssertion
+        description: a human-readable definition of an element
+        slot_uri: IAO:0000115
+        recommended: true
+  DiseaseClass:
+    description: metaclass for disease classes with named superclass parents, modeling
+      a simple disease hierarchy (e.g. lung cancer SubClassOf cancer)
+    is_a: NamedThing
+    attributes:
+      subclass_of:
+        annotations:
+          owl: SubClassOf
+        description: named class this is subclass of
+        slot_uri: rdfs:subclass_of
+        range: NamedThing
+        required: true
+        multivalued: true
+      id:
+        description: the CURIE or IRI of the focal element
+        identifier: true
+        range: uriorcurie
+        required: true
+      label:
+        annotations:
+          owl: AnnotationProperty, AnnotationAssertion
+        description: a descriptive name/label for an element
+        slot_uri: rdfs:label
+        recommended: true
+      definition:
+        annotations:
+          owl: AnnotationProperty, AnnotationAssertion
+        description: a human-readable definition of an element
+        slot_uri: IAO:0000115
+        recommended: true
+
+```
+
+
+__Input__:
+
+```yaml
+-
+  id: x:LungCancer
+  label: lung cancer
+  subclass_of:
+  - x:Cancer
+  
+-
+  id: x:Cancer
+  label: cancer
+  
+```
+
+__Generated axioms__:
+
+```
+Prefix(linkml:=<https://w3id.org/linkml/>)
+Prefix(test:=<https://w3id.org/linkml/owl/tests/>)
+Prefix(BFO:=<http://purl.obolibrary.org/obo/BFO_>)
+Prefix(IAO:=<http://purl.obolibrary.org/obo/IAO_>)
+Prefix(RO:=<http://purl.obolibrary.org/obo/RO_>)
+Prefix(PATO:=<http://purl.obolibrary.org/obo/PATO_>)
+Prefix(MONDO:=<http://purl.obolibrary.org/obo/MONDO_>)
+Prefix(HP:=<http://purl.obolibrary.org/obo/HP_>)
+Prefix(UBERON:=<http://purl.obolibrary.org/obo/UBERON_>)
+Prefix(skos:=<http://www.w3.org/2004/02/skos/core#>)
+Prefix(dcterms:=<http://purl.org/dc/terms/>)
+Prefix(schema:=<http://schema.org/>)
+Prefix(x:=<http://example.org/>)
+Ontology(    SubClassOf(x:LungCancer x:Cancer)
+    AnnotationAssertion(<http://www.w3.org/2000/01/rdf-schema#label> x:Cancer "cancer")
+    AnnotationAssertion(<http://www.w3.org/2000/01/rdf-schema#label> x:LungCancer "lung cancer")
+)
+
+```
+
+## Disease defined by anatomical location
+
+
+__Description__: _A disease defined by genus (nervous system disorder) and
+                     anatomical location differentia (brain), following the
+                     Mondo disease_by_location design pattern_
+
+
+__Schema__:
+
+```yaml
+id: http//example.org/Disease-defined-by-anatomical-location
+classes:
+  DiseaseByLocation:
+    description: metaclass for diseases defined by anatomical location using a genus-differentia
+      pattern (e.g. brain disease EquivalentTo nervous-system-disorder AND has-disease-location
+      some brain). Follows the Mondo disease_by_location design pattern.
+    is_a: NamedThing
+    attributes:
+      subclass_of:
+        annotations:
+          owl: EquivalentClasses, IntersectionOf
+        description: the genus (broad disease category)
+        slot_uri: rdfs:subclass_of
+        range: NamedThing
+        required: true
+        multivalued: true
+      disease_location:
+        annotations:
+          owl: EquivalentClasses, IntersectionOf, ObjectSomeValuesFrom
+        description: the anatomical location differentia
+        slot_uri: RO:0004026
+        range: NamedThing
+        required: true
+      id:
+        description: the CURIE or IRI of the focal element
+        identifier: true
+        range: uriorcurie
+        required: true
+      label:
+        annotations:
+          owl: AnnotationProperty, AnnotationAssertion
+        description: a descriptive name/label for an element
+        slot_uri: rdfs:label
+        recommended: true
+      definition:
+        annotations:
+          owl: AnnotationProperty, AnnotationAssertion
+        description: a human-readable definition of an element
+        slot_uri: IAO:0000115
+        recommended: true
+
+```
+
+
+__Input__:
+
+```yaml
+-
+  id: x:BrainDisease
+  label: brain disease
+  subclass_of:
+  - x:NervousSystemDisorder
+  disease_location: x:Brain
+  
+```
+
+__Generated axioms__:
+
+```
+Prefix(linkml:=<https://w3id.org/linkml/>)
+Prefix(test:=<https://w3id.org/linkml/owl/tests/>)
+Prefix(BFO:=<http://purl.obolibrary.org/obo/BFO_>)
+Prefix(IAO:=<http://purl.obolibrary.org/obo/IAO_>)
+Prefix(RO:=<http://purl.obolibrary.org/obo/RO_>)
+Prefix(PATO:=<http://purl.obolibrary.org/obo/PATO_>)
+Prefix(MONDO:=<http://purl.obolibrary.org/obo/MONDO_>)
+Prefix(HP:=<http://purl.obolibrary.org/obo/HP_>)
+Prefix(UBERON:=<http://purl.obolibrary.org/obo/UBERON_>)
+Prefix(skos:=<http://www.w3.org/2004/02/skos/core#>)
+Prefix(dcterms:=<http://purl.org/dc/terms/>)
+Prefix(schema:=<http://schema.org/>)
+Prefix(x:=<http://example.org/>)
+Ontology(    EquivalentClasses(x:BrainDisease ObjectIntersectionOf(x:NervousSystemDisorder ObjectSomeValuesFrom(RO:0004026 x:Brain)))
+    AnnotationAssertion(<http://www.w3.org/2000/01/rdf-schema#label> x:BrainDisease "brain disease")
+)
+
+```
+
+## Disease defined by phenotype
+
+
+__Description__: _A disease defined by an associated phenotype,
+                     e.g. 'parkinsonism EquivalentTo disease AND has-phenotype some tremor'_
+
+
+__Schema__:
+
+```yaml
+id: http//example.org/Disease-defined-by-phenotype
+classes:
+  DiseaseByPhenotype:
+    description: metaclass for diseases defined by an associated phenotype (e.g. Parkinsonism
+      EquivalentTo disease AND has-phenotype some tremor)
+    is_a: NamedThing
+    attributes:
+      subclass_of:
+        annotations:
+          owl: EquivalentClasses, IntersectionOf
+        description: the genus (broad disease category)
+        slot_uri: rdfs:subclass_of
+        range: NamedThing
+        required: true
+        multivalued: true
+      has_phenotype:
+        annotations:
+          owl: EquivalentClasses, IntersectionOf, ObjectSomeValuesFrom
+        description: the phenotypic differentia
+        slot_uri: RO:0002200
+        range: NamedThing
+        required: true
+      id:
+        description: the CURIE or IRI of the focal element
+        identifier: true
+        range: uriorcurie
+        required: true
+      label:
+        annotations:
+          owl: AnnotationProperty, AnnotationAssertion
+        description: a descriptive name/label for an element
+        slot_uri: rdfs:label
+        recommended: true
+      definition:
+        annotations:
+          owl: AnnotationProperty, AnnotationAssertion
+        description: a human-readable definition of an element
+        slot_uri: IAO:0000115
+        recommended: true
+
+```
+
+
+__Input__:
+
+```yaml
+-
+  id: x:Parkinsonism
+  label: parkinsonism
+  subclass_of:
+  - x:Disease
+  has_phenotype: x:Tremor
+  
+```
+
+__Generated axioms__:
+
+```
+Prefix(linkml:=<https://w3id.org/linkml/>)
+Prefix(test:=<https://w3id.org/linkml/owl/tests/>)
+Prefix(BFO:=<http://purl.obolibrary.org/obo/BFO_>)
+Prefix(IAO:=<http://purl.obolibrary.org/obo/IAO_>)
+Prefix(RO:=<http://purl.obolibrary.org/obo/RO_>)
+Prefix(PATO:=<http://purl.obolibrary.org/obo/PATO_>)
+Prefix(MONDO:=<http://purl.obolibrary.org/obo/MONDO_>)
+Prefix(HP:=<http://purl.obolibrary.org/obo/HP_>)
+Prefix(UBERON:=<http://purl.obolibrary.org/obo/UBERON_>)
+Prefix(skos:=<http://www.w3.org/2004/02/skos/core#>)
+Prefix(dcterms:=<http://purl.org/dc/terms/>)
+Prefix(schema:=<http://schema.org/>)
+Prefix(x:=<http://example.org/>)
+Ontology(    EquivalentClasses(x:Parkinsonism ObjectIntersectionOf(x:Disease ObjectSomeValuesFrom(RO:0002200 x:Tremor)))
+    AnnotationAssertion(<http://www.w3.org/2000/01/rdf-schema#label> x:Parkinsonism "parkinsonism")
+)
+
+```
+
+## Disease defined by location and phenotype
+
+
+__Description__: _A disease defined by both location and phenotype in a single intersection,
+                     illustrating multiple differentiae in one EquivalentClasses axiom_
+
+
+__Schema__:
+
+```yaml
+id: http//example.org/Disease-defined-by-location-and-phenotype
+classes:
+  DefinedDisease:
+    description: metaclass for diseases defined by both anatomical location AND phenotype,
+      illustrating intersection with multiple differentiae (e.g. a disease EquivalentTo
+      disease AND has-location some L AND has-phenotype some P)
+    is_a: NamedThing
+    attributes:
+      subclass_of:
+        annotations:
+          owl: EquivalentClasses, IntersectionOf
+        description: the genus
+        slot_uri: rdfs:subclass_of
+        range: NamedThing
+        required: true
+        multivalued: true
+      disease_location:
+        annotations:
+          owl: EquivalentClasses, IntersectionOf, ObjectSomeValuesFrom
+        description: the anatomical location differentia
+        slot_uri: RO:0004026
+        range: NamedThing
+        required: true
+      has_phenotype:
+        annotations:
+          owl: EquivalentClasses, IntersectionOf, ObjectSomeValuesFrom
+        description: the phenotypic differentia
+        slot_uri: RO:0002200
+        range: NamedThing
+        required: true
+      id:
+        description: the CURIE or IRI of the focal element
+        identifier: true
+        range: uriorcurie
+        required: true
+      label:
+        annotations:
+          owl: AnnotationProperty, AnnotationAssertion
+        description: a descriptive name/label for an element
+        slot_uri: rdfs:label
+        recommended: true
+      definition:
+        annotations:
+          owl: AnnotationProperty, AnnotationAssertion
+        description: a human-readable definition of an element
+        slot_uri: IAO:0000115
+        recommended: true
+
+```
+
+
+__Input__:
+
+```yaml
+-
+  id: x:BrainNeuropathy
+  label: brain neuropathy
+  subclass_of:
+  - x:Neuropathy
+  disease_location: x:Brain
+  has_phenotype: x:Tremor
+  
+```
+
+__Generated axioms__:
+
+```
+Prefix(linkml:=<https://w3id.org/linkml/>)
+Prefix(test:=<https://w3id.org/linkml/owl/tests/>)
+Prefix(BFO:=<http://purl.obolibrary.org/obo/BFO_>)
+Prefix(IAO:=<http://purl.obolibrary.org/obo/IAO_>)
+Prefix(RO:=<http://purl.obolibrary.org/obo/RO_>)
+Prefix(PATO:=<http://purl.obolibrary.org/obo/PATO_>)
+Prefix(MONDO:=<http://purl.obolibrary.org/obo/MONDO_>)
+Prefix(HP:=<http://purl.obolibrary.org/obo/HP_>)
+Prefix(UBERON:=<http://purl.obolibrary.org/obo/UBERON_>)
+Prefix(skos:=<http://www.w3.org/2004/02/skos/core#>)
+Prefix(dcterms:=<http://purl.org/dc/terms/>)
+Prefix(schema:=<http://schema.org/>)
+Prefix(x:=<http://example.org/>)
+Ontology(    EquivalentClasses(x:BrainNeuropathy ObjectIntersectionOf(x:Neuropathy ObjectSomeValuesFrom(RO:0004026 x:Brain) ObjectSomeValuesFrom(RO:0002200 x:Tremor)))
+    AnnotationAssertion(<http://www.w3.org/2000/01/rdf-schema#label> x:BrainNeuropathy "brain neuropathy")
+)
+
 ```
 
