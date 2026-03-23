@@ -91,6 +91,7 @@ class TestOwlDumper(unittest.TestCase):
         X = Namespace("http://example.org/")
         BFO = Namespace("http://purl.obolibrary.org/obo/BFO_")
         IAO = Namespace("http://purl.obolibrary.org/obo/IAO_")
+        RO = Namespace("http://purl.obolibrary.org/obo/RO_")
         SCHEMA = Namespace("http://schema.org/")
         dumper = OWLDumper()
         sv = SchemaView(SCHEMA_IN)
@@ -100,7 +101,7 @@ class TestOwlDumper(unittest.TestCase):
         py_mod = compile_python(py_str)
 
         ont = pyhornedowl.PyIndexedOntology()
-        for ns in [X, BFO, IAO, SCHEMA]:
+        for ns in [X, BFO, IAO, RO, SCHEMA]:
             ont.add_prefix_mapping(ns.prefix, str(ns))
 
         md = "# linkml-owl Test Cases\n\n"
@@ -135,6 +136,21 @@ class TestOwlDumper(unittest.TestCase):
         x_new_cls = ont.clazz(str(ont.iri(X.NewClass)))
         x_in_cls = ont.clazz(str(ont.iri(X.IN)))
         x_h_cls = ont.clazz(str(ont.iri(X.H)))
+
+        # Disease-related IRIs
+        disease_location = ObjectProperty(ont.iri(RO['0004026']))
+        has_phenotype = ObjectProperty(ont.iri(RO['0002200']))
+        x_cancer_cls = ont.clazz(str(ont.iri(X.Cancer)))
+        x_lung_cancer_cls = ont.clazz(str(ont.iri(X.LungCancer)))
+        x_lung_cls = ont.clazz(str(ont.iri(X.Lung)))
+        x_disease_cls = ont.clazz(str(ont.iri(X.Disease)))
+        x_brain_disease_cls = ont.clazz(str(ont.iri(X.BrainDisease)))
+        x_brain_cls = ont.clazz(str(ont.iri(X.Brain)))
+        x_tremor_cls = ont.clazz(str(ont.iri(X.Tremor)))
+        x_parkinsonism_cls = ont.clazz(str(ont.iri(X.Parkinsonism)))
+        x_nsd_cls = ont.clazz(str(ont.iri(X.NervousSystemDisorder)))
+        x_brain_neuropathy_cls = ont.clazz(str(ont.iri(X.BrainNeuropathy)))
+        x_neuropathy_cls = ont.clazz(str(ont.iri(X.Neuropathy)))
 
         add_check("Annotation using literals",
                   [py_mod.NamedThing('x:a', label='foo')],
@@ -323,6 +339,46 @@ class TestOwlDumper(unittest.TestCase):
                   [],
                   """Things that are defined exhaustively by an arbitrary list of parts
                   """)
+        add_check("Disease SubClassOf hierarchy",
+                  [py_mod.DiseaseClass('x:LungCancer', label='lung cancer', subclass_of='x:Cancer'),
+                   py_mod.NamedThing('x:Cancer', label='cancer')],
+                  [SubClassOf(x_lung_cancer_cls, x_cancer_cls),
+                   AnnotationAssertion(ont.iri(X.LungCancer), ann(RDFS.label, SimpleLiteral("lung cancer")))],
+                  """A simple disease hierarchy using named SubClassOf parents,
+                     e.g. 'lung cancer SubClassOf cancer'""")
+        add_check("Disease defined by anatomical location",
+                  [py_mod.DiseaseByLocation('x:BrainDisease',
+                                            label='brain disease',
+                                            subclass_of='x:NervousSystemDisorder',
+                                            disease_location='x:Brain')],
+                  [EquivalentClasses([x_brain_disease_cls,
+                                      ObjectIntersectionOf([x_nsd_cls,
+                                                            ObjectSomeValuesFrom(disease_location, x_brain_cls)])])],
+                  """A disease defined by genus (nervous system disorder) and
+                     anatomical location differentia (brain), following the
+                     Mondo disease_by_location design pattern""")
+        add_check("Disease defined by phenotype",
+                  [py_mod.DiseaseByPhenotype('x:Parkinsonism',
+                                             label='parkinsonism',
+                                             subclass_of='x:Disease',
+                                             has_phenotype='x:Tremor')],
+                  [EquivalentClasses([x_parkinsonism_cls,
+                                      ObjectIntersectionOf([x_disease_cls,
+                                                            ObjectSomeValuesFrom(has_phenotype, x_tremor_cls)])])],
+                  """A disease defined by an associated phenotype,
+                     e.g. 'parkinsonism EquivalentTo disease AND has-phenotype some tremor'""")
+        add_check("Disease defined by location and phenotype",
+                  [py_mod.DefinedDisease('x:BrainNeuropathy',
+                                          label='brain neuropathy',
+                                          subclass_of='x:Neuropathy',
+                                          disease_location='x:Brain',
+                                          has_phenotype='x:Tremor')],
+                  [EquivalentClasses([x_brain_neuropathy_cls,
+                                      ObjectIntersectionOf([x_neuropathy_cls,
+                                                            ObjectSomeValuesFrom(disease_location, x_brain_cls),
+                                                            ObjectSomeValuesFrom(has_phenotype, x_tremor_cls)])])],
+                  """A disease defined by both location and phenotype in a single intersection,
+                     illustrating multiple differentiae in one EquivalentClasses axiom""")
         for check in checks:
             #print(f'** CHECK: {check.title}')
             md += f'## {check.title}\n\n'

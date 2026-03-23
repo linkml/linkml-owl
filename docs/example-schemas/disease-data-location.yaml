@@ -1,0 +1,6 @@
+- id: MONDO:0005560
+  label: brain disease
+  definition: A disease affecting the brain.
+  subclass_of:
+    - MONDO:0005071
+  location: UBERON:0000955

@@ -1,0 +1,15 @@
+- id: MONDO:0000001
+  label: disease
+  definition: A disposition to undergo pathological processes.
+
+- id: MONDO:0005071
+  label: nervous system disorder
+  definition: A disease affecting the nervous system.
+  subclass_of:
+    - MONDO:0000001
+
+- id: MONDO:0005560
+  label: brain disease
+  definition: A disease affecting the brain.
+  subclass_of:
+    - MONDO:0005071

@@ -1,0 +1,7 @@
+- id: UBERON:0015228
+  label: limb
+  definition: An appendage of the body.
+  has_part:
+    - UBERON:0003821
+    - UBERON:0003822
+    - UBERON:0003823

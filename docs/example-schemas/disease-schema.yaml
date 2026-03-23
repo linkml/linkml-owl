@@ -1,0 +1,154 @@
+id: https://w3id.org/linkml-owl/examples/disease
+name: disease-example
+description: >-
+  Example schema demonstrating Mondo-style disease ontology patterns:
+  genus-differentia definitions with location and cause differentiae,
+  axiom annotations for provenance, and auto-generated labels.
+
+imports:
+  - linkml:types
+
+prefixes:
+  linkml: https://w3id.org/linkml/
+  disease: https://w3id.org/linkml-owl/examples/disease/
+  MONDO: http://purl.obolibrary.org/obo/MONDO_
+  UBERON: http://purl.obolibrary.org/obo/UBERON_
+  HP: http://purl.obolibrary.org/obo/HP_
+  NCBITaxon: http://purl.obolibrary.org/obo/NCBITaxon_
+  RO: http://purl.obolibrary.org/obo/RO_
+  IAO: http://purl.obolibrary.org/obo/IAO_
+  BFO: http://purl.obolibrary.org/obo/BFO_
+  CHEBI: http://purl.obolibrary.org/obo/CHEBI_
+  skos: http://www.w3.org/2004/02/skos/core#
+  dcterms: http://purl.org/dc/terms/
+
+default_prefix: disease
+default_curi_maps:
+  - semweb_context
+
+# ── Enums ────────────────────────────────────────────────────────────────
+
+enums:
+  InheritanceEnum:
+    description: Mode of inheritance
+    permissible_values:
+      AUTOSOMAL_DOMINANT:
+        meaning: HP:0000006
+      AUTOSOMAL_RECESSIVE:
+        meaning: HP:0000007
+      X_LINKED:
+        meaning: HP:0001417
+
+# ── Slots ────────────────────────────────────────────────────────────────
+
+slots:
+  id:
+    identifier: true
+    range: uriorcurie
+    required: true
+  label:
+    slot_uri: rdfs:label
+    annotations:
+      owl: AnnotationProperty, AnnotationAssertion
+  definition:
+    slot_uri: IAO:0000115
+    annotations:
+      owl: AnnotationProperty, AnnotationAssertion
+  synonym:
+    slot_uri: skos:altLabel
+    multivalued: true
+    annotations:
+      owl: AnnotationProperty, AnnotationAssertion
+  subclass_of:
+    slot_uri: rdfs:subClassOf
+    range: Disease
+    multivalued: true
+  location:
+    slot_uri: RO:0004026
+    range: Disease
+    description: anatomical location of the disease
+  caused_by:
+    slot_uri: RO:0004020
+    range: Disease
+    description: causal agent or substance
+  has_characteristic:
+    slot_uri: RO:0000053
+    range: Disease
+
+# ── Classes (metaclasses) ────────────────────────────────────────────────
+
+classes:
+
+  # -- Basic disease class --
+  Disease:
+    description: >-
+      A disease or disorder. Basic metaclass for simple SubClassOf hierarchies.
+    slots:
+      - id
+      - label
+      - definition
+      - synonym
+      - subclass_of
+    slot_usage:
+      subclass_of:
+        annotations:
+          owl: SubClassOf
+
+  # -- Disease defined by anatomical location --
+  DiseaseByLocation:
+    is_a: Disease
+    description: >-
+      A disease defined by its anatomical location. Generates
+      EquivalentClasses(D, disease AND located_in some L).
+      Follows the Mondo 'disease_by_location' design pattern.
+    slots:
+      - location
+    slot_usage:
+      subclass_of:
+        required: true
+        description: the genus (broad disease category)
+        annotations:
+          owl: EquivalentClasses, IntersectionOf
+      location:
+        required: true
+        description: the anatomical location differentia
+        annotations:
+          owl: EquivalentClasses, IntersectionOf, ObjectSomeValuesFrom
+
+  # -- Disease defined by causal agent --
+  DiseaseByAgent:
+    is_a: Disease
+    description: >-
+      A disease defined by its causal agent. Generates
+      EquivalentClasses(D, disease AND caused_by some A).
+    slots:
+      - caused_by
+    slot_usage:
+      subclass_of:
+        required: true
+        description: the genus (broad disease category)
+        annotations:
+          owl: EquivalentClasses, IntersectionOf
+      caused_by:
+        required: true
+        description: the causal agent differentia
+        annotations:
+          owl: EquivalentClasses, IntersectionOf, ObjectSomeValuesFrom
+
+  # -- Disease with inheritance pattern using template --
+  DiseaseWithInheritance:
+    is_a: Disease
+    description: >-
+      A disease with a mode-of-inheritance axiom, using a Jinja template
+      to conditionally include the inheritance restriction.
+    attributes:
+      inheritance:
+        range: InheritanceEnum
+    annotations:
+      owl.template: |-
+        {% for sc in subclass_of %}
+        SubClassOf( {{id}} {{sc}} )
+        {% endfor %}
+        {% if inheritance %}
+        SubClassOf( {{id}} ObjectSomeValuesFrom( RO:0000053 {{inheritance.meaning}} ) )
+        {% endif %}

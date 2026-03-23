@@ -11,6 +11,9 @@ prefixes:
   IAO: http://purl.obolibrary.org/obo/IAO_
   RO: http://purl.obolibrary.org/obo/RO_
   PATO: http://purl.obolibrary.org/obo/PATO_
+  MONDO: http://purl.obolibrary.org/obo/MONDO_
+  HP: http://purl.obolibrary.org/obo/HP_
+  UBERON: http://purl.obolibrary.org/obo/UBERON_
   skos: http://www.w3.org/2004/02/skos/core#
   dcterms: http://purl.org/dc/terms/
   schema: http://schema.org/
@@ -103,6 +106,15 @@ slots:
     multivalued: true
     inverse: part_of
     description: sub-elements
+
+  disease_location:
+    slot_uri: RO:0004026
+    range: NamedThing
+    description: anatomical location of a disease
+  has_phenotype:
+    slot_uri: RO:0002200
+    range: NamedThing
+    description: phenotypic feature associated with a disease
 
   subphenotype:
     range: Phenotype
@@ -573,6 +585,88 @@ classes:
                                     ObjectSomeValuesFrom(
                                       {{differentia_relation}}
                                       {{differentia_filler}} ))
+
+  DiseaseClass:
+    is_a: NamedThing
+    description: >-
+      metaclass for disease classes with named superclass parents,
+      modeling a simple disease hierarchy (e.g. lung cancer SubClassOf cancer)
+    slots:
+      - subclass_of
+    slot_usage:
+      subclass_of:
+        required: true
+        annotations:
+          owl: SubClassOf
+
+  DiseaseByLocation:
+    is_a: NamedThing
+    description: >-
+      metaclass for diseases defined by anatomical location using a
+      genus-differentia pattern (e.g. brain disease EquivalentTo
+      nervous-system-disorder AND has-disease-location some brain).
+      Follows the Mondo disease_by_location design pattern.
+    slots:
+      - subclass_of
+      - disease_location
+    slot_usage:
+      subclass_of:
+        required: true
+        description: the genus (broad disease category)
+        annotations:
+          owl: EquivalentClasses, IntersectionOf
+      disease_location:
+        required: true
+        description: the anatomical location differentia
+        annotations:
+          owl: EquivalentClasses, IntersectionOf, ObjectSomeValuesFrom
+
+  DiseaseByPhenotype:
+    is_a: NamedThing
+    description: >-
+      metaclass for diseases defined by an associated phenotype
+      (e.g. Parkinsonism EquivalentTo disease AND has-phenotype some tremor)
+    slots:
+      - subclass_of
+      - has_phenotype
+    slot_usage:
+      subclass_of:
+        required: true
+        description: the genus (broad disease category)
+        annotations:
+          owl: EquivalentClasses, IntersectionOf
+      has_phenotype:
+        required: true
+        description: the phenotypic differentia
+        annotations:
+          owl: EquivalentClasses, IntersectionOf, ObjectSomeValuesFrom
+
+  DefinedDisease:
+    is_a: NamedThing
+    description: >-
+      metaclass for diseases defined by both anatomical location AND phenotype,
+      illustrating intersection with multiple differentiae
+      (e.g. a disease EquivalentTo disease AND has-location some L AND has-phenotype some P)
+    slots:
+      - subclass_of
+      - disease_location
+      - has_phenotype
+    slot_usage:
+      subclass_of:
+        required: true
+        description: the genus
+        annotations:
+          owl: EquivalentClasses, IntersectionOf
+      disease_location:
+        required: true
+        description: the anatomical location differentia
+        annotations:
+          owl: EquivalentClasses, IntersectionOf, ObjectSomeValuesFrom
+      has_phenotype:
+        required: true
+        description: the phenotypic differentia
+        annotations:
+          owl: EquivalentClasses, IntersectionOf, ObjectSomeValuesFrom
 
   Phenotype:
     is_a: NamedThing
