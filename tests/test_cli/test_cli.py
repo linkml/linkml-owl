@@ -14,7 +14,7 @@ class CliTestSuite(unittest.TestCase):
     """
 
     def setUp(self) -> None:
-        runner = CliRunner(mix_stderr=False)
+        runner = CliRunner()
         self.runner = runner
 
     def test_help_option(self):
@@ -41,5 +41,4 @@ class CliTestSuite(unittest.TestCase):
         # Allow for minor differences between funowl and py-horned-owl
         axiom_diff = abs(len(axioms) - len(expected_axioms))
         assert axiom_diff <= 2, f"Axiom count difference too large: {len(axioms)} vs {len(expected_axioms)}"
-
 
