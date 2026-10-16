@@ -188,6 +188,19 @@ class OWLDumper(Dumper):
     _blank_node_counter: int = 0
     """Counter for generating unique blank node IDs."""
 
+    _cache_schemaview: Optional[SchemaView] = None
+    """The schemaview that _caches were computed from."""
+
+    _caches: Optional[Dict[str, Dict]] = None
+    """Per-schema memos of slot lookups, which are called for every value of every element."""
+
+    def _cache(self, name: str) -> Dict:
+        """Return the named memo, emptying all memos if the schemaview has changed."""
+        if self._caches is None or self._cache_schemaview is not self.schemaview:
+            self._caches = defaultdict(dict)
+            self._cache_schemaview = self.schemaview
+        return self._caches[name]
+
     def _next_blank_node_id(self) -> str:
         """Generate a unique blank node ID."""
         self._blank_node_counter += 1
@@ -666,6 +679,17 @@ class OWLDumper(Dumper):
         """
         Lookup a slot in a class by name
         """
+        cache = self._cache("lookup_slot")
+        key = (cls.name, field)
+        if key not in cache:
+            slot = self._lookup_slot_uncached(cls, field)
+            if slot is None:
+                # Not memoised, so a missing slot is still logged every time
+                return slot
+            cache[key] = slot
+        return cache[key]
+
+    def _lookup_slot_uncached(self, cls: ClassDefinition, field: str) -> Optional[SlotDefinition]:
         matching_slot = None
         for s in self.schemaview.class_induced_slots(cls.name):
             if underscore(s.name) == field:
@@ -684,6 +708,15 @@ class OWLDumper(Dumper):
 
     def _get_inferred_slot_annotations(self, slot: SlotDefinition, ann_key: str,
                                        class_name: ClassDefinitionName) -> List[str]:
+        cache = self._cache("inferred_slot_annotations")
+        key = (slot.name, ann_key, class_name)
+        if key not in cache:
+            cache[key] = self._get_inferred_slot_annotations_uncached(slot, ann_key, class_name)
+        # A copy, so callers can't change the memo
+        return list(cache[key])
+
+    def _get_inferred_slot_annotations_uncached(self, slot: SlotDefinition, ann_key: str,
+                                                class_name: ClassDefinitionName) -> List[str]:
         vals = set()
         anc_slots = [slot]
         sv = self.schemaview
