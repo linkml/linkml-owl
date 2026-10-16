@@ -1,3 +1,4 @@
+import functools
 import sys
 from collections import defaultdict
 from enum import Enum, auto
@@ -43,6 +44,12 @@ from linkml_runtime.utils.yamlutils import YAMLRoot
 from linkml_owl.util.loader_wrapper import load_structured_file
 from linkml_owl.util.owl_util import get_declarations, as_class_expression, as_class_expression_list, Axiom, Ontology, \
     add_axiom, instantiate_restriction
+
+
+@functools.lru_cache(maxsize=None)
+def _compile_template(source: str) -> Template:
+    """Compile a Jinja template once: the same template is rendered for every value of a slot."""
+    return Template(source)
 
 
 class IRIRepairPolicy(Enum):
@@ -1025,7 +1032,7 @@ class OWLDumper(Dumper):
             d["_tr"] = _element_to_ofn_str
         else:
             d["tr"] = _element_to_ofn_str
-        jt = Template(tstr)
+        jt = _compile_template(tstr)
         d["tr"] = _element_to_ofn_str
         owl_str = jt.render(**d)
         axioms = self.parse_axioms_string(owl_str)
