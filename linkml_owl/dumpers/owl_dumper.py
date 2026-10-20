@@ -1,3 +1,4 @@
+import functools
 import sys
 from collections import defaultdict
 from enum import Enum, auto
@@ -43,6 +44,12 @@ from linkml_runtime.utils.yamlutils import YAMLRoot
 from linkml_owl.util.loader_wrapper import load_structured_file
 from linkml_owl.util.owl_util import get_declarations, as_class_expression, as_class_expression_list, Axiom, Ontology, \
     add_axiom, instantiate_restriction
+
+
+@functools.lru_cache(maxsize=None)
+def _compile_template(source: str) -> Template:
+    """Compile a Jinja template once: the same template is rendered for every value of a slot."""
+    return Template(source)
 
 
 class IRIRepairPolicy(Enum):
@@ -181,6 +188,19 @@ class OWLDumper(Dumper):
     _blank_node_counter: int = 0
     """Counter for generating unique blank node IDs."""
 
+    _cache_schemaview: Optional[SchemaView] = None
+    """The schemaview that _caches were computed from."""
+
+    _caches: Optional[Dict[str, Dict]] = None
+    """Per-schema memos of slot lookups, which are called for every value of every element."""
+
+    def _cache(self, name: str) -> Dict:
+        """Return the named memo, emptying all memos if the schemaview has changed."""
+        if self._caches is None or self._cache_schemaview is not self.schemaview:
+            self._caches = defaultdict(dict)
+            self._cache_schemaview = self.schemaview
+        return self._caches[name]
+
     def _next_blank_node_id(self) -> str:
         """Generate a unique blank node ID."""
         self._blank_node_counter += 1
@@ -255,7 +275,7 @@ class OWLDumper(Dumper):
         :param is_element_an_owl_class:
         :return: IRI or node of transformation of element
         """
-        logging.debug(f"transform: {element}")
+        logging.debug("transform: %s", element)
         if element is None:
             return None
         try:
@@ -342,14 +362,14 @@ class OWLDumper(Dumper):
                 raise ValueError(f'Cannot find slot {c.name}.{k} // {vars(element)} element={element}')
             if slot.identifier:
                 subj = o.iri(self._get_IRI_str(v))
-                logging.debug(f"set subj from {slot.name}={v} asURI: {subj}")
+                logging.debug("set subj from %s=%s asURI: %s", slot.name, v, subj)
         if AnonymousIndividual.__name__ in cls_interps or (subj is None and "Individual" in cls_interps):
             subj = AnonymousIndividual(self._next_blank_node_id())
-            logging.debug(f"No identifier slot; Creating anon individual for element = {subj}")
+            logging.debug("No identifier slot; Creating anon individual for element = %s", subj)
         else:
             for declaration in get_declarations(o, subj, interpretations=cls_interps):
                 o.add_axiom(declaration)
-        logging.info(f"Subject={subj}")
+        logging.info("Subject=%s", subj)
         expression_termset = {"IntersectionOf", "UnionOf", "ComplementOf", "OneOf", "SomeValuesFrom", "AllValuesFrom"}
         is_returns_expression = len(expression_termset.intersection(cls_interps)) > 0
         # iterate through all slot-value assignments for element;
@@ -361,7 +381,7 @@ class OWLDumper(Dumper):
             # TODO: unify slot/schema_level_slot
             slot = self._lookup_slot(c, k)
             if slot is None:
-                logging.error(f'No slot for {k}')
+                logging.error('No slot for %s', k)
                 continue
             if slot.identifier:
                 # the role of the identifier slot is to determine the IRI for the element;
@@ -395,9 +415,9 @@ class OWLDumper(Dumper):
                 slot_uri = self._get_IRI_str(schema_level_slot.slot_uri)
             else:
                 slot_uri = self._get_IRI_str(self.schemaview.get_uri(slot.name))
-            logging.debug(f'SlotVal {subj}.{k} = {v} (URI={schema_level_slot.slot_uri}) // slot = {slot.name}')
+            logging.debug('SlotVal %s.%s = %s (URI=%s) // slot = %s', subj, k, v, schema_level_slot.slot_uri, slot.name)
             slot_interps = self._get_slot_interpretations(slot, linkml_class_name)
-            logging.debug(f'OWL interpretations for {k}={slot_interps}')
+            logging.debug('OWL interpretations for %s=%s', k, slot_interps)
             is_object_ref = slot.range in self.schema.classes
             if "ObjectPropertyAssertion" in slot_interps or "ObjectProperty" in slot_interps:
                 is_object_ref = True
@@ -409,7 +429,7 @@ class OWLDumper(Dumper):
             else:
                 input_vals = [v]
             tr_vals = [self.transform(x, schema, is_element_an_object=is_object_ref) for x in input_vals]
-            logging.debug(f'TR Vals={tr_vals}')
+            logging.debug('TR Vals=%s', tr_vals)
             parents = []  ## expressions that are the referents of the axioms to be generated
             is_class_logical_axiom = False
             # TODO: make this more generic
@@ -418,7 +438,7 @@ class OWLDumper(Dumper):
             is_annotation = 'AnnotationProperty' in slot_interps or 'Annotation' in slot_interps
             closure_axiom_parents = []
             for tr_val in tr_vals:
-                logging.debug(f'  TR_VAL = {tr_val}')
+                logging.debug('  TR_VAL = %s', tr_val)
                 if tr_val is None:
                     continue
                 if owl_fstrings:
@@ -495,10 +515,10 @@ class OWLDumper(Dumper):
                         axiom_type = AnnotationAssertion
                     else:
                         axiom_type = None
-                        logging.info(f"Cannot determine axiom type for {slot.name}, unprocessed={parents}")
+                        logging.info("Cannot determine axiom type for %s, unprocessed=%s", slot.name, parents)
                         unprocessed_parents += parents
                         #continue
-            logging.debug(f'AXIOM TYPE = {axiom_type}')
+            logging.debug('AXIOM TYPE = %s', axiom_type)
             if axiom_type:
                 # special case handling of conjunctions and disjunctions;
                 # these are added to the index, to be processed at the entity level
@@ -521,7 +541,7 @@ class OWLDumper(Dumper):
                     # Note: when considering making this more generic,
                     # bear in mind that order or number of arguments may vary
                     if axiom_type == SubClassOf:
-                        logging.debug(f'type(subj) = {type(subj)} // {subj}')
+                        logging.debug('type(subj) = %s // %s', type(subj), subj)
                         if isinstance(subj, AnonymousIndividual):
                             axiom = None
                         else:
@@ -597,25 +617,25 @@ class OWLDumper(Dumper):
             if len(unprocessed_parents) == 0:
                 raise ValueError(f"Cannot process IntersectionOf with no parents for {element}")
             if len(unprocessed_parents) == 1:
-                logging.debug(f"Simplifying IntersectionOf(...) to {unprocessed_parents[0]}")
+                logging.debug("Simplifying IntersectionOf(...) to %s", unprocessed_parents[0])
                 return unprocessed_parents[0]
             expr = ObjectIntersectionOf(_as_class_expression_list(*unprocessed_parents))
-            logging.debug(f"Returning expression {expr} // {eai.operand_list_index.items()}")
+            logging.debug("Returning expression %s // %s", expr, eai.operand_list_index.items())
             return expr
         for op_key, operands in eai.operand_list_index.items():
             _, interp, operator = op_key
-            logging.debug(f'EntityAxiomIndex {subj}: {interp} => {operator} over {operands}')
+            logging.debug('EntityAxiomIndex %s: %s => %s over %s', subj, interp, operator, operands)
             # pre-process operands
             if len(operands) == 0:
                 raise ValueError(f'Too few operands: {operands} for {operator} in {subj}')
             if len(operands) == 1:
-                logging.debug(f"Simplifying {operator}(...) to {operands[0]}")
+                logging.debug("Simplifying %s(...) to %s", operator, operands[0])
                 return operands[0]
             elif operator == ObjectUnionOf.__name__:
                 expr = ObjectUnionOf(_as_class_expression_list(*operands))
             elif operator == ObjectIntersectionOf.__name__:
                 if len(operands) == 1:
-                    logging.debug(f"Simplifying IntersectionOf(...) to {operands[0]}")
+                    logging.debug("Simplifying IntersectionOf(...) to %s", operands[0])
                     expr = operands[0]
                 else:
                     expr = ObjectIntersectionOf(_as_class_expression_list(*operands))
@@ -632,9 +652,9 @@ class OWLDumper(Dumper):
                 axiom = DisjointUnion(operands[0], operands[1:])
             else:
                 raise ValueError(f'Not handled: {interp}')
-            logging.debug(f'Adding axiom: {axiom}')
+            logging.debug('Adding axiom: %s', axiom)
             self.add_axiom(axiom, o, eai.annotation_list_index.get(op_key, []))
-        logging.debug(f"Returning {subj}")
+        logging.debug("Returning %s", subj)
         return subj
 
     def add_axiom(self, axiom: Axiom, ontology: Ontology, axiom_annotations: List[Annotation]) -> None:
@@ -659,6 +679,17 @@ class OWLDumper(Dumper):
         """
         Lookup a slot in a class by name
         """
+        cache = self._cache("lookup_slot")
+        key = (cls.name, field)
+        if key not in cache:
+            slot = self._lookup_slot_uncached(cls, field)
+            if slot is None:
+                # Not memoised, so a missing slot is still logged every time
+                return slot
+            cache[key] = slot
+        return cache[key]
+
+    def _lookup_slot_uncached(self, cls: ClassDefinition, field: str) -> Optional[SlotDefinition]:
         matching_slot = None
         for s in self.schemaview.class_induced_slots(cls.name):
             if underscore(s.name) == field:
@@ -673,10 +704,19 @@ class OWLDumper(Dumper):
                 matching_slot.slot_uri = uri
             return matching_slot
         else:
-            logging.error(f'Did not find {field} in {cls.name} slots =  {cls.slots}')
+            logging.error('Did not find %s in %s slots =  %s', field, cls.name, cls.slots)
 
     def _get_inferred_slot_annotations(self, slot: SlotDefinition, ann_key: str,
                                        class_name: ClassDefinitionName) -> List[str]:
+        cache = self._cache("inferred_slot_annotations")
+        key = (slot.name, ann_key, class_name)
+        if key not in cache:
+            cache[key] = self._get_inferred_slot_annotations_uncached(slot, ann_key, class_name)
+        # A copy, so callers can't change the memo
+        return list(cache[key])
+
+    def _get_inferred_slot_annotations_uncached(self, slot: SlotDefinition, ann_key: str,
+                                                class_name: ClassDefinitionName) -> List[str]:
         vals = set()
         anc_slots = [slot]
         sv = self.schemaview
@@ -784,7 +824,7 @@ class OWLDumper(Dumper):
         else:
             schema_level_slot = slot
         if schema_level_slot.name != slot.name:
-            logging.warning(f'Using actual slot uri: {schema_level_slot.name} >> {slot.name}')
+            logging.warning('Using actual slot uri: %s >> %s', schema_level_slot.name, slot.name)
         return schema_level_slot
 
     def _repair_ofn_iris(self, owl_str: str) -> str:
@@ -814,7 +854,7 @@ class OWLDumper(Dumper):
                     f"Full IRIs must be wrapped in angle brackets: <{iri}>"
                 )
             if self.iri_policy == IRIRepairPolicy.WARN:
-                logging.warning(f"Repairing bare IRI in OFN string: {iri} -> <{iri}>")
+                logging.warning("Repairing bare IRI in OFN string: %s -> <%s>", iri, iri)
             return f'<{iri}>'
 
         return _FULL_IRI_PATTERN.sub(replace_iri, owl_str)
@@ -925,9 +965,9 @@ class OWLDumper(Dumper):
             fstring = fstring.value
         d = self._element_to_template_dict(element, val)
         owl_str = fstring.format(**d)
-        logging.debug(f'FSTRING = {owl_str}')
+        logging.debug('FSTRING = %s', owl_str)
         axioms = self.parse_axioms_string(owl_str)
-        logging.debug(f'AXIOMS >> = {axioms}')
+        logging.debug('AXIOMS >> = %s', axioms)
         self.add_axioms(axioms)
 
     def add_axioms_from_template(self, template_ann: Union[str, meta.Annotation], element: YAMLRoot, val: Any = None, schema: SchemaDefinition = None):
@@ -940,7 +980,7 @@ class OWLDumper(Dumper):
         def _element_to_ofn_str(x) -> str:
             """Transform an element to its OFN string representation for use in templates."""
             expr = self.transform(x, schema=schema, is_element_an_object=False)
-            logging.debug(f"template.transform({x}) = {expr}")
+            logging.debug("template.transform(%s) = %s", x, expr)
             return _serialize_to_ofn(expr)
 
         def _serialize_to_ofn(expr) -> str:
@@ -1013,7 +1053,7 @@ class OWLDumper(Dumper):
                 return expr
             else:
                 # Fallback: try str(), but log a warning
-                logging.warning(f"Unknown expression type in template serialization: {type(expr)}")
+                logging.warning("Unknown expression type in template serialization: %s", type(expr))
                 result = str(expr)
                 # Check if it looks like a Python repr
                 if 'object at 0x' in result:
@@ -1025,7 +1065,7 @@ class OWLDumper(Dumper):
             d["_tr"] = _element_to_ofn_str
         else:
             d["tr"] = _element_to_ofn_str
-        jt = Template(tstr)
+        jt = _compile_template(tstr)
         d["tr"] = _element_to_ofn_str
         owl_str = jt.render(**d)
         axioms = self.parse_axioms_string(owl_str)
@@ -1123,7 +1163,7 @@ def cli(inputfile: str, schema: str, target_class, module, output, output_type, 
         logger.setLevel(level=logging.WARNING)
     if quiet:
         logger.setLevel(level=logging.ERROR)
-    logger.info(f"Loading and compiling schema {schema}")
+    logger.info("Loading and compiling schema %s", schema)
     if module is None:
         if schema is None:
             raise Exception('must pass one of module OR schema')
@@ -1132,7 +1172,7 @@ def cli(inputfile: str, schema: str, target_class, module, output, output_type, 
     else:
         python_module = compile_python(module)
     sv = SchemaView(schema)
-    logger.info(f"Loading {inputfile} into schema {sv.schema.name}")
+    logger.info("Loading %s into schema %s", inputfile, sv.schema.name)
     element = load_structured_file(inputfile, target_class=target_class, python_module=python_module, schemaview=sv, fmt=format)
 
     dumper = OWLDumper()
