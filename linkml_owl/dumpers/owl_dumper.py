@@ -675,7 +675,7 @@ class OWLDumper(Dumper):
         except Exception:
             return False
 
-    def _lookup_slot(self, cls: ClassDefinition, field: str) -> SlotDefinition:
+    def _lookup_slot(self, cls: ClassDefinition, field: str) -> Optional[SlotDefinition]:
         """
         Lookup a slot in a class by name
         """
@@ -709,6 +709,10 @@ class OWLDumper(Dumper):
     def _get_inferred_slot_annotations(self, slot: SlotDefinition, ann_key: str,
                                        class_name: ClassDefinitionName) -> List[str]:
         cache = self._cache("inferred_slot_annotations")
+        # The memo is keyed by slot *name*, not slot object, even though the uncached
+        # lookup also reads annotations off the `slot` passed in. That's safe only
+        # because every caller passes the slot it got from `_lookup_slot(c, ...)` for
+        # this same `class_name`, so the slot is itself a function of the key.
         key = (slot.name, ann_key, class_name)
         if key not in cache:
             cache[key] = self._get_inferred_slot_annotations_uncached(slot, ann_key, class_name)
