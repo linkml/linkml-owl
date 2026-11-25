@@ -165,6 +165,14 @@ class TestOwlDumper(unittest.TestCase):
                   [py_mod.NamedThingWithMatchesAsLiterals('x:a', exactMatch='x:b')],
                   [AnnotationAssertion(x_a, ann(SKOS.exactMatch, SimpleLiteral("x:b")))],
                   "We can force a literal by imposing a range")
+        add_check("Annotation using uriorcurie values",
+                  [py_mod.NamedThingWithMatchesAsURIorCURIEs('x:a', exactMatch='x:b')],
+                  [AnnotationAssertion(x_a, ann(SKOS.exactMatch, x_b))],
+                  "If the range is uriorcurie then the value is an IRI, not a literal")
+        add_check("Annotation using uri values",
+                  [py_mod.NamedThingWithMatchesAsURIs('x:a', exactMatch='http://example.org/b')],
+                  [AnnotationAssertion(x_a, ann(SKOS.exactMatch, x_b))],
+                  "If the range is uri then the value is an IRI, not a literal")
         add_check("Axiom annotation with Literal value on annotation axiom",
                   [py_mod.DefinitionWithAxiomAnnotation('x:a', label='foo', definition='a foo is a foo',
                                                         definition_source=['Me'])],
