@@ -21,7 +21,7 @@ from linkml_runtime.utils.inference_utils import infer_all_slot_values, infer_sl
 from linkml_runtime.linkml_model.meta import ClassDefinition, SchemaDefinition, SlotDefinition, Definition, \
     ClassDefinitionName
 from linkml_runtime.utils.formatutils import underscore, camelcase
-from linkml_runtime.linkml_model.types import Uri, Uriorcurie
+from linkml_runtime.utils.metamodelcore import URIorCURIE
 
 from pyhornedowl import PyIndexedOntology
 from pyhornedowl.model import IRI, ObjectSomeValuesFrom, \
@@ -303,9 +303,7 @@ class OWLDumper(Dumper):
             if is_element_an_object:
                 # foreign key
                 return ont.iri(self._get_IRI_str(element))
-            elif isinstance(element, Uriorcurie):
-                return ont.iri(self._get_IRI_str(element))
-            elif isinstance(element, Uri):
+            elif isinstance(element, URIorCURIE):
                 return ont.iri(self._get_IRI_str(element))
             elif isinstance(element, str):
                 return SimpleLiteral(element)

@@ -181,6 +181,28 @@ classes:
         required: true
         annotations:
           owl: AnnotationAssertion
+  NamedThingWithMatchesAsURIorCURIEs:
+    is_a: NamedThing
+    description: test metaclass illustrating generation of skos annotation axioms, where values are uriorcuries
+    slots:
+      - exactMatch
+    slot_usage:
+      exactMatch:
+        range: uriorcurie
+        required: true
+        annotations:
+          owl: AnnotationAssertion
+  NamedThingWithMatchesAsURIs:
+    is_a: NamedThing
+    description: test metaclass illustrating generation of skos annotation axioms, where values are uris
+    slots:
+      - exactMatch
+    slot_usage:
+      exactMatch:
+        range: uri
+        required: true
+        annotations:
+          owl: AnnotationAssertion
   DefinitionWithAxiomAnnotation:
     is_a: NamedThing
     description: test metaclass illustrating how a text definition can be adorned with annotation axioms, where values are literals
